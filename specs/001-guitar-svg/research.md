@@ -38,7 +38,7 @@
 
 ### Tratamento de Dados
 
-- Uma função utilitária será criada para converter a string de tablatura (ex: "x32010") para o formato de objeto estruturado (`fingers`, `barres`). Essa lógica será isolada do componente de renderização.
+- Uma função utilitária será criada para converter a Fret Notation (ex: "x32010") para o formato de objeto estruturado (`fingers`, `barres`). Essa lógica será isolada do componente de renderização.
 - A validação de props (ex: afinação incompleta) será feita no início do ciclo de renderização, lançando erros claros para o desenvolvedor, conforme especificado nos casos limite.
 
 ## 3. Padrões de Renderização SVG
@@ -96,7 +96,7 @@
 - **With Barre**: Acorde com pestana (F Major)
 - **High Position**: Acorde em posição alta (5ª posição)
 - **Custom Tuning**: Afinação personalizada
-- **Tab String**: String de tablatura
+- **Tab String**: Fret Notation
 - **Custom Style**: Estilos personalizados
 - **Edge Cases**: Casos limite e validação
 

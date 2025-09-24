@@ -60,9 +60,9 @@ const App = () => {
 export default App;
 ```
 
-### Exemplo 3: Usando String de Tablatura (G Major)
+### Exemplo 3: Usando Fret Notation (G Major)
 
-Alternativamente, você pode passar uma string de tablatura e a afinação. O componente irá interpretar a string para renderizar o acorde.
+Alternativamente, você pode passar uma Fret Notation e a afinação. O componente irá interpretar a string para renderizar o acorde.
 
 ```jsx
 import React from "react";
@@ -162,7 +162,7 @@ export default App;
 
 ### Cordas Soltas e Mutadas
 
-Use "o" para cordas soltas e "x" para cordas mutadas na string de tablatura.
+Use "o" para cordas soltas e "x" para cordas mutadas na Fret Notation.
 
 ```jsx
 import React from "react";
@@ -175,6 +175,26 @@ const App = () => {
 	};
 
 	return <ChordDiagram instrument={eMinor} />;
+};
+
+export default App;
+```
+
+### Exemplo 4: Fret Notation com Trastes Altos (acima de 9)
+
+Para trastes com mais de um dígito, use parênteses.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const fMajor10th = {
+		tuning: ["E", "A", "D", "G", "B", "E"],
+		chord: "(10)(12)(12)(11)(10)(10)", // F Major na 10ª casa
+	};
+
+	return <ChordDiagram instrument={fMajor10th} />;
 };
 
 export default App;

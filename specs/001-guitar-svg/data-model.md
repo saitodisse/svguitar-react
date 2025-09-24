@@ -10,7 +10,7 @@ Interface principal do componente. Ela aceita os dados do acorde de duas formas:
 
 ```typescript
 interface ChordDiagramProps {
-	instrument?: Partial<Instrument>; // Para entrada de tablatura "x32010"
+	instrument?: Partial<Instrument>; // Para entrada via Fret Notation "x32010"
 	chord?: Chord; // Para entrada estruturada de dedos e pestanas
 	style?: Partial<ChordStyle>;
 }
@@ -38,7 +38,7 @@ interface Instrument {
 	strings: number; // Número de cordas
 	frets: number; // Número de trastes a serem mostrados no diagrama
 	tuning: string[]; // Afinação das cordas, ex: ["E", "A", "D", "G", "B", "E"]
-	chord: string; // A string de tablatura, ex: "x32010"
+	chord: string; // A Fret Notation, ex: "x32010" ou "(10)x(12)..."
 }
 ```
 
@@ -146,34 +146,53 @@ function validateInstrument(instrument: Instrument): boolean {
 }
 ```
 
-## 5. Conversão de String de Tablatura
+## 5. Conversão de Fret Notation
 
 ### Função de Parsing
 
 ```typescript
-function parseTabString(tabString: string, tuning: string[]): Chord {
+function parseFretNotation(fretNotation: string): Chord {
 	const fingers: Finger[] = [];
 	const barres: Barre[] = [];
+	let stringNumber = 1;
+	let i = 0;
 
-	for (let i = 0; i < tabString.length; i++) {
-		const char = tabString[i];
-		const stringNumber = i + 1;
+	while (i < fretNotation.length) {
+		let fret: number | "x" | "o" | null = null;
+		const char = fretNotation[i];
 
 		if (char === "x") {
-			// Corda mutada - não adiciona finger
-			continue;
+			fret = "x";
+			i++;
 		} else if (char === "o") {
-			// Corda solta - não adiciona finger
-			continue;
-		} else if (char >= "0" && char <= "9") {
-			const fret = parseInt(char, 10);
-			if (fret > 0) {
-				fingers.push({
-					fret,
-					string: stringNumber,
-				});
+			fret = "o";
+			i++;
+		} else if (char === "(") {
+			const endIndex = fretNotation.indexOf(")", i);
+			if (endIndex === -1) {
+				// Tratar erro de sintaxe
+				break;
 			}
+			fret = parseInt(fretNotation.substring(i + 1, endIndex), 10);
+			i = endIndex + 1;
+		} else if (char >= "0" && char <= "9") {
+			fret = parseInt(char, 10);
+			i++;
+		} else {
+			// Ignorar caracteres inválidos e avançar
+			i++;
+			stringNumber++;
+			continue;
 		}
+
+		if (typeof fret === "number" && fret > 0) {
+			fingers.push({
+				fret,
+				string: stringNumber,
+			});
+		}
+
+		stringNumber++;
 	}
 
 	return { fingers, barres };

@@ -59,7 +59,7 @@ interface Instrument {
 - `frets` deve ser > 0
 - `tuning.length` deve igualar `strings`
 - `chord.length` deve igualar `strings`
-- `chord` deve conter apenas caracteres válidos: '0'-'9', 'x', 'o'
+- `chord` deve conter apenas caracteres válidos: '0'-'9', 'x', 'o', '(', ')'
 
 ### Finger
 
@@ -139,7 +139,7 @@ interface ChordStyle {
 ### Renderização
 
 1. **Prioridade de Dados**: Se ambos `chord` e `instrument` forem fornecidos, `chord` tem precedência
-2. **Conversão de Tablatura**: Se apenas `instrument` for fornecido, a string de tablatura será convertida para o formato `Chord`
+2. **Conversão de Fret Notation**: Se apenas `instrument` for fornecido, a Fret Notation será convertida para o formato `Chord`
 3. **Estilos**: O objeto `style` será mesclado com valores padrão
 4. **Validação**: Todas as props serão validadas antes da renderização
 
@@ -157,7 +157,7 @@ O componente lança `ChordDiagramError` com códigos específicos:
 - `INVALID_FRET`: Fret inválido (<= 0)
 - `INVALID_STRING`: String fora do intervalo válido
 - `INVALID_TUNING`: Afinação com tamanho incorreto
-- `INVALID_TAB_STRING`: String de tablatura inválida
+- `INVALID_TAB_STRING`: Fret Notation inválida
 - `INVALID_BARRE`: Pestana com parâmetros inválidos
 
 ## Exemplos de Uso
@@ -184,7 +184,7 @@ const props: ChordDiagramProps = {
 		strings: 6,
 		frets: 4,
 		tuning: ["E", "A", "D", "G", "B", "E"],
-		chord: "x32010",
+		chord: "x32010", // Fret Notation para C Major
 	},
 };
 ```

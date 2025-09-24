@@ -23,15 +23,15 @@
 
 **CRÍTICO: Estes testes DEVEM ser escritos e DEVEM FALHAR antes da implementação.**
 
-- [ ] T006 [P] Escrever testes unitários para a função `parseTabString` em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Os testes devem cobrir a conversão de tablaturas simples, com cordas soltas ('o') e mutadas ('x').
-- [ ] T007 [P] Escrever testes unitários para a lógica de validação de props em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Testar `fingers`, `barres` e `tuning` inválidos.
+- [ ] T006 [P] Escrever testes unitários para a função `parseFretNotation` em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Os testes devem cobrir a conversão de Fret Notations simples, com cordas soltas ('o'), mutadas ('x') e trastes altos (ex: "(10)").
+- [ ] T007 [P] Escrever testes unitários para a lógica de validação de props em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Testar `fingers`, `barres`, `tuning` e Fret Notations inválidas.
 - [ ] T008 Escrever testes de integração para renderização em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Os testes devem renderizar o componente com diferentes props (acorde simples, com pestana, posição alta, estilo customizado) e verificar se o SVG de saída contém os elementos corretos (`circle`, `rect`, `line`, `text`).
 
 ## Fase 3.4: Implementação Core
 
 **APENAS após os testes da Fase 3.3 falharem.**
 
-- [ ] T009 Implementar a função utilitária `parseTabString` em `src/components/ChordDiagram/utils.ts` para fazer os testes da tarefa `T006` passarem.
+- [ ] T009 Implementar a função utilitária `parseFretNotation` em `src/components/ChordDiagram/utils.ts` para fazer os testes da tarefa `T006` passarem.
 - [ ] T010 Implementar as funções de validação de props em `src/components/ChordDiagram/utils.ts` para fazer os testes da tarefa `T007` passarem.
 - [ ] T011 Implementar a lógica de renderização base do `ChordDiagram` em `src/components/ChordDiagram/ChordDiagram.tsx`. O componente deve renderizar o canvas SVG e o braço da guitarra (trastes e cordas) com base nas props de estilo.
 - [ ] T012 Implementar a lógica para renderizar `fingers` como elementos `<circle>` e `barres` como elementos `<rect>` no `ChordDiagram.tsx`.
@@ -42,7 +42,7 @@
 
 ## Fase 3.5: Polimento e Documentação
 
-- [ ] T017 [P] Criar as stories no Storybook em `src/stories/ChordDiagram.stories.tsx`. As stories devem cobrir todos os cenários definidos no `quickstart.md` (Acorde Simples, Com Pestana, Posição Alta, Tablatura, Estilo Customizado e Casos Limite).
+- [ ] T017 [P] Criar as stories no Storybook em `src/stories/ChordDiagram.stories.tsx`. As stories devem cobrir todos os cenários definidos no `quickstart.md` (Acorde Simples, Com Pestana, Posição Alta, Fret Notation, Estilo Customizado e Casos Limite).
 - [ ] T018 [P] Adicionar documentação TSDoc para todas as interfaces, props e funções exportadas em `types.ts`, `utils.ts` e `ChordDiagram.tsx`.
 - [ ] T019 Configurar o `package.json` e `vite.config.ts` para o "Library Mode" do Vite, garantindo que os campos `main`, `module` e `types` estejam corretos para publicação no NPM.
 - [ ] T020 Executar `pnpm format` e `pnpm lint --fix` para garantir a qualidade e consistência do código em todo o novo componente.

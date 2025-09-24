@@ -90,13 +90,30 @@ function validateTuning(instrument: Instrument): boolean {
 ### Regra: String de Tablatura Válida
 
 ```typescript
-function validateTabString(instrument: Instrument): boolean {
-	const validChars = /^[0-9xo]+$/;
-	return (
-		typeof instrument.chord === "string" &&
-		instrument.chord.length === instrument.strings &&
-		validChars.test(instrument.chord)
-	);
+function countStringsInFretNotation(fretNotation: string): number {
+	let count = 0;
+	let i = 0;
+	while (i < fretNotation.length) {
+		if (fretNotation[i] === "(") {
+			const endIndex = fretNotation.indexOf(")", i);
+			if (endIndex === -1) return -1; // inválido
+			i = endIndex + 1;
+		} else {
+			i++;
+		}
+		count++;
+	}
+	return count;
+}
+
+function validateFretNotation(instrument: Instrument): boolean {
+	const validCharsRegex = /^[0-9xo()]+$/;
+	if (typeof instrument.chord !== "string" || !validCharsRegex.test(instrument.chord)) {
+		return false;
+	}
+
+	const stringCount = countStringsInFretNotation(instrument.chord);
+	return stringCount === instrument.strings;
 }
 ```
 
@@ -306,7 +323,7 @@ function validateInstrument(instrument: Instrument): boolean {
 	return (
 		validateInstrumentDimensions(instrument) &&
 		validateTuning(instrument) &&
-		validateTabString(instrument)
+		validateFretNotation(instrument)
 	);
 }
 ```
