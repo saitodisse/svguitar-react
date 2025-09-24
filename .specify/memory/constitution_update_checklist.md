@@ -59,21 +59,19 @@ Ao emendar a constituição (`/memory/constitution.md`), garanta que todos os do
 ## Etapas de Validação
 
 1. **Antes de comitar mudanças na constituição:**
-
-   - [ ] Todos os templates referenciam os novos requisitos
-   - [ ] Exemplos atualizados para corresponder às novas regras
-   - [ ] Sem contradições entre documentos
+    - [ ] Todos os templates referenciam os novos requisitos
+    - [ ] Exemplos atualizados para corresponder às novas regras
+    - [ ] Sem contradições entre documentos
 
 2. **Após atualizar os templates:**
-
-   - [ ] Percorrer um plano de implementação de exemplo
-   - [ ] Verificar que todos os requisitos da constituição foram atendidos
-   - [ ] Checar que os templates são autocontidos (legíveis sem a constituição)
+    - [ ] Percorrer um plano de implementação de exemplo
+    - [ ] Verificar que todos os requisitos da constituição foram atendidos
+    - [ ] Checar que os templates são autocontidos (legíveis sem a constituição)
 
 3. **Rastreamento de versão:**
-   - [ ] Atualizar o número da versão da constituição
-   - [ ] Anotar a versão nos rodapés dos templates
-   - [ ] Adicionar emenda ao histórico da constituição
+    - [ ] Atualizar o número da versão da constituição
+    - [ ] Anotar a versão nos rodapés dos templates
+    - [ ] Adicionar emenda ao histórico da constituição
 
 ## Itens Comumente Esquecidos
 

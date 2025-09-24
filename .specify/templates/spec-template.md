@@ -48,12 +48,12 @@ Ao criar esta spec a partir de um prompt do usuário:
 2. **Não presuma**: Se o prompt não especifica algo (ex.: "sistema de login" sem método de auth), marque
 3. **Pense como um testador**: Todo requisito vago deve reprovar no item "testável e não ambíguo"
 4. **Áreas comumente subespecificadas**:
-   - Tipos de usuários e permissões
-   - Políticas de retenção/remoção de dados
-   - Metas de performance e escala
-   - Comportamentos de tratamento de erro
-   - Requisitos de integração
-   - Necessidades de segurança/compliance
+    - Tipos de usuários e permissões
+    - Políticas de retenção/remoção de dados
+    - Metas de performance e escala
+    - Comportamentos de tratamento de erro
+    - Requisitos de integração
+    - Necessidades de segurança/compliance
 
 ---
 

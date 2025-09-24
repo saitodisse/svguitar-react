@@ -114,19 +114,18 @@ Task: "Teste de integração auth em tests/integration/test_auth.py"
 _Aplicadas durante a execução do main()_
 
 1. **A partir dos Contratos**:
-   - Cada arquivo de contrato → tarefa de teste de contrato [P]
-   - Cada endpoint → tarefa de implementação
+    - Cada arquivo de contrato → tarefa de teste de contrato [P]
+    - Cada endpoint → tarefa de implementação
 2. **A partir do Data Model**:
-   - Cada entidade → tarefa de criação de modelo [P]
-   - Relacionamentos → tarefas na camada de serviços
+    - Cada entidade → tarefa de criação de modelo [P]
+    - Relacionamentos → tarefas na camada de serviços
 3. **A partir das User Stories**:
-
-   - Cada story → teste de integração [P]
-   - Cenários de quickstart → tarefas de validação
+    - Cada story → teste de integração [P]
+    - Cenários de quickstart → tarefas de validação
 
 4. **Ordenação**:
-   - Setup → Testes → Modelos → Serviços → Endpoints → Polimento
-   - Dependências bloqueiam execução paralela
+    - Setup → Testes → Modelos → Serviços → Endpoints → Polimento
+    - Dependências bloqueiam execução paralela
 
 ## Checklist de Validação
 

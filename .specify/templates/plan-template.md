@@ -142,24 +142,23 @@ ios/ or android/
 ## Fase 0: Esboço & Pesquisa
 
 1. **Extrair incertezas do Contexto Técnico** acima:
-
-   - Para cada NEEDS CLARIFICATION → tarefa de pesquisa
-   - Para cada dependência → tarefa de boas práticas
-   - Para cada integração → tarefa de padrões
+    - Para cada NEEDS CLARIFICATION → tarefa de pesquisa
+    - Para cada dependência → tarefa de boas práticas
+    - Para cada integração → tarefa de padrões
 
 2. **Gerar e despachar agentes de pesquisa**:
 
-   ```
-   Para cada incerteza no Contexto Técnico:
-     Tarefa: "Pesquisar {incerteza} para {contexto da feature}"
-   Para cada escolha de tecnologia:
-     Tarefa: "Encontrar boas práticas para {tecnologia} em {domínio}"
-   ```
+    ```
+    Para cada incerteza no Contexto Técnico:
+      Tarefa: "Pesquisar {incerteza} para {contexto da feature}"
+    Para cada escolha de tecnologia:
+      Tarefa: "Encontrar boas práticas para {tecnologia} em {domínio}"
+    ```
 
 3. **Consolidar achados** em `research.md` usando o formato:
-   - Decisão: [o que foi escolhido]
-   - Justificativa: [por que escolhido]
-   - Alternativas consideradas: [o que mais foi avaliado]
+    - Decisão: [o que foi escolhido]
+    - Justificativa: [por que escolhido]
+    - Alternativas consideradas: [o que mais foi avaliado]
 
 **Saída**: research.md com todas as NEEDS CLARIFICATION resolvidas
 
@@ -168,35 +167,31 @@ ios/ or android/
 _Pré-requisito: research.md concluído_
 
 1. **Extrair entidades da spec da feature** → `data-model.md`:
-
-   - Nome da entidade, campos, relacionamentos
-   - Regras de validação a partir dos requisitos
-   - Transições de estado se aplicável
+    - Nome da entidade, campos, relacionamentos
+    - Regras de validação a partir dos requisitos
+    - Transições de estado se aplicável
 
 2. **Gerar contratos de API** a partir dos requisitos funcionais:
-
-   - Para cada ação do usuário → endpoint
-   - Usar padrões REST/GraphQL
-   - Salvar o schema OpenAPI/GraphQL em `/contracts/`
+    - Para cada ação do usuário → endpoint
+    - Usar padrões REST/GraphQL
+    - Salvar o schema OpenAPI/GraphQL em `/contracts/`
 
 3. **Gerar testes de contrato** a partir dos contratos:
-
-   - Um arquivo de teste por endpoint
-   - Validar schemas de requisição/resposta
-   - Testes devem falhar (sem implementação ainda)
+    - Um arquivo de teste por endpoint
+    - Validar schemas de requisição/resposta
+    - Testes devem falhar (sem implementação ainda)
 
 4. **Extrair cenários de teste** das user stories:
-
-   - Cada story → cenário de teste de integração
-   - Teste de quickstart = passos de validação da story
+    - Cada story → cenário de teste de integração
+    - Teste de quickstart = passos de validação da story
 
 5. **Atualizar o arquivo do agente incrementalmente** (operação O(1)):
-   - Rodar `/scripts/bash/update-agent-context.sh cursor` para seu assistente de IA
-   - Se existir: Adicionar apenas tecnologias NOVAS do plano atual
-   - Preservar adições manuais entre marcadores
-   - Atualizar mudanças recentes (manter as últimas 3)
-   - Manter abaixo de 150 linhas para eficiência de tokens
-   - Gravar na raiz do repositório
+    - Rodar `/scripts/bash/update-agent-context.sh cursor` para seu assistente de IA
+    - Se existir: Adicionar apenas tecnologias NOVAS do plano atual
+    - Preservar adições manuais entre marcadores
+    - Atualizar mudanças recentes (manter as últimas 3)
+    - Manter abaixo de 150 linhas para eficiência de tokens
+    - Gravar na raiz do repositório
 
 **Saída**: data-model.md, /contracts/\*, testes falhando, quickstart.md, arquivo específico do agente
 
