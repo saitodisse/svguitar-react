@@ -1,0 +1,250 @@
+# Modelo de Dados - API do Componente ChordDiagram
+
+Este documento define as interfaces TypeScript para as props do componente `ChordDiagram`. Esta é a API pública que será exposta aos consumidores do pacote NPM.
+
+## 1. Entidades Principais
+
+### `ChordDiagramProps`
+
+Interface principal do componente. Ela aceita os dados do acorde de duas formas: como um objeto estruturado (`chord`) ou como uma string de tablatura (`instrument`).
+
+```typescript
+interface ChordDiagramProps {
+	instrument?: Partial<Instrument>; // Para entrada de tablatura "x32010"
+	chord?: Chord; // Para entrada estruturada de dedos e pestanas
+	style?: Partial<ChordStyle>;
+}
+```
+
+### `Chord`
+
+Representa um acorde de forma estruturada, com dedos, pestanas e trastes a serem exibidos.
+
+```typescript
+interface Chord {
+	fingers: Finger[];
+	barres: Barre[];
+	firstFret?: number; // Traste inicial a ser exibido (ex: 5 para 5ª posição)
+	lastFret?: number; // Traste final a ser exibido
+}
+```
+
+### `Instrument`
+
+Define o instrumento, usado principalmente para interpretar a string de tablatura.
+
+```typescript
+interface Instrument {
+	strings: number; // Número de cordas
+	frets: number; // Número de trastes a serem mostrados no diagrama
+	tuning: string[]; // Afinação das cordas, ex: ["E", "A", "D", "G", "B", "E"]
+	chord: string; // A string de tablatura, ex: "x32010"
+}
+```
+
+## 2. Entidades de Posicionamento
+
+### `Finger`
+
+Representa um dedo posicionado no braço.
+
+- **Regra de Validação**: `fret` deve ser maior que 0. `string` deve estar dentro do intervalo de cordas do instrumento.
+
+```typescript
+interface Finger {
+	fret: number;
+	string: number;
+	text?: string; // Texto opcional dentro do círculo (ex: "1", "A")
+}
+```
+
+### `Barre`
+
+Representa uma pestana.
+
+- **Regra de Validação**: `fromString` deve ser menor ou igual a `toString`.
+
+```typescript
+interface Barre {
+	fret: number;
+	fromString: number;
+	toString: number;
+	text?: string;
+}
+```
+
+## 3. Entidade de Estilo
+
+### `ChordStyle`
+
+Define todas as propriedades visuais customizáveis do diagrama. Todas as propriedades são opcionais e terão valores padrão.
+
+```typescript
+interface ChordStyle {
+	// Dimensões
+	width: number; // Largura total do SVG
+	height: number; // Altura total do SVG
+	fretCount: number; // Número de trastes a serem renderizados
+	stringCount: number; // Número de cordas
+	fretWidth: number;
+	fretHeight: number;
+	stringWidth: number;
+	dotSize: number; // Tamanho dos círculos dos dedos
+	barreHeight: number;
+
+	// Cores
+	backgroundColor: string;
+	fretColor: string;
+	stringColor: string;
+	dotColor: string;
+	dotTextColor: string;
+	barreColor: string;
+	fretTextColor: string;
+	tuningTextColor: string;
+
+	// Fontes
+	fontFamily: string;
+	dotTextSize: number;
+	fretTextSize: number;
+	tuningTextSize: number;
+}
+```
+
+## 4. Regras de Validação
+
+### Validação de Fingers
+
+```typescript
+function validateFinger(finger: Finger, stringCount: number): boolean {
+	return finger.fret > 0 && finger.string >= 1 && finger.string <= stringCount;
+}
+```
+
+### Validação de Barres
+
+```typescript
+function validateBarre(barre: Barre, stringCount: number): boolean {
+	return (
+		barre.fret > 0 &&
+		barre.fromString >= 1 &&
+		barre.toString <= stringCount &&
+		barre.fromString <= barre.toString
+	);
+}
+```
+
+### Validação de Instrument
+
+```typescript
+function validateInstrument(instrument: Instrument): boolean {
+	return (
+		instrument.strings > 0 &&
+		instrument.frets > 0 &&
+		instrument.tuning.length === instrument.strings &&
+		instrument.chord.length === instrument.strings
+	);
+}
+```
+
+## 5. Conversão de String de Tablatura
+
+### Função de Parsing
+
+```typescript
+function parseTabString(tabString: string, tuning: string[]): Chord {
+	const fingers: Finger[] = [];
+	const barres: Barre[] = [];
+
+	for (let i = 0; i < tabString.length; i++) {
+		const char = tabString[i];
+		const stringNumber = i + 1;
+
+		if (char === "x") {
+			// Corda mutada - não adiciona finger
+			continue;
+		} else if (char === "o") {
+			// Corda solta - não adiciona finger
+			continue;
+		} else if (char >= "0" && char <= "9") {
+			const fret = parseInt(char, 10);
+			if (fret > 0) {
+				fingers.push({
+					fret,
+					string: stringNumber,
+				});
+			}
+		}
+	}
+
+	return { fingers, barres };
+}
+```
+
+## 6. Valores Padrão
+
+### ChordStyle Defaults
+
+```typescript
+const DEFAULT_CHORD_STYLE: ChordStyle = {
+	// Dimensões
+	width: 200,
+	height: 250,
+	fretCount: 4,
+	stringCount: 6,
+	fretWidth: 40,
+	fretHeight: 30,
+	stringWidth: 2,
+	dotSize: 12,
+	barreHeight: 8,
+
+	// Cores
+	backgroundColor: "#ffffff",
+	fretColor: "#333333",
+	stringColor: "#666666",
+	dotColor: "#2196F3",
+	dotTextColor: "#ffffff",
+	barreColor: "#2196F3",
+	fretTextColor: "#333333",
+	tuningTextColor: "#666666",
+
+	// Fontes
+	fontFamily: "Arial, sans-serif",
+	dotTextSize: 10,
+	fretTextSize: 12,
+	tuningTextSize: 14,
+};
+```
+
+### Instrument Defaults
+
+```typescript
+const DEFAULT_INSTRUMENT: Instrument = {
+	strings: 6,
+	frets: 4,
+	tuning: ["E", "A", "D", "G", "B", "E"],
+	chord: "000000",
+};
+```
+
+## 7. Tipos de Erro
+
+```typescript
+class ChordDiagramError extends Error {
+	constructor(
+		message: string,
+		public code: string
+	) {
+		super(message);
+		this.name = "ChordDiagramError";
+	}
+}
+
+// Códigos de erro específicos
+const ERROR_CODES = {
+	INVALID_FRET: "INVALID_FRET",
+	INVALID_STRING: "INVALID_STRING",
+	INVALID_TUNING: "INVALID_TUNING",
+	INVALID_TAB_STRING: "INVALID_TAB_STRING",
+	INVALID_BARRE: "INVALID_BARRE",
+} as const;
+```

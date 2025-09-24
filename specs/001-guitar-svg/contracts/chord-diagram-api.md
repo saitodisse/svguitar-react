@@ -1,0 +1,226 @@
+# Contrato da API - ChordDiagram Component
+
+## Visão Geral
+
+O componente `ChordDiagram` é uma biblioteca React que renderiza diagramas de acordes de guitarra em formato SVG. Este documento define o contrato da API pública.
+
+## Interface Principal
+
+### ChordDiagramProps
+
+```typescript
+interface ChordDiagramProps {
+	instrument?: Partial<Instrument>;
+	chord?: Chord;
+	style?: Partial<ChordStyle>;
+}
+```
+
+**Regras de Validação**:
+
+- Pelo menos um de `instrument` ou `chord` deve ser fornecido
+- Se ambos forem fornecidos, `chord` tem precedência
+- `style` é sempre opcional e será mesclado com valores padrão
+
+## Entidades de Dados
+
+### Chord
+
+```typescript
+interface Chord {
+	fingers: Finger[];
+	barres: Barre[];
+	firstFret?: number;
+	lastFret?: number;
+}
+```
+
+**Regras de Validação**:
+
+- `fingers` deve ser um array válido (pode estar vazio)
+- `barres` deve ser um array válido (pode estar vazio)
+- `firstFret` deve ser > 0 se fornecido
+- `lastFret` deve ser > `firstFret` se ambos fornecidos
+
+### Instrument
+
+```typescript
+interface Instrument {
+	strings: number;
+	frets: number;
+	tuning: string[];
+	chord: string;
+}
+```
+
+**Regras de Validação**:
+
+- `strings` deve ser > 0
+- `frets` deve ser > 0
+- `tuning.length` deve igualar `strings`
+- `chord.length` deve igualar `strings`
+- `chord` deve conter apenas caracteres válidos: '0'-'9', 'x', 'o'
+
+### Finger
+
+```typescript
+interface Finger {
+	fret: number;
+	string: number;
+	text?: string;
+}
+```
+
+**Regras de Validação**:
+
+- `fret` deve ser > 0
+- `string` deve estar no intervalo [1, strings]
+- `text` é opcional e será renderizado dentro do círculo
+
+### Barre
+
+```typescript
+interface Barre {
+	fret: number;
+	fromString: number;
+	toString: number;
+	text?: string;
+}
+```
+
+**Regras de Validação**:
+
+- `fret` deve ser > 0
+- `fromString` deve estar no intervalo [1, strings]
+- `toString` deve estar no intervalo [1, strings]
+- `fromString` deve ser <= `toString`
+
+### ChordStyle
+
+```typescript
+interface ChordStyle {
+	// Dimensões
+	width: number;
+	height: number;
+	fretCount: number;
+	stringCount: number;
+	fretWidth: number;
+	fretHeight: number;
+	stringWidth: number;
+	dotSize: number;
+	barreHeight: number;
+
+	// Cores
+	backgroundColor: string;
+	fretColor: string;
+	stringColor: string;
+	dotColor: string;
+	dotTextColor: string;
+	barreColor: string;
+	fretTextColor: string;
+	tuningTextColor: string;
+
+	// Fontes
+	fontFamily: string;
+	dotTextSize: number;
+	fretTextSize: number;
+	tuningTextSize: number;
+}
+```
+
+**Regras de Validação**:
+
+- Todos os valores numéricos devem ser > 0
+- Todas as cores devem ser strings válidas (hex, rgb, nome)
+- `fontFamily` deve ser uma string válida de fonte
+
+## Comportamento do Componente
+
+### Renderização
+
+1. **Prioridade de Dados**: Se ambos `chord` e `instrument` forem fornecidos, `chord` tem precedência
+2. **Conversão de Tablatura**: Se apenas `instrument` for fornecido, a string de tablatura será convertida para o formato `Chord`
+3. **Estilos**: O objeto `style` será mesclado com valores padrão
+4. **Validação**: Todas as props serão validadas antes da renderização
+
+### Casos Limite
+
+1. **Acorde Vazio**: Se `fingers` e `barres` estiverem vazios, renderizar apenas o braço
+2. **Posições Inválidas**: Dedos fora dos limites serão ignorados
+3. **Pestanas Sobrepostas**: Pestanas têm prioridade sobre dedos na mesma posição
+4. **Afinação Incompleta**: Lançar erro se `tuning.length !== strings`
+
+### Tratamento de Erros
+
+O componente lança `ChordDiagramError` com códigos específicos:
+
+- `INVALID_FRET`: Fret inválido (<= 0)
+- `INVALID_STRING`: String fora do intervalo válido
+- `INVALID_TUNING`: Afinação com tamanho incorreto
+- `INVALID_TAB_STRING`: String de tablatura inválida
+- `INVALID_BARRE`: Pestana com parâmetros inválidos
+
+## Exemplos de Uso
+
+### Uso Básico com Chord
+
+```typescript
+const props: ChordDiagramProps = {
+	chord: {
+		fingers: [
+			{ fret: 1, string: 2, text: "1" },
+			{ fret: 2, string: 4, text: "2" },
+		],
+		barres: [],
+	},
+};
+```
+
+### Uso com Instrument
+
+```typescript
+const props: ChordDiagramProps = {
+	instrument: {
+		strings: 6,
+		frets: 4,
+		tuning: ["E", "A", "D", "G", "B", "E"],
+		chord: "x32010",
+	},
+};
+```
+
+### Uso com Estilos Customizados
+
+```typescript
+const props: ChordDiagramProps = {
+	chord: {
+		/* ... */
+	},
+	style: {
+		width: 200,
+		height: 250,
+		dotColor: "#FF5733",
+		fontFamily: "Arial, sans-serif",
+	},
+};
+```
+
+## Performance
+
+### Otimizações
+
+- O componente é envolvido em `React.memo` para evitar re-renderizações desnecessárias
+- Props devem ser memorizadas no componente pai para máxima eficiência
+- Renderização SVG nativa para melhor performance
+
+### Recomendações
+
+- Use `useMemo` para objetos de props complexos
+- Evite criar novos objetos de props a cada render
+- Prefira objetos `chord` para melhor performance (evita parsing de strings)
+
+## Versionamento
+
+- **v1.0.0**: Versão inicial com funcionalidades básicas
+- **Breaking Changes**: Serão documentadas em CHANGELOG.md
+- **Compatibilidade**: Mantida entre versões menores e patches
