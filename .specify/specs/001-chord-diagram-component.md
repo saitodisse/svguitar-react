@@ -13,7 +13,7 @@
 2. Extrair conceitos-chave da descrição
    → Identificado: SVG, performance, props, dedos, pestanas, posições, afinações, estilos
 3. Para cada aspecto não claro:
-   → [NEEDS CLARIFICATION: Quais formatos de entrada de dados para acordes?]
+   → [CLARIFIED: Formato de entrada de acordes deve suportar objetos (dedos/pestanas) e string (ex: "x32010")]
    → [NEEDS CLARIFICATION: Quais são os requisitos específicos de performance?]
 4. Preencher a seção de Cenários do Usuário & Testes
    → Cenários definidos para diferentes tipos de acordes
@@ -22,7 +22,7 @@
 6. Identificar Entidades-Chave
    → Finger, Barre, ChordStyle, ChordDiagramProps
 7. Executar o Checklist de Revisão
-   → AVISO: Spec tem algumas incertezas sobre formatos de dados
+   → AVISO: Incertezas sobre formato de dados parcialmente resolvidas
 8. Retorno: SUCESSO (spec pronta para planejamento)
 ```
 
@@ -50,16 +50,18 @@
 
 3. **Dado** que quero mostrar um acorde em posição alta (ex: 5ª posição), **Quando** especifico a posição inicial, **Então** o componente ajusta o diagrama e mostra o rótulo da posição
 
-4. **Dado** que quero customizar a aparência, **Quando** passo propriedades de estilo, **Então** o componente aplica as cores, tamanhos e fontes especificadas
+4. **Dado** que quero customizar a aparência, **Quando** passo propriedades de estilo, **Então** o componente aplica as cores, tamanhos, espaçamentos e fontes especificadas
 
-5. **Dado** que uso uma afinação não padrão, **Quando** especifico as notas das cordas, **Então** o componente mostra a afinação correta no diagrama
+5. **Dado** que uso uma afinação não padrão, **Quando** especifico as notas das cordas, **Então** o componente mostra a afinação correta no diagrama para as cordas soltas
+
+6. **Dado** que recebo um acorde representado pela string "x32010" (tablatura de acorde, ex: C), **Quando** especifico a afinação das cordas, **Então** o componente renderiza o diagrama com as cordas soltas e as posições dos dedos corretas
 
 ### Casos Limite
 
 - O que acontece quando não há dedos especificados? (acorde vazio)
-- Como o sistema lida com posições inválidas de dedos? (fora dos limites do braço)
-- O que acontece quando a pestana se sobrepõe incorretamente aos dedos?
-- Como o componente se comporta com afinações não padrão (ex: drop D)?
+- Como o sistema lida com posições inválidas de dedos? (fora dos limites do braço - os sitema vai tentar representar o acorde da melhor forma possível)
+- O que acontece quando a pestana se sobrepõe incorretamente aos dedos? a pestana vira prioridade e os dedos na mesma casa ou anterior são removidos da representação
+- Como o componente lida com definições de afinação inválidas ou incompletas? Deve lançar um erro
 
 ## Requisitos _(obrigatório)_
 
@@ -69,19 +71,20 @@
 - **FR-002**: O sistema DEVE aceitar posições de dedos como array de objetos com corda e traste
 - **FR-003**: O sistema DEVE renderizar pestanas como barras retangulares conectando múltiplas cordas
 - **FR-004**: O sistema DEVE suportar posições de acordes (ex: 1ª posição, 5ª posição) com rótulos apropriados
-- **FR-005**: O sistema DEVE permitir customização visual via props (cores, tamanhos, fontes)
-- **FR-006**: O sistema DEVE suportar afinações customizadas das cordas
+- **FR-005**: O sistema DEVE permitir customização visual via props (cores, tamanhos, espaçamentos e fontes)
+- **FR-006**: O sistema DEVE suportar afinações customizadas das cordas soltas
 - **FR-007**: O sistema DEVE renderizar cordas soltas (O) e mutadas (X) quando apropriado
-- **FR-008**: O sistema DEVE ser otimizado para performance, evitando re-renderizações desnecessárias
-- **FR-009**: O sistema DEVE ser totalmente declarativo, sem dependências de estado interno
-- **FR-010**: O sistema DEVE incluir suporte a texto dentro dos círculos dos dedos (ex: números dos dedos)
+- **FR-008**: O sistema DEVE aceitar acordes no formato de string de tablatura (ex: "x32010") e renderizá-los corretamente
+- **FR-009**: O sistema DEVE ser otimizado para performance, evitando re-renderizações desnecessárias, utilizando as melhores práticas para React e SVG
+- **FR-010**: O sistema DEVE ser totalmente declarativo, sem dependências de estado interno
+- **FR-011**: O sistema DEVE incluir suporte a texto dentro dos círculos dos dedos (ex: números dos dedos ou notas: A, B, C, D, E, F, G)
 
 ### Entidades-Chave _(incluir se a feature envolver dados)_
 
 - **Finger**: Representa um dedo posicionado no braço, contém corda, traste e texto opcional
 - **Barre**: Representa uma pestana, contém traste e cordas inicial/final
-- **ChordStyle**: Representa configurações visuais do diagrama (cores, tamanhos, fontes)
-- **ChordDiagramProps**: Interface principal do componente contendo todos os dados necessários
+- **ChordStyle**: Representa configurações visuais do diagrama (cores, tamanhos, espaçamentos e fontes)
+- **ChordDiagramProps**: Interface principal do componente, aceitando dados do acorde como objeto estruturado (dedos, pestanas) ou como string de tablatura (ex: "x32010") que será convertida para o objeto estruturado
 
 ---
 
@@ -120,7 +123,7 @@
 
 **AVISO**: Esta especificação contém algumas incertezas que devem ser resolvidas antes do planejamento:
 
-1. **Formato de dados**: Definir se os acordes serão fornecidos como arrays simples ou objetos estruturados
+1. **Formato de dados**: O componente deve suportar múltiplos formatos de entrada para acordes: objetos estruturados para dedos/pestanas e uma string de tablatura (ex: "x32010").
 2. **Métricas de performance**: Especificar requisitos quantitativos de performance (tempo de renderização, uso de memória)
 3. **Validação de entrada**: Definir como o componente deve lidar com dados inválidos
 4. **Responsividade**: Especificar se o componente deve ser responsivo e como
