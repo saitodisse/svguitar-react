@@ -70,7 +70,9 @@ import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
 	const gMajorInstrument = {
-		tuning: ["E", "A", "D", "G", "B", "E"],
+		strings: 6,
+		frets: 5,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		chord: "320003", // G Major
 	};
 
@@ -154,7 +156,9 @@ import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
 	const dropDTuning = {
-		tuning: ["D", "A", "D", "G", "B", "E"], // Drop D tuning
+		strings: 6,
+		frets: 5,
+		tuning: ["D2", "A2", "D3", "G3", "B3", "E4"], // Drop D tuning
 		chord: "000232", // D Major em Drop D
 	};
 
@@ -176,7 +180,9 @@ import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
 	const eMinor = {
-		tuning: ["E", "A", "D", "G", "B", "E"],
+		strings: 6,
+		frets: 5,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		chord: "022000", // E minor (cordas 1 e 2 soltas)
 	};
 
@@ -222,11 +228,61 @@ import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
 	const fMajor10th = {
-		tuning: ["E", "A", "D", "G", "B", "E"],
+		strings: 6,
+		frets: 5,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		chord: "(10)(12)(12)(11)(10)(10)", // F Major na 10ª casa
 	};
 
 	return <ChordDiagram instrument={fMajor10th} />;
+};
+
+export default App;
+```
+
+### Layout Vertical (Rotacionado)
+
+Passe a propriedade `orientation` no objeto `style` para rotacionar o diagrama.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const cMajor = {
+		fingers: [
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
+		],
+		barres: [],
+	};
+
+	return <ChordDiagram chord={cMajor} style={{ orientation: "vertical" }} />;
+};
+
+export default App;
+```
+
+### Modo Canhoto (Invertido)
+
+Use a propriedade `handedness` no objeto `style` para inverter o diagrama.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const cMajor = {
+		fingers: [
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
+		],
+		barres: [],
+	};
+
+	return <ChordDiagram chord={cMajor} style={{ handedness: "left" }} />;
 };
 
 export default App;

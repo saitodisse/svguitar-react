@@ -24,6 +24,13 @@
 - **Alternativas consideradas**:
     - **Webpack/Babel/Rollup manuais**: Configurar o processo de build manualmente. Rejeitado por ser significativamente mais complexo e demorado de configurar e manter em comparação com a solução integrada do Vite.
 
+### Decisão: Integração da Biblioteca `tonal`
+
+- **Decisão**: Adicionar a biblioteca `tonal` como uma dependência para lidar com a lógica de teoria musical.
+- **Justificativa**: A manipulação de notação musical (ex: validação de notas em notação científica, transposição de notas) é complexa e propensa a erros. `tonal` é uma biblioteca leve, modular e bem testada que abstrai essa complexidade, garantindo a precisão dos cálculos. Isso permite que o componente se concentre em sua responsabilidade principal: a renderização do SVG. O benefício em precisão e manutenibilidade supera o pequeno aumento no tamanho do bundle.
+- **Alternativas consideradas**:
+    - **Implementar a lógica manualmente**: Criar funções para validar e manipular notas. Rejeitado por ser uma reinvenção da roda, com alto risco de bugs e grande esforço de desenvolvimento para um problema já resolvido de forma eficaz por bibliotecas especializadas.
+
 ## 2. Boas Práticas
 
 ### Estrutura do Componente
@@ -38,8 +45,8 @@
 
 ### Tratamento de Dados
 
-- Uma função utilitária será criada para converter a Fret Notation (ex: "x32010") para o formato de objeto estruturado (`fingers`, `barres`). Essa lógica será isolada do componente de renderização.
-- A validação de props (ex: afinação incompleta) será feita no início do ciclo de renderização, lançando erros claros para o desenvolvedor, conforme especificado nos casos limite.
+- Uma função utilitária será criada para converter a Fret Notation (ex: "x32010") para o formato de objeto estruturado (`fingers`, `barres`). Essa lógica será isolada do componente de renderização e usará `tonal` para calcular as notas resultantes.
+- A validação de props (ex: afinação incompleta com notas inválidas) será feita no início do ciclo de renderização, utilizando funções do `tonal` e lançando erros claros para o desenvolvedor, conforme especificado nos casos limite.
 
 ## 3. Padrões de Renderização SVG
 
@@ -71,6 +78,10 @@
 - **Coordenadas**: Sistema de coordenadas SVG com origem no canto superior esquerdo
 - **Espaçamento**: Cálculos baseados em props de estilo (fretWidth, stringWidth)
 - **Responsividade**: Dimensões proporcionais baseadas na largura/altura total
+- **Transformações**:
+    - **Modo Canhoto (Horizontal)**: O diagrama será espelhado horizontalmente. A abordagem mais eficaz é aplicar uma transformação `scale(-1, 1)` ao grupo `<g>` principal que contém o braço do violão. Será necessário ajustar a posição do grupo após a escala para que ele permaneça dentro do viewport do SVG.
+    - **Modo Vertical (Destro)**: O diagrama será rotacionado em 90 graus. A lógica de posicionamento dos elementos será trocada (x por y) para que a corda grave (E2) apareça à esquerda.
+    - **Modo Vertical (Canhoto)**: Similar ao modo destro, o diagrama será rotacionado, mas a lógica de posicionamento posicionará a corda grave (E2) à direita.
 
 ## 4. Validação e Tratamento de Erros
 
@@ -98,6 +109,7 @@
 - **Custom Tuning**: Afinação personalizada
 - **Tab String**: Fret Notation
 - **Custom Style**: Estilos personalizados
+- **Layouts**: Diagrama rotacionado e em modo canhoto.
 - **Edge Cases**: Casos limite e validação
 
 ### Controles Interativos
@@ -105,4 +117,5 @@
 - Sliders para ajustar dimensões
 - Color pickers para cores
 - Inputs para posições de dedos
+- Toggle/Select para orientação e modo destro/canhoto
 - Toggle para mostrar/ocultar elementos

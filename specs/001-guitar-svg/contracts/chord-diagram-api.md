@@ -58,7 +58,8 @@ interface Instrument {
 - `strings` deve ser > 0
 - `frets` deve ser > 0
 - `tuning.length` deve igualar `strings`
-- `chord.length` deve igualar `strings`
+- `tuning` deve conter notas válidas em notação científica (ex: "E2", "A2")
+- A contagem de cordas na Fret Notation `chord` deve igualar `strings`
 - `chord` deve conter apenas caracteres válidos: '0'-'9', 'x', 'o', '(', ')'
 
 ### Finger
@@ -101,36 +102,40 @@ interface Barre {
 
 ```typescript
 interface ChordStyle {
+	// Layout
+	orientation?: "vertical" | "horizontal";
+	handedness?: "right" | "left";
+
 	// Dimensões
-	width: number;
-	height: number;
-	fretCount: number;
-	stringCount: number;
-	fretWidth: number;
-	fretHeight: number;
-	stringWidth: number;
-	dotSize: number;
-	barreHeight: number;
-	openStringSize: number;
-	mutedStringSize: number;
+	width?: number;
+	height?: number;
+	fretCount?: number;
+	stringCount?: number;
+	fretWidth?: number;
+	fretHeight?: number;
+	stringWidth?: number;
+	dotSize?: number;
+	barreHeight?: number;
+	openStringSize?: number;
+	mutedStringSize?: number;
 
 	// Cores
-	backgroundColor: string;
-	fretColor: string;
-	stringColor: string;
-	dotColor: string;
-	dotTextColor: string;
-	barreColor: string;
-	fretTextColor: string;
-	tuningTextColor: string;
-	openStringColor: string;
-	mutedStringColor: string;
+	backgroundColor?: string;
+	fretColor?: string;
+	stringColor?: string;
+	dotColor?: string;
+	dotTextColor?: string;
+	barreColor?: string;
+	fretTextColor?: string;
+	tuningTextColor?: string;
+	openStringColor?: string;
+	mutedStringColor?: string;
 
 	// Fontes
-	fontFamily: string;
-	dotTextSize: number;
-	fretTextSize: number;
-	tuningTextSize: number;
+	fontFamily?: string;
+	dotTextSize?: number;
+	fretTextSize?: number;
+	tuningTextSize?: number;
 }
 ```
 
@@ -139,13 +144,14 @@ interface ChordStyle {
 - Todos os valores numéricos devem ser > 0
 - Todas as cores devem ser strings válidas (hex, rgb, nome)
 - `fontFamily` deve ser uma string válida de fonte
+- `orientation` e `handedness` devem ser uma das strings permitidas
 
 ## Comportamento do Componente
 
 ### Renderização
 
 1. **Prioridade de Dados**: Se ambos `chord` e `instrument` forem fornecidos, `chord` tem precedência
-2. **Conversão de Fret Notation**: Se apenas `instrument` for fornecido, a Fret Notation será convertida para o formato `Chord`
+2. **Conversão de Fret Notation**: Se apenas `instrument` for fornecido, a Fret Notation será convertida para o formato `Chord`. A biblioteca `tonal` será usada para validar a afinação e calcular as notas.
 3. **Estilos**: O objeto `style` será mesclado com valores padrão
 4. **Validação**: Todas as props serão validadas antes da renderização
 
@@ -194,7 +200,7 @@ const props: ChordDiagramProps = {
 	instrument: {
 		strings: 6,
 		frets: 4,
-		tuning: ["E", "A", "D", "G", "B", "E"],
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		chord: "x32010", // Fret Notation para C Major
 	},
 };
@@ -212,6 +218,8 @@ const props: ChordDiagramProps = {
 		height: 250,
 		dotColor: "#FF5733",
 		fontFamily: "Arial, sans-serif",
+		orientation: "vertical",
+		handedness: "left",
 	},
 };
 ```
@@ -223,6 +231,8 @@ const props: ChordDiagramProps = {
 - O componente é envolvido em `React.memo` para evitar re-renderizações desnecessárias
 - Props devem ser memorizadas no componente pai para máxima eficiência
 - Renderização SVG nativa para melhor performance
+- Otimizações de renderização SVG
+- Dependência da biblioteca `tonal` para cálculos de teoria musical
 
 ### Recomendações
 
@@ -232,6 +242,7 @@ const props: ChordDiagramProps = {
 
 ## Versionamento
 
+- **v1.1.0**: Adicionado suporte para rotação, modo canhoto e integração com `tonal.js`.
 - **v1.0.0**: Versão inicial com funcionalidades básicas
 - **Breaking Changes**: Serão documentadas em CHANGELOG.md
 - **Compatibilidade**: Mantida entre versões menores e patches

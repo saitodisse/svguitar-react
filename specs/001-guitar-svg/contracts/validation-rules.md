@@ -82,7 +82,7 @@ function validateTuning(instrument: Instrument): boolean {
 	return (
 		Array.isArray(instrument.tuning) &&
 		instrument.tuning.length === instrument.strings &&
-		instrument.tuning.every(note => typeof note === "string" && note.length > 0)
+		instrument.tuning.every(note => isScientificNotation(note)) // Usar tonal.Note.isScientificNotation(note)
 	);
 }
 ```
@@ -246,6 +246,20 @@ function validateStyleFonts(style: ChordStyle): boolean {
 }
 ```
 
+### Regra: Layout Válido
+
+```typescript
+function validateStyleLayout(style: ChordStyle): boolean {
+	const isValidOrientation =
+		style.orientation === undefined ||
+		style.orientation === "vertical" ||
+		style.orientation === "horizontal";
+	const isValidHandedness =
+		style.handedness === undefined || style.handedness === "right" || style.handedness === "left";
+	return isValidOrientation && isValidHandedness;
+}
+```
+
 ## 7. Validação de Casos Limite
 
 ### Regra: Dedos Sobrepostos
@@ -351,11 +365,13 @@ const VALIDATION_ERROR_CODES = {
 	INVALID_FRET: "INVALID_FRET",
 	INVALID_STRING: "INVALID_STRING",
 	INVALID_TUNING: "INVALID_TUNING",
+	INVALID_NOTE: "INVALID_NOTE",
 	INVALID_TAB_STRING: "INVALID_TAB_STRING",
 	INVALID_BARRE: "INVALID_BARRE",
 	INVALID_STYLE_DIMENSIONS: "INVALID_STYLE_DIMENSIONS",
 	INVALID_STYLE_COLORS: "INVALID_STYLE_COLORS",
 	INVALID_STYLE_FONTS: "INVALID_STYLE_FONTS",
+	INVALID_STYLE_LAYOUT: "INVALID_STYLE_LAYOUT",
 	OVERLAPPING_FINGERS: "OVERLAPPING_FINGERS",
 	INVALID_FRET_RANGE: "INVALID_FRET_RANGE",
 } as const;

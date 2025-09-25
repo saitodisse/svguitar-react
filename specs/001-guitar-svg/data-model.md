@@ -37,7 +37,7 @@ Define o instrumento, usado principalmente para interpretar a string de tablatur
 interface Instrument {
 	strings: number; // Número de cordas
 	frets: number; // Número de trastes a serem mostrados no diagrama
-	tuning: string[]; // Afinação das cordas, ex: ["E", "A", "D", "G", "B", "E"]
+	tuning: string[]; // Afinação das cordas, ex: ["E2", "A2", "D3", "G3", "B3", "E4"]
 	chord: string; // A Fret Notation, ex: "x32010" ou "(10)x(12)..."
 }
 ```
@@ -82,6 +82,10 @@ Define todas as propriedades visuais customizáveis do diagrama. Todas as propri
 
 ```typescript
 interface ChordStyle {
+	// Layout
+	orientation: "vertical" | "horizontal"; // Rotação do braço
+	handedness: "right" | "left"; // Para destro ou canhoto
+
 	// Dimensões
 	width: number; // Largura total do SVG
 	height: number; // Altura total do SVG
@@ -151,7 +155,8 @@ function validateInstrument(instrument: Instrument): boolean {
 		instrument.strings > 0 &&
 		instrument.frets > 0 &&
 		instrument.tuning.length === instrument.strings &&
-		instrument.chord.length === instrument.strings
+		instrument.tuning.every(note => isScientificNotation(note)) // Valida com tonal.js
+		// A validação de `chord` (Fret Notation) é mais complexa e feita no parser
 	);
 }
 ```
@@ -161,7 +166,9 @@ function validateInstrument(instrument: Instrument): boolean {
 ### Função de Parsing
 
 ```typescript
-function parseFretNotation(fretNotation: string): Chord {
+// Esta função usará a biblioteca `tonal` para validar as notas da afinação
+// e calcular a nota de cada dedo pressionado.
+function parseFretNotation(fretNotation: string, tuning: string[]): Chord {
 	const fingers: Finger[] = [];
 	const barres: Barre[] = [];
 	let stringNumber = 1;
@@ -228,6 +235,10 @@ function parseFretNotation(fretNotation: string): Chord {
 
 ```typescript
 const DEFAULT_CHORD_STYLE: ChordStyle = {
+	// Layout
+	orientation: "horizontal",
+	handedness: "right",
+
 	// Dimensões
 	width: 200,
 	height: 250,
@@ -267,7 +278,7 @@ const DEFAULT_CHORD_STYLE: ChordStyle = {
 const DEFAULT_INSTRUMENT: Instrument = {
 	strings: 6,
 	frets: 4,
-	tuning: ["E", "A", "D", "G", "B", "E"],
+	tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 	chord: "000000",
 };
 ```
@@ -292,5 +303,6 @@ const ERROR_CODES = {
 	INVALID_TUNING: "INVALID_TUNING",
 	INVALID_TAB_STRING: "INVALID_TAB_STRING",
 	INVALID_BARRE: "INVALID_BARRE",
+	INVALID_NOTE: "INVALID_NOTE", // Para afinação com notas inválidas
 } as const;
 ```

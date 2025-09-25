@@ -31,12 +31,12 @@
 
 ## Resumo
 
-Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de guitarra em SVG com alta performance e customização total via props. O componente deve ser declarativo, otimizado para evitar re-renderizações desnecessárias, e substituir bibliotecas externas que causam gargalos de performance. Incluir suporte a dedos, pestanas, posições, afinações customizadas e estilos visuais.
+Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de guitarra em SVG com alta performance e customização total via props. O componente deve ser declarativo, otimizado para evitar re-renderizações desnecessárias, e substituir bibliotecas externas que causam gargalos de performance. Incluir suporte a dedos, pestanas, posições, afinações customizadas e estilos visuais. A nova versão integrará a biblioteca `tonal` para cálculos de teoria musical e adicionará suporte para rotação do diagrama (layout vertical) e modo para canhotos (espelhado).
 
 ## Contexto Técnico
 
 **Linguagem/Versão**: TypeScript 5.8.3, React 19.1.1  
-**Dependências Primárias**: React, SVG (nativo), Vite 7.1.7  
+**Dependências Primárias**: React, SVG (nativo), Vite 7.1.7, Tonal  
 **Armazenamento**: N/A (componente puro sem estado)  
 **Testes**: Vitest (já configurado no projeto)  
 **Plataforma Alvo**: Web (React/TypeScript)  
@@ -124,12 +124,14 @@ tests/
 ## Fase 0: Esboço & Pesquisa
 
 1. **Extrair incertezas do Contexto Técnico**:
-    - ✅ Tecnologia definida: React + TypeScript + SVG
+    - ✅ Tecnologia definida: React + TypeScript + SVG + Tonal
     - ✅ Performance: React.memo e otimizações de renderização
     - ✅ Estrutura: Componente puro com props tipadas
+    - ✅ Pesquisa adicional: Estratégias de transformação SVG para rotação e espelhamento.
 
 2. **Consolidar achados** em `research.md` baseado nos arquivos fornecidos:
     - Decisões técnicas já documentadas em research.md
+    - Justificativa para inclusão da biblioteca `tonal`.
     - Boas práticas para componentes React SVG
     - Estratégias de otimização de performance
 
@@ -141,6 +143,8 @@ _Pré-requisito: research.md concluído_
 
 1. **Extrair entidades da spec da feature** → `data-model.md`:
     - ChordDiagramProps, Chord, Finger, Barre, ChordStyle
+    - Adicionar propriedades de layout a `ChordStyle` (`orientation`, `handedness`).
+    - Atualizar `Instrument.tuning` para usar notação científica.
     - Regras de validação para props
     - Interfaces TypeScript completas
 
@@ -174,8 +178,9 @@ _Esta seção descreve o que o comando /tasks fará - NÃO executar durante /pla
 - Gerar tarefas a partir dos documentos de design da Fase 1
 - Cada interface TypeScript → tarefa de criação de tipo [P]
 - Cada cenário de aceitação → tarefa de teste de integração
+- Adicionar tarefas específicas para testar a integração com `tonal`, a rotação e o modo canhoto.
 - Tarefas de implementação para fazer os testes passarem
-- Tarefas de Storybook para documentação visual
+- Tarefas de Storybook para documentação visual das novas funcionalidades
 
 **Estratégia de Ordenação**:
 
@@ -194,6 +199,11 @@ _Estas fases estão além do escopo do comando /plan_
 **Fase 3**: Execução das tarefas (comando /tasks cria o tasks.md)  
 **Fase 4**: Implementação (executar o tasks.md seguindo os princípios da constituição)  
 **Fase 5**: Validação (rodar testes, executar o quickstart.md, validação de performance)
+
+## Versionamento
+
+- **v1.1.0**: Adicionado suporte para rotação, modo canhoto e integração com `tonal.js`.
+- **v1.0.0**: Versão inicial com funcionalidades básicas.
 
 ## Rastreamento de Complexidade
 
