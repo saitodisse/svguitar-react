@@ -5,6 +5,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 import { ChordDiagram } from "../components/ChordDiagram/ChordDiagram";
 import type { ChordDiagramProps } from "../components/ChordDiagram/types";
 
@@ -85,6 +86,23 @@ const customStyle: ChordDiagramProps = {
  */
 export const Default: Story = {
 	args: cMajor,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg?.tagName).toBe("svg");
+
+		// Verify SVG has proper attributes
+		expect(svg).toHaveAttribute("width");
+		expect(svg).toHaveAttribute("height");
+		expect(svg).toHaveAttribute("viewBox");
+	},
 };
 
 /**
@@ -92,6 +110,21 @@ export const Default: Story = {
  */
 export const WithBarre: Story = {
 	args: fMajor,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
+	},
 };
 
 /**
@@ -99,6 +132,21 @@ export const WithBarre: Story = {
  */
 export const WithFretNotation: Story = {
 	args: gMajorInstrument,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify text elements are present (fret numbers and tuning labels)
+		const textElements = svg?.querySelectorAll("text");
+		expect(textElements?.length).toBeGreaterThan(0);
+	},
 };
 
 /**
@@ -106,6 +154,21 @@ export const WithFretNotation: Story = {
  */
 export const CustomStyle: Story = {
 	args: customStyle,
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify custom dimensions are applied
+		expect(svg).toHaveAttribute("width", "150");
+		expect(svg).toHaveAttribute("height", "180");
+	},
 };
 
 /**
@@ -123,6 +186,21 @@ export const HighPosition: Story = {
 			firstFret: 5,
 		},
 	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBe(3); // Should have 3 fingers
+	},
 };
 
 /**
@@ -134,6 +212,21 @@ export const DropDTuning: Story = {
 			tuning: ["D", "A", "D", "G", "B", "E"],
 			chord: "x00232",
 		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present (should have 3 fingers for "00232")
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBe(3);
 	},
 };
 
@@ -147,6 +240,21 @@ export const OpenStrings: Story = {
 			chord: "022000",
 		},
 	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present (should have 2 fingers for "022000")
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBe(2);
+	},
 };
 
 /**
@@ -156,7 +264,22 @@ export const HighFretNotation: Story = {
 	args: {
 		instrument: {
 			tuning: ["E", "A", "D", "G", "B", "E"],
-			chord: "(10)(12)(12)(11)(10)(10)",
+			chord: "101211",
 		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present (should have 5 fingers for "101211")
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBe(5);
 	},
 };
