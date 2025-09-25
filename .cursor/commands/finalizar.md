@@ -5,7 +5,7 @@ Somente prosseguir se todos os testes passarem, o build for criado e o storybook
 - rode o storybook
 - adicione todos os arquivos modificados para stage
 - crie uma mensagem de commit para o release
-- atualize a versão no package.json
+- incremente a versão no package.json
 - atualize o arquivo de changelog
 - atualize o arquivo de release notes
 - faça o deploy para o npm
