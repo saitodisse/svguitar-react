@@ -7,11 +7,15 @@ alwaysApply: true
 # Projeto svguitar-react - Guia de Desenvolvimento
 
 ## 📋 Visão Geral
+
 Este é um projeto React com TypeScript, Vite, Storybook e Prettier configurados. O projeto usa pnpm como gerenciador de pacotes.
+
+**IMPORTANTE**: Este projeto utiliza especificações detalhadas que estão na pasta `specs/`. Sempre consulte os arquivos de especificação antes de fazer mudanças de código relevantes.
 
 ## 🛠️ Stack Tecnológica
 
 ### Principais Dependências
+
 - **React 19.1.1** - Framework principal
 - **TypeScript 5.8.3** - Tipagem estática
 - **Vite 7.1.7** - Build tool e dev server
@@ -20,11 +24,13 @@ Este é um projeto React com TypeScript, Vite, Storybook e Prettier configurados
 - **ESLint 9.36.0** - Linting e qualidade de código
 
 ### Gerenciador de Pacotes
+
 - **pnpm** - Use sempre pnpm, não npm ou yarn
 
 ## 🚀 Comandos Principais
 
 ### Desenvolvimento
+
 ```bash
 # Iniciar servidor de desenvolvimento
 pnpm dev
@@ -37,6 +43,7 @@ pnpm preview
 ```
 
 ### Qualidade de Código
+
 ```bash
 # Executar linting
 pnpm lint
@@ -49,6 +56,7 @@ pnpm format:check
 ```
 
 ### Storybook
+
 ```bash
 # Iniciar Storybook em modo desenvolvimento
 pnpm storybook
@@ -60,6 +68,7 @@ pnpm build-storybook
 ## ⚙️ Configurações Importantes
 
 ### Prettier (.prettierrc)
+
 - **Semicolons**: Habilitados
 - **Quotes**: Duplas (padrão)
 - **Print Width**: 110 caracteres
@@ -69,11 +78,13 @@ pnpm build-storybook
 - **End of Line**: LF
 
 ### Storybook
+
 - **Tema**: Dark theme configurado
 - **Localização**: `.storybook/`
 - **Configurações**: `manager.js` (tema UI) e `preview.ts` (tema docs)
 
 ### Estrutura de Arquivos
+
 ```
 src/
 ├── stories/          # Componentes e stories do Storybook
@@ -84,42 +95,78 @@ src/
 
 ## 📝 Melhores Práticas
 
-### 1. Formatação de Código
+### 1. Auditoria de Especificações (OBRIGATÓRIO)
+
+Antes de qualquer mudança de código relevante, a IA DEVE:
+
+#### Auditoria do Plano de Implementação
+
+- **Ler com olho crítico** os arquivos em `specs/` (especialmente `plan.md`, `tasks.md`, `research.md`)
+- **Determinar se há uma sequência óbvia de tarefas** ou se há peças de over-engineering
+- **Identificar dependências** entre tarefas e validar se a ordem faz sentido
+- **Questionar complexidade desnecessária** e sugerir simplificações quando apropriado
+
+#### Checklist de Revisão e Aceite
+
+Para cada especificação, marcar cada item abaixo se atende aos critérios (deixar vazio se não atender):
+
+**Qualidade do Conteúdo**:
+
+- [ ] Sem detalhes de implementação (linguagens, frameworks, APIs)
+- [ ] Foco no valor ao usuário e necessidades de negócio
+- [ ] Escrito para stakeholders não técnicos
+- [ ] Todas as seções obrigatórias concluídas
+
+**Integralidade dos Requisitos**:
+
+- [ ] Nenhum marcador [NEEDS CLARIFICATION] remanescente
+- [ ] Requisitos testáveis e não ambíguos
+- [ ] Critérios de sucesso mensuráveis
+- [ ] Escopo claramente delimitado
+- [ ] Dependências e premissas identificadas
+
+### 2. Formatação de Código
+
 - **SEMPRE** rode `pnpm format` antes de commitar
 - Use tabs (não espaços) para indentação
 - Linha máxima de 110 caracteres
 - Use aspas duplas para strings
 
-### 2. Desenvolvimento de Componentes
+### 3. Desenvolvimento de Componentes
+
 - Crie stories no Storybook para todos os componentes
 - Use TypeScript com tipagem explícita
 - Componentes devem estar em `src/stories/` ou `src/components/`
+- **SEMPRE** consulte as especificações em `specs/` antes de criar novos componentes
 
-### 3. Imports e Caminhos
+### 4. Imports e Caminhos
+
 - Use imports relativos para APIs: `@/api/chords/[alias]`
 - Organize imports: bibliotecas externas primeiro, depois internas
 
-### 4. Commits e Git
+### 5. Commits e Git
+
 - Sempre formate o código antes de commitar
 - Use mensagens de commit descritivas
 - Teste o Storybook antes de fazer push
 
-### 5. Estrutura de Arquivos
+### 6. Estrutura de Arquivos
+
 - Mantenha componentes pequenos e focados
 - Use nomes descritivos para arquivos e componentes
 - Organize stories por funcionalidade
 
 ## 🔧 Scripts Disponíveis
 
-| Script | Comando | Descrição |
-|--------|---------|-----------|
-| `dev` | `pnpm dev` | Inicia servidor de desenvolvimento |
-| `build` | `pnpm build` | Build para produção |
-| `lint` | `pnpm lint` | Executa ESLint |
-| `format` | `pnpm format` | Formata código com Prettier |
-| `format:check` | `pnpm format:check` | Verifica formatação |
-| `storybook` | `pnpm storybook` | Inicia Storybook |
-| `build-storybook` | `pnpm build-storybook` | Build do Storybook |
+| Script            | Comando                | Descrição                          |
+| ----------------- | ---------------------- | ---------------------------------- |
+| `dev`             | `pnpm dev`             | Inicia servidor de desenvolvimento |
+| `build`           | `pnpm build`           | Build para produção                |
+| `lint`            | `pnpm lint`            | Executa ESLint                     |
+| `format`          | `pnpm format`          | Formata código com Prettier        |
+| `format:check`    | `pnpm format:check`    | Verifica formatação                |
+| `storybook`       | `pnpm storybook`       | Inicia Storybook                   |
+| `build-storybook` | `pnpm build-storybook` | Build do Storybook                 |
 
 ## 🚨 O que NÃO Fazer
 
@@ -128,6 +175,9 @@ src/
 3. **NÃO** ignore o ESLint - corrija todos os warnings
 4. **NÃO** crie componentes sem stories correspondentes
 5. **NÃO** use espaços ao invés de tabs
+6. **NÃO** faça mudanças de código sem consultar as especificações em `specs/`
+7. **NÃO** implemente funcionalidades que não estão documentadas nas specs
+8. **NÃO** ignore a auditoria de especificações antes de mudanças relevantes
 
 ## 📁 Arquivos de Configuração Importantes
 
@@ -136,6 +186,18 @@ src/
 - `vite.config.ts` - Configuração do Vite
 - `.storybook/` - Configuração do Storybook
 - `tsconfig.json` - Configuração do TypeScript
+
+## 📋 Especificações do Projeto
+
+**CRÍTICO**: Este projeto utiliza especificações detalhadas que DEVEM ser consultadas:
+
+- `specs/001-guitar-svg/spec.md` - Especificação principal da feature
+- `specs/001-guitar-svg/plan.md` - Plano de implementação
+- `specs/001-guitar-svg/tasks.md` - Lista de tarefas detalhadas
+- `specs/001-guitar-svg/research.md` - Decisões técnicas e pesquisa
+- `specs/001-guitar-svg/data-model.md` - Modelo de dados e interfaces
+- `specs/001-guitar-svg/quickstart.md` - Guia de uso da biblioteca
+- `specs/001-guitar-svg/contracts/` - Contratos de API e validação
 
 ## 🎯 Próximos Passos Recomendados
 
