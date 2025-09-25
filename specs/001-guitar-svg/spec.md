@@ -43,20 +43,21 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-003**: O sistema DEVE renderizar pestanas como barras retangulares conectando múltiplas cordas.
 - **FR-004**: O sistema DEVE suportar posições de acordes (ex: 1ª posição, 5ª posição) com rótulos apropriados.
 - **FR-005**: O sistema DEVE permitir customização visual via props (cores, tamanhos, espaçamentos e fontes).
-- **FR-006**: O sistema DEVE suportar afinações customizadas das cordas soltas, recebendo um array de strings em notação científica (ex: `["E2", "A2", "D3", "G3", "B3", "E4"]`).
-- **FR-007**: O sistema DEVE renderizar cordas soltas (indicadas por "O" com cor padrão dos dedos) e mutadas (indicadas por "X" vermelho #DC143C) no traste zero (primeira linha vertical à esquerda), posicionados acima do traste mais grosso, próximos às notas de afinação.
-- **FR-008**: O sistema DEVE aceitar acordes no formato Fret Notation (ex: "x32010") e renderizá-los corretamente, incluindo suporte para trastes com mais de um dígito (ex: "(10)").
-- **FR-009**: O sistema DEVE ser otimizado para performance, evitando re-renderizações desnecessárias.
-- **FR-010**: O sistema DEVE ser totalmente declarativo, sem gerenciar estado interno.
-- **FR-011**: O sistema DEVE incluir suporte a texto dentro dos círculos dos dedos (ex: números dos dedos ou notas).
-- **FR-012**: O sistema DEVE permitir customização das cores e tamanhos dos indicadores de cordas soltas (`openStringColor`, `openStringSize`) e mutadas (`mutedStringColor`, `mutedStringSize`) via propriedades de estilo.
-- **FR-013**: O sistema DEVE integrar a biblioteca `tonal` para validar afinações e calcular as notas exatas que estão sendo tocadas com base na afinação e nas posições dos dedos.
-- **FR-014**: O sistema DEVE suportar uma propriedade para rotacionar o diagrama em 90 graus (layout vertical), posicionando a corda mais grave à **esquerda** para destros.
-- **FR-015**: O sistema DEVE suportar uma propriedade para inverter (espelhar) o diagrama para músicos canhotos, de acordo com a orientação: espelhamento horizontal para layout horizontal e corda grave à direita para layout vertical.
+- **FR-006**: O sistema DEVE suportar afinações customizadas das cordas soltas, recebendo um array de strings em notação científica (ex: `["E2", "A2", "D3", "G3", "B3", "E4"]`), representando as cordas da mais grave para a mais aguda.
+- **FR-007**: O sistema DEVE renderizar o diagrama com a corda mais aguda (ex: E4) na parte superior e a mais grave (ex: E2) na parte inferior.
+- **FR-008**: O sistema DEVE renderizar cordas soltas (indicadas por "O" com cor padrão dos dedos) e mutadas (indicadas por "X" vermelho #DC143C) no traste zero (primeira linha vertical à esquerda), posicionados acima do traste mais grosso, próximos às notas de afinação.
+- **FR-009**: O sistema DEVE aceitar acordes no formato Fret Notation (ex: "x32010") e renderizá-los corretamente, incluindo suporte para trastes com mais de um dígito (ex: "(10)").
+- **FR-010**: O sistema DEVE ser otimizado para performance, evitando re-renderizações desnecessárias.
+- **FR-011**: O sistema DEVE ser totalmente declarativo, sem gerenciar estado interno.
+- **FR-012**: O sistema DEVE incluir suporte a texto dentro dos círculos dos dedos (ex: números dos dedos ou notas).
+- **FR-013**: O sistema DEVE permitir customização das cores e tamanhos dos indicadores de cordas soltas (`openStringColor`, `openStringSize`) e mutadas (`mutedStringColor`, `mutedStringSize`) via propriedades de estilo.
+- **FR-014**: O sistema DEVE integrar a biblioteca `tonal` para validar afinações e calcular as notas exatas que estão sendo tocadas com base na afinação e nas posições dos dedos.
+- **FR-015**: O sistema DEVE suportar uma propriedade para rotacionar o diagrama em 90 graus (layout vertical), posicionando a corda mais grave à **esquerda** para destros.
+- **FR-016**: O sistema DEVE suportar uma propriedade para inverter (espelhar) o diagrama para músicos canhotos, de acordo com a orientação: espelhamento horizontal para layout horizontal e corda grave à direita para layout vertical.
 
 ### Entidades-Chave _(incluir se a feature envolver dados)_
 
-- **Finger**: Representa um dedo posicionado no braço. Contém `string` (corda), `fret` (traste, 0 para cordas soltas), `is_muted` (boolean para cordas mutadas) e `text` (texto opcional).
+- **Finger**: Representa um dedo posicionado no braço. Contém `string` (corda, onde 1 é a mais grave), `fret` (traste, 0 para cordas soltas), `is_muted` (boolean para cordas mutadas) e `text` (texto opcional).
 - **Barre**: Representa uma pestana. Contém `fret` (traste), `fromString` (corda inicial) e `toString` (corda final).
 - **ChordStyle**: Representa configurações visuais do diagrama (cores, tamanhos, espaçamentos, fontes, orientação e layout para destro/canhoto).
 - **ChordDiagramProps**: Interface principal do componente, aceitando dados do acorde como objeto estruturado (com `fingers`, `barres`) ou como Fret Notation (ex: "x32010").

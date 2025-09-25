@@ -286,25 +286,21 @@ function validateNoOverlappingFingers(fingers: Finger[]): Finger[] {
 
 ```typescript
 function validateBarreVsFingers(fingers: Finger[], barres: Barre[]): { fingers: Finger[]; barres: Barre[] } {
-	const validFingers: Finger[] = [];
-	const validBarres: Barre[] = [];
+	let validFingers = [...fingers];
 
-	// Pestanas têm precedência
 	for (const barre of barres) {
-		validBarres.push(barre);
-
-		// Remover dedos que estão na mesma posição ou anterior à pestana
-		validFingers.push(
-			...fingers.filter(
-				finger =>
-					finger.string < barre.fromString ||
-					finger.string > barre.toString ||
-					finger.fret !== barre.fret
-			)
+		// Remove os dedos que estão "debaixo" da pestana.
+		// Um dedo está sob a pestana se estiver na mesma casa e
+		// entre as cordas de início e fim da pestana (inclusive).
+		validFingers = validFingers.filter(
+			finger =>
+				finger.fret !== barre.fret ||
+				finger.string < barre.fromString ||
+				finger.string > barre.toString
 		);
 	}
 
-	return { fingers: validFingers, barres: validBarres };
+	return { fingers: validFingers, barres };
 }
 ```
 

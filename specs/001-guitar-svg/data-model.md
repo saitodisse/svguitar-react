@@ -2,6 +2,15 @@
 
 Este documento define as interfaces TypeScript para as props do componente `ChordDiagram`. Esta é a API pública que será exposta aos consumidores do pacote NPM.
 
+## Convenção de Numeração e Renderização
+
+Para garantir clareza, o componente `ChordDiagram` adota a seguinte convenção:
+
+- **Numeração das Cordas**: A contagem de cordas começa em `1` para a corda mais **grave** (low E, a 6ª corda de um violão padrão) e vai até `6` (ou o número total de cordas) para a mais **aguda** (high E, a 1ª corda).
+- **Ordem de Renderização**: Visualmente, o diagrama é renderizado com a corda de número mais alto (aguda) no topo e a de número mais baixo (grave) na base.
+- **Arrays de Afinação (`tuning`)**: Seguem a ordem da numeração, da mais grave para a mais aguda (ex: `["E2", "A2", ..., "E4"]`). O índice `0` corresponde à corda `1`.
+- **Notação de Trastes (`Fret Notation`)**: Segue a ordem da numeração, da corda mais grave para a mais aguda (ex: `"x32010"`).
+
 ## 1. Entidades Principais
 
 ### `ChordDiagramProps`
@@ -37,7 +46,7 @@ Define o instrumento, usado principalmente para interpretar a string de tablatur
 interface Instrument {
 	strings: number; // Número de cordas
 	frets: number; // Número de trastes a serem mostrados no diagrama
-	tuning: string[]; // Afinação das cordas, ex: ["E2", "A2", "D3", "G3", "B3", "E4"]
+	tuning: string[]; // Afinação das cordas, da mais grave (corda 1) para a mais aguda (corda 6)
 	chord: string; // A Fret Notation, ex: "x32010" ou "(10)x(12)..."
 }
 ```
@@ -53,7 +62,7 @@ Representa um dedo posicionado no braço.
 ```typescript
 interface Finger {
 	fret: number;
-	string: number;
+	string: number; // Número da corda (1 = mais grave, ex: E2)
 	is_muted: boolean;
 	text?: string; // Texto opcional dentro do círculo (ex: "1", "A")
 }
@@ -63,13 +72,13 @@ interface Finger {
 
 Representa uma pestana.
 
-- **Regra de Validação**: `fromString` deve ser menor ou igual a `toString`.
+- **Regra de Validação**: `fromString` deve ser menor ou igual a `toString`. Ambas devem se referir a cordas válidas (1 = mais grave).
 
 ```typescript
 interface Barre {
 	fret: number;
-	fromString: number;
-	toString: number;
+	fromString: number; // Corda inicial (1 = mais grave)
+	toString: number; // Corda final (ex: 6 = mais aguda)
 	text?: string;
 }
 ```

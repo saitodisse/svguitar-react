@@ -37,17 +37,23 @@ export const Fretboard: React.FC<FretboardProps> = React.memo(({ style }) => {
 	));
 
 	// Generate string lines (horizontal)
-	const stringLines = Array.from({ length: stringCount }, (_, i) => (
-		<line
-			key={`string-${i}`}
-			x1={startX}
-			y1={startY + i * fretHeight}
-			x2={endX}
-			y2={startY + i * fretHeight}
-			stroke={stringColor}
-			strokeWidth={stringWidth}
-		/>
-	));
+	const stringLines = Array.from({ length: stringCount }, (_, i) => {
+		const stringNumber = i + 1;
+		// Render from bottom to top (string 1 is the lowest)
+		const y = startY + (stringCount - stringNumber) * fretHeight;
+
+		return (
+			<line
+				key={`string-${stringNumber}`}
+				x1={startX}
+				y1={y}
+				x2={endX}
+				y2={y}
+				stroke={stringColor}
+				strokeWidth={stringWidth}
+			/>
+		);
+	});
 
 	return (
 		<g>

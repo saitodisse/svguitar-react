@@ -35,10 +35,11 @@ type Story = StoryObj<typeof meta>;
 // Basic chord examples
 const cMajor: ChordDiagramProps = {
 	chord: {
+		// Fret notation: x32010
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
 		],
 		barres: [],
 	},
@@ -46,10 +47,11 @@ const cMajor: ChordDiagramProps = {
 
 const fMajor: ChordDiagramProps = {
 	chord: {
+		// Fret notation: 133211
 		fingers: [
-			{ fret: 2, string: 3, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
-			{ fret: 3, string: 4, is_muted: false, text: "4" },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 3, string: 3, is_muted: false, text: "4" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
 		],
 		barres: [{ fret: 1, fromString: 1, toString: 6 }],
 	},
@@ -57,17 +59,18 @@ const fMajor: ChordDiagramProps = {
 
 const gMajorInstrument: ChordDiagramProps = {
 	instrument: {
-		tuning: ["E", "A", "D", "G", "B", "E"],
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		chord: "320003",
 	},
 };
 
 const customStyle: ChordDiagramProps = {
 	chord: {
+		// A minor: x02210
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false },
-			{ fret: 2, string: 4, is_muted: false },
 			{ fret: 2, string: 3, is_muted: false },
+			{ fret: 2, string: 4, is_muted: false },
+			{ fret: 1, string: 5, is_muted: false },
 		],
 		barres: [],
 	},
@@ -177,10 +180,12 @@ export const CustomStyle: Story = {
 export const HighPosition: Story = {
 	args: {
 		chord: {
+			// D barre chord at 5th fret: x5777x
 			fingers: [
-				{ fret: 7, string: 2, is_muted: false, text: "1" },
+				{ fret: 5, string: 2, is_muted: false },
 				{ fret: 7, string: 3, is_muted: false, text: "2" },
 				{ fret: 7, string: 4, is_muted: false, text: "3" },
+				{ fret: 7, string: 5, is_muted: false, text: "4" },
 			],
 			barres: [],
 			firstFret: 5,
@@ -209,7 +214,7 @@ export const HighPosition: Story = {
 export const DropDTuning: Story = {
 	args: {
 		instrument: {
-			tuning: ["D", "A", "D", "G", "B", "E"],
+			tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "000232",
 		},
 	},
@@ -236,7 +241,7 @@ export const DropDTuning: Story = {
 export const OpenStrings: Story = {
 	args: {
 		instrument: {
-			tuning: ["E", "A", "D", "G", "B", "E"],
+			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "022000",
 		},
 	},
@@ -263,11 +268,14 @@ export const OpenStrings: Story = {
 export const OpenAndMutedStrings: Story = {
 	args: {
 		chord: {
+			// C Major with muted 1st and open 3rd string: x32010
 			fingers: [
-				{ fret: 1, string: 2, is_muted: false, text: "1" },
-				{ fret: 2, string: 4, is_muted: false, text: "2" },
-				{ fret: 0, string: 1, is_muted: false }, // Open string (O)
-				{ fret: 0, string: 3, is_muted: true }, // Muted string (X)
+				{ fret: 0, string: 1, is_muted: true },
+				{ fret: 3, string: 2, is_muted: false, text: "3" },
+				{ fret: 2, string: 3, is_muted: false, text: "2" },
+				{ fret: 0, string: 4, is_muted: false },
+				{ fret: 1, string: 5, is_muted: false, text: "1" },
+				{ fret: 0, string: 6, is_muted: false },
 			],
 			barres: [],
 		},
@@ -286,7 +294,7 @@ export const OpenAndMutedStrings: Story = {
 		// Verify finger elements are present (2 regular fingers + 1 open circle + 1 muted X)
 		const fingerElements = svg?.querySelectorAll("circle");
 		const lineElements = svg?.querySelectorAll("line");
-		expect(fingerElements?.length).toBe(3); // 2 regular fingers + 1 open circle
+		expect(fingerElements?.length).toBe(5); // 3 regular fingers + 2 open circles
 		expect(lineElements?.length).toBe(13); // 11 grid lines + 2 lines for the X
 	},
 };
@@ -336,8 +344,8 @@ export const CustomOpenMutedStyle: Story = {
 export const HighFretNotation: Story = {
 	args: {
 		instrument: {
-			tuning: ["E", "A", "D", "G", "B", "E"],
-			chord: "101211",
+			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+			chord: "(10)(12)(12)(11)(10)(10)",
 		},
 	},
 	play: async ({ canvasElement }) => {
@@ -364,10 +372,11 @@ export const PerformanceTest: Story = {
 	render: () => {
 		const chordData = {
 			chord: {
+				// C Major: x32010
 				fingers: [
-					{ fret: 1, string: 2, is_muted: false, text: "1" },
-					{ fret: 2, string: 4, is_muted: false, text: "2" },
-					{ fret: 3, string: 5, is_muted: false, text: "3" },
+					{ fret: 3, string: 2, is_muted: false, text: "3" },
+					{ fret: 2, string: 3, is_muted: false, text: "2" },
+					{ fret: 1, string: 5, is_muted: false, text: "1" },
 				],
 				barres: [],
 			},

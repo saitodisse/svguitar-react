@@ -23,9 +23,11 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const cMajor = {
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			// Fret notation: x32010
+			{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
+			{ fret: 2, string: 3, is_muted: false, text: "2" }, // String 3 (D)
+			{ fret: 1, string: 5, is_muted: false, text: "1" }, // String 5 (B)
+			// String 1 (E) is muted, String 4 (G) is open, String 6 (E) is open
 		],
 		barres: [],
 	};
@@ -47,11 +49,12 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const fMajor = {
 		fingers: [
-			{ fret: 2, string: 3, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
-			{ fret: 3, string: 4, is_muted: false, text: "4" },
+			// Fret notation: 133211
+			{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
+			{ fret: 3, string: 3, is_muted: false, text: "4" }, // String 3 (D)
+			{ fret: 2, string: 4, is_muted: false, text: "2" }, // String 4 (G)
 		],
-		barres: [{ fret: 1, fromString: 6, toString: 1 }],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }],
 	};
 
 	return <ChordDiagram chord={fMajor} />;
@@ -93,9 +96,10 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const aMinor = {
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false },
-			{ fret: 2, string: 4, is_muted: false },
-			{ fret: 2, string: 3, is_muted: false },
+			// Fret notation: x02210
+			{ fret: 2, string: 3, is_muted: false }, // String 3 (D)
+			{ fret: 2, string: 4, is_muted: false }, // String 4 (G)
+			{ fret: 1, string: 5, is_muted: false }, // String 5 (B)
 		],
 		barres: [],
 	};
@@ -132,9 +136,11 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const dMajorHigh = {
 		fingers: [
-			{ fret: 7, string: 2, is_muted: false, text: "1" },
-			{ fret: 7, string: 3, is_muted: false, text: "2" },
-			{ fret: 7, string: 4, is_muted: false, text: "3" },
+			// D barre chord at 5th fret (root on A string): x5777x
+			{ fret: 5, string: 2, is_muted: false }, // String 2 (A) -> Root
+			{ fret: 7, string: 3, is_muted: false, text: "2" }, // String 3 (D)
+			{ fret: 7, string: 4, is_muted: false, text: "3" }, // String 4 (G)
+			{ fret: 7, string: 5, is_muted: false, text: "4" }, // String 5 (B)
 		],
 		barres: [],
 		firstFret: 5, // Começa no 5º traste
@@ -203,11 +209,13 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const cMajorWithOpenStrings = {
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
-			{ fret: 0, string: 1, is_muted: false }, // Corda solta (mostra 'O')
-			{ fret: 0, string: 3, is_muted: true }, // Corda mutada (mostra 'X' vermelho)
+			// Fret notation: x32010
+			{ fret: 0, string: 1, is_muted: true }, // Corda mutada (mostra 'X' vermelho)
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 0, string: 4, is_muted: false }, // Corda solta (mostra 'O')
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+			{ fret: 0, string: 6, is_muted: false }, // Corda solta (mostra 'O')
 		],
 		barres: [],
 	};
@@ -251,9 +259,9 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const cMajor = {
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
 		],
 		barres: [],
 	};
@@ -275,9 +283,9 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const cMajor = {
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
 		],
 		barres: [],
 	};
@@ -299,7 +307,7 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const invalidChord = {
 		fingers: [
-			{ fret: -1, string: 2, is_muted: false }, // ❌ Fret inválido (deve ser >= 0)
+			{ fret: -1, string: 1, is_muted: false }, // ❌ Fret inválido (deve ser >= 0)
 		],
 		barres: [],
 	};
@@ -327,8 +335,9 @@ const App = () => {
 	const chordData = useMemo(
 		() => ({
 			fingers: [
-				{ fret: 1, string: 2, is_muted: false, text: "1" },
-				{ fret: 2, string: 4, is_muted: false, text: "2" },
+				{ fret: 3, string: 2, is_muted: false, text: "3" },
+				{ fret: 2, string: 3, is_muted: false, text: "2" },
+				{ fret: 1, string: 5, is_muted: false, text: "1" },
 			],
 			barres: [],
 		}),
@@ -361,8 +370,9 @@ import { ChordDiagram, ChordDiagramProps, Chord } from "@svguitar/react";
 const App: React.FC = () => {
 	const chord: Chord = {
 		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
 		],
 		barres: [],
 	};

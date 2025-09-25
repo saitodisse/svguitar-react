@@ -17,13 +17,25 @@ interface BarreProps {
  * Renders a barre (bar chord) across multiple strings
  */
 export const Barre: React.FC<BarreProps> = React.memo(({ barre, style, firstFret = 1 }) => {
-	const { fretWidth, fretHeight, barreHeight, barreColor, fontFamily, dotTextSize, dotTextColor } = style;
+	const {
+		stringCount,
+		fretWidth,
+		fretHeight,
+		barreHeight,
+		barreColor,
+		fontFamily,
+		dotTextSize,
+		dotTextColor,
+	} = style;
 
 	// Calculate position
 	const startX = 40; // Space for tuning labels
 	const startY = 60; // Space for fret numbers
 	const x = startX + (barre.fret - firstFret + 0.5) * fretWidth;
-	const y = startY + (barre.fromString - 1) * fretHeight;
+
+	// Invert y-axis: string 1 is at the bottom
+	const y = startY + (stringCount - barre.toString) * fretHeight;
+
 	const width = fretWidth * 0.8; // Width of the barre (80% of fret width)
 	const height = (barre.toString - barre.fromString) * fretHeight + barreHeight;
 

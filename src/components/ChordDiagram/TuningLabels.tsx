@@ -16,7 +16,7 @@ interface TuningLabelsProps {
  * Renders tuning labels for each string
  */
 export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ tuning, style }) => {
-	const { fretHeight, tuningTextColor, tuningTextSize, fontFamily } = style;
+	const { stringCount, fretHeight, tuningTextColor, tuningTextSize, fontFamily } = style;
 
 	// Calculate positions
 	const startY = 60; // Space for fret numbers
@@ -24,20 +24,26 @@ export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ tuning, s
 
 	return (
 		<g>
-			{tuning.map((note, index) => (
-				<text
-					key={`tuning-${index}`}
-					x={x}
-					y={startY + index * fretHeight + tuningTextSize / 3}
-					textAnchor="middle"
-					fill={tuningTextColor}
-					fontSize={tuningTextSize}
-					fontFamily={fontFamily}
-					fontWeight="bold"
-				>
-					{note}
-				</text>
-			))}
+			{tuning.map((note, index) => {
+				const stringNumber = index + 1;
+				// Invert y-axis: string 1 is at the bottom
+				const y = startY + (stringCount - stringNumber) * fretHeight + tuningTextSize / 3;
+
+				return (
+					<text
+						key={`tuning-${index}`}
+						x={x}
+						y={y}
+						textAnchor="middle"
+						fill={tuningTextColor}
+						fontSize={tuningTextSize}
+						fontFamily={fontFamily}
+						fontWeight="bold"
+					>
+						{note}
+					</text>
+				);
+			})}
 		</g>
 	);
 });

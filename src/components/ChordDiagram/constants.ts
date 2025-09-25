@@ -10,6 +10,10 @@ import type { ChordStyle, Instrument } from "./types";
  * Default styling configuration for chord diagrams
  */
 export const DEFAULT_CHORD_STYLE: ChordStyle = {
+	// Layout
+	orientation: "horizontal",
+	handedness: "right",
+
 	// Dimensions
 	width: 200,
 	height: 250,
@@ -48,19 +52,19 @@ export const DEFAULT_CHORD_STYLE: ChordStyle = {
 export const DEFAULT_INSTRUMENT: Instrument = {
 	strings: 6,
 	frets: 4,
-	tuning: ["E", "A", "D", "G", "B", "E"],
+	tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 	chord: "000000",
 };
 
 /**
- * Standard guitar tunings
+ * Standard guitar tunings in scientific notation
  */
 export const STANDARD_TUNINGS = {
-	STANDARD: ["E", "A", "D", "G", "B", "E"],
-	DROP_D: ["D", "A", "D", "G", "B", "E"],
-	DROP_C: ["C", "G", "C", "F", "A", "D"],
-	OPEN_G: ["D", "G", "D", "G", "B", "D"],
-	OPEN_D: ["D", "A", "D", "F#", "A", "D"],
+	STANDARD: ["E2", "A2", "D3", "G3", "B3", "E4"],
+	DROP_D: ["D2", "A2", "D3", "G3", "B3", "E4"],
+	DROP_C: ["C2", "G2", "C3", "F3", "A3", "D4"],
+	OPEN_G: ["D2", "G2", "D3", "G3", "B3", "D4"],
+	OPEN_D: ["D2", "A2", "D3", "F#3", "A3", "D4"],
 } as const;
 
 /**

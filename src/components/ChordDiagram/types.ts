@@ -8,9 +8,9 @@
  * Represents a finger positioned on the guitar fretboard
  */
 export interface Finger {
-	/** The fret number (0-based for open strings, 1-based for fretted notes) */
+	/** The fret number (0 for open strings) */
 	fret: number;
-	/** The string number (1-based, 1 = thickest string) */
+	/** The string number (1 = lowest-pitched string, e.g., E2) */
 	string: number;
 	/** Whether the string is muted (true for 'x' in fret notation) */
 	is_muted: boolean;
@@ -22,11 +22,11 @@ export interface Finger {
  * Represents a barre (bar chord) across multiple strings
  */
 export interface Barre {
-	/** The fret number (1-based) */
+	/** The fret number (must be > 0) */
 	fret: number;
-	/** Starting string number (1-based) */
+	/** Starting string number (1 = lowest-pitched string) */
 	fromString: number;
-	/** Ending string number (1-based) */
+	/** Ending string number (e.g., 6 = highest-pitched string) */
 	toString: number;
 	/** Optional text to display on the barre */
 	text?: string;
@@ -54,7 +54,7 @@ export interface Instrument {
 	strings: number;
 	/** Number of frets to display */
 	frets: number;
-	/** Tuning of the strings (e.g., ["E", "A", "D", "G", "B", "E"]) */
+	/** Scientific notation of open string notes, from lowest to highest pitch (e.g., ["E2", "A2", "D3", "G3", "B3", "E4"]) */
 	tuning: string[];
 	/** Fret notation string (e.g., "x32010") */
 	chord: string;
@@ -64,6 +64,12 @@ export interface Instrument {
  * Visual styling configuration for the chord diagram
  */
 export interface ChordStyle {
+	// Layout
+	/** Diagram orientation */
+	orientation: "vertical" | "horizontal";
+	/** For right- or left-handed players */
+	handedness: "right" | "left";
+
 	// Dimensions
 	/** Total width of the SVG */
 	width: number;
