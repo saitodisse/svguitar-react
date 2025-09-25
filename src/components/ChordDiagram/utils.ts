@@ -218,8 +218,20 @@ export function processChordData(props: { instrument?: Partial<Instrument>; chor
 
 	// If chord is provided, use it directly (chord takes precedence)
 	if (props.chord) {
-		const stringCount =
-			props.chord.fingers.length > 0 ? Math.max(...props.chord.fingers.map(f => f.string)) : 6; // Default to 6 strings
+		// Calculate stringCount by considering both fingers and barres
+		let stringCount = 6; // Default to 6 strings
+
+		if (props.chord.fingers.length > 0) {
+			const maxFingerString = Math.max(...props.chord.fingers.map(f => f.string));
+			stringCount = Math.max(stringCount, maxFingerString);
+		}
+
+		if (props.chord.barres.length > 0) {
+			const maxBarreString = Math.max(
+				...props.chord.barres.map(b => Math.max(b.fromString, b.toString))
+			);
+			stringCount = Math.max(stringCount, maxBarreString);
+		}
 
 		// Validate fingers
 		props.chord.fingers.forEach(finger => validateFinger(finger, stringCount));

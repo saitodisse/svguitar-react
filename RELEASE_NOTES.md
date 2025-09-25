@@ -21,6 +21,7 @@ We're excited to announce the first release of **@svguitar/react**, a high-perfo
 ### 🎯 Use Cases
 
 Perfect for:
+
 - Music education applications
 - Guitar learning platforms
 - Chord reference tools
@@ -45,31 +46,31 @@ import React from "react";
 import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
-  const cMajor = {
-    fingers: [
-      { fret: 1, string: 2, text: "1" },
-      { fret: 2, string: 4, text: "2" },
-      { fret: 3, string: 5, text: "3" },
-    ],
-    barres: [],
-  };
+	const cMajor = {
+		fingers: [
+			{ fret: 1, string: 2, text: "1" },
+			{ fret: 2, string: 4, text: "2" },
+			{ fret: 3, string: 5, text: "3" },
+		],
+		barres: [],
+	};
 
-  return <ChordDiagram chord={cMajor} />;
+	return <ChordDiagram chord={cMajor} />;
 };
 ```
 
 ### 🎨 Customization
 
 ```tsx
-<ChordDiagram 
-  chord={chordData}
-  style={{
-    width: 200,
-    height: 250,
-    dotColor: "#FF5733",
-    stringColor: "#CCCCCC",
-    fontFamily: "Arial, sans-serif"
-  }}
+<ChordDiagram
+	chord={chordData}
+	style={{
+		width: 200,
+		height: 250,
+		dotColor: "#FF5733",
+		stringColor: "#CCCCCC",
+		fontFamily: "Arial, sans-serif",
+	}}
 />
 ```
 

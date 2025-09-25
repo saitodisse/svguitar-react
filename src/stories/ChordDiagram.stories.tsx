@@ -50,7 +50,7 @@ const fMajor: ChordDiagramProps = {
 			{ fret: 3, string: 5, text: "3" },
 			{ fret: 3, string: 4, text: "4" },
 		],
-		barres: [{ fret: 1, fromString: 6, toString: 1 }],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }],
 	},
 };
 
