@@ -11,7 +11,7 @@ We're excited to announce a major enhancement to **@svguitar/react** with compre
 ### ✨ New Features
 
 - **🎯 Open String Support**: Render open strings as 'O' circles at fret zero
-- **🚫 Muted String Support**: Display muted strings as red 'X' symbols at fret zero  
+- **🚫 Muted String Support**: Display muted strings as red 'X' symbols at fret zero
 - **🎨 Custom Indicators**: Full control over colors and sizes of open/muted string indicators
 - **📍 Smart Positioning**: Indicators positioned at fret zero (leftmost) for clear visual distinction
 - **🔧 Enhanced API**: New `is_muted` property in `Finger` interface for precise control
@@ -21,43 +21,45 @@ We're excited to announce a major enhancement to **@svguitar/react** with compre
 ```tsx
 // Open and muted strings with custom styling
 <ChordDiagram
-  chord={{
-    fingers: [
-      { fret: 1, string: 2, is_muted: false, text: "1" },
-      { fret: 0, string: 1, is_muted: false }, // Open string (O)
-      { fret: 0, string: 3, is_muted: true },  // Muted string (X)
-    ],
-    barres: []
-  }}
-  style={{
-    openStringColor: "#00FF00",  // Green for open strings
-    mutedStringColor: "#FF0000", // Red for muted strings
-    openStringSize: 14,
-    mutedStringSize: 16,
-  }}
+	chord={{
+		fingers: [
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 0, string: 1, is_muted: false }, // Open string (O)
+			{ fret: 0, string: 3, is_muted: true }, // Muted string (X)
+		],
+		barres: [],
+	}}
+	style={{
+		openStringColor: "#00FF00", // Green for open strings
+		mutedStringColor: "#FF0000", // Red for muted strings
+		openStringSize: 14,
+		mutedStringSize: 16,
+	}}
 />
 ```
 
 ### 🔧 API Improvements
 
 #### Enhanced Finger Interface
+
 ```tsx
 interface Finger {
-  fret: number;        // Now supports 0 for open strings
-  string: number;
-  is_muted: boolean;   // NEW: indicates if string is muted
-  text?: string;
+	fret: number; // Now supports 0 for open strings
+	string: number;
+	is_muted: boolean; // NEW: indicates if string is muted
+	text?: string;
 }
 ```
 
 #### New Style Properties
+
 ```tsx
 interface ChordStyle {
-  // ... existing properties
-  openStringSize: number;      // NEW: size of open string indicator
-  mutedStringSize: number;     // NEW: size of muted string indicator
-  openStringColor: string;     // NEW: color of open string indicator
-  mutedStringColor: string;    // NEW: color of muted string indicator
+	// ... existing properties
+	openStringSize: number; // NEW: size of open string indicator
+	mutedStringSize: number; // NEW: size of muted string indicator
+	openStringColor: string; // NEW: color of open string indicator
+	mutedStringColor: string; // NEW: color of muted string indicator
 }
 ```
 
@@ -66,10 +68,10 @@ interface ChordStyle {
 ```tsx
 // Enhanced fret notation parsing
 <ChordDiagram
-  instrument={{
-    tuning: ["E", "A", "D", "G", "B", "E"],
-    chord: "x32010" // 'x' = muted, '0' = open, numbers = fretted
-  }}
+	instrument={{
+		tuning: ["E", "A", "D", "G", "B", "E"],
+		chord: "x32010", // 'x' = muted, '0' = open, numbers = fretted
+	}}
 />
 ```
 

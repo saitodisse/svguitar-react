@@ -36,19 +36,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ```tsx
 // New Finger interface
 interface Finger {
-  fret: number;        // Now supports 0 for open strings
-  string: number;
-  is_muted: boolean;   // NEW: indicates if string is muted
-  text?: string;
+	fret: number; // Now supports 0 for open strings
+	string: number;
+	is_muted: boolean; // NEW: indicates if string is muted
+	text?: string;
 }
 
 // Enhanced ChordStyle interface
 interface ChordStyle {
-  // ... existing properties
-  openStringSize: number;      // NEW: size of open string indicator
-  mutedStringSize: number;     // NEW: size of muted string indicator
-  openStringColor: string;     // NEW: color of open string indicator
-  mutedStringColor: string;    // NEW: color of muted string indicator
+	// ... existing properties
+	openStringSize: number; // NEW: size of open string indicator
+	mutedStringSize: number; // NEW: size of muted string indicator
+	openStringColor: string; // NEW: color of open string indicator
+	mutedStringColor: string; // NEW: color of muted string indicator
 }
 ```
 
