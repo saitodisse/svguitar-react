@@ -65,6 +65,25 @@ pnpm storybook
 pnpm build-storybook
 ```
 
+## 🛠️ Ferramentas Disponíveis
+
+### Playwright MCP
+
+- **Disponível**: Ferramenta de automação de browser integrada
+- **Uso**: Para visualizar e interagir com o Storybook em `http://localhost:6006/`
+- **Quando usar**: Para testar componentes visualmente, verificar responsividade, ou validar comportamento interativo
+- **Comando**: Verifique se o Storybook está rodando e somente então use as ferramentas Playwright MCP para navegar e interagir; Se o servidor não estiver rodando, inicie-o com `pnpm storybook`
+
+### Context7 (Documentação de Bibliotecas)
+
+- **Disponível**: Acesso à documentação mais atualizada de bibliotecas externas
+- **Uso**: SEMPRE que usar bibliotecas externas, verifique a documentação mais recente
+- **Quando usar**:
+    - Antes de implementar funcionalidades com bibliotecas externas
+    - Para verificar breaking changes ou atualizações
+    - Para encontrar exemplos e melhores práticas atualizadas
+- **Comando**: Use `use context7` seguido do nome da biblioteca para acessar documentação atualizada
+
 ## ⚙️ Configurações Importantes
 
 ### Prettier (.prettierrc)
@@ -156,6 +175,13 @@ Para cada especificação, marcar cada item abaixo se atende aos critérios (dei
 - Use nomes descritivos para arquivos e componentes
 - Organize stories por funcionalidade
 
+### 7. Uso de Ferramentas Disponíveis
+
+- **Playwright MCP**: Use para testar visualmente o Storybook em `http://localhost:6006/`
+- **Context7**: SEMPRE verifique a documentação mais atualizada de bibliotecas externas antes de implementar
+- **Validação Visual**: Use Playwright para verificar se os componentes renderizam corretamente
+- **Documentação Atualizada**: Use Context7 para garantir que está usando as versões e APIs mais recentes
+
 ## 🔧 Scripts Disponíveis
 
 | Script            | Comando                | Descrição                          |
@@ -178,6 +204,8 @@ Para cada especificação, marcar cada item abaixo se atende aos critérios (dei
 6. **NÃO** faça mudanças de código sem consultar as especificações em `specs/`
 7. **NÃO** implemente funcionalidades que não estão documentadas nas specs
 8. **NÃO** ignore a auditoria de especificações antes de mudanças relevantes
+9. **NÃO** use bibliotecas externas sem verificar a documentação mais atualizada com Context7
+10. **NÃO** deixe de testar visualmente os componentes no Storybook usando Playwright MCP
 
 ## 📁 Arquivos de Configuração Importantes
 
