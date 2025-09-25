@@ -1,4 +1,4 @@
-# @svguitar/react
+# svguitar-react
 
 A React component for rendering guitar chord diagrams in SVG format with high performance and full customization.
 
@@ -15,14 +15,14 @@ A React component for rendering guitar chord diagrams in SVG format with high pe
 ## Installation
 
 ```bash
-pnpm install @svguitar/react
+pnpm install svguitar-react
 ```
 
 ## Quick Start
 
 ```tsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajor = {

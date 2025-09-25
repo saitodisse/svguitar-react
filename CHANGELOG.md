@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2024-12-19
 
 ### Added
+
 - Initial release of @svguitar/react
 - ChordDiagram component for rendering guitar chord diagrams in SVG format
 - Support for finger positions with optional text labels
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for both ESM and CommonJS exports
 
 ### Features
+
 - 🎸 Guitar chord diagrams in high-quality SVG format
 - ⚡ High performance with React.memo optimization
 - 🎨 Fully customizable styling (colors, fonts, sizes, spacing)
@@ -33,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 📚 Interactive Storybook documentation
 
 ### Technical Details
+
 - Built with React 19.1.1 and TypeScript 5.8.3
 - Uses Vite 7.1.7 for build system
 - Tested with Vitest and React Testing Library
@@ -40,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized for tree-shaking and performance
 
 ### API
+
 - `ChordDiagram` - Main component
 - `ChordDiagramProps` - Component props interface
 - `Chord` - Chord data structure
@@ -50,9 +54,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utility functions for parsing and validation
 
 ### Examples
+
 ```tsx
 // Basic chord
-<ChordDiagram 
+<ChordDiagram
   chord={{
     fingers: [{ fret: 1, string: 2, text: "1" }],
     barres: []
@@ -60,7 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 />
 
 // With fret notation
-<ChordDiagram 
+<ChordDiagram
   instrument={{
     tuning: ["E", "A", "D", "G", "B", "E"],
     chord: "x32010"
