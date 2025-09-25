@@ -48,12 +48,13 @@ interface Instrument {
 
 Representa um dedo posicionado no braço.
 
-- **Regra de Validação**: `fret` deve ser maior que 0. `string` deve estar dentro do intervalo de cordas do instrumento.
+- **Regra de Validação**: `fret` deve ser maior ou igual a 0 (0 para cordas soltas). `string` deve estar dentro do intervalo de cordas do instrumento. `is_muted` indica se a corda está mutada.
 
 ```typescript
 interface Finger {
 	fret: number;
 	string: number;
+	is_muted: boolean;
 	text?: string; // Texto opcional dentro do círculo (ex: "1", "A")
 }
 ```
@@ -91,6 +92,8 @@ interface ChordStyle {
 	stringWidth: number;
 	dotSize: number; // Tamanho dos círculos dos dedos
 	barreHeight: number;
+	openStringSize: number; // Tamanho do círculo 'O' para cordas soltas
+	mutedStringSize: number; // Tamanho do 'X' para cordas mutadas
 
 	// Cores
 	backgroundColor: string;
@@ -101,6 +104,8 @@ interface ChordStyle {
 	barreColor: string;
 	fretTextColor: string;
 	tuningTextColor: string;
+	openStringColor: string; // Cor do círculo 'O' para cordas soltas
+	mutedStringColor: string; // Cor do 'X' para cordas mutadas
 
 	// Fontes
 	fontFamily: string;
@@ -116,7 +121,12 @@ interface ChordStyle {
 
 ```typescript
 function validateFinger(finger: Finger, stringCount: number): boolean {
-	return finger.fret > 0 && finger.string >= 1 && finger.string <= stringCount;
+	return (
+		finger.fret >= 0 &&
+		finger.string >= 1 &&
+		finger.string <= stringCount &&
+		typeof finger.is_muted === "boolean"
+	);
 }
 ```
 
@@ -185,10 +195,23 @@ function parseFretNotation(fretNotation: string): Chord {
 			continue;
 		}
 
-		if (typeof fret === "number" && fret > 0) {
+		if (typeof fret === "number" && fret >= 0) {
 			fingers.push({
 				fret,
 				string: stringNumber,
+				is_muted: false,
+			});
+		} else if (fret === "o") {
+			fingers.push({
+				fret: 0,
+				string: stringNumber,
+				is_muted: false,
+			});
+		} else if (fret === "x") {
+			fingers.push({
+				fret: 0,
+				string: stringNumber,
+				is_muted: true,
 			});
 		}
 
@@ -215,6 +238,8 @@ const DEFAULT_CHORD_STYLE: ChordStyle = {
 	stringWidth: 2,
 	dotSize: 12,
 	barreHeight: 8,
+	openStringSize: 12,
+	mutedStringSize: 12,
 
 	// Cores
 	backgroundColor: "#ffffff",
@@ -225,6 +250,8 @@ const DEFAULT_CHORD_STYLE: ChordStyle = {
 	barreColor: "#2196F3",
 	fretTextColor: "#333333",
 	tuningTextColor: "#666666",
+	openStringColor: "#2196F3", // Mesma cor dos dedos normais
+	mutedStringColor: "#DC143C", // Vermelho para 'X'
 
 	// Fontes
 	fontFamily: "Arial, sans-serif",

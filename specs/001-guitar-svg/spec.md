@@ -23,10 +23,11 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 4.  **Dado** que quero customizar a aparência, **Quando** passo propriedades de estilo, **Então** o componente aplica as cores, tamanhos, espaçamentos e fontes especificadas.
 5.  **Dado** que uso uma afinação não padrão, **Quando** especifico as notas das cordas, **Então** o componente mostra a afinação correta no diagrama para as cordas soltas.
 6.  **Dado** que recebo um acorde representado por Fret Notation (ex: "x32010" para C Major, ou "(10)(12)(10)(10)(10)(10)" para F Major na 10ª casa), **Quando** especifico a afinação das cordas, **Então** o componente renderiza o diagrama com as cordas soltas e as posições dos dedos corretas.
+7.  **Dado** que eu especifique cordas soltas e mutadas, **Então** o componente renderiza o diagrama com as cordas soltas e mutadas corretas, colocando o "X" vermelho (#DC143C) no traste zero (primeira linha vertical à esquerda) para cordas mutadas e o "O" (círculo normal com cor padrão dos dedos) no traste zero para cordas soltas, ambos posicionados acima do traste mais grosso, próximos às notas de afinação. Se houver dedos na mesma corda, eles não serão mostrados (cordas mutadas têm precedência).
 
 ### Casos Limite
 
-- O que acontece quando não há dedos especificados? (O diagrama deve renderizar apenas as cordas, com indicações de cordas soltas ou mutadas, se fornecidas).
+- O que acontece quando não há dedos especificados? (O diagrama deve renderizar apenas as cordas, com indicações de cordas soltas ('O') ou mutadas ('X' vermelho) no traste zero, se fornecidas).
 - Como o sistema lida com posições inválidas de dedos? (O sistema vai tentar representar o acorde da melhor forma possível, ignorando posições fora do braço).
 - O que acontece quando a pestana se sobrepõe incorretamente aos dedos? (A pestana tem prioridade, e os dedos na mesma casa ou anterior são removidos da representação).
 - Como o componente lida com definições de afinação inválidas ou incompletas? (Deve lançar um erro).
@@ -41,15 +42,16 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-004**: O sistema DEVE suportar posições de acordes (ex: 1ª posição, 5ª posição) com rótulos apropriados.
 - **FR-005**: O sistema DEVE permitir customização visual via props (cores, tamanhos, espaçamentos e fontes).
 - **FR-006**: O sistema DEVE suportar afinações customizadas das cordas soltas.
-- **FR-007**: O sistema DEVE renderizar cordas soltas (indicadas por "O") e mutadas (indicadas por "X") acima do diagrama.
+- **FR-007**: O sistema DEVE renderizar cordas soltas (indicadas por "O" com cor padrão dos dedos) e mutadas (indicadas por "X" vermelho #DC143C) no traste zero (primeira linha vertical à esquerda), posicionados acima do traste mais grosso, próximos às notas de afinação.
 - **FR-008**: O sistema DEVE aceitar acordes no formato Fret Notation (ex: "x32010") e renderizá-los corretamente, incluindo suporte para trastes com mais de um dígito (ex: "(10)").
 - **FR-009**: O sistema DEVE ser otimizado para performance, evitando re-renderizações desnecessárias.
 - **FR-010**: O sistema DEVE ser totalmente declarativo, sem gerenciar estado interno.
 - **FR-011**: O sistema DEVE incluir suporte a texto dentro dos círculos dos dedos (ex: números dos dedos ou notas).
+- **FR-012**: O sistema DEVE permitir customização das cores e tamanhos dos indicadores de cordas soltas (`openStringColor`, `openStringSize`) e mutadas (`mutedStringColor`, `mutedStringSize`) via propriedades de estilo.
 
 ### Entidades-Chave _(incluir se a feature envolver dados)_
 
-- **Finger**: Representa um dedo posicionado no braço. Contém `string` (corda), `fret` (traste) e `text` (texto opcional).
+- **Finger**: Representa um dedo posicionado no braço. Contém `string` (corda), `fret` (traste, 0 para cordas soltas), `is_muted` (boolean para cordas mutadas) e `text` (texto opcional).
 - **Barre**: Representa uma pestana. Contém `fret` (traste), `fromString` (corda inicial) e `toString` (corda final).
 - **ChordStyle**: Representa configurações visuais do diagrama (cores, tamanhos, espaçamentos, fontes).
 - **ChordDiagramProps**: Interface principal do componente, aceitando dados do acorde como objeto estruturado (com `fingers`, `barres`) ou como Fret Notation (ex: "x32010").

@@ -67,14 +67,16 @@ interface Instrument {
 interface Finger {
 	fret: number;
 	string: number;
+	is_muted: boolean;
 	text?: string;
 }
 ```
 
 **Regras de Validação**:
 
-- `fret` deve ser > 0
+- `fret` deve ser >= 0 (0 para cordas soltas)
 - `string` deve estar no intervalo [1, strings]
+- `is_muted` deve ser boolean (true para cordas mutadas)
 - `text` é opcional e será renderizado dentro do círculo
 
 ### Barre
@@ -109,6 +111,8 @@ interface ChordStyle {
 	stringWidth: number;
 	dotSize: number;
 	barreHeight: number;
+	openStringSize: number;
+	mutedStringSize: number;
 
 	// Cores
 	backgroundColor: string;
@@ -119,6 +123,8 @@ interface ChordStyle {
 	barreColor: string;
 	fretTextColor: string;
 	tuningTextColor: string;
+	openStringColor: string;
+	mutedStringColor: string;
 
 	// Fontes
 	fontFamily: string;
@@ -149,6 +155,11 @@ interface ChordStyle {
 2. **Posições Inválidas**: Dedos fora dos limites serão ignorados
 3. **Pestanas Sobrepostas**: Pestanas têm prioridade sobre dedos na mesma posição
 4. **Afinação Incompleta**: Lançar erro se `tuning.length !== strings`
+5. **Cordas Soltas e Mutadas**:
+    - Cordas soltas (`fret: 0, is_muted: false`) renderizam 'O' no traste zero (primeira linha vertical)
+    - Cordas mutadas (`fret: 0, is_muted: true`) renderizam 'X' vermelho no traste zero
+    - Indicadores aparecem acima do traste mais grosso, próximos às notas de afinação
+    - Se há dedos na mesma corda, eles não são mostrados (cordas mutadas têm precedência)
 
 ### Tratamento de Erros
 

@@ -23,9 +23,9 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const cMajor = {
 		fingers: [
-			{ fret: 1, string: 2, text: "1" },
-			{ fret: 2, string: 4, text: "2" },
-			{ fret: 3, string: 5, text: "3" },
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
 		],
 		barres: [],
 	};
@@ -47,9 +47,9 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const fMajor = {
 		fingers: [
-			{ fret: 2, string: 3, text: "2" },
-			{ fret: 3, string: 5, text: "3" },
-			{ fret: 3, string: 4, text: "4" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			{ fret: 3, string: 4, is_muted: false, text: "4" },
 		],
 		barres: [{ fret: 1, fromString: 6, toString: 1 }],
 	};
@@ -91,9 +91,9 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const aMinor = {
 		fingers: [
-			{ fret: 1, string: 2 },
-			{ fret: 2, string: 4 },
-			{ fret: 2, string: 3 },
+			{ fret: 1, string: 2, is_muted: false },
+			{ fret: 2, string: 4, is_muted: false },
+			{ fret: 2, string: 3, is_muted: false },
 		],
 		barres: [],
 	};
@@ -105,6 +105,10 @@ const App = () => {
 		stringColor: "#CCCCCC",
 		fretColor: "#AAAAAA",
 		fontFamily: "Arial, sans-serif",
+		openStringColor: "#00FF00", // Verde para cordas soltas
+		mutedStringColor: "#FF0000", // Vermelho para cordas mutadas
+		openStringSize: 14,
+		mutedStringSize: 16,
 	};
 
 	return <ChordDiagram chord={aMinor} style={customStyle} />;
@@ -126,9 +130,9 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const dMajorHigh = {
 		fingers: [
-			{ fret: 7, string: 2, text: "1" },
-			{ fret: 7, string: 3, text: "2" },
-			{ fret: 7, string: 4, text: "3" },
+			{ fret: 7, string: 2, is_muted: false, text: "1" },
+			{ fret: 7, string: 3, is_muted: false, text: "2" },
+			{ fret: 7, string: 4, is_muted: false, text: "3" },
 		],
 		barres: [],
 		firstFret: 5, // Começa no 5º traste
@@ -162,6 +166,8 @@ export default App;
 
 ### Cordas Soltas e Mutadas
 
+#### Exemplo 1: Usando Fret Notation
+
 Use "o" para cordas soltas e "x" para cordas mutadas na Fret Notation.
 
 ```jsx
@@ -175,6 +181,32 @@ const App = () => {
 	};
 
 	return <ChordDiagram instrument={eMinor} />;
+};
+
+export default App;
+```
+
+#### Exemplo 2: Usando Objeto Chord
+
+Você também pode especificar cordas soltas e mutadas diretamente no objeto `Chord`:
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const cMajorWithOpenStrings = {
+		fingers: [
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			{ fret: 0, string: 1, is_muted: false }, // Corda solta (mostra 'O')
+			{ fret: 0, string: 3, is_muted: true }, // Corda mutada (mostra 'X' vermelho)
+		],
+		barres: [],
+	};
+
+	return <ChordDiagram chord={cMajorWithOpenStrings} />;
 };
 
 export default App;
@@ -211,7 +243,7 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const invalidChord = {
 		fingers: [
-			{ fret: 0, string: 2 }, // ❌ Fret inválido (deve ser > 0)
+			{ fret: -1, string: 2, is_muted: false }, // ❌ Fret inválido (deve ser >= 0)
 		],
 		barres: [],
 	};
@@ -239,8 +271,8 @@ const App = () => {
 	const chordData = useMemo(
 		() => ({
 			fingers: [
-				{ fret: 1, string: 2, text: "1" },
-				{ fret: 2, string: 4, text: "2" },
+				{ fret: 1, string: 2, is_muted: false, text: "1" },
+				{ fret: 2, string: 4, is_muted: false, text: "2" },
 			],
 			barres: [],
 		}),
@@ -273,8 +305,8 @@ import { ChordDiagram, ChordDiagramProps, Chord } from "@svguitar/react";
 const App: React.FC = () => {
 	const chord: Chord = {
 		fingers: [
-			{ fret: 1, string: 2, text: "1" },
-			{ fret: 2, string: 4, text: "2" },
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
 		],
 		barres: [],
 	};

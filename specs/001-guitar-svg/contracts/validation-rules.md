@@ -123,7 +123,7 @@ function validateFretNotation(instrument: Instrument): boolean {
 
 ```typescript
 function validateFingerFret(finger: Finger): boolean {
-	return typeof finger.fret === "number" && finger.fret > 0 && Number.isInteger(finger.fret);
+	return typeof finger.fret === "number" && finger.fret >= 0 && Number.isInteger(finger.fret);
 }
 ```
 
@@ -137,6 +137,14 @@ function validateFingerString(finger: Finger, stringCount: number): boolean {
 		finger.string <= stringCount &&
 		Number.isInteger(finger.string)
 	);
+}
+```
+
+### Regra: is_muted Válido
+
+```typescript
+function validateFingerMuted(finger: Finger): boolean {
+	return typeof finger.is_muted === "boolean";
 }
 ```
 
@@ -190,6 +198,8 @@ function validateStyleDimensions(style: ChordStyle): boolean {
 		style.stringWidth,
 		style.dotSize,
 		style.barreHeight,
+		style.openStringSize,
+		style.mutedStringSize,
 	];
 
 	return dimensions.every(dim => typeof dim === "number" && dim > 0 && Number.isFinite(dim));
@@ -209,6 +219,8 @@ function validateStyleColors(style: ChordStyle): boolean {
 		style.barreColor,
 		style.fretTextColor,
 		style.tuningTextColor,
+		style.openStringColor,
+		style.mutedStringColor,
 	];
 
 	return colors.every(color => typeof color === "string" && color.length > 0);
@@ -289,7 +301,10 @@ function validateBarreVsFingers(fingers: Finger[], barres: Barre[]): { fingers: 
 ```typescript
 function validateFinger(finger: Finger, stringCount: number = 6): boolean {
 	return (
-		validateFingerFret(finger) && validateFingerString(finger, stringCount) && validateFingerText(finger)
+		validateFingerFret(finger) &&
+		validateFingerString(finger, stringCount) &&
+		validateFingerMuted(finger) &&
+		validateFingerText(finger)
 	);
 }
 ```
