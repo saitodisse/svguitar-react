@@ -62,10 +62,23 @@ export function parseFretNotation(fretNotation: string): Chord {
 			continue;
 		}
 
-		if (typeof fret === "number" && fret > 0) {
+		if (typeof fret === "number" && fret >= 0) {
 			fingers.push({
 				fret,
 				string: stringNumber,
+				is_muted: false,
+			});
+		} else if (fret === "o") {
+			fingers.push({
+				fret: 0,
+				string: stringNumber,
+				is_muted: false,
+			});
+		} else if (fret === "x") {
+			fingers.push({
+				fret: 0,
+				string: stringNumber,
+				is_muted: true,
 			});
 		}
 
@@ -83,9 +96,9 @@ export function parseFretNotation(fretNotation: string): Chord {
  * @throws {ChordDiagramError} If the finger is invalid
  */
 export function validateFinger(finger: Finger, stringCount: number): boolean {
-	if (finger.fret <= 0) {
+	if (finger.fret < 0) {
 		throw new ChordDiagramError(
-			`Invalid fret: ${finger.fret}. Fret must be greater than 0.`,
+			`Invalid fret: ${finger.fret}. Fret must be greater than or equal to 0.`,
 			ERROR_CODES.INVALID_FRET
 		);
 	}
@@ -93,6 +106,13 @@ export function validateFinger(finger: Finger, stringCount: number): boolean {
 	if (finger.string < 1 || finger.string > stringCount) {
 		throw new ChordDiagramError(
 			`Invalid string: ${finger.string}. String must be between 1 and ${stringCount}.`,
+			ERROR_CODES.INVALID_STRING
+		);
+	}
+
+	if (typeof finger.is_muted !== "boolean") {
+		throw new ChordDiagramError(
+			`Invalid is_muted: ${finger.is_muted}. is_muted must be a boolean.`,
 			ERROR_CODES.INVALID_STRING
 		);
 	}

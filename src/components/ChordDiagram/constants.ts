@@ -20,6 +20,8 @@ export const DEFAULT_CHORD_STYLE: ChordStyle = {
 	stringWidth: 2,
 	dotSize: 12,
 	barreHeight: 8,
+	openStringSize: 12,
+	mutedStringSize: 12,
 
 	// Colors
 	backgroundColor: "#ffffff",
@@ -30,6 +32,8 @@ export const DEFAULT_CHORD_STYLE: ChordStyle = {
 	barreColor: "#2196F3",
 	fretTextColor: "#333333",
 	tuningTextColor: "#666666",
+	openStringColor: "#2196F3", // Same color as normal finger dots
+	mutedStringColor: "#DC143C", // Red for muted strings
 
 	// Fonts
 	fontFamily: "Arial, sans-serif",

@@ -17,11 +17,70 @@ interface FingerProps {
  * Renders a single finger position on the fretboard
  */
 export const Finger: React.FC<FingerProps> = React.memo(({ finger, style, firstFret = 1 }) => {
-	const { fretWidth, fretHeight, dotSize, dotColor, dotTextColor, dotTextSize, fontFamily } = style;
+	const {
+		fretWidth,
+		fretHeight,
+		dotSize,
+		dotColor,
+		dotTextColor,
+		dotTextSize,
+		fontFamily,
+		openStringSize,
+		mutedStringSize,
+		openStringColor,
+		mutedStringColor,
+	} = style;
 
 	// Calculate position
 	const startX = 40; // Space for tuning labels
 	const startY = 60; // Space for fret numbers
+
+	// Handle open strings and muted strings (fret 0)
+	if (finger.fret === 0) {
+		// Position for open/muted strings at fret zero (leftmost position)
+		const x = startX - 0; // Position to the left of the first fret
+		const y = startY + (finger.string - 1) * fretHeight;
+
+		if (finger.is_muted) {
+			// Render 'X' for muted strings
+			const size = mutedStringSize;
+			const color = mutedStringColor;
+
+			return (
+				<g>
+					{/* X shape for muted strings */}
+					<line
+						x1={x - size / 2.5}
+						y1={y - size / 2.5}
+						x2={x + size / 2.5}
+						y2={y + size / 2.5}
+						stroke={color}
+						strokeWidth={4}
+					/>
+					<line
+						x1={x + size / 2.5}
+						y1={y - size / 2.5}
+						x2={x - size / 2.5}
+						y2={y + size / 2.5}
+						stroke={color}
+						strokeWidth={4}
+					/>
+				</g>
+			);
+		} else {
+			// Render 'O' for open strings
+			const size = openStringSize;
+			const color = openStringColor;
+
+			return (
+				<g>
+					<circle cx={x} cy={y} r={size / 2} fill={"white"} stroke={color} strokeWidth={2} />
+				</g>
+			);
+		}
+	}
+
+	// Regular finger position for fretted notes
 	const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
 	const y = startY + (finger.string - 1) * fretHeight;
 

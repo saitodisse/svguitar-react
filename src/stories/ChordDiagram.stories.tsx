@@ -36,9 +36,9 @@ type Story = StoryObj<typeof meta>;
 const cMajor: ChordDiagramProps = {
 	chord: {
 		fingers: [
-			{ fret: 1, string: 2, text: "1" },
-			{ fret: 2, string: 4, text: "2" },
-			{ fret: 3, string: 5, text: "3" },
+			{ fret: 1, string: 2, is_muted: false, text: "1" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
 		],
 		barres: [],
 	},
@@ -47,9 +47,9 @@ const cMajor: ChordDiagramProps = {
 const fMajor: ChordDiagramProps = {
 	chord: {
 		fingers: [
-			{ fret: 2, string: 3, text: "2" },
-			{ fret: 3, string: 5, text: "3" },
-			{ fret: 3, string: 4, text: "4" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 3, string: 5, is_muted: false, text: "3" },
+			{ fret: 3, string: 4, is_muted: false, text: "4" },
 		],
 		barres: [{ fret: 1, fromString: 1, toString: 6 }],
 	},
@@ -65,9 +65,9 @@ const gMajorInstrument: ChordDiagramProps = {
 const customStyle: ChordDiagramProps = {
 	chord: {
 		fingers: [
-			{ fret: 1, string: 2 },
-			{ fret: 2, string: 4 },
-			{ fret: 2, string: 3 },
+			{ fret: 1, string: 2, is_muted: false },
+			{ fret: 2, string: 4, is_muted: false },
+			{ fret: 2, string: 3, is_muted: false },
 		],
 		barres: [],
 	},
@@ -178,9 +178,9 @@ export const HighPosition: Story = {
 	args: {
 		chord: {
 			fingers: [
-				{ fret: 7, string: 2, text: "1" },
-				{ fret: 7, string: 3, text: "2" },
-				{ fret: 7, string: 4, text: "3" },
+				{ fret: 7, string: 2, is_muted: false, text: "1" },
+				{ fret: 7, string: 3, is_muted: false, text: "2" },
+				{ fret: 7, string: 4, is_muted: false, text: "3" },
 			],
 			barres: [],
 			firstFret: 5,
@@ -224,9 +224,9 @@ export const DropDTuning: Story = {
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify finger elements are present (should have 3 fingers for "00232")
+		// Verify finger elements are present (should have 5 circles: 2 open strings + 3 fingered positions)
 		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBe(3);
+		expect(fingerElements?.length).toBe(5);
 	},
 };
 
@@ -251,9 +251,82 @@ export const OpenStrings: Story = {
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify finger elements are present (should have 2 fingers for "022000")
+		// Verify finger elements are present (should have 6 circles: 2 fingered positions + 4 open strings)
 		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBe(2);
+		expect(fingerElements?.length).toBe(6);
+	},
+};
+
+/**
+ * Chord with open and muted strings using chord object
+ */
+export const OpenAndMutedStrings: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 1, string: 2, is_muted: false, text: "1" },
+				{ fret: 2, string: 4, is_muted: false, text: "2" },
+				{ fret: 0, string: 1, is_muted: false }, // Open string (O)
+				{ fret: 0, string: 3, is_muted: true }, // Muted string (X)
+			],
+			barres: [],
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present (2 regular fingers + 1 open circle + 1 muted X)
+		const fingerElements = svg?.querySelectorAll("circle");
+		const lineElements = svg?.querySelectorAll("line");
+		expect(fingerElements?.length).toBe(3); // 2 regular fingers + 1 open circle
+		expect(lineElements?.length).toBe(13); // 11 grid lines + 2 lines for the X
+	},
+};
+
+/**
+ * Custom styling for open and muted strings
+ */
+export const CustomOpenMutedStyle: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 0, string: 1, is_muted: false }, // Open string
+				{ fret: 0, string: 2, is_muted: true }, // Muted string
+				{ fret: 1, string: 3, is_muted: false },
+			],
+			barres: [],
+		},
+		style: {
+			openStringColor: "#00FF00", // Green for open strings
+			mutedStringColor: "#FF0000", // Red for muted strings
+			openStringSize: 14,
+			mutedStringSize: 16,
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		const lineElements = svg?.querySelectorAll("line");
+		expect(fingerElements?.length).toBe(2); // 1 regular finger + 1 open circle
+		expect(lineElements?.length).toBe(13); // 11 grid lines + 2 lines for the X
 	},
 };
 
@@ -278,8 +351,84 @@ export const HighFretNotation: Story = {
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify finger elements are present (should have 5 fingers for "101211")
+		// Verify finger elements are present (should have 6 circles: 5 fingered positions + 1 open string)
 		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBe(5);
+		expect(fingerElements?.length).toBe(6);
+	},
+};
+
+/**
+ * Performance test - Multiple chord diagrams rendered side by side
+ */
+export const PerformanceTest: Story = {
+	render: () => {
+		const chordData = {
+			chord: {
+				fingers: [
+					{ fret: 1, string: 2, is_muted: false, text: "1" },
+					{ fret: 2, string: 4, is_muted: false, text: "2" },
+					{ fret: 3, string: 5, is_muted: false, text: "3" },
+				],
+				barres: [],
+			},
+		};
+
+		const style = {
+			width: 120,
+			height: 150,
+			margin: "10px",
+		};
+
+		// Create 50 chord diagrams for performance testing
+		const chords = Array.from({ length: 50 }, (_, index) => (
+			<div
+				key={index}
+				style={{
+					display: "inline-block",
+					margin: style.margin,
+				}}
+			>
+				<ChordDiagram {...chordData} style={style} />
+			</div>
+		));
+
+		return (
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					justifyContent: "center",
+					maxWidth: "100%",
+					padding: "20px",
+				}}
+			>
+				{chords}
+			</div>
+		);
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Performance test rendering 50 identical chord diagrams side by side to test rendering performance and memory usage.",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify multiple chord diagrams are rendered
+		const chordDiagrams = canvas.getAllByTestId("chord-diagram");
+		expect(chordDiagrams.length).toBe(50);
+
+		// Verify each diagram has an SVG element
+		chordDiagrams.forEach((diagram, index) => {
+			const svg = diagram.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+			expect(svg?.tagName).toBe("svg");
+		});
+
+		// Verify total SVG elements count
+		const allSvgs = canvasElement.querySelectorAll("svg");
+		expect(allSvgs.length).toBe(50);
 	},
 };

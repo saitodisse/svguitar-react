@@ -8,10 +8,12 @@
  * Represents a finger positioned on the guitar fretboard
  */
 export interface Finger {
-	/** The fret number (1-based) */
+	/** The fret number (0-based for open strings, 1-based for fretted notes) */
 	fret: number;
 	/** The string number (1-based, 1 = thickest string) */
 	string: number;
+	/** Whether the string is muted (true for 'x' in fret notation) */
+	is_muted: boolean;
 	/** Optional text to display inside the finger circle */
 	text?: string;
 }
@@ -81,6 +83,10 @@ export interface ChordStyle {
 	dotSize: number;
 	/** Height of barre rectangles */
 	barreHeight: number;
+	/** Size of open string indicator ('O') */
+	openStringSize: number;
+	/** Size of muted string indicator ('X') */
+	mutedStringSize: number;
 
 	// Colors
 	/** Background color */
@@ -99,6 +105,10 @@ export interface ChordStyle {
 	fretTextColor: string;
 	/** Tuning text color */
 	tuningTextColor: string;
+	/** Open string indicator color */
+	openStringColor: string;
+	/** Muted string indicator color */
+	mutedStringColor: string;
 
 	// Fonts
 	/** Font family */

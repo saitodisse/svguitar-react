@@ -4,6 +4,7 @@
  * @version 1.0.0
  */
 
+import React from "react";
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ChordDiagram } from "./ChordDiagram";
@@ -14,7 +15,7 @@ describe("ChordDiagram Component", () => {
 	describe("Basic Rendering", () => {
 		it("should render with chord data", () => {
 			const chord = {
-				fingers: [{ fret: 1, string: 2, text: "1" }],
+				fingers: [{ fret: 1, string: 2, is_muted: false, text: "1" }],
 				barres: [],
 			};
 
@@ -44,7 +45,7 @@ describe("ChordDiagram Component", () => {
 	describe("Style Customization", () => {
 		it("should apply custom styles", () => {
 			const chord = {
-				fingers: [{ fret: 1, string: 2 }],
+				fingers: [{ fret: 1, string: 2, is_muted: false }],
 				barres: [],
 			};
 
@@ -61,6 +62,54 @@ describe("ChordDiagram Component", () => {
 			expect(svg).toHaveAttribute("height", "400");
 		});
 	});
+
+	describe("Open and Muted Strings", () => {
+		it("should render open strings as circles", () => {
+			const chord = {
+				fingers: [
+					{ fret: 0, string: 1, is_muted: false }, // Open string
+					{ fret: 1, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			render(<ChordDiagram chord={chord} />);
+			expect(screen.getByTestId("chord-diagram")).toBeInTheDocument();
+		});
+
+		it("should render muted strings as X", () => {
+			const chord = {
+				fingers: [
+					{ fret: 0, string: 1, is_muted: true }, // Muted string
+					{ fret: 1, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			render(<ChordDiagram chord={chord} />);
+			expect(screen.getByTestId("chord-diagram")).toBeInTheDocument();
+		});
+
+		it("should apply custom colors for open and muted strings", () => {
+			const chord = {
+				fingers: [
+					{ fret: 0, string: 1, is_muted: false },
+					{ fret: 0, string: 2, is_muted: true },
+				],
+				barres: [],
+			};
+
+			const customStyle = {
+				openStringColor: "#00FF00",
+				mutedStringColor: "#FF0000",
+				openStringSize: 14,
+				mutedStringSize: 16,
+			};
+
+			render(<ChordDiagram chord={chord} style={customStyle} />);
+			expect(screen.getByTestId("chord-diagram")).toBeInTheDocument();
+		});
+	});
 });
 
 describe("parseFretNotation", () => {
@@ -68,9 +117,12 @@ describe("parseFretNotation", () => {
 		const result = parseFretNotation("x32010");
 
 		expect(result.fingers).toEqual([
-			{ fret: 3, string: 2 },
-			{ fret: 2, string: 3 },
-			{ fret: 1, string: 5 },
+			{ fret: 0, string: 1, is_muted: true }, // 'x'
+			{ fret: 3, string: 2, is_muted: false }, // '3'
+			{ fret: 2, string: 3, is_muted: false }, // '2'
+			{ fret: 0, string: 4, is_muted: false }, // '0'
+			{ fret: 1, string: 5, is_muted: false }, // '1'
+			{ fret: 0, string: 6, is_muted: false }, // '0'
 		]);
 		expect(result.barres).toEqual([]);
 	});
@@ -79,8 +131,12 @@ describe("parseFretNotation", () => {
 		const result = parseFretNotation("022000");
 
 		expect(result.fingers).toEqual([
-			{ fret: 2, string: 2 },
-			{ fret: 2, string: 3 },
+			{ fret: 0, string: 1, is_muted: false }, // '0'
+			{ fret: 2, string: 2, is_muted: false }, // '2'
+			{ fret: 2, string: 3, is_muted: false }, // '2'
+			{ fret: 0, string: 4, is_muted: false }, // '0'
+			{ fret: 0, string: 5, is_muted: false }, // '0'
+			{ fret: 0, string: 6, is_muted: false }, // '0'
 		]);
 	});
 
@@ -88,12 +144,12 @@ describe("parseFretNotation", () => {
 		const result = parseFretNotation("(10)(12)(10)(10)(10)(10)");
 
 		expect(result.fingers).toEqual([
-			{ fret: 10, string: 1 },
-			{ fret: 12, string: 2 },
-			{ fret: 10, string: 3 },
-			{ fret: 10, string: 4 },
-			{ fret: 10, string: 5 },
-			{ fret: 10, string: 6 },
+			{ fret: 10, string: 1, is_muted: false },
+			{ fret: 12, string: 2, is_muted: false },
+			{ fret: 10, string: 3, is_muted: false },
+			{ fret: 10, string: 4, is_muted: false },
+			{ fret: 10, string: 5, is_muted: false },
+			{ fret: 10, string: 6, is_muted: false },
 		]);
 	});
 
@@ -113,19 +169,37 @@ describe("parseFretNotation", () => {
 describe("validateFinger", () => {
 	it("should validate correct finger", () => {
 		expect(() => {
-			validateFinger({ fret: 1, string: 2 }, 6);
+			validateFinger({ fret: 1, string: 2, is_muted: false }, 6);
 		}).not.toThrow();
 	});
 
-	it("should throw error for invalid fret", () => {
+	it("should validate open string (fret 0)", () => {
 		expect(() => {
-			validateFinger({ fret: 0, string: 2 }, 6);
+			validateFinger({ fret: 0, string: 2, is_muted: false }, 6);
+		}).not.toThrow();
+	});
+
+	it("should validate muted string (fret 0, is_muted true)", () => {
+		expect(() => {
+			validateFinger({ fret: 0, string: 2, is_muted: true }, 6);
+		}).not.toThrow();
+	});
+
+	it("should throw error for negative fret", () => {
+		expect(() => {
+			validateFinger({ fret: -1, string: 2, is_muted: false }, 6);
 		}).toThrow(ChordDiagramError);
 	});
 
 	it("should throw error for invalid string", () => {
 		expect(() => {
-			validateFinger({ fret: 1, string: 7 }, 6);
+			validateFinger({ fret: 1, string: 7, is_muted: false }, 6);
+		}).toThrow(ChordDiagramError);
+	});
+
+	it("should throw error for missing is_muted property", () => {
+		expect(() => {
+			validateFinger({ fret: 1, string: 2, is_muted: undefined as unknown as boolean }, 6);
 		}).toThrow(ChordDiagramError);
 	});
 });

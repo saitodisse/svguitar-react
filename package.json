@@ -1,7 +1,7 @@
 {
 	"name": "svguitar-react",
 	"private": false,
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"type": "module",
 	"description": "A React component for rendering guitar chord diagrams in SVG format",
 	"keywords": [
@@ -41,6 +41,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"storybook": "storybook dev -p 6006",
+		"storybook:ci": "storybook dev -p 6006 --ci",
 		"build-storybook": "storybook build",
 		"test-storybook": "test-storybook",
 		"format": "prettier --write .",
