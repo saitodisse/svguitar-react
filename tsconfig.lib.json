@@ -1,0 +1,16 @@
+{
+	"extends": "./tsconfig.app.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"declaration": true,
+		"declarationMap": true,
+		"outDir": "./dist",
+		"allowImportingTsExtensions": false,
+		"verbatimModuleSyntax": false,
+		"module": "ESNext",
+		"target": "ES2022",
+		"moduleResolution": "bundler"
+	},
+	"include": ["src/index.ts", "src/components/**/*"],
+	"exclude": ["src/**/*.test.*", "src/**/*.spec.*", "src/stories/**/*", "src/main.tsx", "src/App.tsx"]
+}
