@@ -162,8 +162,8 @@ interface ChordStyle {
 3. **Pestanas Sobrepostas**: Pestanas têm prioridade sobre dedos na mesma posição
 4. **Afinação Incompleta**: Lançar erro se `tuning.length !== strings`
 5. **Cordas Soltas e Mutadas**:
-    - Cordas soltas (`fret: 0, is_muted: false`) renderizam 'O' no traste zero (primeira linha vertical)
-    - Cordas mutadas (`fret: 0, is_muted: true`) renderizam 'X' vermelho no traste zero
+    - Cordas soltas (`fret: 0, is_muted: false`) renderizam um círculo ('O') com preenchimento branco no traste zero (primeira linha vertical)
+    - Cordas mutadas (`fret: 0, is_muted: true`) renderizam um 'X' vermelho e espesso no traste zero
     - Indicadores aparecem acima do traste mais grosso, próximos às notas de afinação
     - Se há dedos na mesma corda, eles não são mostrados (cordas mutadas têm precedência)
 

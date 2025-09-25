@@ -33,7 +33,7 @@ export const Finger: React.FC<FingerProps> = React.memo(({ finger, style, firstF
 	} = style;
 
 	// Calculate position
-	const startX = 40; // Space for tuning labels
+	const startX = 60; // Space for tuning labels
 	const startY = 60; // Space for fret numbers
 
 	// Invert y-axis: string 1 is at the bottom
@@ -58,7 +58,7 @@ export const Finger: React.FC<FingerProps> = React.memo(({ finger, style, firstF
 						x2={x + size / 2.5}
 						y2={y + size / 2.5}
 						stroke={color}
-						strokeWidth={2}
+						strokeWidth={4}
 					/>
 					<line
 						x1={x + size / 2.5}
@@ -66,7 +66,7 @@ export const Finger: React.FC<FingerProps> = React.memo(({ finger, style, firstF
 						x2={x - size / 2.5}
 						y2={y + size / 2.5}
 						stroke={color}
-						strokeWidth={2}
+						strokeWidth={4}
 					/>
 				</g>
 			);
@@ -77,7 +77,7 @@ export const Finger: React.FC<FingerProps> = React.memo(({ finger, style, firstF
 
 			return (
 				<g>
-					<circle cx={x} cy={y} r={size / 2} fill="transparent" stroke={color} strokeWidth={2} />
+					<circle cx={x} cy={y} r={size / 2} fill="white" stroke={color} strokeWidth={2} />
 				</g>
 			);
 		}
