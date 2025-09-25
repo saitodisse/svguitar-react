@@ -21,7 +21,7 @@ export const FretNumbers: React.FC<FretNumbersProps> = React.memo(({ firstFret, 
 
 	// Calculate positions
 	const startX = 40; // Space for tuning labels
-	const y = 20; // Position above the fretboard
+	const y = 50; // Position above the fretboard
 
 	return (
 		<g>

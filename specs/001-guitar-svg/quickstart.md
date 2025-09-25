@@ -155,7 +155,7 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const dropDTuning = {
 		tuning: ["D", "A", "D", "G", "B", "E"], // Drop D tuning
-		chord: "x00232", // D Major em Drop D
+		chord: "000232", // D Major em Drop D
 	};
 
 	return <ChordDiagram instrument={dropDTuning} />;

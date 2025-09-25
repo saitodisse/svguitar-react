@@ -210,7 +210,7 @@ export const DropDTuning: Story = {
 	args: {
 		instrument: {
 			tuning: ["D", "A", "D", "G", "B", "E"],
-			chord: "x00232",
+			chord: "000232",
 		},
 	},
 	play: async ({ canvasElement }) => {
@@ -224,9 +224,9 @@ export const DropDTuning: Story = {
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify finger elements are present (should have 5 circles: 2 open strings + 3 fingered positions)
+		// Verify finger elements are present (should have 6 circles: 3 open strings + 3 fingered positions)
 		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBe(5);
+		expect(fingerElements?.length).toBe(6);
 	},
 };
 
