@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import { getStartX, getStartY } from "./utils";
 
 interface FretboardProps {
 	// Layout
@@ -74,11 +75,21 @@ interface FretboardProps {
  * Renders the guitar fretboard (frets and strings)
  */
 export const Fretboard: React.FC<FretboardProps> = React.memo(props => {
-	const { fretCount, stringCount, fretWidth, fretHeight, stringWidth, fretColor, stringColor } = props;
+	const {
+		fretCount,
+		stringCount,
+		fretWidth,
+		fretHeight,
+		stringWidth,
+		fretColor,
+		stringColor,
+		tuningTextSize,
+		fretTextSize,
+	} = props;
 
-	// Calculate positions
-	const startX = 40; // Space for tuning labels
-	const startY = 60; // Space for fret numbers
+	// Calculate positions using utility functions
+	const startX = getStartX({ fretWidth, tuningTextSize });
+	const startY = getStartY({ fretTextSize });
 	const endX = startX + fretCount * fretWidth;
 	const endY = startY + (stringCount - 1) * fretHeight;
 

@@ -166,6 +166,7 @@ interface ChordStyle {
     - Cordas mutadas (`fret: 0, is_muted: true`) renderizam um 'X' vermelho e espesso no traste zero
     - Indicadores aparecem acima do traste mais grosso, próximos às notas de afinação
     - Se há dedos na mesma corda, eles não são mostrados (cordas mutadas têm precedência)
+6. **Centralização de Dots**: Os dots (posições dos dedos) devem sempre ser centralizados no meio do espaço do traste, independentemente do valor de `fretWidth`. O cálculo deve usar `fretWidth * 0.5` para garantir centralização consistente.
 
 ### Tratamento de Erros
 

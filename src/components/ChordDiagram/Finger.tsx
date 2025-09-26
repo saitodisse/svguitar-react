@@ -6,6 +6,7 @@
 
 import React from "react";
 import type { Finger as FingerType, ChordStyle } from "./types";
+import { getStartX, getStartY, getFingerX, getFingerY } from "./utils";
 
 interface FingerProps {
 	finger: FingerType;
@@ -22,6 +23,8 @@ interface FingerProps {
 	mutedStringSize: number;
 	openStringColor: string;
 	mutedStringColor: string;
+	tuningTextSize: number;
+	fretTextSize: number;
 }
 
 /**
@@ -43,18 +46,21 @@ export const Finger: React.FC<FingerProps> = React.memo(
 		mutedStringSize,
 		openStringColor,
 		mutedStringColor,
+		tuningTextSize,
+		fretTextSize,
 	}) => {
-		// Calculate position
-		const startX = 60; // Space for tuning labels
-		const startY = 60; // Space for fret numbers
+		// Calculate positions using utility functions
+		const startX = getStartX({ fretWidth, tuningTextSize });
+		const startY = getStartY({ fretTextSize });
 
-		// Invert y-axis: string 1 is at the bottom
-		const y = startY + (stringCount - finger.string) * fretHeight;
+		// Calculate finger position using utility functions
+		const x = getFingerX(finger, firstFret, fretWidth, startX);
+		const y = getFingerY(finger, stringCount, fretHeight, startY);
 
 		// Handle open strings and muted strings (fret 0)
 		if (finger.fret === 0) {
 			// Position for open/muted strings to the left of the nut
-			const x = startX - fretWidth / 2;
+			const openX = startX - fretWidth / 2;
 
 			if (finger.is_muted) {
 				// Render 'X' for muted strings
@@ -65,17 +71,17 @@ export const Finger: React.FC<FingerProps> = React.memo(
 					<g>
 						{/* X shape for muted strings */}
 						<line
-							x1={x - size / 2.5}
+							x1={openX - size / 2.5}
 							y1={y - size / 2.5}
-							x2={x + size / 2.5}
+							x2={openX + size / 2.5}
 							y2={y + size / 2.5}
 							stroke={color}
 							strokeWidth={4}
 						/>
 						<line
-							x1={x + size / 2.5}
+							x1={openX + size / 2.5}
 							y1={y - size / 2.5}
-							x2={x - size / 2.5}
+							x2={openX - size / 2.5}
 							y2={y + size / 2.5}
 							stroke={color}
 							strokeWidth={4}
@@ -89,15 +95,13 @@ export const Finger: React.FC<FingerProps> = React.memo(
 
 				return (
 					<g>
-						<circle cx={x} cy={y} r={size / 2} fill="white" stroke={color} strokeWidth={2} />
+						<circle cx={openX} cy={y} r={size / 2} fill="white" stroke={color} strokeWidth={2} />
 					</g>
 				);
 			}
 		}
 
-		// Regular finger position for fretted notes
-		const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
-
+		// Regular finger position for fretted notes (x and y already calculated above)
 		return (
 			<g>
 				<circle cx={x} cy={y} r={dotSize / 2} fill={dotColor} stroke={dotColor} strokeWidth={1} />

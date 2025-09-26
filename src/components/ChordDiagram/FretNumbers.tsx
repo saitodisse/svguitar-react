@@ -6,6 +6,7 @@
 
 import React from "react";
 import type { ChordStyle } from "./types";
+import { getStartX } from "./utils";
 
 interface FretNumbersProps {
 	firstFret: number;
@@ -14,15 +15,16 @@ interface FretNumbersProps {
 	fretTextColor: string;
 	fretTextSize: number;
 	fontFamily: string;
+	tuningTextSize: number;
 }
 
 /**
  * Renders fret numbers above the fretboard
  */
 export const FretNumbers: React.FC<FretNumbersProps> = React.memo(
-	({ firstFret, fretCount, fretWidth, fretTextColor, fretTextSize, fontFamily }) => {
-		// Calculate positions
-		const startX = 40; // Space for tuning labels
+	({ firstFret, fretCount, fretWidth, fretTextColor, fretTextSize, fontFamily, tuningTextSize }) => {
+		// Calculate positions using utility functions
+		const startX = getStartX({ fretWidth, tuningTextSize });
 		const y = 50; // Position above the fretboard
 
 		return (

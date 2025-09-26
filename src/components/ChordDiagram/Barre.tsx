@@ -6,6 +6,7 @@
 
 import React from "react";
 import type { Barre as BarreType, ChordStyle } from "./types";
+import { getStartX, getStartY } from "./utils";
 
 interface BarreProps {
 	barre: BarreType;
@@ -18,6 +19,8 @@ interface BarreProps {
 	fontFamily: string;
 	dotTextSize: number;
 	dotTextColor: string;
+	tuningTextSize: number;
+	fretTextSize: number;
 }
 
 /**
@@ -35,10 +38,12 @@ export const Barre: React.FC<BarreProps> = React.memo(
 		fontFamily,
 		dotTextSize,
 		dotTextColor,
+		tuningTextSize,
+		fretTextSize,
 	}) => {
-		// Calculate position
-		const startX = 40; // Space for tuning labels
-		const startY = 60; // Space for fret numbers
+		// Calculate positions using utility functions
+		const startX = getStartX({ fretWidth, tuningTextSize });
+		const startY = getStartY({ fretTextSize });
 		const x = startX + (barre.fret - firstFret + 0.5) * fretWidth;
 
 		// Invert y-axis: string 1 is at the bottom

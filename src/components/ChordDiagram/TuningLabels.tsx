@@ -6,6 +6,7 @@
 
 import React from "react";
 import type { ChordStyle } from "./types";
+import { getStartY } from "./utils";
 
 interface TuningLabelsProps {
 	tuning: string[];
@@ -14,15 +15,16 @@ interface TuningLabelsProps {
 	tuningTextColor: string;
 	tuningTextSize: number;
 	fontFamily: string;
+	fretTextSize: number;
 }
 
 /**
  * Renders tuning labels for each string
  */
 export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(
-	({ tuning, stringCount, fretHeight, tuningTextColor, tuningTextSize, fontFamily }) => {
-		// Calculate positions
-		const startY = 60; // Space for fret numbers
+	({ tuning, stringCount, fretHeight, tuningTextColor, tuningTextSize, fontFamily, fretTextSize }) => {
+		// Calculate positions using utility functions
+		const startY = getStartY({ fretTextSize });
 		const x = 20; // Position to the left of the fretboard
 
 		return (

@@ -128,7 +128,27 @@ interface ChordStyle {
 }
 ```
 
-## 4. Regras de Validação
+## 4. Cálculos de Posicionamento
+
+### Centralização de Dots
+
+Os dots (posições dos dedos) devem sempre ser centralizados no meio do espaço do traste, independentemente do valor de `fretWidth`. A fórmula para calcular a posição X dos dots é:
+
+```typescript
+const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
+```
+
+Onde:
+
+- `startX`: Posição inicial do diagrama (espaço para labels de afinação)
+- `finger.fret`: Traste do dedo
+- `firstFret`: Primeiro traste exibido (para acordes em posições altas)
+- `fretWidth`: Largura do espaço entre trastes
+- `0.5`: Constante que garante centralização no meio do espaço do traste
+
+Esta fórmula garante que os dots sempre apareçam centralizados, mesmo quando o `fretWidth` é alterado.
+
+## 5. Regras de Validação
 
 ### Validação de Fingers
 

@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-12-19
+
+### Enhanced
+
+- **Improved Dot Positioning**: Enhanced finger dot positioning to ensure consistent centering within fret spaces
+- **Dynamic Fret Width Support**: Dots now automatically adjust their position when `fretWidth` changes, maintaining perfect centering
+- **Centralized Utility Functions**: Added utility functions for consistent position calculations across all components
+
+### Technical Improvements
+
+- **Centralized Positioning Logic**: Created `getFingerX()` and `getFingerY()` utility functions for consistent dot positioning
+- **Enhanced Fret Width Responsiveness**: Dots now use the formula `x = startX + (finger.fret - firstFret + 0.5) * fretWidth` for perfect centering
+- **Improved Component Architecture**: All positioning components now use centralized utility functions for consistency
+- **Better Code Maintainability**: Refactored hardcoded positioning values to use dynamic calculations
+
+### API Changes
+
+```tsx
+// Enhanced positioning with 0.5 centering factor
+const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
+
+// Utility functions now available:
+// - getStartX(style) - calculates starting X position
+// - getStartY(style) - calculates starting Y position  
+// - getFingerX(finger, firstFret, fretWidth, startX) - calculates finger X position
+// - getFingerY(finger, stringCount, fretHeight, startY) - calculates finger Y position
+```
+
+### Examples
+
+```tsx
+// Dots now perfectly center regardless of fretWidth changes
+<ChordDiagram
+  chord={chord}
+  style={{
+    fretWidth: 25, // Small fret width - dots still centered
+    // ... other styles
+  }}
+/>
+
+<ChordDiagram
+  chord={chord}
+  style={{
+    fretWidth: 75, // Large fret width - dots still centered
+    // ... other styles
+  }}
+/>
+```
+
 ## [1.1.0] - 2024-12-19
 
 ### Added

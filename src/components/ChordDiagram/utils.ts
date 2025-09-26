@@ -259,6 +259,62 @@ export function mergeInstrument(customInstrument?: Partial<Instrument>): Instrum
 }
 
 /**
+ * Calculates the starting X position for the fretboard
+ * @param style - Style configuration
+ * @returns Starting X position
+ */
+export function getStartX(style: { fretWidth: number; tuningTextSize: number }): number {
+	// Calculate space needed for tuning labels based on text size
+	// Add some padding to ensure labels don't overlap with fretboard
+	return Math.max(50, style.tuningTextSize * 2.5);
+}
+
+/**
+ * Calculates the starting Y position for the fretboard
+ * @param style - Style configuration
+ * @returns Starting Y position
+ */
+export function getStartY(style: { fretTextSize: number }): number {
+	// Calculate space needed for fret numbers based on text size
+	// Add some padding to ensure numbers don't overlap with fretboard
+	return Math.max(50, style.fretTextSize * 3);
+}
+
+/**
+ * Calculates the X position for a finger dot, ensuring it's centered in the fret space
+ * @param finger - Finger object
+ * @param firstFret - First fret to display
+ * @param fretWidth - Width of each fret space
+ * @param startX - Starting X position of the fretboard
+ * @returns X position for the finger dot
+ */
+export function getFingerX(
+	finger: { fret: number },
+	firstFret: number,
+	fretWidth: number,
+	startX: number
+): number {
+	return startX + (finger.fret - firstFret + 0.5) * fretWidth;
+}
+
+/**
+ * Calculates the Y position for a finger dot
+ * @param finger - Finger object
+ * @param stringCount - Total number of strings
+ * @param fretHeight - Height of each fret space
+ * @param startY - Starting Y position of the fretboard
+ * @returns Y position for the finger dot
+ */
+export function getFingerY(
+	finger: { string: number },
+	stringCount: number,
+	fretHeight: number,
+	startY: number
+): number {
+	return startY + (stringCount - finger.string) * fretHeight;
+}
+
+/**
  * Validates and processes chord data from props
  * @param props - Component props
  * @returns Processed chord data
