@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 import { ChordDiagram } from "../components/ChordDiagram/ChordDiagram";
 import type { ChordDiagramProps } from "../components/ChordDiagram/types";
+import { DEFAULT_CHORD_STYLE } from "../components/ChordDiagram/constants";
 
 const meta: Meta<typeof ChordDiagram> = {
 	title: "Components/ChordDiagram",
@@ -21,9 +22,164 @@ const meta: Meta<typeof ChordDiagram> = {
 		},
 	},
 	argTypes: {
-		style: {
-			control: "object",
-			description: "Custom styling options for the chord diagram",
+		// Layout
+		orientation: {
+			control: { type: "radio" },
+			options: ["horizontal", "vertical"],
+			description: "Diagram orientation",
+			table: { category: "Layout", defaultValue: { summary: "horizontal" } },
+		},
+		handedness: {
+			control: { type: "radio" },
+			options: ["right", "left"],
+			description: "For right- or left-handed players",
+			table: { category: "Layout", defaultValue: { summary: "right" } },
+		},
+
+		// Dimensions
+		width: {
+			control: { type: "range", min: 0, max: 1000 },
+			description: "Total width of the SVG",
+			table: { category: "Dimensions", defaultValue: { summary: "200", detail: "px" } },
+		},
+		height: {
+			control: { type: "range", min: 0, max: 1000 },
+			description: "Total height of the SVG",
+			table: { category: "Dimensions", defaultValue: { summary: "250" } },
+		},
+		fretCount: {
+			control: { type: "range", min: 0, max: 18 },
+			description: "Number of frets to render",
+			table: { category: "Dimensions", defaultValue: { summary: "4" } },
+		},
+		stringCount: {
+			control: { type: "range", min: 0, max: 12 },
+			description: "Number of strings",
+			table: { category: "Dimensions", defaultValue: { summary: "6" } },
+		},
+		fretWidth: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Width of each fret space",
+			table: { category: "Dimensions", defaultValue: { summary: "40" } },
+		},
+		fretHeight: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Height of each fret space",
+			table: { category: "Dimensions", defaultValue: { summary: "30" } },
+		},
+		stringWidth: {
+			control: { type: "range", min: 0, max: 10 },
+			description: "Width of string lines",
+			table: { category: "Dimensions", defaultValue: { summary: "2" } },
+		},
+		dotSize: {
+			control: { type: "range", min: 0, max: 20 },
+			description: "Size of finger dots",
+			table: { category: "Dimensions", defaultValue: { summary: "12" } },
+		},
+		barreHeight: {
+			control: { type: "range", min: 0, max: 28 },
+			description: "Height of barre rectangles",
+			table: { category: "Dimensions", defaultValue: { summary: "8" } },
+		},
+		openStringSize: {
+			control: { type: "range", min: 0, max: 24 },
+			description: "Size of open string indicator ('O')",
+			table: { category: "Dimensions", defaultValue: { summary: "12" } },
+		},
+		mutedStringSize: {
+			control: { type: "range", min: 0, max: 24 },
+			description: "Size of muted string indicator ('X')",
+			table: { category: "Dimensions", defaultValue: { summary: "12" } },
+		},
+
+		// Colors
+		backgroundColor: {
+			control: "color",
+			description: "Background color",
+			table: { category: "Colors", defaultValue: { summary: "#ffffff" } },
+		},
+		fretColor: {
+			control: "color",
+			description: "Fret line color",
+			table: { category: "Colors", defaultValue: { summary: "#333333" } },
+		},
+		stringColor: {
+			control: "color",
+			description: "String line color",
+			table: { category: "Colors", defaultValue: { summary: "#666666" } },
+		},
+		dotColor: {
+			control: "color",
+			description: "Finger dot color",
+			table: { category: "Colors", defaultValue: { summary: "#2196F3" } },
+		},
+		dotTextColor: {
+			control: "color",
+			description: "Finger dot text color",
+			table: { category: "Colors", defaultValue: { summary: "#ffffff" } },
+		},
+		barreColor: {
+			control: "color",
+			description: "Barre color",
+			table: { category: "Colors", defaultValue: { summary: "#2196F3" } },
+		},
+		fretTextColor: {
+			control: "color",
+			description: "Fret number text color",
+			table: { category: "Colors", defaultValue: { summary: "#333333" } },
+		},
+		tuningTextColor: {
+			control: "color",
+			description: "Tuning text color",
+			table: { category: "Colors", defaultValue: { summary: "#666666" } },
+		},
+		openStringColor: {
+			control: "color",
+			description: "Open string indicator color",
+			table: { category: "Colors", defaultValue: { summary: "#2196F3" } },
+		},
+		mutedStringColor: {
+			control: "color",
+			description: "Muted string indicator color",
+			table: { category: "Colors", defaultValue: { summary: "#DC143C" } },
+		},
+
+		// Fonts
+		fontFamily: {
+			control: "select",
+			description: "Font family",
+			table: { category: "Fonts", defaultValue: { summary: "Arial, sans-serif" } },
+			options: [
+				"Arial, sans-serif",
+				"monospace",
+				"sans-serif",
+				"serif",
+				"Verdana, sans-serif",
+				"Roboto, sans-serif",
+				"Open Sans, sans-serif",
+				"Poppins, sans-serif",
+				"Montserrat, sans-serif",
+				"Lato, sans-serif",
+				"Noto Sans, sans-serif",
+				"Ubuntu, sans-serif",
+				"Inter, sans-serif",
+			],
+		},
+		dotTextSize: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Finger dot text size",
+			table: { category: "Fonts", defaultValue: { summary: "10" } },
+		},
+		fretTextSize: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Fret number text size",
+			table: { category: "Fonts", defaultValue: { summary: "12" } },
+		},
+		tuningTextSize: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Tuning text size",
+			table: { category: "Fonts", defaultValue: { summary: "14" } },
 		},
 	},
 	tags: ["autodocs"],
@@ -64,31 +220,46 @@ const gMajorInstrument: ChordDiagramProps = {
 	},
 };
 
-const customStyle: ChordDiagramProps = {
-	chord: {
-		// A minor: x02210
-		fingers: [
-			{ fret: 2, string: 3, is_muted: false },
-			{ fret: 2, string: 4, is_muted: false },
-			{ fret: 1, string: 5, is_muted: false },
-		],
-		barres: [],
-	},
-	style: {
-		width: 150,
-		height: 180,
-		dotColor: "#FF5733",
-		stringColor: "#CCCCCC",
-		fretColor: "#AAAAAA",
-		fontFamily: "Arial, sans-serif",
-	},
+const customStyleChord = {
+	// A minor: x02210
+	fingers: [
+		{ fret: 2, string: 3, is_muted: false },
+		{ fret: 2, string: 4, is_muted: false },
+		{ fret: 1, string: 5, is_muted: false },
+	],
+	barres: [],
+};
+
+const customStyleProps = {
+	width: 150,
+	height: 180,
+	dotColor: "#FF5733",
+	stringColor: "#CCCCCC",
+	fretColor: "#AAAAAA",
+	fontFamily: "Arial, sans-serif",
 };
 
 /**
  * Default chord diagram with C Major chord
  */
 export const Default: Story = {
-	args: cMajor,
+	args: {
+		...cMajor,
+		...DEFAULT_CHORD_STYLE,
+		orientation: "vertical",
+		width: 780,
+		height: 248,
+		fretCount: 12,
+		fretWidth: 60,
+		stringWidth: 3,
+		dotSize: 17,
+		barreHeight: 9,
+		fretTextColor: "#979797",
+		fontFamily: "monospace",
+		dotTextSize: 14,
+		fretTextSize: 16,
+		tuningTextSize: 15,
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -112,7 +283,19 @@ export const Default: Story = {
  * Chord diagram with barre (F Major)
  */
 export const WithBarre: Story = {
-	args: fMajor,
+	args: {
+		...fMajor,
+		...DEFAULT_CHORD_STYLE,
+		width: 309,
+		fretCount: 5,
+		fretWidth: 50,
+		dotSize: 18,
+		barreHeight: 11,
+		fretTextColor: "#abaaaa",
+		fontFamily: "sans-serif",
+		dotTextSize: 15,
+		fretTextSize: 17,
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -134,7 +317,7 @@ export const WithBarre: Story = {
  * Chord diagram using fret notation (G Major)
  */
 export const WithFretNotation: Story = {
-	args: gMajorInstrument,
+	args: { ...gMajorInstrument, ...DEFAULT_CHORD_STYLE },
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -156,7 +339,11 @@ export const WithFretNotation: Story = {
  * Chord diagram with custom styling
  */
 export const CustomStyle: Story = {
-	args: customStyle,
+	args: {
+		...DEFAULT_CHORD_STYLE,
+		...customStyleProps,
+		chord: customStyleChord,
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -179,6 +366,7 @@ export const CustomStyle: Story = {
  */
 export const HighPosition: Story = {
 	args: {
+		...DEFAULT_CHORD_STYLE,
 		chord: {
 			// D barre chord at 5th fret: x5777x
 			fingers: [
@@ -204,7 +392,7 @@ export const HighPosition: Story = {
 
 		// Verify finger elements are present
 		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBe(3); // Should have 3 fingers
+		expect(fingerElements?.length).toBe(4); // Should have 4 fingers (strings 2,3,4,5)
 	},
 };
 
@@ -217,6 +405,7 @@ export const DropDTuning: Story = {
 			tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "000232",
 		},
+		...DEFAULT_CHORD_STYLE,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -244,6 +433,7 @@ export const OpenStrings: Story = {
 			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "022000",
 		},
+		...DEFAULT_CHORD_STYLE,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -279,6 +469,7 @@ export const OpenAndMutedStrings: Story = {
 			],
 			barres: [],
 		},
+		...DEFAULT_CHORD_STYLE,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -312,12 +503,11 @@ export const CustomOpenMutedStyle: Story = {
 			],
 			barres: [],
 		},
-		style: {
-			openStringColor: "#00FF00", // Green for open strings
-			mutedStringColor: "#FF0000", // Red for muted strings
-			openStringSize: 14,
-			mutedStringSize: 16,
-		},
+		...DEFAULT_CHORD_STYLE,
+		openStringColor: "#00FF00", // Green for open strings
+		mutedStringColor: "#FF0000", // Red for muted strings
+		openStringSize: 14,
+		mutedStringSize: 16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -343,6 +533,7 @@ export const CustomOpenMutedStyle: Story = {
  */
 export const HighFretNotation: Story = {
 	args: {
+		...DEFAULT_CHORD_STYLE,
 		instrument: {
 			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "(10)(12)(12)(11)(10)(10)",
@@ -385,7 +576,6 @@ export const PerformanceTest: Story = {
 		const style = {
 			width: 120,
 			height: 150,
-			margin: "10px",
 		};
 
 		// Create 50 chord diagrams for performance testing
@@ -394,10 +584,10 @@ export const PerformanceTest: Story = {
 				key={index}
 				style={{
 					display: "inline-block",
-					margin: style.margin,
+					margin: "10px",
 				}}
 			>
-				<ChordDiagram {...chordData} style={style} />
+				<ChordDiagram {...chordData} {...style} />
 			</div>
 		));
 

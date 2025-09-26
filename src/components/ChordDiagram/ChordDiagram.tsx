@@ -30,14 +30,15 @@ import { FretNumbers } from "./FretNumbers";
  * ```
  */
 export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
+	const { chord, instrument, ...styleProps } = props;
 	// Process and validate chord data
-	const chordData = processChordData(props);
+	const chordData = processChordData({ chord, instrument });
 
 	// Merge custom styles with defaults
-	const style = mergeStyles(props.style);
+	const style = mergeStyles(styleProps);
 
 	// Get instrument data for tuning labels
-	const instrument = mergeInstrument(props.instrument);
+	const instrumentData = mergeInstrument(instrument);
 	const firstFret = chordData.firstFret || 1;
 
 	return (
@@ -52,22 +53,22 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				<rect width={style.width} height={style.height} fill={style.backgroundColor} />
 
 				{/* Fret numbers */}
-				<FretNumbers firstFret={firstFret} fretCount={style.fretCount} style={style} />
+				<FretNumbers firstFret={firstFret} {...style} />
 
 				{/* Tuning labels */}
-				<TuningLabels tuning={instrument.tuning} style={style} />
+				<TuningLabels tuning={instrumentData.tuning} {...style} />
 
 				{/* Fretboard */}
-				<Fretboard style={style} />
+				<Fretboard {...style} />
 
 				{/* Fingers */}
 				{chordData.fingers.map((finger, index) => (
-					<Finger key={`finger-${index}`} finger={finger} style={style} firstFret={firstFret} />
+					<Finger key={`finger-${index}`} finger={finger} firstFret={firstFret} {...style} />
 				))}
 
 				{/* Barres */}
 				{chordData.barres.map((barre, index) => (
-					<Barre key={`barre-${index}`} barre={barre} style={style} firstFret={firstFret} />
+					<Barre key={`barre-${index}`} barre={barre} firstFret={firstFret} {...style} />
 				))}
 			</svg>
 		</div>

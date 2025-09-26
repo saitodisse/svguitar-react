@@ -160,6 +160,42 @@ export function validateBarre(barre: Barre, stringCount: number): boolean {
 }
 
 /**
+ * Counts the number of string positions in a fret notation string
+ * @param fretNotation - The fret notation string
+ * @returns Number of string positions
+ */
+function countStringPositions(fretNotation: string): number {
+	let stringCount = 0;
+	let i = 0;
+
+	while (i < fretNotation.length) {
+		const char = fretNotation[i];
+
+		if (char === "x" || char === "o") {
+			stringCount++;
+			i++;
+		} else if (char === "(") {
+			const endIndex = fretNotation.indexOf(")", i);
+			if (endIndex !== -1) {
+				stringCount++;
+				i = endIndex + 1;
+			} else {
+				// Invalid notation, but we'll let parseFretNotation handle the error
+				i++;
+			}
+		} else if (char >= "0" && char <= "9") {
+			stringCount++;
+			i++;
+		} else {
+			// Skip invalid characters
+			i++;
+		}
+	}
+
+	return stringCount;
+}
+
+/**
  * Validates an Instrument object
  * @param instrument - The instrument to validate
  * @returns True if valid, throws error if invalid
@@ -187,9 +223,10 @@ export function validateInstrument(instrument: Instrument): boolean {
 		);
 	}
 
-	if (instrument.chord.length !== instrument.strings) {
+	const stringPositions = countStringPositions(instrument.chord);
+	if (stringPositions !== instrument.strings) {
 		throw new ChordDiagramError(
-			`Invalid chord notation: length (${instrument.chord.length}) must match strings count (${instrument.strings}).`,
+			`Invalid chord notation: string positions (${stringPositions}) must match strings count (${instrument.strings}).`,
 			ERROR_CODES.INVALID_TAB_STRING
 		);
 	}
