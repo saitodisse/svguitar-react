@@ -69,15 +69,15 @@ pnpm build-storybook
 
 ### Playwright MCP
 
-- **Disponível**: Ferramenta de automação de browser integrada
+- **Disponível**: Ferramenta de automação de browser integrada (use com moderação)
 - **Uso**: Para visualizar e interagir com o Storybook em `http://localhost:6006/`
-- **Quando usar**: Para testar componentes visualmente, verificar responsividade, ou validar comportamento interativo
+- **Quando usar**: Para testar componentes visualmente, verificar responsividade, ou validar comportamento interativo - prefira sempre utilizar os scripts `pnpm test-storybook` pela velocidade
 - **Comando**: Verifique se o Storybook está rodando e somente então use as ferramentas Playwright MCP para navegar e interagir; Se o servidor não estiver rodando, inicie-o com `pnpm storybook`
 
 ### Context7 (Documentação de Bibliotecas)
 
 - **Disponível**: Acesso à documentação mais atualizada de bibliotecas externas
-- **Uso**: SEMPRE que usar bibliotecas externas, verifique a documentação mais recente
+- **Uso**: SEMPRE que usar bibliotecas externas, verifique as documentações mais recentes
 - **Quando usar**:
     - Antes de implementar funcionalidades com bibliotecas externas
     - Para verificar breaking changes ou atualizações
