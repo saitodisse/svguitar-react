@@ -1,3 +1,49 @@
+# Release Notes - @svguitar/react v1.2.1
+
+## 🎸 @svguitar/react v1.2.1 - Simplified API & Consistent Sizing
+
+**Release Date**: December 19, 2024
+
+### 🆕 What's New in v1.2.1
+
+We're simplifying the API by removing redundant size properties and ensuring consistent sizing across all indicators!
+
+### ✨ API Simplification
+
+- **🎯 Consistent Sizing**: All indicators (fingers, open strings, muted strings) now use `dotSize` for uniform appearance
+- **🧹 Cleaner API**: Removed `openStringSize` and `mutedStringSize` properties to reduce complexity
+- **📐 Simplified Configuration**: One size property controls all indicator sizes for better consistency
+
+### 🚨 Breaking Changes
+
+- **Removed Properties**: `openStringSize` and `mutedStringSize` are no longer available
+- **Migration Required**: Use `dotSize` to control all indicator sizes
+- **Backward Compatibility**: Existing code will need to be updated to remove these properties
+
+### 🔧 Migration Guide
+
+**Before (v1.2.0):**
+```tsx
+const style = {
+  dotSize: 12,
+  openStringSize: 14,    // ❌ No longer available
+  mutedStringSize: 16,   // ❌ No longer available
+};
+```
+
+**After (v1.2.1):**
+```tsx
+const style = {
+  dotSize: 12,  // ✅ Controls all indicator sizes
+};
+```
+
+### 📋 Full Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for complete details.
+
+---
+
 # Release Notes - @svguitar/react v1.2.0
 
 ## 🎸 @svguitar/react v1.2.0 - Enhanced Dot Positioning & Fret Width Responsiveness

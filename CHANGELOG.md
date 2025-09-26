@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2024-12-19
+
+### Changed
+
+- **Simplified API**: Removed `openStringSize` and `mutedStringSize` properties from `ChordStyle` interface
+- **Consistent Sizing**: Open string and muted string indicators now use `dotSize` for consistent sizing
+- **Cleaner API**: Reduced complexity by eliminating redundant size properties
+
+### Breaking Changes
+
+- **Removed Properties**: `openStringSize` and `mutedStringSize` are no longer available in the `ChordStyle` interface
+- **Migration**: Use `dotSize` to control the size of all indicators (fingers, open strings, and muted strings)
+
+### Technical Improvements
+
+- **Simplified Constants**: Removed unused size properties from default style constants
+- **Updated Specifications**: All documentation and specifications updated to reflect the simplified API
+- **Storybook Updates**: Removed controls for deprecated properties from Storybook stories
+
 ## [1.2.0] - 2024-12-19
 
 ### Enhanced
