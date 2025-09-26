@@ -24,8 +24,6 @@ export const DEFAULT_CHORD_STYLE: ChordStyle = {
 	stringWidth: 2,
 	dotSize: 12,
 	barreHeight: 8,
-	openStringSize: 12,
-	mutedStringSize: 12,
 
 	// Colors
 	backgroundColor: "#ffffff",

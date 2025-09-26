@@ -198,8 +198,6 @@ function validateStyleDimensions(style: ChordStyle): boolean {
 		style.stringWidth,
 		style.dotSize,
 		style.barreHeight,
-		style.openStringSize,
-		style.mutedStringSize,
 	];
 
 	return dimensions.every(dim => typeof dim === "number" && dim > 0 && Number.isFinite(dim));

@@ -82,16 +82,6 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Height of barre rectangles",
 			table: { category: "Dimensions", defaultValue: { summary: "8" } },
 		},
-		openStringSize: {
-			control: { type: "range", min: 0, max: 24 },
-			description: "Size of open string indicator ('O')",
-			table: { category: "Dimensions", defaultValue: { summary: "12" } },
-		},
-		mutedStringSize: {
-			control: { type: "range", min: 0, max: 24 },
-			description: "Size of muted string indicator ('X')",
-			table: { category: "Dimensions", defaultValue: { summary: "12" } },
-		},
 
 		// Colors
 		backgroundColor: {
@@ -247,10 +237,10 @@ export const Default: Story = {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
 		orientation: "vertical",
-		width: 780,
-		height: 248,
+		width: 757,
+		height: 210,
 		fretCount: 12,
-		fretWidth: 60,
+		fretWidth: 58,
 		stringWidth: 3,
 		dotSize: 17,
 		barreHeight: 9,
@@ -259,6 +249,7 @@ export const Default: Story = {
 		dotTextSize: 14,
 		fretTextSize: 16,
 		tuningTextSize: 15,
+		fretHeight: 28,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -288,13 +279,14 @@ export const WithBarre: Story = {
 		...DEFAULT_CHORD_STYLE,
 		width: 309,
 		fretCount: 5,
-		fretWidth: 50,
+		fretWidth: 49,
 		dotSize: 18,
 		barreHeight: 11,
 		fretTextColor: "#abaaaa",
 		fontFamily: "sans-serif",
 		dotTextSize: 15,
 		fretTextSize: 17,
+		stringWidth: 1,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -506,8 +498,6 @@ export const CustomOpenMutedStyle: Story = {
 		...DEFAULT_CHORD_STYLE,
 		openStringColor: "#00FF00", // Green for open strings
 		mutedStringColor: "#FF0000", // Red for muted strings
-		openStringSize: 14,
-		mutedStringSize: 16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);

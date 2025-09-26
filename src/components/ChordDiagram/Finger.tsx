@@ -19,8 +19,6 @@ interface FingerProps {
 	dotTextColor: string;
 	dotTextSize: number;
 	fontFamily: string;
-	openStringSize: number;
-	mutedStringSize: number;
 	openStringColor: string;
 	mutedStringColor: string;
 	tuningTextSize: number;
@@ -42,8 +40,6 @@ export const Finger: React.FC<FingerProps> = React.memo(
 		dotTextColor,
 		dotTextSize,
 		fontFamily,
-		openStringSize,
-		mutedStringSize,
 		openStringColor,
 		mutedStringColor,
 		tuningTextSize,
@@ -59,30 +55,30 @@ export const Finger: React.FC<FingerProps> = React.memo(
 
 		// Handle open strings and muted strings (fret 0)
 		if (finger.fret === 0) {
-			// Position for open/muted strings to the left of the nut
-			const openX = startX - fretWidth / 2;
+			// Position for open/muted strings above the 0th fret
+			console.log("openX", { startX, fretWidth });
+			const openX = startX - fretWidth / 2 + fretWidth / 2;
 
 			if (finger.is_muted) {
 				// Render 'X' for muted strings
-				const size = mutedStringSize;
 				const color = mutedStringColor;
 
 				return (
 					<g>
 						{/* X shape for muted strings */}
 						<line
-							x1={openX - size / 2.5}
-							y1={y - size / 2.5}
-							x2={openX + size / 2.5}
-							y2={y + size / 2.5}
+							x1={openX - dotSize / 2.5}
+							y1={y - dotSize / 2.5}
+							x2={openX + dotSize / 2.5}
+							y2={y + dotSize / 2.5}
 							stroke={color}
 							strokeWidth={4}
 						/>
 						<line
-							x1={openX + size / 2.5}
-							y1={y - size / 2.5}
-							x2={openX - size / 2.5}
-							y2={y + size / 2.5}
+							x1={openX + dotSize / 2.5}
+							y1={y - dotSize / 2.5}
+							x2={openX - dotSize / 2.5}
+							y2={y + dotSize / 2.5}
 							stroke={color}
 							strokeWidth={4}
 						/>
@@ -90,12 +86,18 @@ export const Finger: React.FC<FingerProps> = React.memo(
 				);
 			} else {
 				// Render 'O' for open strings
-				const size = openStringSize;
 				const color = openStringColor;
 
 				return (
 					<g>
-						<circle cx={openX} cy={y} r={size / 2} fill="white" stroke={color} strokeWidth={2} />
+						<circle
+							cx={openX}
+							cy={y}
+							r={dotSize / 2}
+							fill="white"
+							stroke={color}
+							strokeWidth={2}
+						/>
 					</g>
 				);
 			}

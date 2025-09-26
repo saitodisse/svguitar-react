@@ -105,8 +105,6 @@ interface ChordStyle {
 	stringWidth: number;
 	dotSize: number; // Tamanho dos círculos dos dedos
 	barreHeight: number;
-	openStringSize: number; // Tamanho do círculo 'O' para cordas soltas
-	mutedStringSize: number; // Tamanho do 'X' para cordas mutadas
 
 	// Cores
 	backgroundColor: string;
@@ -278,8 +276,6 @@ const DEFAULT_CHORD_STYLE: ChordStyle = {
 	stringWidth: 2,
 	dotSize: 12,
 	barreHeight: 8,
-	openStringSize: 12,
-	mutedStringSize: 12,
 
 	// Cores
 	backgroundColor: "#ffffff",

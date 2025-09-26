@@ -28,7 +28,7 @@ const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
 
 // Utility functions now available:
 // - getStartX(style) - calculates starting X position
-// - getStartY(style) - calculates starting Y position  
+// - getStartY(style) - calculates starting Y position
 // - getFingerX(finger, firstFret, fretWidth, startX) - calculates finger X position
 // - getFingerY(finger, stringCount, fretHeight, startY) - calculates finger Y position
 ```

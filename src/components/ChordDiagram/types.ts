@@ -89,10 +89,6 @@ export interface ChordStyle {
 	dotSize: number;
 	/** Height of barre rectangles */
 	barreHeight: number;
-	/** Size of open string indicator ('O') */
-	openStringSize: number;
-	/** Size of muted string indicator ('X') */
-	mutedStringSize: number;
 
 	// Colors
 	/** Background color */
@@ -162,10 +158,6 @@ export interface ChordDiagramProps {
 	dotSize?: number;
 	/** Height of barre rectangles */
 	barreHeight?: number;
-	/** Size of open string indicator ('O') */
-	openStringSize?: number;
-	/** Size of muted string indicator ('X') */
-	mutedStringSize?: number;
 
 	// Colors
 	/** Background color */
