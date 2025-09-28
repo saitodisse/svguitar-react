@@ -58,16 +58,24 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 
 	return (
 		<>
+			<ChordDiagram
+				{...(props as Record<string, unknown>)}
+				instrument={{
+					...(props.instrument as Record<string, unknown>),
+					chord: chordToUse,
+				}}
+			/>
+
 			{error && (
 				<div
 					style={{
-						backgroundColor: "#ffebee",
-						border: "1px solid #f44336",
+						backgroundColor: "rgb(49 33 36)",
+						border: "1px solid rgb(144 10 0)",
 						borderRadius: "4px",
 						padding: "12px",
-						marginBottom: "16px",
-						color: "#c62828",
+						color: "rgb(255 116 116)",
 						fontSize: "14px",
+						margin: "10px 76px",
 					}}
 				>
 					<strong>Erro no acorde:</strong> {error}
@@ -77,13 +85,6 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 					</small>
 				</div>
 			)}
-			<ChordDiagram
-				{...(props as Record<string, unknown>)}
-				instrument={{
-					...(props.instrument as Record<string, unknown>),
-					chord: chordToUse,
-				}}
-			/>
 		</>
 	);
 }

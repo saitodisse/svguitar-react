@@ -51,15 +51,15 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	} catch (err) {
 		const error = err as ChordDiagramError;
 		renderError = error;
-        if (onError) {
-            onError(error, {
-                input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
-                code: error.code as any,
-                message: error.message,
-                normalized: null,
-                warnings: [],
-            });
-        }
+		if (onError) {
+			onError(error, {
+				input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
+				code: error.code as any,
+				message: error.message,
+				normalized: null,
+				warnings: [],
+			});
+		}
 
 		if (invalidBehavior === "keep-previous") {
 			if (lastValidRef.current) {
@@ -136,13 +136,13 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 			</svg>
 			{renderError &&
 				(typeof errorFallback === "function"
-                    ? errorFallback(renderError, {
-                            input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
-                            code: renderError.code as any,
-                            message: renderError.message,
-                            normalized: null,
-                            warnings: [],
-                        })
+					? errorFallback(renderError, {
+							input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
+							code: renderError.code as any,
+							message: renderError.message,
+							normalized: null,
+							warnings: [],
+						})
 					: (errorFallback ?? null))}
 		</div>
 	);
