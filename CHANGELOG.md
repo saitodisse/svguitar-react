@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.1] - 2024-12-19
 
+## [1.3.0] - 2025-09-28
+
+### Added
+
+- Validation & error policy: `validation (strict|lenient)`, `invalidBehavior`, `fallbackChord`
+- Error handling hooks: `onError` (callback) and `errorFallback` (inline UI)
+- Helper surface (docs): `isValidChord`, `tryParseChord`, `normalizeChord`, and exported error codes
+
+### Behavior
+
+- Default policy: `validation="strict"`, `invalidBehavior="keep-previous"`, `fallbackChord="000000"`
+- Keeps last valid chord on invalid input; if none exists, renders `fallbackChord`
+
+### Docs
+
+- Updated spec, plan, contracts, validation rules, data model, quickstart, research, and tasks
+
+### Internal
+
+- Wiring in `ChordDiagram` to respect new policies and render optional fallback UI
+
 ### Changed
 
 - **Simplified API**: Removed `openStringSize` and `mutedStringSize` properties from `ChordStyle` interface

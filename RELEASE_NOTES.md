@@ -1,3 +1,46 @@
+# Release Notes - @svguitar/react v1.3.0
+
+## 🎸 @svguitar/react v1.3.0 - Validation Policy & Error Handling
+
+**Release Date**: September 28, 2025
+
+### 🆕 What's New in v1.3.0
+
+- Validation policy: `validation` (strict | lenient)
+- Invalid input behavior: `invalidBehavior` (keep-previous | render-fallback | suppress)
+- Fallback chord: `fallbackChord` (default "000000")
+- Error handling hooks: `onError` (delegate UI/telemetry) and `errorFallback` (inline UI)
+
+### ✨ Defaults
+
+- `validation="strict"`
+- `invalidBehavior="keep-previous"`
+- `fallbackChord="000000"`
+
+### 📚 Examples
+
+```tsx
+<ChordDiagram
+  instrument={{ strings: 6, frets: 4, tuning: ["E2","A2","D3","G3","B3","E4"], chord: "x3201" }}
+  validation="strict"
+  invalidBehavior="keep-previous"
+  fallbackChord="000000"
+  onError={(err, ctx) => console.error(ctx.code, err.message)}
+/>
+
+<ChordDiagram
+  instrument={{ strings: 6, frets: 4, tuning, chord: "x32a10" }}
+  validation="lenient"
+  errorFallback={err => <div role="alert">{err.message}</div>}
+/>
+```
+
+### 📋 Full Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for complete details.
+
+---
+
 # Release Notes - @svguitar/react v1.2.1
 
 ## 🎸 @svguitar/react v1.2.1 - Simplified API & Consistent Sizing

@@ -123,6 +123,16 @@ export interface ChordStyle {
 	tuningTextSize: number;
 }
 
+export type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
+
+export interface ErrorContext {
+	input: string | Chord;
+	code: ErrorCode;
+	message: string;
+	normalized?: Chord | null;
+	warnings?: ErrorCode[];
+}
+
 /**
  * Main props interface for the ChordDiagram component
  */
@@ -190,6 +200,18 @@ export interface ChordDiagramProps {
 	fretTextSize?: number;
 	/** Tuning text size */
 	tuningTextSize?: number;
+
+	// Validation & error handling
+	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
+	validation?: "strict" | "lenient";
+	/** Behavior when input is invalid */
+	invalidBehavior?: InvalidBehavior;
+	/** Fallback chord when no last valid is available */
+	fallbackChord?: string | Chord;
+	/** Error callback to delegate UI/telemetry */
+	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
+	/** Optional inline error UI */
+	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
 }
 
 /**
