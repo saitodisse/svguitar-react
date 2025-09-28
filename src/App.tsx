@@ -1,8 +1,30 @@
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
 import { ChordDiagram } from "svguitar-react";
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+
+// Hook para detectar se está em modo mobile
+function useIsMobile() {
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const checkIsMobile = () => {
+			setIsMobile(window.innerWidth <= 960);
+		};
+
+		// Verifica no carregamento inicial
+		checkIsMobile();
+
+		// Adiciona listener para mudanças de tamanho
+		window.addEventListener("resize", checkIsMobile);
+
+		// Cleanup
+		return () => window.removeEventListener("resize", checkIsMobile);
+	}, []);
+
+	return isMobile;
+}
 
 // Componente para tratamento de erro do ChordDiagram
 function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [key: string]: unknown }) {
@@ -93,6 +115,7 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 
 function App() {
 	const { t, i18n } = useTranslation();
+	const isMobile = useIsMobile();
 	const [lang, setLang] = useQueryState("lang", parseAsStringLiteral(["en", "pt"]).withDefault("en"));
 
 	useEffect(() => {
@@ -101,15 +124,57 @@ function App() {
 
 	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault("x32010"));
 
+	// Configurações padrão para mobile
+	const mobileDefaults = useMemo(
+		() => ({
+			height: 299,
+			fretWidth: 73,
+			dotTextSize: 11,
+			dotSize: 20,
+			barreHeight: 5,
+			fretHeight: 38,
+			tuningTextSize: 20,
+			fretTextSize: 23,
+		}),
+		[]
+	);
+
+	// Configurações padrão para desktop
+	const desktopDefaults = useMemo(
+		() => ({
+			height: 250,
+			fretWidth: 57,
+			dotTextSize: 13,
+			dotSize: 16,
+			barreHeight: 7,
+			fretHeight: 30,
+			tuningTextSize: 13,
+			fretTextSize: 20,
+		}),
+		[]
+	);
+
+	// Aplica configurações padrão baseadas no modo mobile/desktop
+	const defaults = isMobile ? mobileDefaults : desktopDefaults;
+
 	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(695));
-	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(250));
+	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(defaults.height));
 	const [fretCount, setFretCount] = useQueryState("fretCount", parseAsInteger.withDefault(8));
 	const [stringCount, setStringCount] = useQueryState("stringCount", parseAsInteger.withDefault(6));
-	const [fretWidth, setFretWidth] = useQueryState("fretWidth", parseAsInteger.withDefault(57));
-	const [fretHeight, setFretHeight] = useQueryState("fretHeight", parseAsInteger.withDefault(30));
+	const [fretWidth, setFretWidth] = useQueryState(
+		"fretWidth",
+		parseAsInteger.withDefault(defaults.fretWidth)
+	);
+	const [fretHeight, setFretHeight] = useQueryState(
+		"fretHeight",
+		parseAsInteger.withDefault(defaults.fretHeight)
+	);
 	const [stringWidth, setStringWidth] = useQueryState("stringWidth", parseAsInteger.withDefault(2));
-	const [dotSize, setDotSize] = useQueryState("dotSize", parseAsInteger.withDefault(16));
-	const [barreHeight, setBarreHeight] = useQueryState("barreHeight", parseAsInteger.withDefault(7));
+	const [dotSize, setDotSize] = useQueryState("dotSize", parseAsInteger.withDefault(defaults.dotSize));
+	const [barreHeight, setBarreHeight] = useQueryState(
+		"barreHeight",
+		parseAsInteger.withDefault(defaults.barreHeight)
+	);
 	const [backgroundColor, setBackgroundColor] = useQueryState(
 		"backgroundColor",
 		parseAsString.withDefault("#242424")
@@ -142,11 +207,17 @@ function App() {
 		"fontFamily",
 		parseAsString.withDefault("Arial, sans-serif")
 	);
-	const [dotTextSize, setDotTextSize] = useQueryState("dotTextSize", parseAsInteger.withDefault(13));
-	const [fretTextSize, setFretTextSize] = useQueryState("fretTextSize", parseAsInteger.withDefault(20));
+	const [dotTextSize, setDotTextSize] = useQueryState(
+		"dotTextSize",
+		parseAsInteger.withDefault(defaults.dotTextSize)
+	);
+	const [fretTextSize, setFretTextSize] = useQueryState(
+		"fretTextSize",
+		parseAsInteger.withDefault(defaults.fretTextSize)
+	);
 	const [tuningTextSize, setTuningTextSize] = useQueryState(
 		"tuningTextSize",
-		parseAsInteger.withDefault(13)
+		parseAsInteger.withDefault(defaults.tuningTextSize)
 	);
 	const [orientation, setOrientation] = useQueryState(
 		"orientation",
@@ -157,9 +228,62 @@ function App() {
 		parseAsStringLiteral(["right", "left"]).withDefault("right")
 	);
 
+	// Aplica configurações mobile quando detectado modo mobile e não há parâmetros na URL
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const hasExplicitParams =
+			urlParams.has("height") ||
+			urlParams.has("fretWidth") ||
+			urlParams.has("dotTextSize") ||
+			urlParams.has("dotSize") ||
+			urlParams.has("barreHeight") ||
+			urlParams.has("fretHeight") ||
+			urlParams.has("tuningTextSize") ||
+			urlParams.has("fretTextSize");
+
+		// Só aplica configurações mobile se não há parâmetros explícitos na URL
+		if (isMobile && !hasExplicitParams) {
+			setHeight(mobileDefaults.height);
+			setFretWidth(mobileDefaults.fretWidth);
+			setDotTextSize(mobileDefaults.dotTextSize);
+			setDotSize(mobileDefaults.dotSize);
+			setBarreHeight(mobileDefaults.barreHeight);
+			setFretHeight(mobileDefaults.fretHeight);
+			setTuningTextSize(mobileDefaults.tuningTextSize);
+			setFretTextSize(mobileDefaults.fretTextSize);
+		}
+	}, [
+		isMobile,
+		setHeight,
+		setFretWidth,
+		setDotTextSize,
+		setDotSize,
+		setBarreHeight,
+		setFretHeight,
+		setTuningTextSize,
+		setFretTextSize,
+		mobileDefaults,
+	]);
+
 	return (
 		<>
 			<h1>svguitar-react</h1>
+			<div className="links">
+				<a
+					href="https://github.com/saitodisse/svguitar-react"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					GitHub
+				</a>
+				<a
+					href="https://www.npmjs.com/package/svguitar-react"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					npm
+				</a>
+			</div>
 			<div className="app-layout">
 				<div className="preview card">
 					<ChordDiagramWithErrorHandling

@@ -1,8 +1,24 @@
 #root {
-	max-width: 1280px;
 	margin: 0 auto;
 	padding: 2rem;
 	text-align: center;
+}
+
+.links {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.links a {
+	color: #61dafbaa;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.links a:hover {
+	text-decoration: underline;
 }
 
 .logo {
@@ -44,16 +60,23 @@
 /* App Layout */
 .app-layout {
 	display: grid;
-	grid-template-columns: 1fr 360px; /* preview | right panel */
+	grid-template-columns: minmax(0, 1fr) 360px; /* preview | right panel */
 	gap: 24px;
 	align-items: start;
+	max-width: 1280px;
+	margin: 0 auto;
 }
 
 .preview {
 	background: rgba(255, 255, 255, 0.04);
 	border-radius: 12px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-	width: 50vw;
+	overflow: hidden;
+}
+
+.preview svg {
+	max-width: 100%;
+	height: auto;
 }
 
 .control-panel {
@@ -65,6 +88,41 @@
 	border-radius: 12px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 	text-align: left;
+}
+
+@media (max-width: 960px) {
+	#root {
+		padding: 0.5rem;
+	}
+
+	.links {
+		margin-bottom: 1rem;
+	}
+
+	.app-layout {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+
+	.card {
+		padding: 1rem;
+	}
+
+	.preview {
+		width: 100%;
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background: rgba(255, 255, 255, 0.04);
+		backdrop-filter: blur(10px);
+		border-radius: 12px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+	}
+
+	.control-panel {
+		position: static;
+		max-height: none;
+	}
 }
 
 .control-panel h2 {

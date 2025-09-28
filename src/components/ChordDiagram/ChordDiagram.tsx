@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import type { ChordDiagramProps, Chord, ChordDiagramError } from "./types";
+import type { ChordDiagramProps, Chord, ChordDiagramError, ErrorCode } from "./types";
 import { processChordData, mergeStyles, mergeInstrument } from "./utils";
 import { Fretboard } from "./Fretboard";
 import { Finger } from "./Finger";
@@ -54,7 +54,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		if (onError) {
 			onError(error, {
 				input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
-				code: error.code as any,
+				code: error.code as ErrorCode,
 				message: error.message,
 				normalized: null,
 				warnings: [],
@@ -138,7 +138,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				(typeof errorFallback === "function"
 					? errorFallback(renderError, {
 							input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
-							code: renderError.code as any,
+							code: renderError.code as ErrorCode,
 							message: renderError.message,
 							normalized: null,
 							warnings: [],

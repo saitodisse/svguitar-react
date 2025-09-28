@@ -1,3 +1,15 @@
+# Release Notes
+
+## Version 1.3.1
+
+**Release Date:** September 28, 2025
+
+### New Features
+
+- **Internationalization (i18n)**: The application now supports both English (default) and Portuguese. A language switcher has been added to the control panel, and the selected language is persisted in the URL via the `lang` query parameter.
+
+---
+
 # Release Notes - @svguitar/react v1.3.0
 
 ## 🎸 @svguitar/react v1.3.0 - Validation Policy & Error Handling
