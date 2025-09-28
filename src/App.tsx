@@ -1,5 +1,5 @@
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
-import { ChordDiagram } from "svguitar-react";
+import { ChordDiagram } from "./components/ChordDiagram/ChordDiagram";
 import "./App.css";
 import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
