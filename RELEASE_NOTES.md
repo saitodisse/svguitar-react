@@ -54,6 +54,7 @@ When mobile mode is detected, the following settings are automatically applied f
 - Fixed TypeScript compilation errors related to error code types
 - Resolved linting issues for better code quality
 - Improved error handling in component rendering
+- Fixed Vercel build error by correcting import path in App.tsx
 
 ### 📚 Documentation
 

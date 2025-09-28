@@ -27,6 +27,7 @@ When mobile mode is detected (screen width ≤ 960px), the following optimized s
 - Implemented CSS sticky positioning with backdrop blur effect
 - Enhanced TypeScript types for better error handling
 - Fixed linting issues and improved code quality
+- Fixed Vercel build error by correcting import path in App.tsx
 
 ---
 
