@@ -8,5 +8,8 @@ Somente prosseguir se todos os testes passarem, o build for criado e o storybook
 - atualize o arquivo de release notes
 - GIT: adicione todos os arquivos modificados para stage
 - GIT: crie uma mensagem de commit para o release
-- GIT: faça merge da branch atual (`001-guitar-svg`) para branch `main` e volte para branch atual
+- GIT: faça merge da branch atual `001-guitar-svg` para branch `main`
+- GIT: faça push da branch `main`
+- GIT: faça push da branch atual `001-guitar-svg`
+- GIT: volte para branch atual `001-guitar-svg`
 - peça para o usuário finalizar o release rodando o comando `pnpm publish`
