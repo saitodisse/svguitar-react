@@ -2,7 +2,7 @@
 
 **Branch da Feature**: `001-guitar-svg`
 **Criada em**: 2025-09-24
-**Status**: Rascunho
+**Status**: Rascunho (atualizado com política de validação e tratamento de erros)
 **Entrada**: Descrição do usuário: "/specify guitar-svg
 
 **Como um** desenvolvedor de aplicações musicais, **eu quero** um componente React que renderize diagramas de acordes de guitarra de forma declarativa e performática, **para que** eu possa criar interfaces de usuário ricas para ensino musical, aplicativos de acordes ou ferramentas de composição sem depender de bibliotecas externas que causem problemas de performance."
@@ -33,6 +33,7 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - Como o sistema lida com posições inválidas de dedos? (O sistema vai tentar representar o acorde da melhor forma possível, ignorando posições fora do braço).
 - O que acontece quando a pestana se sobrepõe incorretamente aos dedos? (A pestana tem prioridade, e os dedos na mesma casa ou anterior são removidos da representação).
 - Como o componente lida com definições de afinação inválidas ou incompletas? (Deve lançar um erro).
+- O que acontece quando a Fret Notation (string) for inválida? (Deve manter o último acorde válido; se não houver anterior, renderizar o acorde "000000". A querystring pode permanecer com o valor inválido para persistência/compartilhamento.)
 
 ## Requisitos _(obrigatório)_
 
@@ -54,6 +55,24 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-014**: O sistema DEVE integrar a biblioteca `tonal` para validar afinações e calcular as notas exatas que estão sendo tocadas com base na afinação e nas posições dos dedos.
 - **FR-015**: O sistema DEVE suportar uma propriedade para rotacionar o diagrama em 90 graus (layout vertical), posicionando a corda mais grave à **esquerda** para destros.
 - **FR-016**: O sistema DEVE suportar uma propriedade para inverter (espelhar) o diagrama para músicos canhotos, de acordo com a orientação: espelhamento horizontal para layout horizontal e corda grave à direita para layout vertical.
+- **FR-017**: O sistema DEVE expor um mecanismo de tratamento de erros via `onError` (callback) e `errorFallback` (UI inline opcional).
+- **FR-018**: O sistema DEVE suportar a política de validação `validation` com valores `"strict" | "lenient"` (padrão: `"strict"`).
+- **FR-019**: O sistema DEVE suportar `invalidBehavior` com valores `"keep-previous" | "render-fallback" | "suppress"` (padrão: `"keep-previous"`).
+- **FR-020**: O sistema DEVE aceitar `fallbackChord` (string/objeto) usado quando não houver acorde válido anterior (padrão: `"000000"`).
+- **FR-021**: O sistema DEVE exportar helpers utilitários: `isValidChord`, `tryParseChord`, `normalizeChord`, além de `ERROR_CODES` e `ChordDiagramError`.
+
+### Política de Validação e Tratamento de Erros
+
+- **validation**
+    - `strict` (padrão): rejeita entradas inválidas; não normaliza.
+    - `lenient`: tenta normalizar (ex.: pad/truncate para 6 caracteres, clamp de trastes) e pode emitir avisos via `onError`.
+- **invalidBehavior** (aplicado quando o acorde é inválido)
+    - `keep-previous` (padrão): mantém último acorde válido; se inexistente, usa `fallbackChord`.
+    - `render-fallback`: sempre renderiza `fallbackChord` quando inválido.
+    - `suppress`: não renderiza acorde (apenas o braço); pode combinar com `errorFallback`.
+- **fallbackChord**: acorde padrão quando não houver histórico válido (padrão `"000000"`).
+- **onError(error, context)**: callback para o app (telemetria, i18n, UX personalizada). `context` inclui `code`, `input` e, no modo lenient, `normalized`/`warnings`.
+- **errorFallback**: UI inline opcional (node ou função) para exibir erro dentro do componente.
 
 ### Entidades-Chave _(incluir se a feature envolver dados)_
 

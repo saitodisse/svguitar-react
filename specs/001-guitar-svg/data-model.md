@@ -22,6 +22,13 @@ interface ChordDiagramProps {
 	instrument?: Partial<Instrument>; // Para entrada via Fret Notation "x32010"
 	chord?: Chord; // Para entrada estruturada de dedos e pestanas
 	style?: Partial<ChordStyle>;
+
+	// Políticas de validação/erro
+	validation?: "strict" | "lenient"; // default: "strict"
+	invalidBehavior?: "keep-previous" | "render-fallback" | "suppress"; // default: "keep-previous"
+	fallbackChord?: string | Chord; // default: "000000"
+	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
+	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
 }
 ```
 

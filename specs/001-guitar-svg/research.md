@@ -26,6 +26,15 @@
 
 ### Decisão: Integração da Biblioteca `tonal`
 
+### Decisão: Tratamento de Erros — onError vs errorFallback
+
+- **Decisão**: Oferecer ambos os mecanismos.
+    - `onError`: delega a UI ao app consumidor (toasts, banners, i18n, telemetria), sem acoplar markup ao componente.
+    - `errorFallback`: UI inline opcional, útil para DX simples e SSR previsível.
+- **Justificativa**: bibliotecas open source atendem públicos distintos. Projetos maduros preferem controlar UX/telemetria; iniciantes preferem comportamento plug-and-play.
+- **Comportamento Padrão**: `validation="strict"`, `invalidBehavior="keep-previous"`, `fallbackChord="000000"`.
+- **SSR/Streaming**: `errorFallback` garante render previsível em SSR/Hydration; `onError` continua disponível no cliente.
+
 - **Decisão**: Adicionar a biblioteca `tonal` como uma dependência para lidar com a lógica de teoria musical.
 - **Justificativa**: A manipulação de notação musical (ex: validação de notas em notação científica, transposição de notas) é complexa e propensa a erros. `tonal` é uma biblioteca leve, modular e bem testada que abstrai essa complexidade, garantindo a precisão dos cálculos. Isso permite que o componente se concentre em sua responsabilidade principal: a renderização do SVG. O benefício em precisão e manutenibilidade supera o pequeno aumento no tamanho do bundle.
 - **Alternativas consideradas**:

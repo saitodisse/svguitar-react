@@ -323,6 +323,28 @@ const App = () => {
 export default App;
 ```
 
+### onError (delegando UI)
+
+```jsx
+<ChordDiagram
+	instrument={{ strings: 6, frets: 4, tuning: ["E2", "A2", "D3", "G3", "B3", "E4"], chord: "x3201" }}
+	validation="strict"
+	invalidBehavior="keep-previous"
+	fallbackChord="000000"
+	onError={(err, ctx) => console.error(ctx.code, err.message)}
+/>
+```
+
+### errorFallback (UI inline) e política lenient
+
+```jsx
+<ChordDiagram
+	instrument={{ strings: 6, frets: 4, tuning, chord: "x32a10" }}
+	validation="lenient"
+	errorFallback={err => <div role="alert">{err.message}</div>}
+/>
+```
+
 ## 6. Performance e Otimização
 
 Para melhor performance, memorize os objetos de props quando possível.

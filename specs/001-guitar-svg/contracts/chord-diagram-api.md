@@ -9,10 +9,27 @@ O componente `ChordDiagram` é uma biblioteca React que renderiza diagramas de a
 ### ChordDiagramProps
 
 ```typescript
+type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
+
+interface ErrorContext {
+	input: string | Chord;
+	code: ErrorCode;
+	message: string;
+	normalized?: Chord | null;
+	warnings?: ErrorCode[];
+}
+
 interface ChordDiagramProps {
 	instrument?: Partial<Instrument>;
 	chord?: Chord;
 	style?: Partial<ChordStyle>;
+
+	// Políticas de validação/erro
+	validation?: "strict" | "lenient"; // default: "strict"
+	invalidBehavior?: InvalidBehavior; // default: "keep-previous"
+	fallbackChord?: string | Chord; // default: "000000"
+	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
+	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
 }
 ```
 
@@ -21,6 +38,9 @@ interface ChordDiagramProps {
 - Pelo menos um de `instrument` ou `chord` deve ser fornecido
 - Se ambos forem fornecidos, `chord` tem precedência
 - `style` é sempre opcional e será mesclado com valores padrão
+- Validação respeita `validation`: em `strict`, entradas inválidas disparam erro/fluxo de `invalidBehavior`; em `lenient`, entradas podem ser normalizadas (com warnings).
+- `invalidBehavior` define ação em caso de acorde inválido: manter último válido (padrão), renderizar `fallbackChord`, ou suprimir.
+- `fallbackChord` é usado quando não houver último válido; por padrão é `"000000"`.
 
 ## Entidades de Dados
 
@@ -151,7 +171,8 @@ interface ChordStyle {
 1. **Prioridade de Dados**: Se ambos `chord` e `instrument` forem fornecidos, `chord` tem precedência
 2. **Conversão de Fret Notation**: Se apenas `instrument` for fornecido, a Fret Notation será convertida para o formato `Chord`. A biblioteca `tonal` será usada para validar a afinação e calcular as notas.
 3. **Estilos**: O objeto `style` será mesclado com valores padrão
-4. **Validação**: Todas as props serão validadas antes da renderização
+4. **Validação**: Todas as props serão validadas antes da renderização, obedecendo `validation`.
+5. **Erro de Acorde**: Em caso de acorde inválido, segue `invalidBehavior`; `onError` é chamado se fornecido; `errorFallback` pode ser renderizado inline.
 
 ### Casos Limite
 
@@ -178,6 +199,23 @@ O componente lança `ChordDiagramError` com códigos específicos:
 - `INVALID_BARRE`: Pestana com parâmetros inválidos
 
 ## Exemplos de Uso
+
+### onError (delegando UI)
+
+```tsx
+<ChordDiagram
+	instrument={{ strings: 6, frets: 4, tuning: ["E2", "A2", "D3", "G3", "B3", "E4"], chord: "x3201" }}
+	onError={(err, ctx) => console.error(ctx.code, err.message)}
+	invalidBehavior="keep-previous"
+	fallbackChord="000000"
+/>
+```
+
+### errorFallback (UI inline)
+
+```tsx
+<ChordDiagram chord={chord} errorFallback={err => <div role="alert">{err.message}</div>} />
+```
 
 ### Uso Básico com Chord
 

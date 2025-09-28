@@ -14,6 +14,32 @@ function validateChordDiagramProps(props: ChordDiagramProps): boolean {
 
 **Erro**: `ChordDiagramError("Pelo menos um de 'chord' ou 'instrument' deve ser fornecido", "MISSING_INPUT")`
 
+### Política de Validação e Erros
+
+```typescript
+type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
+
+interface ErrorContext {
+	input: string | Chord;
+	code: ErrorCode;
+	message: string;
+	normalized?: Chord | null;
+	warnings?: ErrorCode[];
+}
+
+interface ChordDiagramProps {
+	validation?: "strict" | "lenient"; // default: strict
+	invalidBehavior?: InvalidBehavior; // default: keep-previous
+	fallbackChord?: string | Chord; // default: "000000"
+	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
+	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
+}
+
+// Comportamento de alto nível:
+// - strict: invalida entradas e aplica invalidBehavior
+// - lenient: tenta normalizar (pad/truncate, clamp) e emite warnings via onError
+```
+
 ### Regra: Precedência de Props
 
 ```typescript

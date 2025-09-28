@@ -31,7 +31,7 @@
 
 ## Resumo
 
-Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de guitarra em SVG com alta performance e customização total via props. O componente deve ser declarativo, otimizado para evitar re-renderizações desnecessárias, e substituir bibliotecas externas que causam gargalos de performance. Incluir suporte a dedos, pestanas, posições, afinações customizadas e estilos visuais. A nova versão integrará a biblioteca `tonal` para cálculos de teoria musical e adicionará suporte para rotação do diagrama (layout vertical) e modo para canhotos (espelhado).
+Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de guitarra em SVG com alta performance e customização total via props. O componente deve ser declarativo, otimizado para evitar re-renderizações desnecessárias, e substituir bibliotecas externas que causam gargalos de performance. Incluir suporte a dedos, pestanas, posições, afinações customizadas e estilos visuais. A nova versão integrará a biblioteca `tonal` para cálculos de teoria musical, adicionará suporte para rotação do diagrama (layout vertical), modo para canhotos (espelhado) e uma política de validação/erros configurável (`validation`, `invalidBehavior`, `fallbackChord`, `onError`, `errorFallback`).
 
 ## Contexto Técnico
 
@@ -42,7 +42,7 @@ Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de g
 **Plataforma Alvo**: Web (React/TypeScript)  
 **Tipo de Projeto**: single (biblioteca React)  
 **Metas de Performance**: Renderização SVG otimizada, evitar re-renderizações desnecessárias  
-**Restrições**: Componente totalmente declarativo, sem dependências de estado interno  
+**Restrições**: Componente totalmente declarativo, sem dependências de estado interno; tratamento de erros configurável sem acoplamento de UI (via `onError`) e opção de fallback inline (`errorFallback`).  
 **Escala/Escopo**: Biblioteca NPM para consumo em aplicações React
 
 ## Verificação da Constituição
@@ -70,6 +70,7 @@ _GATE: Deve passar antes da pesquisa da Fase 0. Revalidar após o design da Fase
 - Ordem: Contract→Integration→E2E→Unit seguida estritamente? ✅ (planejado)
 - Dependências reais usadas? ✅ (React/TypeScript nativos)
 - Testes de integração para: novas bibliotecas, mudanças de contrato, esquemas compartilhados? ✅ (planejado)
+- Testes das políticas de validação e comportamento inválido (strict vs lenient, invalidBehavior, fallbackChord, onError/errorFallback).
 - PROIBIDO: Implementar antes do teste, pular a fase RED? ✅ (planejado)
 
 **Observabilidade**:
@@ -144,17 +145,18 @@ _Pré-requisito: research.md concluído_
 1. **Extrair entidades da spec da feature** → `data-model.md`:
     - ChordDiagramProps, Chord, Finger, Barre, ChordStyle
     - Adicionar propriedades de layout a `ChordStyle` (`orientation`, `handedness`).
+    - Adicionar novas props públicas: `validation`, `invalidBehavior`, `fallbackChord`, `onError`, `errorFallback`.
     - Atualizar `Instrument.tuning` para usar notação científica.
     - Regras de validação para props
     - Interfaces TypeScript completas
 
 2. **Gerar contratos de API** a partir dos requisitos funcionais:
     - Props do componente como "contrato" da biblioteca
-    - Validação de entrada e tratamento de erros
+    - Validação de entrada e tratamento de erros (inclusive políticas strict/lenient e invalidBehavior)
     - Schema de tipos TypeScript
 
 3. **Gerar testes de contrato** a partir dos contratos:
-    - Testes para validação de props
+    - Testes para validação de props e novas políticas (strict/lenient, keep-previous/render-fallback/suppress)
     - Testes para casos limite
     - Testes devem falhar (sem implementação ainda)
 
