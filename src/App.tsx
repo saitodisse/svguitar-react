@@ -127,14 +127,16 @@ function App() {
 	// Configurações padrão para mobile
 	const mobileDefaults = useMemo(
 		() => ({
-			height: 299,
-			fretWidth: 73,
+			width: 348,
+			height: 222,
+			fretWidth: 53,
+			fretCount: 5,
 			dotTextSize: 11,
-			dotSize: 20,
-			barreHeight: 5,
-			fretHeight: 38,
+			dotSize: 18,
+			barreHeight: 6,
+			fretHeight: 27,
 			tuningTextSize: 20,
-			fretTextSize: 23,
+			fretTextSize: 21,
 		}),
 		[]
 	);
@@ -142,8 +144,10 @@ function App() {
 	// Configurações padrão para desktop
 	const desktopDefaults = useMemo(
 		() => ({
+			width: 695,
 			height: 250,
 			fretWidth: 57,
+			fretCount: 8,
 			dotTextSize: 13,
 			dotSize: 16,
 			barreHeight: 7,
@@ -157,9 +161,12 @@ function App() {
 	// Aplica configurações padrão baseadas no modo mobile/desktop
 	const defaults = isMobile ? mobileDefaults : desktopDefaults;
 
-	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(695));
+	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(defaults.width));
 	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(defaults.height));
-	const [fretCount, setFretCount] = useQueryState("fretCount", parseAsInteger.withDefault(8));
+	const [fretCount, setFretCount] = useQueryState(
+		"fretCount",
+		parseAsInteger.withDefault(defaults.fretCount)
+	);
 	const [stringCount, setStringCount] = useQueryState("stringCount", parseAsInteger.withDefault(6));
 	const [fretWidth, setFretWidth] = useQueryState(
 		"fretWidth",

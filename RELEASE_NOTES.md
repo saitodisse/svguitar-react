@@ -1,5 +1,62 @@
 # Release Notes
 
+## Version 1.5.0
+
+**Release Date:** January 27, 2025
+
+### 🚀 Enhanced Mobile Experience
+
+This release focuses on further improving the mobile experience with updated default settings and better responsive behavior.
+
+#### 📱 Updated Mobile Defaults
+
+Enhanced mobile defaults for improved user experience:
+
+| Setting          | Previous Mobile | New Mobile | Desktop | Change |
+| ---------------- | --------------- | ---------- | ------- | ------ |
+| Width            | 270px           | 348px      | 695px   | +78px  |
+| Height           | 255px           | 222px      | 250px   | -33px  |
+| Fret Width       | 48px            | 53px       | 57px    | +5px   |
+| Fret Count       | 8 (default)     | 5          | 8       | -3     |
+| Dot Size         | 18px            | 18px       | 16px    | =      |
+| Barre Height     | 6px             | 6px        | 7px     | =      |
+| Fret Height      | 27px            | 27px       | 30px    | =      |
+| Fret Text Size   | 21px            | 21px       | 20px    | =      |
+
+#### ⚙️ Technical Improvements
+
+- **Enhanced Responsive Design**: Added width and fretCount parameters to device-specific defaults
+- **Better Mobile Optimization**: Improved mobile proportions for better touch interaction
+- **Consistent Default Management**: Unified approach to managing mobile and desktop defaults
+- **Improved Device Detection**: Better mobile/desktop detection and configuration
+
+#### 🎯 User Experience
+
+- **Better Mobile Proportions**: Optimized dimensions for mobile devices
+- **Consistent Behavior**: Maintains desktop functionality while enhancing mobile experience
+- **Preserved Customization**: User-defined settings in URL parameters are still respected
+- **Seamless Switching**: Automatic detection and application of appropriate settings
+
+#### 🔧 Developer Experience
+
+- **Cleaner Code**: Better organization of default settings
+- **Type Safety**: Enhanced TypeScript support for default configurations
+- **Maintainability**: Centralized default management for easier maintenance
+
+### 🐛 Bug Fixes
+
+- Fixed default value management for width and fretCount parameters
+- Improved responsive behavior consistency
+- Enhanced mobile detection accuracy
+
+### 📚 Documentation
+
+- Updated changelog with detailed mobile optimization information
+- Enhanced release notes with comprehensive feature descriptions
+- Added technical implementation details for developers
+
+---
+
 ## Version 1.4.0
 
 **Release Date:** January 27, 2025

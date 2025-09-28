@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.5.0 (2025-01-27)
+
+### Features
+
+- **Enhanced Mobile Defaults**: Updated mobile default settings for better user experience
+- **Responsive Width Support**: Added width parameter to mobile and desktop defaults for better responsive behavior
+- **Optimized Fret Count**: Added fretCount parameter to device-specific defaults
+
+### Mobile Defaults Update
+
+Updated mobile defaults for improved mobile experience:
+
+- Width: 348px (increased from 270px)
+- Height: 222px (decreased from 255px)
+- Fret Width: 53px (increased from 48px)
+- Fret Count: 5 (new default for mobile)
+- Dot Size: 18px (maintained)
+- Barre Height: 6px (increased from 5px)
+- Fret Height: 27px (maintained)
+- Fret Text Size: 21px (maintained)
+
+### Technical Improvements
+
+- Enhanced responsive design with device-specific defaults
+- Improved mobile optimization with better proportions
+- Added consistent default management for width and fretCount parameters
+- Better mobile/desktop detection and configuration
+
+---
+
 ## 1.4.0 (2025-01-27)
 
 ### Features
