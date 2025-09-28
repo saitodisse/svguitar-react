@@ -52,6 +52,7 @@
 		"react-dom": ">=18.0.0"
 	},
 	"dependencies": {
+		"nuqs": "^2.6.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1"
 	},

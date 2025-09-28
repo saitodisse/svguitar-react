@@ -7,6 +7,9 @@ settings:
 importers:
     .:
         dependencies:
+            nuqs:
+                specifier: ^2.6.0
+                version: 2.6.0(react@19.1.1)
             react:
                 specifier: ^19.1.1
                 version: 19.1.1
@@ -1322,6 +1325,12 @@ packages:
         resolution:
             {
                 integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==,
+            }
+
+    "@standard-schema/spec@1.0.0":
+        resolution:
+            {
+                integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==,
             }
 
     "@storybook/addon-a11y@9.1.8":
@@ -4254,6 +4263,30 @@ packages:
             }
         engines: { node: ">=8" }
 
+    nuqs@2.6.0:
+        resolution:
+            {
+                integrity: sha512-EvIKBvfJeyL8n6lxfebxoAbkHJutNsxmy1oo4noFUYNUESbnecxWxgnxXoa0/4fYiFwdEuyMQx1Z9rV0h4bnkg==,
+            }
+        peerDependencies:
+            "@remix-run/react": ">=2"
+            "@tanstack/react-router": ^1
+            next: ">=14.2.0"
+            react: ">=18.2.0 || ^19.0.0-0"
+            react-router: ^6 || ^7
+            react-router-dom: ^6 || ^7
+        peerDependenciesMeta:
+            "@remix-run/react":
+                optional: true
+            "@tanstack/react-router":
+                optional: true
+            next:
+                optional: true
+            react-router:
+                optional: true
+            react-router-dom:
+                optional: true
+
     nyc@15.1.0:
         resolution:
             {
@@ -6388,6 +6421,8 @@ snapshots:
         dependencies:
             "@sinonjs/commons": 3.0.1
 
+    "@standard-schema/spec@1.0.0": {}
+
     "@storybook/addon-a11y@9.1.8(storybook@9.1.8(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.7(@types/node@24.5.2)))":
         dependencies:
             "@storybook/global": 5.0.0
@@ -8417,6 +8452,11 @@ snapshots:
     npm-run-path@4.0.1:
         dependencies:
             path-key: 3.1.1
+
+    nuqs@2.6.0(react@19.1.1):
+        dependencies:
+            "@standard-schema/spec": 1.0.0
+            react: 19.1.1
 
     nyc@15.1.0:
         dependencies:

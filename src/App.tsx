@@ -1,50 +1,162 @@
-import { useState } from "react";
-import { ChordDiagram } from "svguitar-react";
+import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
+import { ChordDiagram, parseFretNotation, processChordData } from "svguitar-react";
 import "./App.css";
+import { useMemo, useState, useEffect } from "react";
+
+// Componente para tratamento de erro do ChordDiagram
+function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [key: string]: unknown }) {
+	const [error, setError] = useState<string | null>(null);
+	const [lastValidChord, setLastValidChord] = useState<string>(chord);
+
+	useEffect(() => {
+		// Reset error when chord changes
+		setError(null);
+	}, [chord]);
+
+	// Validação do acorde
+	const validateChord = (chordString: string): string | null => {
+		if (!chordString || chordString.trim() === "") {
+			return "Acorde não pode estar vazio";
+		}
+
+		// Verifica se o acorde tem o número correto de caracteres (6 cordas)
+		if (chordString.length !== 6) {
+			return `Acorde deve ter exatamente 6 caracteres (uma para cada corda), mas tem ${chordString.length}`;
+		}
+
+		// Verifica se todos os caracteres são válidos
+		const validChars = /^[0-9x]+$/;
+		if (!validChars.test(chordString)) {
+			return "Acorde deve conter apenas números (0-9) e 'x' para cordas abafadas";
+		}
+
+		// Verifica se há pelo menos uma corda tocada (não todas abafadas)
+		if (chordString === "xxxxxx") {
+			return "Pelo menos uma corda deve ser tocada";
+		}
+
+		return null;
+	};
+
+	// Valida o acorde atual
+	const currentError = validateChord(chord);
+
+	// Se há erro, mantém o último acorde válido
+	const chordToUse = currentError ? lastValidChord : chord;
+
+	// Atualiza o último acorde válido quando não há erro
+	useEffect(() => {
+		if (!currentError && chord) {
+			setLastValidChord(chord);
+		}
+	}, [currentError, chord]);
+
+	// Atualiza o estado de erro
+	useEffect(() => {
+		setError(currentError);
+	}, [currentError]);
+
+	return (
+		<>
+			{error && (
+				<div
+					style={{
+						backgroundColor: "#ffebee",
+						border: "1px solid #f44336",
+						borderRadius: "4px",
+						padding: "12px",
+						marginBottom: "16px",
+						color: "#c62828",
+						fontSize: "14px",
+					}}
+				>
+					<strong>Erro no acorde:</strong> {error}
+					<br />
+					<small>
+						Mantendo o último acorde válido: <code>{lastValidChord}</code>
+					</small>
+				</div>
+			)}
+			<ChordDiagram
+				{...(props as Record<string, unknown>)}
+				instrument={{
+					...(props.instrument as Record<string, unknown>),
+					chord: chordToUse,
+				}}
+			/>
+		</>
+	);
+}
 
 function App() {
-	const [width, setWidth] = useState(250);
-	const [height, setHeight] = useState(250);
-	const [fretCount, setFretCount] = useState(4);
-	const [stringCount, setStringCount] = useState(6);
-	const [fretWidth, setFretWidth] = useState(40);
-	const [fretHeight, setFretHeight] = useState(30);
-	const [stringWidth, setStringWidth] = useState(2);
-	const [dotSize, setDotSize] = useState(12);
-	const [barreHeight, setBarreHeight] = useState(8);
-	const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-	const [fretColor, setFretColor] = useState("#333333");
-	const [stringColor, setStringColor] = useState("#666666");
-	const [dotColor, setDotColor] = useState("#2196F3");
-	const [dotTextColor, setDotTextColor] = useState("#ffffff");
-	const [barreColor, setBarreColor] = useState("#2196F3");
-	const [fretTextColor, setFretTextColor] = useState("#333333");
-	const [tuningTextColor, setTuningTextColor] = useState("#666666");
-	const [openStringColor, setOpenStringColor] = useState("#2196F3");
-	const [mutedStringColor, setMutedStringColor] = useState("#DC143C");
-	const [fontFamily, setFontFamily] = useState("Arial, sans-serif");
-	const [dotTextSize, setDotTextSize] = useState(10);
-	const [fretTextSize, setFretTextSize] = useState(12);
-	const [tuningTextSize, setTuningTextSize] = useState(14);
-	const [orientation, setOrientation] = useState("horizontal");
-	const [handedness, setHandedness] = useState("right");
+	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault("x32010"));
 
-	const cMajor = {
-		fingers: [
-			{ fret: 3, string: 2, is_muted: false, text: "3" },
-			{ fret: 2, string: 3, is_muted: false, text: "2" },
-			{ fret: 1, string: 5, is_muted: false, text: "1" },
-		],
-		barres: [],
-	};
+	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(695));
+	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(250));
+	const [fretCount, setFretCount] = useQueryState("fretCount", parseAsInteger.withDefault(8));
+	const [stringCount, setStringCount] = useQueryState("stringCount", parseAsInteger.withDefault(6));
+	const [fretWidth, setFretWidth] = useQueryState("fretWidth", parseAsInteger.withDefault(57));
+	const [fretHeight, setFretHeight] = useQueryState("fretHeight", parseAsInteger.withDefault(30));
+	const [stringWidth, setStringWidth] = useQueryState("stringWidth", parseAsInteger.withDefault(2));
+	const [dotSize, setDotSize] = useQueryState("dotSize", parseAsInteger.withDefault(16));
+	const [barreHeight, setBarreHeight] = useQueryState("barreHeight", parseAsInteger.withDefault(7));
+	const [backgroundColor, setBackgroundColor] = useQueryState(
+		"backgroundColor",
+		parseAsString.withDefault("#242424")
+	);
+	const [fretColor, setFretColor] = useQueryState("fretColor", parseAsString.withDefault("#bfbfbf"));
+	const [stringColor, setStringColor] = useQueryState("stringColor", parseAsString.withDefault("#ffffff"));
+	const [dotColor, setDotColor] = useQueryState("dotColor", parseAsString.withDefault("#2196F3"));
+	const [dotTextColor, setDotTextColor] = useQueryState(
+		"dotTextColor",
+		parseAsString.withDefault("#ffffff")
+	);
+	const [barreColor, setBarreColor] = useQueryState("barreColor", parseAsString.withDefault("#2196F3"));
+	const [fretTextColor, setFretTextColor] = useQueryState(
+		"fretTextColor",
+		parseAsString.withDefault("#636363")
+	);
+	const [tuningTextColor, setTuningTextColor] = useQueryState(
+		"tuningTextColor",
+		parseAsString.withDefault("#707070")
+	);
+	const [openStringColor, setOpenStringColor] = useQueryState(
+		"openStringColor",
+		parseAsString.withDefault("#2196F3")
+	);
+	const [mutedStringColor, setMutedStringColor] = useQueryState(
+		"mutedStringColor",
+		parseAsString.withDefault("#C65858")
+	);
+	const [fontFamily, setFontFamily] = useQueryState(
+		"fontFamily",
+		parseAsString.withDefault("Arial, sans-serif")
+	);
+	const [dotTextSize, setDotTextSize] = useQueryState("dotTextSize", parseAsInteger.withDefault(13));
+	const [fretTextSize, setFretTextSize] = useQueryState("fretTextSize", parseAsInteger.withDefault(20));
+	const [tuningTextSize, setTuningTextSize] = useQueryState(
+		"tuningTextSize",
+		parseAsInteger.withDefault(13)
+	);
+	const [orientation, setOrientation] = useQueryState(
+		"orientation",
+		parseAsStringLiteral(["horizontal", "vertical"]).withDefault("horizontal")
+	);
+	const [handedness, setHandedness] = useQueryState(
+		"handedness",
+		parseAsStringLiteral(["right", "left"]).withDefault("right")
+	);
 
 	return (
 		<>
 			<h1>svguitar-react</h1>
 			<div className="app-layout">
 				<div className="preview card">
-					<ChordDiagram
-						chord={cMajor}
+					<ChordDiagramWithErrorHandling
+						chord={chord}
+						instrument={{
+							tuning: ["E", "A", "D", "G", "B", "E"],
+						}}
 						width={width}
 						height={height}
 						fretCount={fretCount}
@@ -74,6 +186,18 @@ function App() {
 				</div>
 				<aside className="control-panel card" aria-label="Painel de Controle do ChordDiagram">
 					<h2>Controles</h2>
+					<div className="section">
+						<h3>Acorde</h3>
+						<div className="control">
+							<label htmlFor="chord">Acorde</label>
+							<input
+								id="chord"
+								type="text"
+								value={chord}
+								onChange={e => setChord(e.target.value)}
+							/>
+						</div>
+					</div>
 					<div className="section">
 						<h3>Layout</h3>
 						<div className="control">
@@ -352,12 +476,6 @@ function App() {
 								<option>monospace</option>
 								<option>sans-serif</option>
 								<option>serif</option>
-								<option>Verdana, sans-serif</option>
-								<option>Roboto, sans-serif</option>
-								<option>Open Sans, sans-serif</option>
-								<option>Poppins, sans-serif</option>
-								<option>Montserrat, sans-serif</option>
-								<option>Lato, sans-serif</option>
 								<option>Noto Sans, sans-serif</option>
 								<option>Ubuntu, sans-serif</option>
 								<option>Inter, sans-serif</option>
