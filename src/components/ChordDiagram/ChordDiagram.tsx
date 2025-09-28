@@ -30,46 +30,72 @@ import { FretNumbers } from "./FretNumbers";
  * ```
  */
 export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
-    const {
-        chord,
-        instrument,
-        validation = "strict",
-        invalidBehavior = "keep-previous",
-        fallbackChord = "000000",
-        onError,
-        errorFallback,
-        ...styleProps
-    } = props;
+	const {
+		chord,
+		instrument,
+		validation = "strict",
+		invalidBehavior = "keep-previous",
+		fallbackChord = "000000",
+		onError,
+		errorFallback,
+		...styleProps
+	} = props;
 
-    const lastValidRef = React.useRef<Chord | null>(null);
-    let chordData: Chord;
-    let renderError: ChordDiagramError | null = null;
+	const lastValidRef = React.useRef<Chord | null>(null);
+	let chordData: Chord;
+	let renderError: ChordDiagramError | null = null;
 
-    try {
-        chordData = processChordData({ chord, instrument });
-        lastValidRef.current = chordData;
-    } catch (err) {
-        const error = err as ChordDiagramError;
-        renderError = error;
+	try {
+		chordData = processChordData({ chord, instrument });
+		lastValidRef.current = chordData;
+	} catch (err) {
+		const error = err as ChordDiagramError;
+		renderError = error;
         if (onError) {
-            onError(error, { input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord), code: error.code as any, message: error.message, normalized: null, warnings: [] });
+            onError(error, {
+                input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
+                code: error.code as any,
+                message: error.message,
+                normalized: null,
+                warnings: [],
+            });
         }
 
-        if (invalidBehavior === "keep-previous") {
-            if (lastValidRef.current) {
-                chordData = lastValidRef.current;
-            } else {
-                // Use fallback chord
-                chordData = typeof fallbackChord === "string" ? processChordData({ instrument: { tuning: mergeInstrument(instrument).tuning, strings: mergeInstrument(instrument).strings, frets: mergeInstrument(instrument).frets, chord: fallbackChord } }) : (fallbackChord as Chord);
-                lastValidRef.current = chordData;
-            }
-        } else if (invalidBehavior === "render-fallback") {
-            chordData = typeof fallbackChord === "string" ? processChordData({ instrument: { tuning: mergeInstrument(instrument).tuning, strings: mergeInstrument(instrument).strings, frets: mergeInstrument(instrument).frets, chord: fallbackChord } }) : (fallbackChord as Chord);
-        } else {
-            // suppress: render empty chord (no fingers/barres)
-            chordData = { fingers: [], barres: [] } as Chord;
-        }
-    }
+		if (invalidBehavior === "keep-previous") {
+			if (lastValidRef.current) {
+				chordData = lastValidRef.current;
+			} else {
+				// Use fallback chord
+				chordData =
+					typeof fallbackChord === "string"
+						? processChordData({
+								instrument: {
+									tuning: mergeInstrument(instrument).tuning,
+									strings: mergeInstrument(instrument).strings,
+									frets: mergeInstrument(instrument).frets,
+									chord: fallbackChord,
+								},
+							})
+						: (fallbackChord as Chord);
+				lastValidRef.current = chordData;
+			}
+		} else if (invalidBehavior === "render-fallback") {
+			chordData =
+				typeof fallbackChord === "string"
+					? processChordData({
+							instrument: {
+								tuning: mergeInstrument(instrument).tuning,
+								strings: mergeInstrument(instrument).strings,
+								frets: mergeInstrument(instrument).frets,
+								chord: fallbackChord,
+							},
+						})
+					: (fallbackChord as Chord);
+		} else {
+			// suppress: render empty chord (no fingers/barres)
+			chordData = { fingers: [], barres: [] } as Chord;
+		}
+	}
 
 	// Merge custom styles with defaults
 	const style = mergeStyles(styleProps);
@@ -78,7 +104,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const instrumentData = mergeInstrument(instrument);
 	const firstFret = chordData.firstFret || 1;
 
-    return (
+	return (
 		<div data-testid="chord-diagram">
 			<svg
 				width={style.width}
@@ -98,7 +124,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				{/* Fretboard */}
 				<Fretboard {...style} />
 
-                {/* Fingers */}
+				{/* Fingers */}
 				{chordData.fingers.map((finger, index) => (
 					<Finger key={`finger-${index}`} finger={finger} firstFret={firstFret} {...style} />
 				))}
@@ -108,11 +134,16 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 					<Barre key={`barre-${index}`} barre={barre} firstFret={firstFret} {...style} />
 				))}
 			</svg>
-            {renderError && (
-                typeof errorFallback === "function"
-                    ? errorFallback(renderError, { input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord), code: renderError.code as any, message: renderError.message, normalized: null, warnings: [] })
-                    : errorFallback ?? null
-            )}
+			{renderError &&
+				(typeof errorFallback === "function"
+                    ? errorFallback(renderError, {
+                            input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
+                            code: renderError.code as any,
+                            message: renderError.message,
+                            normalized: null,
+                            warnings: [],
+                        })
+					: (errorFallback ?? null))}
 		</div>
 	);
 };
