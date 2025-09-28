@@ -1,10 +1,12 @@
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
-import { ChordDiagram, parseFretNotation, processChordData } from "svguitar-react";
+import { ChordDiagram } from "svguitar-react";
 import "./App.css";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 // Componente para tratamento de erro do ChordDiagram
 function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [key: string]: unknown }) {
+	const { t } = useTranslation();
 	const [error, setError] = useState<string | null>(null);
 	const [lastValidChord, setLastValidChord] = useState<string>(chord);
 
@@ -16,23 +18,23 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 	// Validação do acorde
 	const validateChord = (chordString: string): string | null => {
 		if (!chordString || chordString.trim() === "") {
-			return "Acorde não pode estar vazio";
+			return t("validation.chordEmpty");
 		}
 
 		// Verifica se o acorde tem o número correto de caracteres (6 cordas)
 		if (chordString.length !== 6) {
-			return `Acorde deve ter exatamente 6 caracteres (uma para cada corda), mas tem ${chordString.length}`;
+			return t("validation.chordLength", { length: chordString.length });
 		}
 
 		// Verifica se todos os caracteres são válidos
 		const validChars = /^[0-9x]+$/;
 		if (!validChars.test(chordString)) {
-			return "Acorde deve conter apenas números (0-9) e 'x' para cordas abafadas";
+			return t("validation.invalidChars");
 		}
 
 		// Verifica se há pelo menos uma corda tocada (não todas abafadas)
 		if (chordString === "xxxxxx") {
-			return "Pelo menos uma corda deve ser tocada";
+			return t("validation.atLeastOnePlayed");
 		}
 
 		return null;
@@ -78,10 +80,10 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 						margin: "10px 76px",
 					}}
 				>
-					<strong>Erro no acorde:</strong> {error}
+					<strong>{t("error.chordError")}</strong> {error}
 					<br />
 					<small>
-						Mantendo o último acorde válido: <code>{lastValidChord}</code>
+						{t("error.lastValidChord")} <code>{lastValidChord}</code>
 					</small>
 				</div>
 			)}
@@ -90,6 +92,13 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 }
 
 function App() {
+	const { t, i18n } = useTranslation();
+	const [lang, setLang] = useQueryState("lang", parseAsStringLiteral(["en", "pt"]).withDefault("en"));
+
+	useEffect(() => {
+		i18n.changeLanguage(lang);
+	}, [lang, i18n]);
+
 	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault("x32010"));
 
 	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(695));
@@ -185,12 +194,39 @@ function App() {
 						handedness={handedness as "right" | "left"}
 					/>
 				</div>
-				<aside className="control-panel card" aria-label="Painel de Controle do ChordDiagram">
-					<h2>Controles</h2>
+				<aside className="control-panel card" aria-label={t("aria.controlPanel")}>
+					<h2>{t("controls.title")}</h2>
+
 					<div className="section">
-						<h3>Acorde</h3>
+						<h3>{t("language")}</h3>
 						<div className="control">
-							<label htmlFor="chord">Acorde</label>
+							<div className="radio-group">
+								<label>
+									<input
+										type="radio"
+										name="language"
+										checked={lang === "en"}
+										onChange={() => setLang("en")}
+									/>
+									{t("language.en")}
+								</label>
+								<label>
+									<input
+										type="radio"
+										name="language"
+										checked={lang === "pt"}
+										onChange={() => setLang("pt")}
+									/>
+									{t("language.pt")}
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div className="section">
+						<h3>{t("controls.chordSection")}</h3>
+						<div className="control">
+							<label htmlFor="chord">{t("controls.chordLabel")}</label>
 							<input
 								id="chord"
 								type="text"
@@ -200,9 +236,9 @@ function App() {
 						</div>
 					</div>
 					<div className="section">
-						<h3>Layout</h3>
+						<h3>{t("controls.layoutSection")}</h3>
 						<div className="control">
-							<span className="control-label">Orientação</span>
+							<span className="control-label">{t("controls.orientationLabel")}</span>
 							<div className="radio-group">
 								<label>
 									<input
@@ -211,7 +247,7 @@ function App() {
 										checked={orientation === "horizontal"}
 										onChange={() => setOrientation("horizontal")}
 									/>
-									Horizontal
+									{t("controls.orientationHorizontal")}
 								</label>
 								<label>
 									<input
@@ -220,12 +256,12 @@ function App() {
 										checked={orientation === "vertical"}
 										onChange={() => setOrientation("vertical")}
 									/>
-									Vertical
+									{t("controls.orientationVertical")}
 								</label>
 							</div>
 						</div>
 						<div className="control">
-							<span className="control-label">Mão</span>
+							<span className="control-label">{t("controls.handednessLabel")}</span>
 							<div className="radio-group">
 								<label>
 									<input
@@ -234,7 +270,7 @@ function App() {
 										checked={handedness === "right"}
 										onChange={() => setHandedness("right")}
 									/>
-									Destro
+									{t("controls.handednessRight")}
 								</label>
 								<label>
 									<input
@@ -243,17 +279,17 @@ function App() {
 										checked={handedness === "left"}
 										onChange={() => setHandedness("left")}
 									/>
-									Canhoto
+									{t("controls.handednessLeft")}
 								</label>
 							</div>
 						</div>
 					</div>
 
 					<div className="section">
-						<h3>Dimensões</h3>
+						<h3>{t("controls.dimensionsSection")}</h3>
 						<div className="control">
 							<label htmlFor="width">
-								Largura: <span className="value">{width}px</span>
+								{t("controls.widthLabel")} <span className="value">{width}px</span>
 							</label>
 							<input
 								id="width"
@@ -266,7 +302,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="height">
-								Altura: <span className="value">{height}px</span>
+								{t("controls.heightLabel")} <span className="value">{height}px</span>
 							</label>
 							<input
 								id="height"
@@ -279,7 +315,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="fretCount">
-								Qtd. de Trastes: <span className="value">{fretCount}</span>
+								{t("controls.fretCountLabel")} <span className="value">{fretCount}</span>
 							</label>
 							<input
 								id="fretCount"
@@ -292,7 +328,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="stringCount">
-								Qtd. de Cordas: <span className="value">{stringCount}</span>
+								{t("controls.stringCountLabel")} <span className="value">{stringCount}</span>
 							</label>
 							<input
 								id="stringCount"
@@ -305,7 +341,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="fretWidth">
-								Largura do Espaço: <span className="value">{fretWidth}px</span>
+								{t("controls.fretWidthLabel")} <span className="value">{fretWidth}px</span>
 							</label>
 							<input
 								id="fretWidth"
@@ -318,7 +354,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="fretHeight">
-								Altura do Espaço: <span className="value">{fretHeight}px</span>
+								{t("controls.fretHeightLabel")} <span className="value">{fretHeight}px</span>
 							</label>
 							<input
 								id="fretHeight"
@@ -331,7 +367,8 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="stringWidth">
-								Espessura da Corda: <span className="value">{stringWidth}px</span>
+								{t("controls.stringWidthLabel")}{" "}
+								<span className="value">{stringWidth}px</span>
 							</label>
 							<input
 								id="stringWidth"
@@ -344,7 +381,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="dotSize">
-								Tamanho do Ponto: <span className="value">{dotSize}px</span>
+								{t("controls.dotSizeLabel")} <span className="value">{dotSize}px</span>
 							</label>
 							<input
 								id="dotSize"
@@ -357,7 +394,8 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="barreHeight">
-								Altura do Barre: <span className="value">{barreHeight}px</span>
+								{t("controls.barreHeightLabel")}{" "}
+								<span className="value">{barreHeight}px</span>
 							</label>
 							<input
 								id="barreHeight"
@@ -371,9 +409,9 @@ function App() {
 					</div>
 
 					<div className="section">
-						<h3>Cores</h3>
+						<h3>{t("controls.colorsSection")}</h3>
 						<div className="control color">
-							<label htmlFor="backgroundColor">Fundo</label>
+							<label htmlFor="backgroundColor">{t("controls.backgroundColorLabel")}</label>
 							<input
 								id="backgroundColor"
 								type="color"
@@ -382,7 +420,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="fretColor">Linhas dos Trastes</label>
+							<label htmlFor="fretColor">{t("controls.fretColorLabel")}</label>
 							<input
 								id="fretColor"
 								type="color"
@@ -391,7 +429,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="stringColor">Linhas das Cordas</label>
+							<label htmlFor="stringColor">{t("controls.stringColorLabel")}</label>
 							<input
 								id="stringColor"
 								type="color"
@@ -400,7 +438,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="dotColor">Pontos (Dedos)</label>
+							<label htmlFor="dotColor">{t("controls.dotColorLabel")}</label>
 							<input
 								id="dotColor"
 								type="color"
@@ -409,7 +447,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="dotTextColor">Texto dos Pontos</label>
+							<label htmlFor="dotTextColor">{t("controls.dotTextColorLabel")}</label>
 							<input
 								id="dotTextColor"
 								type="color"
@@ -418,7 +456,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="barreColor">Barre</label>
+							<label htmlFor="barreColor">{t("controls.barreColorLabel")}</label>
 							<input
 								id="barreColor"
 								type="color"
@@ -427,7 +465,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="fretTextColor">Texto dos Trastes</label>
+							<label htmlFor="fretTextColor">{t("controls.fretTextColorLabel")}</label>
 							<input
 								id="fretTextColor"
 								type="color"
@@ -436,7 +474,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="tuningTextColor">Texto da Afinação</label>
+							<label htmlFor="tuningTextColor">{t("controls.tuningTextColorLabel")}</label>
 							<input
 								id="tuningTextColor"
 								type="color"
@@ -445,7 +483,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="openStringColor">Cordas Soltas</label>
+							<label htmlFor="openStringColor">{t("controls.openStringColorLabel")}</label>
 							<input
 								id="openStringColor"
 								type="color"
@@ -454,7 +492,7 @@ function App() {
 							/>
 						</div>
 						<div className="control color">
-							<label htmlFor="mutedStringColor">Cordas Abafadas</label>
+							<label htmlFor="mutedStringColor">{t("controls.mutedStringColorLabel")}</label>
 							<input
 								id="mutedStringColor"
 								type="color"
@@ -465,9 +503,9 @@ function App() {
 					</div>
 
 					<div className="section">
-						<h3>Fontes</h3>
+						<h3>{t("controls.fontsSection")}</h3>
 						<div className="control">
-							<label htmlFor="fontFamily">Família da Fonte</label>
+							<label htmlFor="fontFamily">{t("controls.fontFamilyLabel")}</label>
 							<select
 								id="fontFamily"
 								value={fontFamily}
@@ -484,7 +522,8 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="dotTextSize">
-								Tamanho do Texto dos Pontos: <span className="value">{dotTextSize}px</span>
+								{t("controls.dotTextSizeLabel")}{" "}
+								<span className="value">{dotTextSize}px</span>
 							</label>
 							<input
 								id="dotTextSize"
@@ -497,7 +536,8 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="fretTextSize">
-								Tamanho do Texto dos Trastes: <span className="value">{fretTextSize}px</span>
+								{t("controls.fretTextSizeLabel")}{" "}
+								<span className="value">{fretTextSize}px</span>
 							</label>
 							<input
 								id="fretTextSize"
@@ -510,7 +550,7 @@ function App() {
 						</div>
 						<div className="control">
 							<label htmlFor="tuningTextSize">
-								Tamanho do Texto da Afinação:{" "}
+								{t("controls.tuningTextSizeLabel")}{" "}
 								<span className="value">{tuningTextSize}px</span>
 							</label>
 							<input
