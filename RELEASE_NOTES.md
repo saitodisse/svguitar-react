@@ -23,18 +23,20 @@ We're simplifying the API by removing redundant size properties and ensuring con
 ### 🔧 Migration Guide
 
 **Before (v1.2.0):**
+
 ```tsx
 const style = {
-  dotSize: 12,
-  openStringSize: 14,    // ❌ No longer available
-  mutedStringSize: 16,   // ❌ No longer available
+	dotSize: 12,
+	openStringSize: 14, // ❌ No longer available
+	mutedStringSize: 16, // ❌ No longer available
 };
 ```
 
 **After (v1.2.1):**
+
 ```tsx
 const style = {
-  dotSize: 12,  // ✅ Controls all indicator sizes
+	dotSize: 12, // ✅ Controls all indicator sizes
 };
 ```
 

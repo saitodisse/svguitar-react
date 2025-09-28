@@ -113,6 +113,8 @@ const App = () => {
 		fontFamily: "Arial, sans-serif",
 		openStringColor: "#00FF00", // Verde para cordas soltas
 		mutedStringColor: "#FF0000", // Vermelho para cordas mutadas
+		openStringSize: 14,
+		mutedStringSize: 16,
 	};
 
 	return <ChordDiagram chord={aMinor} style={customStyle} />;
