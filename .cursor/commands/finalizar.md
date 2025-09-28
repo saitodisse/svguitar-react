@@ -3,9 +3,10 @@ Somente prosseguir se todos os testes passarem, o build for criado e o storybook
 - rode todos os testes unitários (vitest)
 - rode os testes programáticos do storybook (test-storybook)
 - faça o build
-- GIT: adicione todos os arquivos modificados para stage
-- GIT: crie uma mensagem de commit para o release
 - incremente a versão no package.json
 - atualize o arquivo de changelog
 - atualize o arquivo de release notes
+- GIT: adicione todos os arquivos modificados para stage
+- GIT: crie uma mensagem de commit para o release
+- GIT: faça merge da branch atual (`001-guitar-svg`) para branch `main` e volte para branch atual
 - peça para o usuário finalizar o release rodando o comando `pnpm publish`

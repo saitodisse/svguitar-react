@@ -1,5 +1,68 @@
 # Release Notes
 
+## Version 1.4.0
+
+**Release Date:** January 27, 2025
+
+### 🚀 Major Mobile Enhancements
+
+This release focuses on significantly improving the mobile experience with automatic optimizations and enhanced usability.
+
+#### 📱 Mobile-First Features
+
+- **Automatic Mobile Detection**: The component now automatically detects mobile devices (screen width ≤ 960px) and applies optimized settings
+- **Sticky SVG Positioning**: The chord diagram stays fixed at the top of the screen during scroll on mobile devices
+- **Responsive Design**: Enhanced touch interactions and visual feedback for mobile users
+
+#### ⚙️ Mobile-Optimized Defaults
+
+When mobile mode is detected, the following settings are automatically applied for better mobile experience:
+
+| Setting          | Desktop | Mobile | Change |
+| ---------------- | ------- | ------ | ------ |
+| Height           | 250px   | 299px  | +49px  |
+| Fret Width       | 57px    | 73px   | +16px  |
+| Dot Text Size    | 13px    | 11px   | -2px   |
+| Dot Size         | 16px    | 20px   | +4px   |
+| Barre Height     | 7px     | 5px    | -2px   |
+| Fret Height      | 30px    | 38px   | +8px   |
+| Tuning Text Size | 13px    | 20px   | +7px   |
+| Fret Text Size   | 20px    | 23px   | +3px   |
+
+#### 🎨 Visual Improvements
+
+- **Backdrop Blur Effect**: Added modern backdrop blur to the sticky SVG container
+- **Enhanced Shadows**: Improved visual depth with better shadow effects
+- **Smooth Transitions**: Responsive behavior with smooth transitions between desktop and mobile modes
+
+#### 🔧 Technical Improvements
+
+- **New Hook**: Added `useIsMobile()` hook for responsive behavior detection
+- **TypeScript Enhancements**: Improved type safety with better error handling
+- **Code Quality**: Fixed linting issues and improved overall code quality
+- **Performance**: Optimized rendering for mobile devices
+
+#### 🎯 User Experience
+
+- **Seamless Switching**: Automatic detection and application of mobile settings
+- **Preserved Customization**: User-defined settings in URL parameters are respected
+- **Better Accessibility**: Enhanced mobile accessibility with larger touch targets
+- **Consistent Behavior**: Maintains desktop functionality while enhancing mobile experience
+
+### 🐛 Bug Fixes
+
+- Fixed TypeScript compilation errors related to error code types
+- Resolved linting issues for better code quality
+- Improved error handling in component rendering
+
+### 📚 Documentation
+
+- Updated changelog with detailed mobile optimization information
+- Enhanced release notes with comprehensive feature descriptions
+- Added technical implementation details for developers
+
+---
+
 ## Version 1.3.1
 
 **Release Date:** September 28, 2025

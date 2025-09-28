@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.4.0 (2025-01-27)
+
+### Features
+
+- **Mobile Optimization**: Added automatic mobile detection and optimized default settings for mobile devices
+- **Sticky SVG**: Implemented sticky positioning for the SVG component on mobile devices during scroll
+- **Responsive Design**: Enhanced mobile experience with better touch interactions and visual feedback
+
+### Mobile Defaults
+
+When mobile mode is detected (screen width ≤ 960px), the following optimized settings are automatically applied:
+
+- Height: 299px (increased from 250px)
+- Fret Width: 73px (increased from 57px)
+- Dot Text Size: 11px (decreased from 13px)
+- Dot Size: 20px (increased from 16px)
+- Barre Height: 5px (decreased from 7px)
+- Fret Height: 38px (increased from 30px)
+- Tuning Text Size: 20px (increased from 13px)
+- Fret Text Size: 23px (increased from 20px)
+
+### Technical Improvements
+
+- Added `useIsMobile()` hook for responsive behavior detection
+- Implemented CSS sticky positioning with backdrop blur effect
+- Enhanced TypeScript types for better error handling
+- Fixed linting issues and improved code quality
+
+---
+
 ## 1.3.1 (2025-09-28)
 
 ### Features
