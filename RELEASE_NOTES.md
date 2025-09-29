@@ -39,26 +39,21 @@ This major release introduces a completely new layout system that replaces the o
 #### 📚 Migration Guide
 
 **Before (v1.6.0):**
+
 ```tsx
-<ChordDiagram 
-  chord={chord} 
-  orientation="vertical" 
-  handedness="left" 
-/>
+<ChordDiagram chord={chord} orientation="vertical" handedness="left" />
 ```
 
 **After (v1.7.0):**
+
 ```tsx
-<ChordDiagram 
-  chord={chord} 
-  view="vertical-left" 
-/>
+<ChordDiagram chord={chord} view="vertical-left" />
 ```
 
 #### 🎨 Available Views
 
 - `horizontal-right` (default): Standard guitar view with low E at bottom
-- `horizontal-left`: Mirrored horizontal view with low E at top  
+- `horizontal-left`: Mirrored horizontal view with low E at top
 - `vertical-right`: Rotated view with strings on X-axis
 - `vertical-left`: Rotated view with inverted string order
 
@@ -66,15 +61,25 @@ This major release introduces a completely new layout system that replaces the o
 
 ```tsx
 const customEngine: LayoutEngine = {
-  id: "horizontal-right",
-  mapStringAxis: (stringNumber, frame) => { /* custom logic */ },
-  mapFretAxis: (fret, frame) => { /* custom logic */ },
-  fingerPosition: (finger, args) => { /* custom logic */ },
-  barreRect: (barre, args) => { /* custom logic */ },
-  indicatorPosition: (stringNumber, kind, args) => { /* custom logic */ }
+	id: "horizontal-right",
+	mapStringAxis: (stringNumber, frame) => {
+		/* custom logic */
+	},
+	mapFretAxis: (fret, frame) => {
+		/* custom logic */
+	},
+	fingerPosition: (finger, args) => {
+		/* custom logic */
+	},
+	barreRect: (barre, args) => {
+		/* custom logic */
+	},
+	indicatorPosition: (stringNumber, kind, args) => {
+		/* custom logic */
+	},
 };
 
-<ChordDiagram chord={chord} layoutEngine={customEngine} />
+<ChordDiagram chord={chord} layoutEngine={customEngine} />;
 ```
 
 ## Version 1.6.0

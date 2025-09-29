@@ -227,13 +227,14 @@ function App() {
 		"tuningTextSize",
 		parseAsInteger.withDefault(defaults.tuningTextSize)
 	);
-	const [orientation, setOrientation] = useQueryState(
-		"orientation",
-		parseAsStringLiteral(["horizontal", "vertical"]).withDefault("horizontal")
-	);
-	const [handedness, setHandedness] = useQueryState(
-		"handedness",
-		parseAsStringLiteral(["right", "left"]).withDefault("right")
+	const [view, setView] = useQueryState(
+		"view",
+		parseAsStringLiteral([
+			"horizontal-right",
+			"horizontal-left",
+			"vertical-right",
+			"vertical-left",
+		]).withDefault("horizontal-right")
 	);
 
 	// Aplica configurações mobile quando detectado modo mobile e não há parâmetros na URL
@@ -322,8 +323,13 @@ function App() {
 						dotTextSize={dotTextSize}
 						fretTextSize={fretTextSize}
 						tuningTextSize={tuningTextSize}
-						orientation={orientation as "horizontal" | "vertical"}
-						handedness={handedness as "right" | "left"}
+						view={
+							view as
+								| "horizontal-right"
+								| "horizontal-left"
+								| "vertical-right"
+								| "vertical-left"
+						}
 					/>
 				</div>
 				<aside className="control-panel card" aria-label={t("aria.controlPanel")}>
@@ -370,50 +376,25 @@ function App() {
 					<div className="section">
 						<h3>{t("controls.layoutSection")}</h3>
 						<div className="control">
-							<span className="control-label">{t("controls.orientationLabel")}</span>
-							<div className="radio-group">
-								<label>
-									<input
-										type="radio"
-										name="orientation"
-										checked={orientation === "horizontal"}
-										onChange={() => setOrientation("horizontal")}
-									/>
-									{t("controls.orientationHorizontal")}
-								</label>
-								<label>
-									<input
-										type="radio"
-										name="orientation"
-										checked={orientation === "vertical"}
-										onChange={() => setOrientation("vertical")}
-									/>
-									{t("controls.orientationVertical")}
-								</label>
-							</div>
-						</div>
-						<div className="control">
-							<span className="control-label">{t("controls.handednessLabel")}</span>
-							<div className="radio-group">
-								<label>
-									<input
-										type="radio"
-										name="handedness"
-										checked={handedness === "right"}
-										onChange={() => setHandedness("right")}
-									/>
-									{t("controls.handednessRight")}
-								</label>
-								<label>
-									<input
-										type="radio"
-										name="handedness"
-										checked={handedness === "left"}
-										onChange={() => setHandedness("left")}
-									/>
-									{t("controls.handednessLeft")}
-								</label>
-							</div>
+							<label htmlFor="view">{t("controls.viewLabel")}</label>
+							<select
+								id="view"
+								value={view}
+								onChange={e =>
+									setView(
+										e.target.value as
+											| "horizontal-right"
+											| "horizontal-left"
+											| "vertical-right"
+											| "vertical-left"
+									)
+								}
+							>
+								<option value="horizontal-right">{t("controls.viewHorizontalRight")}</option>
+								<option value="horizontal-left">{t("controls.viewHorizontalLeft")}</option>
+								<option value="vertical-right">{t("controls.viewVerticalRight")}</option>
+								<option value="vertical-left">{t("controls.viewVerticalLeft")}</option>
+							</select>
 						</div>
 					</div>
 

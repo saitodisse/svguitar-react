@@ -231,18 +231,18 @@ export const Default: Story = {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
 		view: "vertical-right",
-		width: 757,
+		width: 220,
 		height: 210,
 		fretCount: 12,
 		fretWidth: 58,
 		stringWidth: 3,
 		dotSize: 17,
 		barreHeight: 9,
-		fretTextColor: "#979797",
+		fretTextColor: "#868686",
 		fontFamily: "monospace",
-		dotTextSize: 14,
-		fretTextSize: 16,
-		tuningTextSize: 15,
+		dotTextSize: 11,
+		fretTextSize: 20,
+		tuningTextSize: 17,
 		fretHeight: 28,
 	},
 	play: async ({ canvasElement }) => {
@@ -537,6 +537,110 @@ export const HighFretNotation: Story = {
 		// Verify finger elements are present (should have 6 circles: 5 fingered positions + 1 open string)
 		const fingerElements = svg?.querySelectorAll("circle");
 		expect(fingerElements?.length).toBe(6);
+	},
+};
+
+/**
+ * Horizontal-right view (default)
+ */
+export const HorizontalRight: Story = {
+	args: {
+		...cMajor,
+		...DEFAULT_CHORD_STYLE,
+		view: "horizontal-right",
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
+	},
+};
+
+/**
+ * Horizontal-left view (mirrored)
+ */
+export const HorizontalLeft: Story = {
+	args: {
+		...cMajor,
+		...DEFAULT_CHORD_STYLE,
+		view: "horizontal-left",
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
+	},
+};
+
+/**
+ * Vertical-right view (rotated)
+ */
+export const VerticalRight: Story = {
+	args: {
+		...cMajor,
+		...DEFAULT_CHORD_STYLE,
+		view: "vertical-right",
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
+	},
+};
+
+/**
+ * Vertical-left view (rotated and mirrored)
+ */
+export const VerticalLeft: Story = {
+	args: {
+		...cMajor,
+		...DEFAULT_CHORD_STYLE,
+		view: "vertical-left",
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
 	},
 };
 

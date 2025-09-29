@@ -11,7 +11,7 @@ import type { Instrument, ViewId } from "./types";
  */
 export const DEFAULT_CHORD_STYLE = {
 	// Dimensions
-	width: 200,
+	width: 220,
 	height: 250,
 	fretCount: 4,
 	stringCount: 6,
@@ -28,16 +28,16 @@ export const DEFAULT_CHORD_STYLE = {
 	dotColor: "#2196F3",
 	dotTextColor: "#ffffff",
 	barreColor: "#2196F3",
-	fretTextColor: "#333333",
+	fretTextColor: "#868686",
 	tuningTextColor: "#666666",
 	openStringColor: "#2196F3", // Same color as normal finger dots
 	mutedStringColor: "#DC143C", // Red for muted strings
 
 	// Fonts
 	fontFamily: "Arial, sans-serif",
-	dotTextSize: 10,
-	fretTextSize: 12,
-	tuningTextSize: 14,
+	dotTextSize: 11,
+	fretTextSize: 20,
+	tuningTextSize: 17,
 };
 
 /**
