@@ -30,9 +30,9 @@ interface ChordDiagramProps {
 	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
 	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
 
-	// Layout
-	orientation?: "vertical" | "horizontal";
-	handedness?: "right" | "left";
+	// Layout (mapping-per-view)
+	view?: ViewId; // default: "horizontal-right"
+	layoutEngine?: LayoutEngine; // estratégia customizada; se fornecida, prevalece
 
 	// Dimensões
 	width?: number;
@@ -154,9 +154,7 @@ interface Barre {
 
 ```typescript
 interface ChordStyle {
-	// Layout
-	orientation?: "vertical" | "horizontal";
-	handedness?: "right" | "left";
+	// (view/layoutEngine controla layout)
 
 	// Dimensões
 	width?: number;
@@ -194,7 +192,6 @@ interface ChordStyle {
 - Todos os valores numéricos devem ser > 0
 - Todas as cores devem ser strings válidas (hex, rgb, nome)
 - `fontFamily` deve ser uma string válida de fonte
-- `orientation` e `handedness` devem ser uma das strings permitidas
 
 ## Comportamento do Componente
 
@@ -219,6 +216,50 @@ interface ChordStyle {
     - Se há dedos na mesma corda, eles não são mostrados (cordas mutadas têm precedência)
     - Ambos os indicadores usam o tamanho definido por `dotSize`
 6. **Centralização de Dots**: Os dots (posições dos dedos) devem sempre ser centralizados no meio do espaço do traste, independentemente do valor de `fretWidth`. O cálculo deve usar `fretWidth * 0.5` para garantir centralização consistente.
+
+### Views e Layout Engines
+
+```typescript
+type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
+
+interface LayoutFrame {
+	width: number;
+	height: number;
+	gridOriginX: number;
+	gridOriginY: number;
+	gridWidth: number;
+	gridHeight: number;
+	firstFret: number;
+	stringCount: number;
+	fretCount: number;
+	style: ChordStyle;
+}
+
+interface LayoutArgs {
+	frame: LayoutFrame;
+}
+
+interface LayoutEngine {
+	id: ViewId;
+	mapStringAxis(stringNumber: number, frame: LayoutFrame): number;
+	mapFretAxis(fret: number, frame: LayoutFrame): number;
+	fingerPosition(finger: Finger, args: LayoutArgs): { cx: number; cy: number; r: number };
+	barreRect(
+		barre: Barre,
+		args: LayoutArgs
+	): { x: number; y: number; width: number; height: number; rx?: number };
+	indicatorPosition(
+		stringNumber: number,
+		kind: "open" | "muted",
+		args: LayoutArgs
+	): { x: number; y: number };
+}
+```
+
+- Precedência: `layoutEngine` > `view`.
+- `view` substitui o uso direto de `orientation`/`handedness` (deprecadas nesta API).
+- As 4 views built-in devem garantir legibilidade horizontal dos textos e não utilizar `transform` global; cada engine retorna coordenadas absolutas.
+- A centralização no espaço de traste é obrigatória em todas as views.
 
 ### Tratamento de Erros
 
@@ -283,12 +324,11 @@ const props: ChordDiagramProps = {
 	chord: {
 		/* ... */
 	},
+	view: "vertical-left",
 	width: 200,
 	height: 250,
 	dotColor: "#FF5733",
 	fontFamily: "Arial, sans-serif",
-	orientation: "vertical",
-	handedness: "left",
 };
 ```
 

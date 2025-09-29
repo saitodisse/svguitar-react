@@ -4,16 +4,12 @@
  * @version 1.0.0
  */
 
-import type { Instrument } from "./types";
+import type { Instrument, ViewId } from "./types";
 
 /**
  * Default styling configuration for chord diagrams
  */
 export const DEFAULT_CHORD_STYLE = {
-	// Layout
-	orientation: "horizontal",
-	handedness: "right",
-
 	// Dimensions
 	width: 200,
 	height: 250,
@@ -43,6 +39,11 @@ export const DEFAULT_CHORD_STYLE = {
 	fretTextSize: 12,
 	tuningTextSize: 14,
 };
+
+/**
+ * Default view for layout
+ */
+export const DEFAULT_VIEW: ViewId = "horizontal-right";
 
 /**
  * Default instrument configuration for standard guitar

@@ -24,8 +24,8 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 5.  **Dado** que uso uma afinação não padrão, **Quando** especifico as notas das cordas no formato de notação científica (ex: `["E2", "A2", "D3", "G3", "B3", "E4"]`), **Então** o componente mostra a afinação correta no diagrama para as cordas soltas.
 6.  **Dado** que recebo um acorde representado por Fret Notation (ex: "x32010" para C Major, ou "(10)(12)(10)(10)(10)(10)" para F Major na 10ª casa), **Quando** especifico a afinação das cordas, **Então** o componente renderiza o diagrama com as cordas soltas e as posições dos dedos corretas, utilizando a biblioteca `tonal` para calcular as notas resultantes.
 7.  **Dado** que eu especifique cordas soltas e mutadas, **Então** o componente renderiza o diagrama com as cordas soltas e mutadas corretas, colocando um "X" vermelho (#DC143C) espesso no traste zero (primeira linha vertical à esquerda) para cordas mutadas e um "O" (círculo com preenchimento branco e borda na cor padrão dos dedos) no traste zero para cordas soltas, ambos posicionados acima do traste mais grosso, próximos às notas de afinação. Se houver dedos na mesma corda, eles não serão mostrados (cordas mutadas têm precedência).
-8.  **Dado** que quero exibir o diagrama na vertical para um músico destro, **Quando** passo uma propriedade de orientação, **Então** o componente rotaciona o braço do violão em 90 graus, com a corda mais grave (E2) posicionada à **esquerda**.
-9.  **Dado** que quero exibir o diagrama para um músico canhoto, **Quando** passo uma propriedade de layout, **Então** o componente inverte (espelha) o diagrama horizontalmente (se em layout horizontal) ou posiciona a corda mais grave (E2) à **direita** (se em layout vertical).
+8.  **Dado** que quero exibir o diagrama na vertical para um músico destro, **Quando** seleciono a view `vertical-right`, **Então** o componente desenha o braço com a corda mais grave (E2) à **esquerda**, mantendo a legibilidade horizontal de labels e números.
+9.  **Dado** que quero exibir o diagrama para um músico canhoto, **Quando** seleciono a view `horizontal-left` ou `vertical-left`, **Então** o componente desenha o braço conforme a view escolhida, mantendo centralização dos dots e legibilidade horizontal.
 
 ### Casos Limite
 
@@ -53,13 +53,14 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-012**: O sistema DEVE incluir suporte a texto dentro dos círculos dos dedos (ex: números dos dedos ou notas).
 - **FR-013**: O sistema DEVE permitir customização das cores e tamanhos dos indicadores de cordas soltas (`openStringColor`, `openStringSize`) e mutadas (`mutedStringColor`, `mutedStringSize`) via propriedades de estilo.
 - **FR-014**: O sistema DEVE integrar a biblioteca `tonal` para validar afinações e calcular as notas exatas que estão sendo tocadas com base na afinação e nas posições dos dedos.
-- **FR-015**: O sistema DEVE suportar uma propriedade para rotacionar o diagrama em 90 graus (layout vertical), posicionando a corda mais grave à **esquerda** para destros.
-- **FR-016**: O sistema DEVE suportar uma propriedade para inverter (espelhar) o diagrama para músicos canhotos, de acordo com a orientação: espelhamento horizontal para layout horizontal e corda grave à direita para layout vertical.
+- **FR-015**: O sistema DEVE suportar views predefinidas para layout: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`.
+- **FR-016**: O sistema DEVE mapear domínio → coordenadas via Strategy (mapping-per-view) sem utilizar `transform` global, preservando legibilidade horizontal e centralização dos dots.
 - **FR-017**: O sistema DEVE expor um mecanismo de tratamento de erros via `onError` (callback) e `errorFallback` (UI inline opcional).
 - **FR-018**: O sistema DEVE suportar a política de validação `validation` com valores `"strict" | "lenient"` (padrão: `"strict"`).
 - **FR-019**: O sistema DEVE suportar `invalidBehavior` com valores `"keep-previous" | "render-fallback" | "suppress"` (padrão: `"keep-previous"`).
 - **FR-020**: O sistema DEVE aceitar `fallbackChord` (string/objeto) usado quando não houver acorde válido anterior (padrão: `"000000"`).
 - **FR-021**: O sistema DEVE exportar helpers utilitários: `isValidChord`, `tryParseChord`, `normalizeChord`, além de `ERROR_CODES` e `ChordDiagramError`.
+- **FR-022**: O sistema DEVE permitir extensão de layout via prop `layoutEngine` (Strategy customizada) ou registro interno opcional, com precedência sobre `view`.
 
 ### Política de Validação e Tratamento de Erros
 

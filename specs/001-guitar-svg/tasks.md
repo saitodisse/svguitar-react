@@ -16,15 +16,15 @@
 
 ## Fase 3.2: Definição de Tipos e Constantes
 
-- [ ] T004 [P] Definir todas as interfaces TypeScript (`ChordDiagramProps`, `Chord`, `Instrument`, `Finger`, `Barre`, `ChordStyle`, etc.) em `src/components/ChordDiagram/types.ts` com base no `data-model.md`, incluindo propriedades de `ChordStyle` inline em `ChordDiagramProps`.
-- [ ] T005 [P] Definir as constantes de estilo padrão (`DEFAULT_CHORD_STYLE`) e de instrumento (`DEFAULT_INSTRUMENT`) em `src/components/ChordDiagram/constants.ts`, incluindo os novos valores para `orientation` e `handedness` e a afinação com notação científica.
+- [ ] T004 [P] Definir todas as interfaces TypeScript (`ChordDiagramProps`, `Chord`, `Instrument`, `Finger`, `Barre`, `ChordStyle`, `ViewId`, `LayoutEngine`, `LayoutFrame`, `LayoutArgs`) em `src/components/ChordDiagram/types.ts` com base no `data-model.md`, incluindo propriedades de `ChordStyle` inline em `ChordDiagramProps` e removendo `orientation/handedness` de `ChordStyle`.
+- [ ] T005 [P] Definir as constantes de estilo padrão (`DEFAULT_CHORD_STYLE`), `DEFAULT_VIEW` e de instrumento (`DEFAULT_INSTRUMENT`) em `src/components/ChordDiagram/constants.ts`.
 
 ## Fase 3.3: Testes Primeiro (TDD)
 
 **CRÍTICO: Estes testes DEVEM ser escritos e DEVEM FALHAR antes da implementação.**
 
 - [ ] T006 [P] Escrever testes unitários para a função `parseFretNotation` em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Os testes devem cobrir a conversão de Fret Notations simples, com cordas soltas ('o'), mutadas ('x'), trastes altos (ex: "(10)") e o cálculo de notas usando `tonal` a partir da afinação.
-- [ ] T007 [P] Escrever testes unitários para a lógica de validação de props em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Testar `fingers`, `barres`, afinações com notas inválidas (usando `tonal`), Fret Notations inválidas e as novas props de layout (`orientation`, `handedness`). Incluir testes para políticas `validation` (strict/lenient), `invalidBehavior` (keep-previous/render-fallback/suppress), `fallbackChord`, `onError` e `errorFallback`.
+- [ ] T007 [P] Escrever testes unitários para a lógica de validação de props em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Testar `fingers`, `barres`, afinações com notas inválidas (usando `tonal`), Fret Notations inválidas e as novas props de layout (`view`, `layoutEngine`). Incluir testes para políticas `validation` (strict/lenient), `invalidBehavior` (keep-previous/render-fallback/suppress), `fallbackChord`, `onError` e `errorFallback`.
 - [ ] T008 Escrever testes de integração para renderização em `src/components/ChordDiagram/ChordDiagram.test.tsx`. Os testes devem renderizar o componente com diferentes props (acorde simples, com pestana, posição alta, estilo customizado, layout vertical, modo canhoto) e verificar se o SVG de saída contém os elementos e transformações (`transform`) corretas.
 
 ## Fase 3.4: Implementação Core
@@ -39,12 +39,12 @@
 - [ ] T014 Implementar a lógica para lidar com a prop `firstFret` para acordes em posições altas, incluindo a renderização do rótulo do traste.
 - [ ] T015 Implementar a renderização dos indicadores de afinação e de cordas soltas/mutadas ('O'/'X') acima do diagrama.
 - [ ] T016 Implementar a lógica para mesclar as props de estilo customizadas com os estilos padrão definidos em `constants.ts`.
-- [ ] T017 Implementar as transformações SVG (`rotate`, `scale`) no `ChordDiagram.tsx` para suportar as props `orientation` e `handedness`.
-- [ ] T018 Envolver o componente `ChordDiagram` com `React.memo` para otimizar a performance, conforme definido no `research.md`. Após esta etapa, os testes de integração da tarefa `T008` devem passar.
+- [ ] T017 Implementar o `LayoutRegistry` e 4 strategies built-in (`horizontal-right`, `horizontal-left`, `vertical-right`, `vertical-left`) com mapeamento absoluto (sem `transform` global), garantindo centralização dos dots e legibilidade horizontal.
+- [ ] T018 Envolver o componente `ChordDiagram` com `React.memo` para otimizar a performance e integrar a resolução de view (precedência `layoutEngine` > `view`). Após esta etapa, os testes de integração da tarefa `T008` devem passar.
 
 ## Fase 3.5: Polimento e Documentação
 
-- [ ] T019 [P] Criar as stories no Storybook em `src/stories/ChordDiagram.stories.tsx`. As stories devem cobrir todos os cenários definidos no `quickstart.md` (Acorde Simples, Com Pestana, Posição Alta, Fret Notation, Estilo Customizado, Layout Vertical, Modo Canhoto e Casos Limite) e incluir histórias de erro (onError, errorFallback, invalidBehavior, fallbackChord) e de política lenient.
+- [ ] T019 [P] Criar as stories no Storybook em `src/stories/ChordDiagram.stories.tsx`. As stories devem cobrir todos os cenários definidos no `quickstart.md` (Acorde Simples, Com Pestana, Posição Alta, Fret Notation, Estilo Customizado, Views e Casos Limite) e incluir histórias de erro (onError, errorFallback, invalidBehavior, fallbackChord) e de política lenient.
 - [ ] T020 [P] Adicionar documentação TSDoc para todas as interfaces, props e funções exportadas em `types.ts`, `utils.ts` e `ChordDiagram.tsx`.
 - [ ] T021 Configurar o `package.json` e `vite.config.ts` para o "Library Mode" do Vite, garantindo que os campos `main`, `module` e `types` estejam corretos para publicação no NPM.
 - [ ] T022 Executar `pnpm format` e `pnpm lint --fix` para garantir a qualidade e consistência do código em todo o novo componente.

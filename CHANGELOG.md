@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.7.0 (2025-01-27)
+
+### Breaking Changes
+
+- **Layout API Update**: Replaced `orientation` and `handedness` props with new `view` and `layoutEngine` system
+- **View System**: New predefined views: `horizontal-right`, `horizontal-left`, `vertical-right`, `vertical-left`
+- **Layout Engines**: Introduced pluggable layout engine system for custom positioning strategies
+
+### Features
+
+- **New View System**: Simplified layout control with predefined views
+- **Layout Engines**: Extensible layout system with 4 built-in engines
+- **Mapping-per-view**: Absolute coordinate mapping without global transforms
+- **Custom Layout Engines**: Support for custom layout strategies via `layoutEngine` prop
+- **View Resolution**: Precedence system: `layoutEngine` > `view` > default
+
+### Improvements
+
+- **Performance**: Removed global transforms, using absolute coordinate mapping
+- **Text Legibility**: Horizontal text orientation maintained in all views
+- **Centralization**: Consistent dot positioning in fret spaces across all views
+- **Type Safety**: Enhanced TypeScript support with new layout interfaces
+- **Extensibility**: Registry-based layout system for easy customization
+
+### Technical Details
+
+- **New Interfaces**: `ViewId`, `LayoutEngine`, `LayoutFrame`, `LayoutArgs`
+- **Layout Registry**: Centralized management of layout engines
+- **Validation**: Enhanced view validation with proper error handling
+- **Documentation**: Comprehensive TSDoc for all new layout interfaces
+
 ## 1.6.0 (2025-01-27)
 
 ### Breaking Changes
@@ -22,27 +53,23 @@
 ### Migration Guide
 
 **Before (v1.5.0):**
+
 ```tsx
 <ChordDiagram
-  chord={chordData}
-  style={{
-    width: 200,
-    height: 250,
-    dotColor: "#FF5733",
-    fontFamily: "Arial, sans-serif"
-  }}
+	chord={chordData}
+	style={{
+		width: 200,
+		height: 250,
+		dotColor: "#FF5733",
+		fontFamily: "Arial, sans-serif",
+	}}
 />
 ```
 
 **After (v1.6.0):**
+
 ```tsx
-<ChordDiagram
-  chord={chordData}
-  width={200}
-  height={250}
-  dotColor="#FF5733"
-  fontFamily="Arial, sans-serif"
-/>
+<ChordDiagram chord={chordData} width={200} height={250} dotColor="#FF5733" fontFamily="Arial, sans-serif" />
 ```
 
 ## 1.5.0 (2025-01-27)

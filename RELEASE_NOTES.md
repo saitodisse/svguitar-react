@@ -1,5 +1,82 @@
 # Release Notes
 
+## Version 1.7.0
+
+**Release Date:** January 27, 2025
+
+### 🎯 Layout System Overhaul & Breaking Changes
+
+This major release introduces a completely new layout system that replaces the old `orientation`/`handedness` approach with a more flexible and extensible view-based system.
+
+#### 🔄 Breaking Changes
+
+- **Layout API Update**: Replaced `orientation` and `handedness` props with new `view` and `layoutEngine` system
+- **View System**: New predefined views: `horizontal-right`, `horizontal-left`, `vertical-right`, `vertical-left`
+- **Layout Engines**: Introduced pluggable layout engine system for custom positioning strategies
+
+#### ✨ New Features
+
+- **View-Based Layout**: Simplified layout control with 4 predefined views
+- **Layout Engines**: Extensible layout system with built-in engines for each view
+- **Mapping-per-view**: Absolute coordinate mapping without global transforms
+- **Custom Layout Engines**: Support for custom layout strategies via `layoutEngine` prop
+- **View Resolution**: Smart precedence system: `layoutEngine` > `view` > default
+
+#### 🚀 Performance Improvements
+
+- **No Global Transforms**: Removed `transform` usage for better performance
+- **Absolute Positioning**: Direct coordinate mapping for faster rendering
+- **Text Legibility**: Horizontal text orientation maintained in all views
+- **Consistent Centralization**: Dots always centered in fret spaces
+
+#### 🛠️ Technical Enhancements
+
+- **New Interfaces**: `ViewId`, `LayoutEngine`, `LayoutFrame`, `LayoutArgs`
+- **Layout Registry**: Centralized management of layout engines
+- **Enhanced Validation**: Better error handling for view validation
+- **Type Safety**: Comprehensive TypeScript support for all layout features
+
+#### 📚 Migration Guide
+
+**Before (v1.6.0):**
+```tsx
+<ChordDiagram 
+  chord={chord} 
+  orientation="vertical" 
+  handedness="left" 
+/>
+```
+
+**After (v1.7.0):**
+```tsx
+<ChordDiagram 
+  chord={chord} 
+  view="vertical-left" 
+/>
+```
+
+#### 🎨 Available Views
+
+- `horizontal-right` (default): Standard guitar view with low E at bottom
+- `horizontal-left`: Mirrored horizontal view with low E at top  
+- `vertical-right`: Rotated view with strings on X-axis
+- `vertical-left`: Rotated view with inverted string order
+
+#### 🔧 Custom Layout Engines
+
+```tsx
+const customEngine: LayoutEngine = {
+  id: "horizontal-right",
+  mapStringAxis: (stringNumber, frame) => { /* custom logic */ },
+  mapFretAxis: (fret, frame) => { /* custom logic */ },
+  fingerPosition: (finger, args) => { /* custom logic */ },
+  barreRect: (barre, args) => { /* custom logic */ },
+  indicatorPosition: (stringNumber, kind, args) => { /* custom logic */ }
+};
+
+<ChordDiagram chord={chord} layoutEngine={customEngine} />
+```
+
 ## Version 1.6.0
 
 **Release Date:** January 27, 2025
@@ -23,30 +100,26 @@ This release introduces significant API improvements by simplifying the componen
 #### 📝 Migration Guide
 
 **Old API (v1.5.0):**
+
 ```tsx
-import { ChordDiagram, ChordStyle } from 'svguitar-react';
+import { ChordDiagram, ChordStyle } from "svguitar-react";
 
 const style: Partial<ChordStyle> = {
-  width: 200,
-  height: 250,
-  dotColor: "#FF5733",
-  fontFamily: "Arial, sans-serif"
+	width: 200,
+	height: 250,
+	dotColor: "#FF5733",
+	fontFamily: "Arial, sans-serif",
 };
 
-<ChordDiagram chord={chordData} style={style} />
+<ChordDiagram chord={chordData} style={style} />;
 ```
 
 **New API (v1.6.0):**
-```tsx
-import { ChordDiagram } from 'svguitar-react';
 
-<ChordDiagram 
-  chord={chordData}
-  width={200}
-  height={250}
-  dotColor="#FF5733"
-  fontFamily="Arial, sans-serif"
-/>
+```tsx
+import { ChordDiagram } from "svguitar-react";
+
+<ChordDiagram chord={chordData} width={200} height={250} dotColor="#FF5733" fontFamily="Arial, sans-serif" />;
 ```
 
 #### 🛠️ Technical Improvements
@@ -77,16 +150,16 @@ This release focuses on further improving the mobile experience with updated def
 
 Enhanced mobile defaults for improved user experience:
 
-| Setting          | Previous Mobile | New Mobile | Desktop | Change |
-| ---------------- | --------------- | ---------- | ------- | ------ |
-| Width            | 270px           | 348px      | 695px   | +78px  |
-| Height           | 255px           | 222px      | 250px   | -33px  |
-| Fret Width       | 48px            | 53px       | 57px    | +5px   |
-| Fret Count       | 8 (default)     | 5          | 8       | -3     |
-| Dot Size         | 18px            | 18px       | 16px    | =      |
-| Barre Height     | 6px             | 6px        | 7px     | =      |
-| Fret Height      | 27px            | 27px       | 30px    | =      |
-| Fret Text Size   | 21px            | 21px       | 20px    | =      |
+| Setting        | Previous Mobile | New Mobile | Desktop | Change |
+| -------------- | --------------- | ---------- | ------- | ------ |
+| Width          | 270px           | 348px      | 695px   | +78px  |
+| Height         | 255px           | 222px      | 250px   | -33px  |
+| Fret Width     | 48px            | 53px       | 57px    | +5px   |
+| Fret Count     | 8 (default)     | 5          | 8       | -3     |
+| Dot Size       | 18px            | 18px       | 16px    | =      |
+| Barre Height   | 6px             | 6px        | 7px     | =      |
+| Fret Height    | 27px            | 27px       | 30px    | =      |
+| Fret Text Size | 21px            | 21px       | 20px    | =      |
 
 #### ⚙️ Technical Improvements
 

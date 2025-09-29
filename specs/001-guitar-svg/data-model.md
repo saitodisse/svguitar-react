@@ -15,7 +15,7 @@ Para garantir clareza, o componente `ChordDiagram` adota a seguinte convenção:
 
 ### `ChordDiagramProps`
 
-Interface principal do componente. Ela aceita os dados do acorde de duas formas: como um objeto estruturado (`chord`) ou como uma string de tablatura (`instrument`). As propriedades de estilo são incluídas diretamente inline.
+Interface principal do componente. Ela aceita os dados do acorde de duas formas: como um objeto estruturado (`chord`) ou como uma string de tablatura (`instrument`). As propriedades de estilo são incluídas diretamente inline. O layout da renderização é controlado por uma `view` (predefinida) ou por um `layoutEngine` (estratégia customizada plugável, mapping-per-view).
 
 ```typescript
 interface ChordDiagramProps {
@@ -29,9 +29,9 @@ interface ChordDiagramProps {
 	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
 	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
 
-	// Layout
-	orientation?: "vertical" | "horizontal"; // Rotação do braço
-	handedness?: "right" | "left"; // Para destro ou canhoto
+	// Layout (mapping-per-view)
+	view?: ViewId; // default: "horizontal-right"
+	layoutEngine?: LayoutEngine; // se fornecido, prevalece sobre 'view'
 
 	// Dimensões
 	width?: number; // Largura total do SVG
@@ -61,6 +61,57 @@ interface ChordDiagramProps {
 	dotTextSize?: number;
 	fretTextSize?: number;
 	tuningTextSize?: number;
+}
+```
+
+### `ViewId`
+
+Identifica as views predefinidas do componente. Cada view corresponde a uma estratégia de mapeamento (mapping-per-view), sem uso de `transform` global.
+
+```typescript
+type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
+```
+
+### `LayoutEngine` (Strategy)
+
+Estratégia de layout responsável por mapear domínio → coordenadas SVG. Deve manter legibilidade horizontal dos textos em todas as views. Não utilizar `transform` global; cada método retorna coordenadas absolutas na view selecionada.
+
+```typescript
+interface LayoutFrame {
+	width: number;
+	height: number;
+	gridOriginX: number;
+	gridOriginY: number;
+	gridWidth: number;
+	gridHeight: number;
+	firstFret: number;
+	stringCount: number;
+	fretCount: number;
+	style: ChordStyle;
+}
+
+interface LayoutArgs {
+	frame: LayoutFrame;
+}
+
+interface LayoutEngine {
+	id: ViewId;
+
+	// Eixo das cordas e trastes
+	mapStringAxis(stringNumber: number, frame: LayoutFrame): number; // coordenada principal para a corda
+	mapFretAxis(fret: number, frame: LayoutFrame): number; // coordenada principal para o traste (centralizado no espaço do traste)
+
+	// Elementos
+	fingerPosition(finger: Finger, args: LayoutArgs): { cx: number; cy: number; r: number };
+	barreRect(
+		barre: Barre,
+		args: LayoutArgs
+	): { x: number; y: number; width: number; height: number; rx?: number };
+	indicatorPosition(
+		stringNumber: number,
+		kind: "open" | "muted",
+		args: LayoutArgs
+	): { x: number; y: number };
 }
 ```
 
@@ -126,14 +177,10 @@ interface Barre {
 
 ### `ChordStyle`
 
-Define todas as propriedades visuais customizáveis do diagrama. Todas as propriedades são opcionais e terão valores padrão. **Nota**: Estas propriedades são incluídas diretamente inline em `ChordDiagramProps`, não como um objeto `style` separado.
+Define todas as propriedades visuais customizáveis do diagrama. Todas as propriedades são opcionais e terão valores padrão. **Nota**: Estas propriedades são incluídas diretamente inline em `ChordDiagramProps`, não como um objeto `style` separado. Campos de orientação/mão foram removidos em favor de `view` e `layoutEngine`.
 
 ```typescript
 interface ChordStyle {
-	// Layout
-	orientation: "vertical" | "horizontal"; // Rotação do braço
-	handedness: "right" | "left"; // Para destro ou canhoto
-
 	// Dimensões
 	width: number; // Largura total do SVG
 	height: number; // Altura total do SVG
@@ -169,7 +216,7 @@ interface ChordStyle {
 
 ### Centralização de Dots
 
-Os dots (posições dos dedos) devem sempre ser centralizados no meio do espaço do traste, independentemente do valor de `fretWidth`. A fórmula para calcular a posição X dos dots é:
+Os dots (posições dos dedos) devem sempre ser centralizados no meio do espaço do traste, independentemente do valor de `fretWidth`. No layout `horizontal-right`, a fórmula para calcular a posição X dos dots é:
 
 ```typescript
 const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
@@ -183,7 +230,7 @@ Onde:
 - `fretWidth`: Largura do espaço entre trastes
 - `0.5`: Constante que garante centralização no meio do espaço do traste
 
-Esta fórmula garante que os dots sempre apareçam centralizados, mesmo quando o `fretWidth` é alterado.
+Esta fórmula garante que os dots sempre apareçam centralizados, mesmo quando o `fretWidth` é alterado. Nas demais views, o `LayoutEngine` deve respeitar a mesma regra de centralização, mapeando eixos apropriadamente (mapping-per-view) e preservando a legibilidade horizontal dos textos.
 
 ## 5. Regras de Validação
 
@@ -301,10 +348,6 @@ function parseFretNotation(fretNotation: string, tuning: string[]): Chord {
 
 ```typescript
 const DEFAULT_CHORD_STYLE: ChordStyle = {
-	// Layout
-	orientation: "horizontal",
-	handedness: "right",
-
 	// Dimensões
 	width: 200,
 	height: 250,
@@ -334,6 +377,12 @@ const DEFAULT_CHORD_STYLE: ChordStyle = {
 	fretTextSize: 12,
 	tuningTextSize: 14,
 };
+```
+
+### View Default
+
+```typescript
+const DEFAULT_VIEW: ViewId = "horizontal-right";
 ```
 
 ### Instrument Defaults
@@ -368,5 +417,6 @@ const ERROR_CODES = {
 	INVALID_TAB_STRING: "INVALID_TAB_STRING",
 	INVALID_BARRE: "INVALID_BARRE",
 	INVALID_NOTE: "INVALID_NOTE", // Para afinação com notas inválidas
+	INVALID_VIEW: "INVALID_VIEW", // ViewId inválido ou engine ausente
 } as const;
 ```

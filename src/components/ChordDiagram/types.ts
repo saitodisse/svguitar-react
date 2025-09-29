@@ -71,6 +71,57 @@ export interface ErrorContext {
 }
 
 /**
+ * Identifies predefined views for the component
+ */
+export type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
+
+/**
+ * Layout frame containing all necessary information for positioning elements
+ */
+export interface LayoutFrame {
+	width: number;
+	height: number;
+	gridOriginX: number;
+	gridOriginY: number;
+	gridWidth: number;
+	gridHeight: number;
+	firstFret: number;
+	stringCount: number;
+	fretCount: number;
+	style: ChordStyle;
+}
+
+/**
+ * Arguments passed to layout engine methods
+ */
+export interface LayoutArgs {
+	frame: LayoutFrame;
+}
+
+/**
+ * Layout engine strategy for mapping domain coordinates to SVG coordinates
+ */
+export interface LayoutEngine {
+	id: ViewId;
+
+	// Axis mapping
+	mapStringAxis(stringNumber: number, frame: LayoutFrame): number;
+	mapFretAxis(fret: number, frame: LayoutFrame): number;
+
+	// Element positioning
+	fingerPosition(finger: Finger, args: LayoutArgs): { cx: number; cy: number; r: number };
+	barreRect(
+		barre: Barre,
+		args: LayoutArgs
+	): { x: number; y: number; width: number; height: number; rx?: number };
+	indicatorPosition(
+		stringNumber: number,
+		kind: "open" | "muted",
+		args: LayoutArgs
+	): { x: number; y: number };
+}
+
+/**
  * Main props interface for the ChordDiagram component
  */
 export interface ChordDiagramProps {
@@ -79,11 +130,11 @@ export interface ChordDiagramProps {
 	/** Chord data (structured input) */
 	chord?: Chord;
 
-	// Layout
-	/** Diagram orientation */
-	orientation?: "vertical" | "horizontal";
-	/** For right- or left-handed players */
-	handedness?: "right" | "left";
+	// Layout (mapping-per-view)
+	/** Predefined view for layout */
+	view?: ViewId; // default: "horizontal-right"
+	/** Custom layout engine strategy; if provided, takes precedence over view */
+	layoutEngine?: LayoutEngine;
 
 	// Dimensions
 	/** Total width of the SVG */
@@ -151,6 +202,66 @@ export interface ChordDiagramProps {
 }
 
 /**
+ * Visual styling configuration for chord diagrams
+ * All properties are optional and will have default values
+ * Note: These properties are included directly inline in ChordDiagramProps, not as a separate style object
+ * Layout properties (orientation/handedness) have been removed in favor of view/layoutEngine
+ */
+export interface ChordStyle {
+	// Dimensions
+	/** Total width of the SVG */
+	width: number;
+	/** Total height of the SVG */
+	height: number;
+	/** Number of frets to render */
+	fretCount: number;
+	/** Number of strings */
+	stringCount: number;
+	/** Width of each fret space */
+	fretWidth: number;
+	/** Height of each fret space */
+	fretHeight: number;
+	/** Width of string lines */
+	stringWidth: number;
+	/** Size of finger dots */
+	dotSize: number;
+	/** Height of barre rectangles */
+	barreHeight: number;
+
+	// Colors
+	/** Background color */
+	backgroundColor: string;
+	/** Fret line color */
+	fretColor: string;
+	/** String line color */
+	stringColor: string;
+	/** Finger dot color */
+	dotColor: string;
+	/** Finger dot text color */
+	dotTextColor: string;
+	/** Barre color */
+	barreColor: string;
+	/** Fret number text color */
+	fretTextColor: string;
+	/** Tuning text color */
+	tuningTextColor: string;
+	/** Open string indicator color */
+	openStringColor: string;
+	/** Muted string indicator color */
+	mutedStringColor: string;
+
+	// Fonts
+	/** Font family */
+	fontFamily: string;
+	/** Finger dot text size */
+	dotTextSize: number;
+	/** Fret number text size */
+	fretTextSize: number;
+	/** Tuning text size */
+	tuningTextSize: number;
+}
+
+/**
  * Custom error class for ChordDiagram validation errors
  */
 export class ChordDiagramError extends Error {
@@ -173,6 +284,7 @@ export const ERROR_CODES = {
 	INVALID_TAB_STRING: "INVALID_TAB_STRING",
 	INVALID_BARRE: "INVALID_BARRE",
 	MISSING_CHORD_DATA: "MISSING_CHORD_DATA",
+	INVALID_VIEW: "INVALID_VIEW", // Invalid ViewId or missing engine
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

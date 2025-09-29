@@ -23,17 +23,11 @@ const meta: Meta<typeof ChordDiagram> = {
 	},
 	argTypes: {
 		// Layout
-		orientation: {
+		view: {
 			control: { type: "radio" },
-			options: ["horizontal", "vertical"],
-			description: "Diagram orientation",
-			table: { category: "Layout", defaultValue: { summary: "horizontal" } },
-		},
-		handedness: {
-			control: { type: "radio" },
-			options: ["right", "left"],
-			description: "For right- or left-handed players",
-			table: { category: "Layout", defaultValue: { summary: "right" } },
+			options: ["horizontal-right", "horizontal-left", "vertical-right", "vertical-left"],
+			description: "Predefined view for layout",
+			table: { category: "Layout", defaultValue: { summary: "horizontal-right" } },
 		},
 
 		// Dimensions
@@ -236,7 +230,7 @@ export const Default: Story = {
 	args: {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
-		orientation: "vertical",
+		view: "vertical-right",
 		width: 757,
 		height: 210,
 		fretCount: 12,

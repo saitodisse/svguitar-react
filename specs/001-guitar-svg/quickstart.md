@@ -248,9 +248,9 @@ const App = () => {
 export default App;
 ```
 
-### Layout Vertical (Rotacionado)
+### Views (layout)
 
-Passe a propriedade `orientation` no objeto `style` para rotacionar o diagrama.
+Use a propriedade `view` para selecionar entre as views predefinidas: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`.
 
 ```jsx
 import React from "react";
@@ -266,15 +266,15 @@ const App = () => {
 		barres: [],
 	};
 
-	return <ChordDiagram chord={cMajor} style={{ orientation: "vertical" }} />;
+	return <ChordDiagram chord={cMajor} view="vertical-right" />;
 };
 
 export default App;
 ```
 
-### Modo Canhoto (Invertido)
+### Modo Canhoto
 
-Use a propriedade `handedness` no objeto `style` para renderizar o diagrama em modo canhoto.
+Selecione `horizontal-left` ou `vertical-left` via `view`.
 
 ```jsx
 import React from "react";
@@ -290,7 +290,7 @@ const App = () => {
 		barres: [],
 	};
 
-	return <ChordDiagram chord={cMajor} style={{ handedness: "left" }} />;
+	return <ChordDiagram chord={cMajor} view="horizontal-left" />;
 };
 
 export default App;
@@ -332,7 +332,55 @@ export default App;
 	invalidBehavior="keep-previous"
 	fallbackChord="000000"
 	onError={(err, ctx) => console.error(ctx.code, err.message)}
+	view="vertical-left"
 />
+```
+
+### LayoutEngine custom (avançado)
+
+Você pode injetar uma estratégia de layout própria com `layoutEngine`.
+
+```tsx
+import { LayoutEngine, ChordDiagram } from "@svguitar/react";
+
+const myEngine: LayoutEngine = {
+	id: "horizontal-right",
+	mapStringAxis: (s, frame) =>
+		frame.gridOriginY + (frame.stringCount - s) * (frame.gridHeight / (frame.stringCount - 1)),
+	mapFretAxis: (f, frame) => frame.gridOriginX + (f - frame.firstFret + 0.5) * frame.style.fretWidth,
+	fingerPosition: (finger, { frame }) => ({
+		cx:
+			/* usa mapFretAxis */ frame.gridOriginX +
+			(finger.fret - frame.firstFret + 0.5) * frame.style.fretWidth,
+		cy:
+			/* usa mapStringAxis */ frame.gridOriginY +
+			(frame.stringCount - finger.string) * (frame.gridHeight / (frame.stringCount - 1)),
+		r: frame.style.dotSize / 2,
+	}),
+	barreRect: (barre, { frame }) => ({
+		x: frame.gridOriginX + (barre.fret - frame.firstFret) * frame.style.fretWidth,
+		y:
+			frame.gridOriginY +
+			(frame.stringCount - barre.toString) * (frame.gridHeight / (frame.stringCount - 1)) -
+			frame.style.barreHeight / 2,
+		width: frame.style.fretWidth,
+		height:
+			(barre.toString - barre.fromString) * (frame.gridHeight / (frame.stringCount - 1)) +
+			frame.style.barreHeight,
+		rx: 4,
+	}),
+	indicatorPosition: (s, kind, { frame }) => ({
+		x: frame.gridOriginX - frame.style.fretWidth * 0.5,
+		y:
+			frame.gridOriginY +
+			(frame.stringCount - s) * (frame.gridHeight / (frame.stringCount - 1)) -
+			frame.style.dotSize,
+	}),
+};
+
+export default function Demo() {
+	return <ChordDiagram chord={{ fingers: [], barres: [] }} layoutEngine={myEngine} />;
+}
 ```
 
 ### errorFallback (UI inline) e política lenient

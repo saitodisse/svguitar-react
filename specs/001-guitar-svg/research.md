@@ -40,6 +40,20 @@
 - **Alternativas consideradas**:
     - **Implementar a lógica manualmente**: Criar funções para validar e manipular notas. Rejeitado por ser uma reinvenção da roda, com alto risco de bugs e grande esforço de desenvolvimento para um problema já resolvido de forma eficaz por bibliotecas especializadas.
 
+### Decisão: Views como Strategies (Mapping-per-view, sem transforms)
+
+- **Decisão**: Desacoplar o layout via Strategy + Registry (`LayoutEngine` por `ViewId`). Cada strategy mapeia domínio → coordenadas absolutas SVG (cordas, trastes, dedos, pestanas, indicadores) e mantém a legibilidade horizontal dos textos. Não usar `transform` global (sem `rotate/scale`).
+- **Justificativa**: Evita `if/else` espalhados para `orientation/handedness`, facilita a criação de novas views (ex.: `vertical-left`), e permite extensibilidade (injeção de `layoutEngine`) mantendo as regras de negócio (centralização no espaço do traste) por contrato.
+- **Alternativas**:
+    - Transform-first (espelhamento/rotação no `<g>`): rejeitado porque os rótulos devem permanecer legíveis e prevemos interações futuras (hit-tests) impactadas por transforms globais.
+
+Detalhes:
+
+- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`.
+- Registry interno com extensão opcional: `registerView(engine)` ou prop `layoutEngine`.
+- Precedência: `layoutEngine` > `view`.
+- Garantias: centralização dos dots, labels legíveis, sem transforms globais.
+
 ## 2. Boas Práticas
 
 ### Estrutura do Componente
@@ -87,10 +101,11 @@
 - **Coordenadas**: Sistema de coordenadas SVG com origem no canto superior esquerdo
 - **Espaçamento**: Cálculos baseados em props de estilo (fretWidth, stringWidth)
 - **Responsividade**: Dimensões proporcionais baseadas na largura/altura total
-- **Transformações**:
-    - **Modo Canhoto (Horizontal)**: O diagrama será espelhado horizontalmente. A abordagem mais eficaz é aplicar uma transformação `scale(-1, 1)` ao grupo `<g>` principal que contém o braço do violão. Será necessário ajustar a posição do grupo após a escala para que ele permaneça dentro do viewport do SVG.
-    - **Modo Vertical (Destro)**: O diagrama será rotacionado em 90 graus. A lógica de posicionamento dos elementos será trocada (x por y) para que a corda grave (E2) apareça à esquerda.
-    - **Modo Vertical (Canhoto)**: Similar ao modo destro, o diagrama será rotacionado, mas a lógica de posicionamento posicionará a corda grave (E2) à direita.
+- **Views (mapping-per-view, sem transforms)**:
+    - Cada `LayoutEngine` define mapeamentos de eixos e coordenadas absolutas para sua view.
+    - `horizontal-left`: inverte o mapeamento de cordas em relação ao `horizontal-right` (sem `scale`).
+    - `vertical-right`: troca papéis de eixos (cordas no eixo X, trastes no eixo Y) mantendo textos legíveis.
+    - `vertical-left`: igual ao vertical-right, porém invertendo o eixo de cordas.
 
 ## 4. Validação e Tratamento de Erros
 

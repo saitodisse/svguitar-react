@@ -33,6 +33,10 @@ interface ChordDiagramProps {
 	fallbackChord?: string | Chord; // default: "000000"
 	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
 	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
+
+	// Layout
+	view?: ViewId; // default: "horizontal-right"
+	layoutEngine?: LayoutEngine; // se fornecido, prevalece
 }
 
 // Comportamento de alto nível:
@@ -51,6 +55,22 @@ function getEffectiveInput(props: ChordDiagramProps): Chord | Instrument {
 		return props.instrument;
 	}
 	throw new ChordDiagramError("Nenhum input válido fornecido", "MISSING_INPUT");
+}
+```
+
+### Regra: Resolução de View
+
+```typescript
+type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
+
+function resolveViewId(props: ChordDiagramProps, DEFAULT_VIEW: ViewId = "horizontal-right"): ViewId {
+	if (props.layoutEngine) return props.layoutEngine.id;
+	if (props.view) return props.view;
+	return DEFAULT_VIEW;
+}
+
+function validateView(registry: Record<ViewId, LayoutEngine>, viewId: ViewId): boolean {
+	return Boolean(registry[viewId]);
 }
 ```
 
@@ -394,5 +414,6 @@ const VALIDATION_ERROR_CODES = {
 	INVALID_STYLE_LAYOUT: "INVALID_STYLE_LAYOUT",
 	OVERLAPPING_FINGERS: "OVERLAPPING_FINGERS",
 	INVALID_FRET_RANGE: "INVALID_FRET_RANGE",
+	INVALID_VIEW: "INVALID_VIEW",
 } as const;
 ```

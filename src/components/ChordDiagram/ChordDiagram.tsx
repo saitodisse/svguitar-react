@@ -5,8 +5,9 @@
  */
 
 import React from "react";
-import type { ChordDiagramProps, Chord, ChordDiagramError, ErrorCode } from "./types";
-import { processChordData, mergeStyles, mergeInstrument } from "./utils";
+import type { ChordDiagramProps, Chord, ChordDiagramError, ErrorCode, ViewId } from "./types";
+import { processChordData, mergeStyles, mergeInstrument, validateViewProps } from "./utils";
+import { getLayoutEngine } from "./layout";
 import { Fretboard } from "./Fretboard";
 import { Finger } from "./Finger";
 import { Barre } from "./Barre";
@@ -33,6 +34,8 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const {
 		chord,
 		instrument,
+		view,
+		layoutEngine,
 		validation = "strict",
 		invalidBehavior = "keep-previous",
 		fallbackChord = "000000",
@@ -44,8 +47,14 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const lastValidRef = React.useRef<Chord | null>(null);
 	let chordData: Chord;
 	let renderError: ChordDiagramError | null = null;
+	let resolvedViewId: ViewId | null = null;
+	let resolvedLayoutEngine: import("./types").LayoutEngine | null = null;
 
 	try {
+		// Validate and resolve view
+		resolvedViewId = validateViewProps({ view, layoutEngine });
+		resolvedLayoutEngine = layoutEngine || getLayoutEngine(resolvedViewId) || null;
+
 		chordData = processChordData({ chord, instrument });
 		lastValidRef.current = chordData;
 	} catch (err) {

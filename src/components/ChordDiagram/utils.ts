@@ -4,9 +4,10 @@
  * @version 1.0.0
  */
 
-import type { Chord, Finger, Barre, Instrument } from "./types";
+import type { Chord, Finger, Barre, Instrument, ViewId } from "./types";
 import { ChordDiagramError, ERROR_CODES } from "./types";
-import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT, VALID_FRET_CHARS } from "./constants";
+import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT, VALID_FRET_CHARS, DEFAULT_VIEW } from "./constants";
+import { resolveViewId, validateView } from "./layout";
 
 /**
  * Parses a fret notation string into a Chord object
@@ -366,4 +367,26 @@ export function processChordData(props: { instrument?: Partial<Instrument>; chor
 
 	// This should never be reached due to the check above
 	throw new ChordDiagramError("No valid chord data provided.", ERROR_CODES.MISSING_CHORD_DATA);
+}
+
+/**
+ * Validates view-related props
+ * @param props - Component props containing view information
+ * @returns Resolved view ID
+ * @throws {ChordDiagramError} If view validation fails
+ */
+export function validateViewProps(props: {
+	layoutEngine?: import("./types").LayoutEngine;
+	view?: ViewId;
+}): ViewId {
+	const viewId = resolveViewId(props, DEFAULT_VIEW);
+
+	if (!validateView(viewId)) {
+		throw new ChordDiagramError(
+			`Invalid view: "${viewId}". Available views are: horizontal-right, horizontal-left, vertical-right, vertical-left.`,
+			ERROR_CODES.INVALID_VIEW
+		);
+	}
+
+	return viewId;
 }
