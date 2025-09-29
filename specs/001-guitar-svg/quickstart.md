@@ -274,7 +274,7 @@ export default App;
 
 ### Modo Canhoto (Invertido)
 
-Use a propriedade `handedness` no objeto `style` para inverter o diagrama.
+Use a propriedade `handedness` no objeto `style` para renderizar o diagrama em modo canhoto.
 
 ```jsx
 import React from "react";
