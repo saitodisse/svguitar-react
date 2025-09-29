@@ -127,10 +127,10 @@ function App() {
 	// Configurações padrão para mobile
 	const mobileDefaults = useMemo(
 		() => ({
-			width: 348,
+			width: 333,
 			height: 222,
 			fretWidth: 53,
-			fretCount: 5,
+			fretCount: 4,
 			dotTextSize: 11,
 			dotSize: 18,
 			barreHeight: 6,
@@ -145,15 +145,16 @@ function App() {
 	const desktopDefaults = useMemo(
 		() => ({
 			width: 695,
-			height: 250,
-			fretWidth: 57,
-			fretCount: 8,
+			height: 239,
+			fretWidth: 63,
+			fretCount: 10,
 			dotTextSize: 13,
 			dotSize: 16,
 			barreHeight: 7,
 			fretHeight: 30,
 			tuningTextSize: 13,
-			fretTextSize: 20,
+			fretTextSize: 21,
+			fretTextColor: "#4a4a4a",
 		}),
 		[]
 	);
