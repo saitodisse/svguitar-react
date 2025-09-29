@@ -5,7 +5,6 @@
  */
 
 import React from "react";
-import type { ChordStyle } from "./types";
 import { getStartX } from "./utils";
 
 interface FretNumbersProps {

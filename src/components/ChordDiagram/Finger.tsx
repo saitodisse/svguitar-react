@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import type { Finger as FingerType, ChordStyle } from "./types";
+import type { Finger as FingerType } from "./types";
 import { getStartX, getStartY, getFingerX, getFingerY } from "./utils";
 
 interface FingerProps {

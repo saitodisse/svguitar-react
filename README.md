@@ -87,13 +87,11 @@ const App = () => {
 ```tsx
 <ChordDiagram
 	chord={chordData}
-	style={{
-		width: 200,
-		height: 250,
-		dotColor: "#FF5733",
-		stringColor: "#CCCCCC",
-		fontFamily: "Arial, sans-serif",
-	}}
+	width={200}
+	height={250}
+	dotColor="#FF5733"
+	stringColor="#CCCCCC"
+	fontFamily="Arial, sans-serif"
 />
 ```
 
@@ -105,7 +103,11 @@ const App = () => {
 | ------------ | --------------------- | ------------------------------------------ |
 | `chord`      | `Chord`               | Chord data with fingers and barres         |
 | `instrument` | `Partial<Instrument>` | Instrument configuration for fret notation |
-| `style`      | `Partial<ChordStyle>` | Custom styling options                     |
+| `width`      | `number`              | Total width of the SVG                     |
+| `height`     | `number`              | Total height of the SVG                    |
+| `dotColor`   | `string`              | Finger dot color                           |
+| `fontFamily` | `string`              | Font family                                |
+| ...          | ...                   | All other ChordStyle properties inline     |
 
 ### Chord
 

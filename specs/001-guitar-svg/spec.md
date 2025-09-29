@@ -43,7 +43,7 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-002**: O sistema DEVE aceitar posições de dedos como um array de objetos, cada um contendo `string` e `fret`.
 - **FR-003**: O sistema DEVE renderizar pestanas como barras retangulares conectando múltiplas cordas.
 - **FR-004**: O sistema DEVE suportar posições de acordes (ex: 1ª posição, 5ª posição) com rótulos apropriados.
-- **FR-005**: O sistema DEVE permitir customização visual via props (cores, tamanhos, espaçamentos e fontes).
+- **FR-005**: O sistema DEVE permitir customização visual via props inline (cores, tamanhos, espaçamentos e fontes).
 - **FR-006**: O sistema DEVE suportar afinações customizadas das cordas soltas, recebendo um array de strings em notação científica (ex: `["E2", "A2", "D3", "G3", "B3", "E4"]`), representando as cordas da mais grave para a mais aguda.
 - **FR-007**: O sistema DEVE renderizar o diagrama com a corda mais aguda (ex: E4) na parte superior e a mais grave (ex: E2) na parte inferior.
 - **FR-008**: O sistema DEVE renderizar cordas soltas (indicadas por um "O" com preenchimento branco e borda na cor padrão dos dedos) e mutadas (indicadas por um "X" vermelho #DC143C espesso) no traste zero (primeira linha vertical à esquerda), posicionados acima do traste mais grosso, próximos às notas de afinação.
@@ -79,7 +79,7 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **Finger**: Representa um dedo posicionado no braço. Contém `string` (corda, onde 1 é a mais grave), `fret` (traste, 0 para cordas soltas), `is_muted` (boolean para cordas mutadas) e `text` (texto opcional).
 - **Barre**: Representa uma pestana. Contém `fret` (traste), `fromString` (corda inicial) e `toString` (corda final).
 - **ChordStyle**: Representa configurações visuais do diagrama (cores, tamanhos, espaçamentos, fontes, orientação e layout para destro/canhoto).
-- **ChordDiagramProps**: Interface principal do componente, aceitando dados do acorde como objeto estruturado (com `fingers`, `barres`) ou como Fret Notation (ex: "x32010").
+- **ChordDiagramProps**: Interface principal do componente, aceitando dados do acorde como objeto estruturado (com `fingers`, `barres`) ou como Fret Notation (ex: "x32010"), com propriedades de estilo inline.
 
 ---
 

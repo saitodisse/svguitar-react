@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.6.0 (2025-01-27)
+
+### Breaking Changes
+
+- **API Simplification**: Removed `ChordStyle` interface from public API
+- **Inline Props**: All styling properties are now inline in `ChordDiagramProps` instead of nested in a `style` object
+
+### Features
+
+- **Simplified API**: Styling properties are now passed directly as props to `ChordDiagram`
+- **Better TypeScript Support**: Improved type inference for styling properties
+- **Cleaner Imports**: Removed unnecessary `ChordStyle` import from public API
+
+### Improvements
+
+- **Code Cleanup**: Removed duplicate type definitions and unnecessary imports
+- **Performance**: Reduced bundle size by removing unused type exports
+- **Developer Experience**: More intuitive API with inline props
+
+### Migration Guide
+
+**Before (v1.5.0):**
+```tsx
+<ChordDiagram
+  chord={chordData}
+  style={{
+    width: 200,
+    height: 250,
+    dotColor: "#FF5733",
+    fontFamily: "Arial, sans-serif"
+  }}
+/>
+```
+
+**After (v1.6.0):**
+```tsx
+<ChordDiagram
+  chord={chordData}
+  width={200}
+  height={250}
+  dotColor="#FF5733"
+  fontFamily="Arial, sans-serif"
+/>
+```
+
 ## 1.5.0 (2025-01-27)
 
 ### Features

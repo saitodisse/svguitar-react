@@ -16,7 +16,7 @@
 
 ## Fase 3.2: Definição de Tipos e Constantes
 
-- [ ] T004 [P] Definir todas as interfaces TypeScript (`ChordDiagramProps`, `Chord`, `Instrument`, `Finger`, `Barre`, `ChordStyle`, etc.) em `src/components/ChordDiagram/types.ts` com base no `data-model.md`.
+- [ ] T004 [P] Definir todas as interfaces TypeScript (`ChordDiagramProps`, `Chord`, `Instrument`, `Finger`, `Barre`, `ChordStyle`, etc.) em `src/components/ChordDiagram/types.ts` com base no `data-model.md`, incluindo propriedades de `ChordStyle` inline em `ChordDiagramProps`.
 - [ ] T005 [P] Definir as constantes de estilo padrão (`DEFAULT_CHORD_STYLE`) e de instrumento (`DEFAULT_INSTRUMENT`) em `src/components/ChordDiagram/constants.ts`, incluindo os novos valores para `orientation` e `handedness` e a afinação com notação científica.
 
 ## Fase 3.3: Testes Primeiro (TDD)
@@ -38,7 +38,7 @@
 - [ ] T013 Implementar a lógica para renderizar `fingers` como elementos `<circle>` e `barres` como elementos `<rect>` no `ChordDiagram.tsx`.
 - [ ] T014 Implementar a lógica para lidar com a prop `firstFret` para acordes em posições altas, incluindo a renderização do rótulo do traste.
 - [ ] T015 Implementar a renderização dos indicadores de afinação e de cordas soltas/mutadas ('O'/'X') acima do diagrama.
-- [ ] T016 Implementar a lógica para mesclar as `style` props customizadas com os estilos padrão definidos em `constants.ts`.
+- [ ] T016 Implementar a lógica para mesclar as props de estilo customizadas com os estilos padrão definidos em `constants.ts`.
 - [ ] T017 Implementar as transformações SVG (`rotate`, `scale`) no `ChordDiagram.tsx` para suportar as props `orientation` e `handedness`.
 - [ ] T018 Envolver o componente `ChordDiagram` com `React.memo` para otimizar a performance, conforme definido no `research.md`. Após esta etapa, os testes de integração da tarefa `T008` devem passar.
 

@@ -122,7 +122,8 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				<TuningLabels tuning={instrumentData.tuning} {...style} />
 
 				{/* Fretboard */}
-				<Fretboard {...style} />
+				{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+				<Fretboard {...(style as any)} />
 
 				{/* Fingers */}
 				{chordData.fingers.map((finger, index) => (

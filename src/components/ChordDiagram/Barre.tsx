@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import type { Barre as BarreType, ChordStyle } from "./types";
+import type { Barre as BarreType } from "./types";
 import { getStartX, getStartY } from "./utils";
 
 interface BarreProps {

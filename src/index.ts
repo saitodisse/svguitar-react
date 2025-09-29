@@ -11,7 +11,6 @@ export type {
 	Instrument,
 	Finger,
 	Barre,
-	ChordStyle,
 	ChordDiagramError,
 	ErrorCode,
 } from "./components/ChordDiagram/types";

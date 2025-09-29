@@ -4,12 +4,12 @@
  * @version 1.0.0
  */
 
-import type { ChordStyle, Instrument } from "./types";
+import type { Instrument } from "./types";
 
 /**
  * Default styling configuration for chord diagrams
  */
-export const DEFAULT_CHORD_STYLE: ChordStyle = {
+export const DEFAULT_CHORD_STYLE = {
 	// Layout
 	orientation: "horizontal",
 	handedness: "right",

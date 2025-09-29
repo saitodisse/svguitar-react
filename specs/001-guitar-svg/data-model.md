@@ -15,13 +15,12 @@ Para garantir clareza, o componente `ChordDiagram` adota a seguinte convenção:
 
 ### `ChordDiagramProps`
 
-Interface principal do componente. Ela aceita os dados do acorde de duas formas: como um objeto estruturado (`chord`) ou como uma string de tablatura (`instrument`).
+Interface principal do componente. Ela aceita os dados do acorde de duas formas: como um objeto estruturado (`chord`) ou como uma string de tablatura (`instrument`). As propriedades de estilo são incluídas diretamente inline.
 
 ```typescript
 interface ChordDiagramProps {
 	instrument?: Partial<Instrument>; // Para entrada via Fret Notation "x32010"
 	chord?: Chord; // Para entrada estruturada de dedos e pestanas
-	style?: Partial<ChordStyle>;
 
 	// Políticas de validação/erro
 	validation?: "strict" | "lenient"; // default: "strict"
@@ -29,6 +28,39 @@ interface ChordDiagramProps {
 	fallbackChord?: string | Chord; // default: "000000"
 	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
 	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
+
+	// Layout
+	orientation?: "vertical" | "horizontal"; // Rotação do braço
+	handedness?: "right" | "left"; // Para destro ou canhoto
+
+	// Dimensões
+	width?: number; // Largura total do SVG
+	height?: number; // Altura total do SVG
+	fretCount?: number; // Número de trastes a serem renderizados
+	stringCount?: number; // Número de cordas
+	fretWidth?: number;
+	fretHeight?: number;
+	stringWidth?: number;
+	dotSize?: number; // Tamanho dos círculos dos dedos
+	barreHeight?: number;
+
+	// Cores
+	backgroundColor?: string;
+	fretColor?: string;
+	stringColor?: string;
+	dotColor?: string;
+	dotTextColor?: string;
+	barreColor?: string;
+	fretTextColor?: string;
+	tuningTextColor?: string;
+	openStringColor?: string; // Cor do círculo 'O' para cordas soltas
+	mutedStringColor?: string; // Cor do 'X' para cordas mutadas
+
+	// Fontes
+	fontFamily?: string;
+	dotTextSize?: number;
+	fretTextSize?: number;
+	tuningTextSize?: number;
 }
 ```
 
@@ -94,7 +126,7 @@ interface Barre {
 
 ### `ChordStyle`
 
-Define todas as propriedades visuais customizáveis do diagrama. Todas as propriedades são opcionais e terão valores padrão.
+Define todas as propriedades visuais customizáveis do diagrama. Todas as propriedades são opcionais e terão valores padrão. **Nota**: Estas propriedades são incluídas diretamente inline em `ChordDiagramProps`, não como um objeto `style` separado.
 
 ```typescript
 interface ChordStyle {

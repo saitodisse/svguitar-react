@@ -31,7 +31,7 @@
 
 ## Resumo
 
-Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de guitarra em SVG com alta performance e customização total via props. O componente deve ser declarativo, otimizado para evitar re-renderizações desnecessárias, e substituir bibliotecas externas que causam gargalos de performance. Incluir suporte a dedos, pestanas, posições, afinações customizadas e estilos visuais. A nova versão integrará a biblioteca `tonal` para cálculos de teoria musical, adicionará suporte para rotação do diagrama (layout vertical), modo para canhotos (espelhado) e uma política de validação/erros configurável (`validation`, `invalidBehavior`, `fallbackChord`, `onError`, `errorFallback`).
+Criar um componente React `ChordDiagram` que renderiza diagramas de acordes de guitarra em SVG com alta performance e customização total via props inline. O componente deve ser declarativo, otimizado para evitar re-renderizações desnecessárias, e substituir bibliotecas externas que causam gargalos de performance. Incluir suporte a dedos, pestanas, posições, afinações customizadas e estilos visuais. A nova versão integrará a biblioteca `tonal` para cálculos de teoria musical, adicionará suporte para rotação do diagrama (layout vertical), modo para canhotos (espelhado) e uma política de validação/erros configurável (`validation`, `invalidBehavior`, `fallbackChord`, `onError`, `errorFallback`).
 
 ## Contexto Técnico
 
@@ -146,6 +146,7 @@ _Pré-requisito: research.md concluído_
     - ChordDiagramProps, Chord, Finger, Barre, ChordStyle
     - Adicionar propriedades de layout a `ChordStyle` (`orientation`, `handedness`).
     - Adicionar novas props públicas: `validation`, `invalidBehavior`, `fallbackChord`, `onError`, `errorFallback`.
+    - Incluir propriedades de `ChordStyle` inline em `ChordDiagramProps`.
     - Atualizar `Instrument.tuning` para usar notação científica.
     - Regras de validação para props
     - Interfaces TypeScript completas

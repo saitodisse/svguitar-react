@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import type { Chord, Finger, Barre, Instrument, ChordStyle } from "./types";
+import type { Chord, Finger, Barre, Instrument } from "./types";
 import { ChordDiagramError, ERROR_CODES } from "./types";
 import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT, VALID_FRET_CHARS } from "./constants";
 
@@ -239,7 +239,7 @@ export function validateInstrument(instrument: Instrument): boolean {
  * @param customStyle - Custom style properties
  * @returns Merged style object
  */
-export function mergeStyles(customStyle?: Partial<ChordStyle>): ChordStyle {
+export function mergeStyles(customStyle?: Partial<typeof DEFAULT_CHORD_STYLE>): typeof DEFAULT_CHORD_STYLE {
 	return {
 		...DEFAULT_CHORD_STYLE,
 		...customStyle,

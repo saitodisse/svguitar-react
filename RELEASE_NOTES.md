@@ -1,5 +1,70 @@
 # Release Notes
 
+## Version 1.6.0
+
+**Release Date:** January 27, 2025
+
+### 🎯 API Simplification & Breaking Changes
+
+This release introduces significant API improvements by simplifying the component interface and removing unnecessary complexity.
+
+#### 🔄 Breaking Changes
+
+- **Removed `ChordStyle` Interface**: The `ChordStyle` interface is no longer exported from the public API
+- **Inline Props**: All styling properties are now passed directly as props instead of nested in a `style` object
+- **Simplified Imports**: No need to import `ChordStyle` type anymore
+
+#### ✨ New Features
+
+- **Direct Props API**: Styling properties are now passed directly to the component
+- **Better TypeScript Support**: Improved type inference and IntelliSense
+- **Cleaner Code**: Reduced bundle size and improved performance
+
+#### 📝 Migration Guide
+
+**Old API (v1.5.0):**
+```tsx
+import { ChordDiagram, ChordStyle } from 'svguitar-react';
+
+const style: Partial<ChordStyle> = {
+  width: 200,
+  height: 250,
+  dotColor: "#FF5733",
+  fontFamily: "Arial, sans-serif"
+};
+
+<ChordDiagram chord={chordData} style={style} />
+```
+
+**New API (v1.6.0):**
+```tsx
+import { ChordDiagram } from 'svguitar-react';
+
+<ChordDiagram 
+  chord={chordData}
+  width={200}
+  height={250}
+  dotColor="#FF5733"
+  fontFamily="Arial, sans-serif"
+/>
+```
+
+#### 🛠️ Technical Improvements
+
+- **Code Cleanup**: Removed duplicate type definitions
+- **Performance**: Reduced bundle size by removing unused exports
+- **Developer Experience**: More intuitive and React-like API
+- **Type Safety**: Maintained full TypeScript support with better inference
+
+#### 🎨 Benefits
+
+- **Simpler API**: More intuitive for React developers
+- **Better Performance**: Smaller bundle size
+- **Improved DX**: Better IntelliSense and type checking
+- **Consistent**: Follows React patterns for prop passing
+
+---
+
 ## Version 1.5.0
 
 **Release Date:** January 27, 2025
