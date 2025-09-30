@@ -5,15 +5,12 @@
  */
 
 import React from "react";
-import type { Finger as FingerType } from "./types";
-import { getStartX, getStartY, getFingerX, getFingerY } from "./utils";
+import type { Finger as FingerType, LayoutEngine, LayoutFrame } from "./types";
 
 interface FingerProps {
+	engine: LayoutEngine;
+	frame: LayoutFrame;
 	finger: FingerType;
-	firstFret?: number;
-	stringCount: number;
-	fretWidth: number;
-	fretHeight: number;
 	dotSize: number;
 	dotColor: string;
 	dotTextColor: string;
@@ -21,8 +18,6 @@ interface FingerProps {
 	fontFamily: string;
 	openStringColor: string;
 	mutedStringColor: string;
-	tuningTextSize: number;
-	fretTextSize: number;
 }
 
 /**
@@ -30,11 +25,9 @@ interface FingerProps {
  */
 export const Finger: React.FC<FingerProps> = React.memo(
 	({
+		engine,
+		frame,
 		finger,
-		firstFret = 1,
-		stringCount,
-		fretWidth,
-		fretHeight,
 		dotSize,
 		dotColor,
 		dotTextColor,
@@ -42,22 +35,18 @@ export const Finger: React.FC<FingerProps> = React.memo(
 		fontFamily,
 		openStringColor,
 		mutedStringColor,
-		tuningTextSize,
-		fretTextSize,
 	}) => {
-		// Calculate positions using utility functions
-		const startX = getStartX({ fretWidth, tuningTextSize });
-		const startY = getStartY({ fretTextSize });
+		const isVertical = engine.id.startsWith("vertical");
 
-		// Calculate finger position using utility functions
-		const x = getFingerX(finger, firstFret, fretWidth, startX);
-		const y = getFingerY(finger, stringCount, fretHeight, startY);
+		// Calculate finger position using layout engine
+		const { cx: x, cy: y } = engine.fingerPosition(finger, { frame });
 
 		// Handle open strings and muted strings (fret 0)
 		if (finger.fret === 0) {
-			// Position for open/muted strings above the 0th fret
-			console.log("openX", { startX, fretWidth });
-			const openX = startX - fretWidth / 2 + fretWidth / 2;
+			// Position for open/muted markers near the nut and tuning labels
+			const open = engine.indicatorPosition(finger.string, finger.is_muted ? "muted" : "open", {
+				frame,
+			});
 
 			if (finger.is_muted) {
 				// Render 'X' for muted strings
@@ -67,18 +56,18 @@ export const Finger: React.FC<FingerProps> = React.memo(
 					<g>
 						{/* X shape for muted strings */}
 						<line
-							x1={openX - dotSize / 2.5}
-							y1={y - dotSize / 2.5}
-							x2={openX + dotSize / 2.5}
-							y2={y + dotSize / 2.5}
+							x1={open.x - dotSize / 2.5}
+							y1={open.y - dotSize / 2.5}
+							x2={open.x + dotSize / 2.5}
+							y2={open.y + dotSize / 2.5}
 							stroke={color}
 							strokeWidth={4}
 						/>
 						<line
-							x1={openX + dotSize / 2.5}
-							y1={y - dotSize / 2.5}
-							x2={openX - dotSize / 2.5}
-							y2={y + dotSize / 2.5}
+							x1={open.x + dotSize / 2.5}
+							y1={open.y - dotSize / 2.5}
+							x2={open.x - dotSize / 2.5}
+							y2={open.y + dotSize / 2.5}
 							stroke={color}
 							strokeWidth={4}
 						/>
@@ -91,8 +80,8 @@ export const Finger: React.FC<FingerProps> = React.memo(
 				return (
 					<g>
 						<circle
-							cx={openX}
-							cy={y}
+							cx={open.x}
+							cy={open.y}
 							r={dotSize / 2}
 							fill="white"
 							stroke={color}

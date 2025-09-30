@@ -5,8 +5,23 @@
  */
 
 import React from "react";
-import type { ChordDiagramProps, Chord, ChordDiagramError, ErrorCode, ViewId } from "./types";
-import { processChordData, mergeStyles, mergeInstrument, validateViewProps } from "./utils";
+import type {
+	ChordDiagramProps,
+	Chord,
+	ChordDiagramError,
+	ErrorCode,
+	ViewId,
+	LayoutEngine,
+	LayoutFrame,
+} from "./types";
+import {
+	processChordData,
+	mergeStyles,
+	mergeInstrument,
+	validateViewProps,
+	getStartX,
+	getStartY,
+} from "./utils";
 import { getLayoutEngine } from "./layout";
 import { Fretboard } from "./Fretboard";
 import { Finger } from "./Finger";
@@ -48,7 +63,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	let chordData: Chord;
 	let renderError: ChordDiagramError | null = null;
 	let resolvedViewId: ViewId | null = null;
-	let resolvedLayoutEngine: import("./types").LayoutEngine | null = null;
+	let resolvedLayoutEngine: LayoutEngine | null = null;
 
 	try {
 		// Validate and resolve view
@@ -113,6 +128,30 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const instrumentData = mergeInstrument(instrument);
 	const firstFret = chordData.firstFret || 1;
 
+	// Build layout frame for the selected view
+	const startX = getStartX({ fretWidth: style.fretWidth, tuningTextSize: style.tuningTextSize });
+	const startY = getStartY({ fretTextSize: style.fretTextSize });
+	const isVertical = (resolvedLayoutEngine?.id || "horizontal-right").startsWith("vertical");
+	const gridWidth = isVertical
+		? (style.stringCount - 1) * style.fretWidth
+		: style.fretCount * style.fretWidth;
+	const gridHeight = isVertical
+		? style.fretCount * style.fretHeight
+		: (style.stringCount - 1) * style.fretHeight;
+
+	const frame: LayoutFrame = {
+		width: style.width,
+		height: style.height,
+		gridOriginX: startX,
+		gridOriginY: startY,
+		gridWidth,
+		gridHeight,
+		firstFret,
+		stringCount: style.stringCount,
+		fretCount: style.fretCount,
+		style,
+	};
+
 	return (
 		<div data-testid="chord-diagram">
 			<svg
@@ -125,23 +164,50 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				<rect width={style.width} height={style.height} fill={style.backgroundColor} />
 
 				{/* Fret numbers */}
-				<FretNumbers firstFret={firstFret} {...style} />
+				<FretNumbers engine={resolvedLayoutEngine!} frame={frame} />
 
 				{/* Tuning labels */}
-				<TuningLabels tuning={instrumentData.tuning} {...style} />
+				<TuningLabels engine={resolvedLayoutEngine!} frame={frame} tuning={instrumentData.tuning} />
 
 				{/* Fretboard */}
-				{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-				<Fretboard {...(style as any)} />
+				<Fretboard
+					engine={resolvedLayoutEngine!}
+					frame={frame}
+					fretColor={style.fretColor}
+					stringColor={style.stringColor}
+					stringWidth={style.stringWidth}
+				/>
 
 				{/* Fingers */}
 				{chordData.fingers.map((finger, index) => (
-					<Finger key={`finger-${index}`} finger={finger} firstFret={firstFret} {...style} />
+					<Finger
+						key={`finger-${index}`}
+						engine={resolvedLayoutEngine!}
+						frame={frame}
+						finger={finger}
+						dotSize={style.dotSize}
+						dotColor={style.dotColor}
+						dotTextColor={style.dotTextColor}
+						dotTextSize={style.dotTextSize}
+						fontFamily={style.fontFamily}
+						openStringColor={style.openStringColor}
+						mutedStringColor={style.mutedStringColor}
+					/>
 				))}
 
 				{/* Barres */}
 				{chordData.barres.map((barre, index) => (
-					<Barre key={`barre-${index}`} barre={barre} firstFret={firstFret} {...style} />
+					<Barre
+						key={`barre-${index}`}
+						engine={resolvedLayoutEngine!}
+						frame={frame}
+						barre={barre}
+						barreHeight={style.barreHeight}
+						barreColor={style.barreColor}
+						fontFamily={style.fontFamily}
+						dotTextSize={style.dotTextSize}
+						dotTextColor={style.dotTextColor}
+					/>
 				))}
 			</svg>
 			{renderError &&

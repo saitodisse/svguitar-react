@@ -13,12 +13,16 @@ export type {
 	Barre,
 	ChordDiagramError,
 	ErrorCode,
+	ViewId,
+	LayoutEngine,
 } from "./components/ChordDiagram/types";
 export {
 	DEFAULT_CHORD_STYLE,
 	DEFAULT_INSTRUMENT,
 	STANDARD_TUNINGS,
+	DEFAULT_VIEW,
 } from "./components/ChordDiagram/constants";
+export { layoutRegistry, resolveViewId, getLayoutEngine } from "./components/ChordDiagram/layout";
 export {
 	parseFretNotation,
 	validateFinger,

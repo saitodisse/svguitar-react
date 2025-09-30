@@ -230,7 +230,7 @@ export const Default: Story = {
 	args: {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
-		view: "vertical-right",
+		view: "horizontal-right",
 		width: 220,
 		height: 210,
 		fretCount: 12,

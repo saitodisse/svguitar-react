@@ -5,51 +5,42 @@
  */
 
 import React from "react";
-import { getStartX } from "./utils";
+import type { LayoutEngine, LayoutFrame } from "./types";
 
 interface FretNumbersProps {
-	firstFret: number;
-	fretCount: number;
-	fretWidth: number;
-	fretTextColor: string;
-	fretTextSize: number;
-	fontFamily: string;
-	tuningTextSize: number;
+	engine: LayoutEngine;
+	frame: LayoutFrame;
 }
 
 /**
  * Renders fret numbers above the fretboard
  */
-export const FretNumbers: React.FC<FretNumbersProps> = React.memo(
-	({ firstFret, fretCount, fretWidth, fretTextColor, fretTextSize, fontFamily, tuningTextSize }) => {
-		// Calculate positions using utility functions
-		const startX = getStartX({ fretWidth, tuningTextSize });
-		const y = 50; // Position above the fretboard
+export const FretNumbers: React.FC<FretNumbersProps> = React.memo(({ engine, frame }) => {
+	const y = frame.gridOriginY - frame.style.fretHeight * 0.7;
 
-		return (
-			<g>
-				{Array.from({ length: fretCount }, (_, i) => {
-					const fretNumber = firstFret + i;
-					const x = startX + (i + 0.5) * fretWidth;
+	return (
+		<g>
+			{Array.from({ length: frame.fretCount }, (_, i) => {
+				const fretNumber = frame.firstFret + i;
+				const x = engine.mapFretAxis(frame.firstFret + i, frame);
 
-					return (
-						<text
-							key={`fret-number-${fretNumber}`}
-							x={x}
-							y={y}
-							textAnchor="middle"
-							fill={fretTextColor}
-							fontSize={fretTextSize}
-							fontFamily={fontFamily}
-							fontWeight="bold"
-						>
-							{fretNumber}
-						</text>
-					);
-				})}
-			</g>
-		);
-	}
-);
+				return (
+					<text
+						key={`fret-number-${fretNumber}`}
+						x={x}
+						y={y}
+						textAnchor="middle"
+						fill={frame.style.fretTextColor}
+						fontSize={frame.style.fretTextSize}
+						fontFamily={frame.style.fontFamily}
+						fontWeight="bold"
+					>
+						{fretNumber}
+					</text>
+				);
+			})}
+		</g>
+	);
+});
 
 FretNumbers.displayName = "FretNumbers";

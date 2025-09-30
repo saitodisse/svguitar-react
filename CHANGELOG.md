@@ -1,5 +1,74 @@
 # Changelog
 
+## 1.8.0 (2025-01-30)
+
+### Major Features
+
+- **View-Based Layout System**: Complete implementation of 4 predefined views without global transforms
+    - `horizontal-right` (default): Standard right-handed horizontal layout
+    - `horizontal-left`: Left-handed horizontal layout (mirrored string order)
+    - `vertical-right`: Vertical layout with low E string on the left
+    - `vertical-left`: Vertical layout with low E string on the right
+- **Pluggable Layout Engines**: Strategy pattern implementation for custom layout logic
+    - `LayoutEngine` interface for creating custom positioning strategies
+    - `layoutRegistry` for managing and registering custom engines
+    - Precedence system: `layoutEngine` > `view` > default
+- **Mapping-per-View Architecture**: Absolute coordinate mapping without SVG transforms
+    - Each view calculates coordinates independently
+    - Consistent horizontal text orientation across all views
+    - Centralized dot positioning maintained in all views
+
+### Breaking Changes
+
+- **Props Removed**: `orientation` and `handedness` props have been removed
+- **Migration Required**: Replace with new `view` prop
+    - `orientation="horizontal"` + `handedness="right"` → `view="horizontal-right"`
+    - `orientation="horizontal"` + `handedness="left"` → `view="horizontal-left"`
+    - `orientation="vertical"` + `handedness="right"` → `view="vertical-right"`
+    - `orientation="vertical"` + `handedness="left"` → `view="vertical-left"`
+
+### New Interfaces
+
+- **`ViewId`**: Type for predefined view identifiers
+- **`LayoutEngine`**: Strategy interface for custom layout logic
+- **`LayoutFrame`**: Layout configuration and grid dimensions
+- **`LayoutArgs`**: Arguments passed to layout engine methods
+
+### API Additions
+
+- **New Props**:
+    - `view?: ViewId` - Select predefined layout view
+    - `layoutEngine?: LayoutEngine` - Inject custom layout strategy
+- **New Exports**:
+    - `layoutRegistry` - Registry for managing layout engines
+    - `resolveViewId()` - Resolve effective view ID with precedence
+    - `getLayoutEngine()` - Get layout engine by view ID
+    - `DEFAULT_VIEW` - Default view constant ("horizontal-right")
+
+### Technical Improvements
+
+- **No Global Transforms**: Removed all SVG `transform` attributes for better compatibility
+- **Enhanced Type Safety**: Comprehensive TypeScript interfaces for layout system
+- **Modular Architecture**: Separate layout engines in individual files
+- **Improved Maintainability**: Clean separation between rendering and positioning logic
+- **Better Extensibility**: Easy to add new views or custom layout strategies
+
+### Documentation
+
+- **Updated README**: Comprehensive examples for all views and custom layout engines
+- **Enhanced Specifications**: Complete documentation of view system and layout engines
+- **API Reference**: Detailed `LayoutEngine` interface documentation
+- **Migration Guide**: Clear instructions for upgrading from v1.7.0
+
+### Component Updates
+
+- **ChordDiagram**: Now resolves layout engine and builds layout frame
+- **Fretboard**: Refactored to use engine mapping for frets and strings
+- **Finger**: Uses engine for positioning and indicators
+- **Barre**: Uses engine for barre rectangle calculations
+- **FretNumbers**: Adapted for engine-based fret axis mapping
+- **TuningLabels**: Supports both horizontal and vertical layouts with consistent text orientation
+
 ## 1.7.0 (2025-01-27)
 
 ### Breaking Changes
