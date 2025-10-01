@@ -600,6 +600,13 @@ export const VerticalRight: Story = {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
 		view: "vertical-right",
+		width: 207,
+		height: 297,
+		fretCount: 5,
+		fretWidth: 23,
+		fretHeight: 39,
+		stringWidth: 1,
+		dotSize: 14,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -626,6 +633,13 @@ export const VerticalLeft: Story = {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
 		view: "vertical-left",
+		width: 207,
+		height: 297,
+		fretCount: 5,
+		fretWidth: 23,
+		fretHeight: 39,
+		stringWidth: 1,
+		dotSize: 14,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
