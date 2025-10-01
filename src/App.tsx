@@ -1,8 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
 import { ChordDiagram } from "./components/ChordDiagram/ChordDiagram";
-import "./App.css";
-import { useState, useEffect, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
 
 // Hook para detectar se está em modo mobile
 function useIsMobile() {
@@ -275,26 +279,31 @@ function App() {
 	]);
 
 	return (
-		<>
-			<h1>svguitar-react</h1>
-			<div className="links">
-				<a
-					href="https://github.com/saitodisse/svguitar-react"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					GitHub
-				</a>
-				<a
-					href="https://www.npmjs.com/package/svguitar-react"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					npm
-				</a>
-			</div>
-			<div className="app-layout">
-				<div className="preview card">
+		<div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-4 py-10 text-white">
+			<header className="flex flex-col items-center gap-3 text-center">
+				<h1 className="text-4xl font-semibold tracking-tight">svguitar-react</h1>
+				<nav className="flex items-center gap-4 text-sm font-medium text-sky-300">
+					<a
+						href="https://github.com/saitodisse/svguitar-react"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="transition hover:text-sky-200"
+					>
+						GitHub
+					</a>
+					<a
+						href="https://www.npmjs.com/package/svguitar-react"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="transition hover:text-sky-200"
+					>
+						npm
+					</a>
+				</nav>
+			</header>
+
+			<div className="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur">
 					<ChordDiagramWithErrorHandling
 						chord={chord}
 						instrument={{
@@ -332,31 +341,43 @@ function App() {
 						}
 					/>
 				</div>
-				<aside className="control-panel card" aria-label={t("aria.controlPanel")}>
-					<h2>{t("controls.title")}</h2>
 
-					<div className="section">
-						<h3>{t("controls.chordSection")}</h3>
-						<div className="control">
-							<label htmlFor="chord">{t("controls.chordLabel")}</label>
-							<input
+				<aside
+					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur"
+					aria-label={t("aria.controlPanel")}
+				>
+					<h2 className="text-xl font-semibold">{t("controls.title")}</h2>
+
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.chordSection")}
+						</h3>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="chord" className="text-sm text-white/80">
+								{t("controls.chordLabel")}
+							</Label>
+							<Input
 								id="chord"
 								type="text"
 								value={chord}
 								onChange={e => setChord(e.target.value)}
 							/>
 						</div>
-					</div>
-					<div className="section">
-						<h3>{t("controls.layoutSection")}</h3>
-						<div className="control">
-							<label htmlFor="view">{t("controls.viewLabel")}</label>
-							<select
-								id="view"
+					</section>
+
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.layoutSection")}
+						</h3>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="view" className="text-sm text-white/80">
+								{t("controls.viewLabel")}
+							</Label>
+							<Select
 								value={view}
-								onChange={e =>
+								onValueChange={value =>
 									setView(
-										e.target.value as
+										value as
 											| "horizontal-right"
 											| "horizontal-left"
 											| "vertical-right"
@@ -364,321 +385,305 @@ function App() {
 									)
 								}
 							>
-								<option value="horizontal-right">{t("controls.viewHorizontalRight")}</option>
-								<option value="horizontal-left">{t("controls.viewHorizontalLeft")}</option>
-								<option value="vertical-right">{t("controls.viewVerticalRight")}</option>
-								<option value="vertical-left">{t("controls.viewVerticalLeft")}</option>
-							</select>
+								<SelectTrigger id="view">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="horizontal-right">
+										{t("controls.viewHorizontalRight")}
+									</SelectItem>
+									<SelectItem value="horizontal-left">
+										{t("controls.viewHorizontalLeft")}
+									</SelectItem>
+									<SelectItem value="vertical-right">
+										{t("controls.viewVerticalRight")}
+									</SelectItem>
+									<SelectItem value="vertical-left">
+										{t("controls.viewVerticalLeft")}
+									</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
-					</div>
+					</section>
 
-					<div className="section">
-						<h3>{t("controls.dimensionsSection")}</h3>
-						<div className="control">
-							<label htmlFor="width">
-								{t("controls.widthLabel")} <span className="value">{width}px</span>
-							</label>
-							<input
-								id="width"
-								type="range"
-								min={0}
-								max={1000}
-								value={width}
-								onChange={e => setWidth(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="height">
-								{t("controls.heightLabel")} <span className="value">{height}px</span>
-							</label>
-							<input
-								id="height"
-								type="range"
-								min={0}
-								max={1000}
-								value={height}
-								onChange={e => setHeight(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="fretCount">
-								{t("controls.fretCountLabel")} <span className="value">{fretCount}</span>
-							</label>
-							<input
-								id="fretCount"
-								type="range"
-								min={0}
-								max={18}
-								value={fretCount}
-								onChange={e => setFretCount(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="stringCount">
-								{t("controls.stringCountLabel")} <span className="value">{stringCount}</span>
-							</label>
-							<input
-								id="stringCount"
-								type="range"
-								min={0}
-								max={12}
-								value={stringCount}
-								onChange={e => setStringCount(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="fretWidth">
-								{t("controls.fretWidthLabel")} <span className="value">{fretWidth}px</span>
-							</label>
-							<input
-								id="fretWidth"
-								type="range"
-								min={0}
-								max={100}
-								value={fretWidth}
-								onChange={e => setFretWidth(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="fretHeight">
-								{t("controls.fretHeightLabel")} <span className="value">{fretHeight}px</span>
-							</label>
-							<input
-								id="fretHeight"
-								type="range"
-								min={0}
-								max={100}
-								value={fretHeight}
-								onChange={e => setFretHeight(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="stringWidth">
-								{t("controls.stringWidthLabel")}{" "}
-								<span className="value">{stringWidth}px</span>
-							</label>
-							<input
-								id="stringWidth"
-								type="range"
-								min={0}
-								max={10}
-								value={stringWidth}
-								onChange={e => setStringWidth(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="dotSize">
-								{t("controls.dotSizeLabel")} <span className="value">{dotSize}px</span>
-							</label>
-							<input
-								id="dotSize"
-								type="range"
-								min={0}
-								max={20}
-								value={dotSize}
-								onChange={e => setDotSize(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="barreHeight">
-								{t("controls.barreHeightLabel")}{" "}
-								<span className="value">{barreHeight}px</span>
-							</label>
-							<input
-								id="barreHeight"
-								type="range"
-								min={0}
-								max={28}
-								value={barreHeight}
-								onChange={e => setBarreHeight(Number(e.target.value))}
-							/>
-						</div>
-					</div>
-
-					<div className="section">
-						<h3>{t("controls.colorsSection")}</h3>
-						<div className="control color">
-							<label htmlFor="backgroundColor">{t("controls.backgroundColorLabel")}</label>
-							<input
-								id="backgroundColor"
-								type="color"
-								value={backgroundColor}
-								onChange={e => setBackgroundColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="fretColor">{t("controls.fretColorLabel")}</label>
-							<input
-								id="fretColor"
-								type="color"
-								value={fretColor}
-								onChange={e => setFretColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="stringColor">{t("controls.stringColorLabel")}</label>
-							<input
-								id="stringColor"
-								type="color"
-								value={stringColor}
-								onChange={e => setStringColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="dotColor">{t("controls.dotColorLabel")}</label>
-							<input
-								id="dotColor"
-								type="color"
-								value={dotColor}
-								onChange={e => setDotColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="dotTextColor">{t("controls.dotTextColorLabel")}</label>
-							<input
-								id="dotTextColor"
-								type="color"
-								value={dotTextColor}
-								onChange={e => setDotTextColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="barreColor">{t("controls.barreColorLabel")}</label>
-							<input
-								id="barreColor"
-								type="color"
-								value={barreColor}
-								onChange={e => setBarreColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="fretTextColor">{t("controls.fretTextColorLabel")}</label>
-							<input
-								id="fretTextColor"
-								type="color"
-								value={fretTextColor}
-								onChange={e => setFretTextColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="tuningTextColor">{t("controls.tuningTextColorLabel")}</label>
-							<input
-								id="tuningTextColor"
-								type="color"
-								value={tuningTextColor}
-								onChange={e => setTuningTextColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="openStringColor">{t("controls.openStringColorLabel")}</label>
-							<input
-								id="openStringColor"
-								type="color"
-								value={openStringColor}
-								onChange={e => setOpenStringColor(e.target.value)}
-							/>
-						</div>
-						<div className="control color">
-							<label htmlFor="mutedStringColor">{t("controls.mutedStringColorLabel")}</label>
-							<input
-								id="mutedStringColor"
-								type="color"
-								value={mutedStringColor}
-								onChange={e => setMutedStringColor(e.target.value)}
-							/>
-						</div>
-					</div>
-
-					<div className="section">
-						<h3>{t("controls.fontsSection")}</h3>
-						<div className="control">
-							<label htmlFor="fontFamily">{t("controls.fontFamilyLabel")}</label>
-							<select
-								id="fontFamily"
-								value={fontFamily}
-								onChange={e => setFontFamily(e.target.value)}
-							>
-								<option>Arial, sans-serif</option>
-								<option>monospace</option>
-								<option>sans-serif</option>
-								<option>serif</option>
-								<option>Noto Sans, sans-serif</option>
-								<option>Ubuntu, sans-serif</option>
-								<option>Inter, sans-serif</option>
-							</select>
-						</div>
-						<div className="control">
-							<label htmlFor="dotTextSize">
-								{t("controls.dotTextSizeLabel")}{" "}
-								<span className="value">{dotTextSize}px</span>
-							</label>
-							<input
-								id="dotTextSize"
-								type="range"
-								min={0}
-								max={100}
-								value={dotTextSize}
-								onChange={e => setDotTextSize(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="fretTextSize">
-								{t("controls.fretTextSizeLabel")}{" "}
-								<span className="value">{fretTextSize}px</span>
-							</label>
-							<input
-								id="fretTextSize"
-								type="range"
-								min={0}
-								max={100}
-								value={fretTextSize}
-								onChange={e => setFretTextSize(Number(e.target.value))}
-							/>
-						</div>
-						<div className="control">
-							<label htmlFor="tuningTextSize">
-								{t("controls.tuningTextSizeLabel")}{" "}
-								<span className="value">{tuningTextSize}px</span>
-							</label>
-							<input
-								id="tuningTextSize"
-								type="range"
-								min={0}
-								max={100}
-								value={tuningTextSize}
-								onChange={e => setTuningTextSize(Number(e.target.value))}
-							/>
-						</div>
-					</div>
-
-					<div className="section">
-						<h3>{t("language")}</h3>
-						<div className="control">
-							<div className="radio-group">
-								<label>
-									<input
-										type="radio"
-										name="language"
-										checked={lang === "en"}
-										onChange={() => setLang("en")}
-									/>
-									{t("language.en")}
-								</label>
-								<label>
-									<input
-										type="radio"
-										name="language"
-										checked={lang === "pt"}
-										onChange={() => setLang("pt")}
-									/>
-									{t("language.pt")}
-								</label>
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.dimensionsSection")}
+						</h3>
+						{[
+							{
+								id: "width",
+								title: t("controls.widthLabel"),
+								value: `${width}px`,
+								onChange: (value: number) => setWidth(value),
+								min: 0,
+								max: 1000,
+								source: width,
+							},
+							{
+								id: "height",
+								title: t("controls.heightLabel"),
+								value: `${height}px`,
+								onChange: (value: number) => setHeight(value),
+								min: 0,
+								max: 1000,
+								source: height,
+							},
+							{
+								id: "fretCount",
+								title: t("controls.fretCountLabel"),
+								value: `${fretCount}`,
+								onChange: (value: number) => setFretCount(value),
+								min: 0,
+								max: 18,
+								source: fretCount,
+							},
+							{
+								id: "stringCount",
+								title: t("controls.stringCountLabel"),
+								value: `${stringCount}`,
+								onChange: (value: number) => setStringCount(value),
+								min: 0,
+								max: 12,
+								source: stringCount,
+							},
+							{
+								id: "fretWidth",
+								title: t("controls.fretWidthLabel"),
+								value: `${fretWidth}px`,
+								onChange: (value: number) => setFretWidth(value),
+								min: 0,
+								max: 100,
+								source: fretWidth,
+							},
+							{
+								id: "fretHeight",
+								title: t("controls.fretHeightLabel"),
+								value: `${fretHeight}px`,
+								onChange: (value: number) => setFretHeight(value),
+								min: 0,
+								max: 100,
+								source: fretHeight,
+							},
+							{
+								id: "stringWidth",
+								title: t("controls.stringWidthLabel"),
+								value: `${stringWidth}px`,
+								onChange: (value: number) => setStringWidth(value),
+								min: 0,
+								max: 10,
+								source: stringWidth,
+							},
+							{
+								id: "dotSize",
+								title: t("controls.dotSizeLabel"),
+								value: `${dotSize}px`,
+								onChange: (value: number) => setDotSize(value),
+								min: 0,
+								max: 20,
+								source: dotSize,
+							},
+							{
+								id: "barreHeight",
+								title: t("controls.barreHeightLabel"),
+								value: `${barreHeight}px`,
+								onChange: (value: number) => setBarreHeight(value),
+								min: 0,
+								max: 28,
+								source: barreHeight,
+							},
+						].map(control => (
+							<div key={control.id} className="flex flex-col gap-1">
+								<Label htmlFor={control.id} className="text-sm text-white/80">
+									<span className="flex items-center justify-between">
+										{control.title}
+										<span className="text-xs text-white/60">{control.value}</span>
+									</span>
+								</Label>
+								<Slider
+									id={control.id}
+									min={control.min}
+									max={control.max}
+									value={[control.source]}
+									onValueChange={values => control.onChange(values[0])}
+								/>
 							</div>
+						))}
+					</section>
+
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.colorsSection")}
+						</h3>
+						{[
+							{
+								id: "backgroundColor",
+								title: t("controls.backgroundColorLabel"),
+								value: backgroundColor,
+								onChange: setBackgroundColor,
+							},
+							{
+								id: "fretColor",
+								title: t("controls.fretColorLabel"),
+								value: fretColor,
+								onChange: setFretColor,
+							},
+							{
+								id: "stringColor",
+								title: t("controls.stringColorLabel"),
+								value: stringColor,
+								onChange: setStringColor,
+							},
+							{
+								id: "dotColor",
+								title: t("controls.dotColorLabel"),
+								value: dotColor,
+								onChange: setDotColor,
+							},
+							{
+								id: "dotTextColor",
+								title: t("controls.dotTextColorLabel"),
+								value: dotTextColor,
+								onChange: setDotTextColor,
+							},
+							{
+								id: "barreColor",
+								title: t("controls.barreColorLabel"),
+								value: barreColor,
+								onChange: setBarreColor,
+							},
+							{
+								id: "fretTextColor",
+								title: t("controls.fretTextColorLabel"),
+								value: fretTextColor,
+								onChange: setFretTextColor,
+							},
+							{
+								id: "tuningTextColor",
+								title: t("controls.tuningTextColorLabel"),
+								value: tuningTextColor,
+								onChange: setTuningTextColor,
+							},
+							{
+								id: "openStringColor",
+								title: t("controls.openStringColorLabel"),
+								value: openStringColor,
+								onChange: setOpenStringColor,
+							},
+							{
+								id: "mutedStringColor",
+								title: t("controls.mutedStringColorLabel"),
+								value: mutedStringColor,
+								onChange: setMutedStringColor,
+							},
+						].map(colorControl => (
+							<div key={colorControl.id} className="flex items-center justify-between gap-4">
+								<Label htmlFor={colorControl.id} className="text-sm text-white/80">
+									{colorControl.title}
+								</Label>
+								<input
+									id={colorControl.id}
+									type="color"
+									value={colorControl.value}
+									onChange={e => colorControl.onChange(e.target.value)}
+									className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+								/>
+							</div>
+						))}
+					</section>
+
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.fontsSection")}
+						</h3>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="fontFamily" className="text-sm text-white/80">
+								{t("controls.fontFamilyLabel")}
+							</Label>
+							<Select value={fontFamily} onValueChange={setFontFamily}>
+								<SelectTrigger id="fontFamily">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="Arial, sans-serif">Arial, sans-serif</SelectItem>
+									<SelectItem value="monospace">monospace</SelectItem>
+									<SelectItem value="sans-serif">sans-serif</SelectItem>
+									<SelectItem value="serif">serif</SelectItem>
+									<SelectItem value="Noto Sans, sans-serif">
+										Noto Sans, sans-serif
+									</SelectItem>
+									<SelectItem value="Ubuntu, sans-serif">Ubuntu, sans-serif</SelectItem>
+									<SelectItem value="Inter, sans-serif">Inter, sans-serif</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
-					</div>
+						{[
+							{
+								id: "dotTextSize",
+								title: t("controls.dotTextSizeLabel"),
+								value: `${dotTextSize}px`,
+								onChange: (value: number) => setDotTextSize(value),
+								min: 0,
+								max: 100,
+								source: dotTextSize,
+							},
+							{
+								id: "fretTextSize",
+								title: t("controls.fretTextSizeLabel"),
+								value: `${fretTextSize}px`,
+								onChange: (value: number) => setFretTextSize(value),
+								min: 0,
+								max: 100,
+								source: fretTextSize,
+							},
+							{
+								id: "tuningTextSize",
+								title: t("controls.tuningTextSizeLabel"),
+								value: `${tuningTextSize}px`,
+								onChange: (value: number) => setTuningTextSize(value),
+								min: 0,
+								max: 100,
+								source: tuningTextSize,
+							},
+						].map(sizeControl => (
+							<div key={sizeControl.id} className="flex flex-col gap-1">
+								<Label htmlFor={sizeControl.id} className="text-sm text-white/80">
+									<span className="flex items-center justify-between">
+										{sizeControl.title}
+										<span className="text-xs text-white/60">{sizeControl.value}</span>
+									</span>
+								</Label>
+								<Slider
+									id={sizeControl.id}
+									min={sizeControl.min}
+									max={sizeControl.max}
+									value={[sizeControl.source]}
+									onValueChange={values => sizeControl.onChange(values[0])}
+								/>
+							</div>
+						))}
+					</section>
+
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">{t("language")}</h3>
+						<RadioGroup value={lang} onValueChange={value => setLang(value as "en" | "pt")}>
+							<div className="flex items-center space-x-2">
+								<RadioGroupItem value="en" id="lang-en" />
+								<Label htmlFor="lang-en" className="text-sm text-white/80 font-normal">
+									{t("language.en")}
+								</Label>
+							</div>
+							<div className="flex items-center space-x-2">
+								<RadioGroupItem value="pt" id="lang-pt" />
+								<Label htmlFor="lang-pt" className="text-sm text-white/80 font-normal">
+									{t("language.pt")}
+								</Label>
+							</div>
+						</RadioGroup>
+					</section>
 				</aside>
 			</div>
-		</>
+		</div>
 	);
 }
 

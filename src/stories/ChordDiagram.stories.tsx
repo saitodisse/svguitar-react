@@ -231,11 +231,11 @@ export const Default: Story = {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
 		view: "horizontal-right",
-		width: 220,
+		width: 795,
 		height: 210,
 		fretCount: 12,
 		fretWidth: 58,
-		stringWidth: 3,
+		stringWidth: 1,
 		dotSize: 17,
 		barreHeight: 9,
 		fretTextColor: "#868686",
@@ -329,6 +329,10 @@ export const CustomStyle: Story = {
 		...DEFAULT_CHORD_STYLE,
 		...customStyleProps,
 		chord: customStyleChord,
+		width: 229,
+		height: 228,
+		fretColor: "#b7b2b2",
+		stringColor: "#5b5a5a",
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -342,8 +346,8 @@ export const CustomStyle: Story = {
 		expect(svg).toBeInTheDocument();
 
 		// Verify custom dimensions are applied
-		expect(svg).toHaveAttribute("width", "150");
-		expect(svg).toHaveAttribute("height", "180");
+		expect(svg).toHaveAttribute("width", "229");
+		expect(svg).toHaveAttribute("height", "228");
 	},
 };
 
@@ -518,10 +522,14 @@ export const CustomOpenMutedStyle: Story = {
 export const HighFretNotation: Story = {
 	args: {
 		...DEFAULT_CHORD_STYLE,
+
 		instrument: {
 			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "(10)(12)(12)(11)(10)(10)",
 		},
+
+		width: 620,
+		fretCount: 14,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);

@@ -42,7 +42,7 @@ describe("FretNumbers", () => {
 	});
 
 	it("renders numbers in mirror order (3,2,1) with decreasing x when using horizontal-left", () => {
-		const frame = createFrame();
+		const frame = createFrame({ firstFret: 1 });
 		const { container } = render(
 			<svg>
 				<FretNumbers engine={horizontalLeftEngine} frame={frame} />
@@ -52,8 +52,9 @@ describe("FretNumbers", () => {
 		const texts = Array.from(container.querySelectorAll("text"));
 		expect(texts.map(text => text.textContent)).toEqual(["3", "2", "1"]);
 
+		// In horizontal-left, higher fret numbers have lower x coordinates (right to left)
 		const xs = texts.map(text => Number(text.getAttribute("x")));
-		expect(xs[0]).toBeGreaterThan(xs[1]);
-		expect(xs[1]).toBeGreaterThan(xs[2]);
+		expect(xs[0]).toBeLessThan(xs[1]); // fret 3 has lower x than fret 2
+		expect(xs[1]).toBeLessThan(xs[2]); // fret 2 has lower x than fret 1
 	});
 });

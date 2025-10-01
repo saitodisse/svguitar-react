@@ -9,7 +9,7 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-	globalIgnores(["dist"]),
+	globalIgnores(["dist", "dist-app", "storybook-static"]),
 	{
 		files: ["**/*.{ts,tsx}"],
 		extends: [
@@ -25,6 +25,12 @@ export default defineConfig([
 		rules: {
 			"no-unused-vars": "off",
 			"@typescript-eslint/no-unused-vars": "off",
+		},
+	},
+	{
+		files: ["src/components/ui/**/*.{ts,tsx}", "src/components/theme-provider.tsx"],
+		rules: {
+			"react-refresh/only-export-components": "off",
 		},
 	},
 ]);

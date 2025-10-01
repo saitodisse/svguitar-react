@@ -1,6 +1,95 @@
 # Changelog
 
-# Changelog
+## 1.10.0 (2025-10-01)
+
+### Major Features
+
+- **Tailwind CSS v4 Integration**: Complete migration to Tailwind CSS v4.1.13
+    - `@tailwindcss/vite` plugin for optimal Vite integration
+    - CSS variables-based design system
+    - Dark theme with customizable tokens
+    - Optimized build performance
+
+- **shadcn/ui Components**: Production-ready accessible UI components
+    - Components: `Button`, `Input`, `Label`, `Select`, `RadioGroup`, `Slider`
+    - Built on Radix UI primitives for world-class accessibility
+    - Fully customizable with Tailwind utilities
+    - CLI support via `pnpm dlx shadcn@latest add [component]`
+
+- **Dark Mode Support**: System-aware theming
+    - `ThemeProvider` with light/dark/system modes
+    - Automatic OS preference detection
+    - localStorage persistence
+    - Default: `system` mode
+
+### UI/UX Improvements
+
+- **Redesigned Demo App**: Modern interface with Tailwind utilities
+    - Responsive grid layout (mobile/desktop breakpoints)
+    - Glassmorphism effects with backdrop-blur
+    - Improved visual hierarchy and spacing
+    - Better color contrast and accessibility
+
+- **Enhanced Form Controls**: Native HTML replaced with shadcn/ui
+    - `Input` component for chord input
+    - `Select` dropdown for view and font selection
+    - `Slider` components for all numeric controls
+    - `RadioGroup` for language selection
+    - Semantic `Label` associations for accessibility
+
+### Developer Experience
+
+- **Path Mapping**: `@/*` alias configured across all configs
+    - `tsconfig.json` and `tsconfig.app.json` updated
+    - `vite.config.ts` and `vite.config.app.ts` with resolve aliases
+    - Proper TypeScript support for imports
+
+- **Configuration Files Added**:
+    - `components.json`: shadcn/ui CLI configuration
+    - `tailwind.config.ts`: Tailwind theme and content paths
+    - `src/lib/utils.ts`: `cn()` helper for class merging
+    - `src/components/theme-provider.tsx`: Theme management
+
+- **ESLint Updates**:
+    - Global ignores for `dist-app` and `storybook-static`
+    - Exception for UI components pattern (`react-refresh/only-export-components`)
+
+### Dependencies
+
+**Added**:
+
+- `@radix-ui/react-label@2.1.7`
+- `@radix-ui/react-select@2.2.6`
+- `@radix-ui/react-radio-group@1.3.8`
+- `@radix-ui/react-slider@1.3.6`
+- `@radix-ui/react-slot@1.2.3`
+- `@tailwindcss/vite@4.1.13`
+- `tailwindcss@4.1.13`
+- `class-variance-authority@0.7.1`
+- `clsx@2.1.1`
+- `tailwind-merge@3.3.1`
+- `lucide-react@0.544.0`
+- `autoprefixer@10.4.21`
+- `postcss@8.5.6`
+
+### Tests
+
+- **All 36 tests passing**: 21 unit + 15 Storybook
+- Fixed test assertions to match current implementation
+- Storybook stories updated with correct dimensions
+- horizontal-left layout tests corrected
+
+### Build
+
+- Library build: ✅ Verified
+- App build: ✅ Verified
+- Storybook build: ✅ Verified
+
+### Files Changed
+
+- **Modified**: 15 files (App.tsx, configs, tests, styles)
+- **Added**: 9 files (shadcn/ui components, theme-provider, utils)
+- **Simplified**: App.css (now placeholder)
 
 ## 1.9.0 (2025-10-01)
 

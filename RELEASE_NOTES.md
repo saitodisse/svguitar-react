@@ -1,5 +1,99 @@
 # Release Notes
 
+## Version 1.10.0
+
+**Release Date:** October 1, 2025
+
+### 🎨 Modern UI Framework Integration
+
+Major release integrando **Tailwind CSS v4** e **shadcn/ui** para uma interface moderna, acessível e totalmente customizável.
+
+#### 🚀 Principais Recursos
+
+- **Tailwind CSS v4.1.13**: Framework utility-first de última geração
+    - Plugin nativo para Vite (`@tailwindcss/vite`)
+    - Sistema de design com variáveis CSS
+    - Build otimizado e performance aprimorada
+    - Dark theme configurado por padrão
+
+- **shadcn/ui Components**: Componentes acessíveis e customizáveis
+    - Instalados via CLI: `Input`, `Select`, `Label`, `RadioGroup`, `Slider`, `Button`
+    - Baseados em Radix UI para acessibilidade de classe mundial
+    - Totalmente estilizados com Tailwind utilities
+    - Tema consistente com design tokens
+
+- **Dark Mode Inteligente**: Detecção automática do tema do sistema
+    - `ThemeProvider` com suporte a light/dark/system
+    - Persistência em localStorage
+    - Default: `system` (detecta preferência do OS)
+
+#### 🎯 Melhorias de Interface
+
+- **Layout Moderno**: Interface completamente redesenhada
+    - Grid responsivo com breakpoints mobile/desktop
+    - Efeitos glassmorphism com backdrop-blur
+    - Hierarquia visual aprimorada
+    - Espaçamento consistente
+
+- **Controles Aprimorados**: Inputs nativos substituídos por componentes shadcn/ui
+    - `Input` para texto com validação visual
+    - `Select` dropdown com animações e acessibilidade
+    - `Slider` para ranges com melhor UX
+    - `RadioGroup` para seleção de idioma
+    - Labels semânticos em todos os controles
+
+#### 🛠️ Developer Experience
+
+- **Path Aliases**: Configuração `@/*` para imports limpos
+- **components.json**: CLI shadcn/ui pronto para adicionar novos componentes
+- **ESLint**: Regras atualizadas para componentes UI
+- **TypeScript**: Path mapping correto em todos os tsconfig
+
+#### 📦 Dependências Adicionadas
+
+```json
+{
+	"dependencies": [
+		"@radix-ui/react-label",
+		"@radix-ui/react-select",
+		"@radix-ui/react-radio-group",
+		"@radix-ui/react-slider",
+		"@radix-ui/react-slot"
+	],
+	"devDependencies": [
+		"tailwindcss@4.1.13",
+		"@tailwindcss/vite@4.1.13",
+		"class-variance-authority",
+		"clsx",
+		"tailwind-merge",
+		"lucide-react"
+	]
+}
+```
+
+#### ✅ Qualidade
+
+- **36 testes passando**: 21 unit + 15 Storybook
+- **Builds verificados**: Biblioteca e aplicação demo
+- **ESLint sem erros**: Código formatado e lint-free
+- **TypeScript**: Sem erros de tipo
+
+#### 🔄 Breaking Changes
+
+Nenhum! A biblioteca mantém 100% de compatibilidade. Apenas a aplicação demo foi redesenhada.
+
+#### 📚 Como Usar os Novos Componentes
+
+```bash
+# Adicionar mais componentes shadcn/ui
+pnpm dlx shadcn@latest add [component]
+
+# Exemplos
+pnpm dlx shadcn@latest add card
+pnpm dlx shadcn@latest add dropdown-menu
+pnpm dlx shadcn@latest add dialog
+```
+
 ## Version 1.9.0
 
 **Release Date:** October 1, 2025
