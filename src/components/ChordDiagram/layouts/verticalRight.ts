@@ -56,8 +56,7 @@ export const verticalRightEngine: LayoutEngine = {
 		return {
 			x:
 				frame.gridOriginX +
-				(frame.stringCount - stringNumber) * (frame.gridWidth / (frame.stringCount - 1)) -
-				frame.style.dotSize,
+				(frame.stringCount - stringNumber) * (frame.gridWidth / (frame.stringCount - 1)),
 			y: frame.gridOriginY - frame.style.fretHeight * 0.5,
 		};
 	},

@@ -57,8 +57,7 @@ export const horizontalRightEngine: LayoutEngine = {
 			x: frame.gridOriginX - frame.style.fretWidth * 0.5,
 			y:
 				frame.gridOriginY +
-				(frame.stringCount - stringNumber) * (frame.gridHeight / (frame.stringCount - 1)) -
-				frame.style.dotSize,
+				(frame.stringCount - stringNumber) * (frame.gridHeight / (frame.stringCount - 1)),
 		};
 	},
 };

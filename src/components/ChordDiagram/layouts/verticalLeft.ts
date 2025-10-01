@@ -49,10 +49,7 @@ export const verticalLeftEngine: LayoutEngine = {
 	): { x: number; y: number } => {
 		const { frame } = args;
 		return {
-			x:
-				frame.gridOriginX +
-				(stringNumber - 1) * (frame.gridWidth / (frame.stringCount - 1)) -
-				frame.style.dotSize,
+			x: frame.gridOriginX + (stringNumber - 1) * (frame.gridWidth / (frame.stringCount - 1)),
 			y: frame.gridOriginY - frame.style.fretHeight * 0.5,
 		};
 	},
