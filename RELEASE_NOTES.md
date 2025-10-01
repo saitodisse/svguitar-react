@@ -33,7 +33,7 @@ Esta versão corrige um problema crítico de compatibilidade entre o Tailwind CS
 #### ✅ Status dos Testes
 
 - ✅ Build principal: Sucesso
-- ✅ Build do Storybook: Sucesso  
+- ✅ Build do Storybook: Sucesso
 - ✅ Testes unitários: 15/15 passaram
 - ✅ Compatibilidade com shadcn/ui: Restaurada
 
