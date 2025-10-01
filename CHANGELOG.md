@@ -1,5 +1,28 @@
 # Changelog
 
+# Changelog
+
+## 1.9.0 (2025-10-01)
+
+### Enhancements
+
+- **Horizontal-Left Layout Refinements**:
+    - Tuning labels now render à direita do braço na view `horizontal-left`.
+    - Numeração dos trastes espelhada: leitura da esquerda para a direita resulta em `3, 2, 1, 0`.
+    - Indicadores de cordas soltas/mutadas reposicionados para acompanhar o braço espelhado.
+- **Layout Engine Atualizado**: `horizontalLeftEngine` agora reflete o novo posicionamento para cordas, dedos e pestanas sem uso de `transform` global.
+- **Componentes sincronizados**: `TuningLabels` e `FretNumbers` passam a respeitar automaticamente o comportamento específico da view `horizontal-left`.
+
+### Testes e Qualidade
+
+- Adicionados testes dedicados para validar layout `horizontal-left` em `TuningLabels`, `FretNumbers` e integração do `ChordDiagram`.
+- Testes de Storybook atualizados garantindo play-test para a view espelhada.
+
+### Documentação
+
+- Specs atualizadas descrevendo o novo comportamento da view `horizontal-left`.
+- Quickstart e tasks ajustados com o novo fluxo de labels e numeração.
+
 ## 1.8.0 (2025-01-30)
 
 ### Major Features

@@ -128,6 +128,10 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const instrumentData = mergeInstrument(instrument);
 	const firstFret = chordData.firstFret || 1;
 
+	if (!resolvedLayoutEngine) {
+		throw new Error("No layout engine resolved for the selected view");
+	}
+
 	// Build layout frame for the selected view
 	const startX = getStartX({ fretWidth: style.fretWidth, tuningTextSize: style.tuningTextSize });
 	const startY = getStartY({ fretTextSize: style.fretTextSize });

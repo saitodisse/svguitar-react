@@ -17,28 +17,32 @@ interface FretNumbersProps {
  */
 export const FretNumbers: React.FC<FretNumbersProps> = React.memo(({ engine, frame }) => {
 	const y = frame.gridOriginY - frame.style.fretHeight * 0.7;
+	const isHorizontalLeft = engine.id === "horizontal-left";
+
+	const frets = Array.from({ length: frame.fretCount }, (_, i) => {
+		const fretNumber = frame.firstFret + i;
+		const x = engine.mapFretAxis(frame.firstFret + i, frame);
+		return { fretNumber, x };
+	});
+
+	const orderedFrets = isHorizontalLeft ? frets.reverse() : frets;
 
 	return (
 		<g>
-			{Array.from({ length: frame.fretCount }, (_, i) => {
-				const fretNumber = frame.firstFret + i;
-				const x = engine.mapFretAxis(frame.firstFret + i, frame);
-
-				return (
-					<text
-						key={`fret-number-${fretNumber}`}
-						x={x}
-						y={y}
-						textAnchor="middle"
-						fill={frame.style.fretTextColor}
-						fontSize={frame.style.fretTextSize}
-						fontFamily={frame.style.fontFamily}
-						fontWeight="bold"
-					>
-						{fretNumber}
-					</text>
-				);
-			})}
+			{orderedFrets.map(({ fretNumber, x }) => (
+				<text
+					key={`fret-number-${fretNumber}`}
+					x={x}
+					y={y}
+					textAnchor="middle"
+					fill={frame.style.fretTextColor}
+					fontSize={frame.style.fretTextSize}
+					fontFamily={frame.style.fontFamily}
+					fontWeight="bold"
+				>
+					{fretNumber}
+				</text>
+			))}
 		</g>
 	);
 });

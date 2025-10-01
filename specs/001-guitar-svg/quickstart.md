@@ -290,7 +290,7 @@ const App = () => {
 		barres: [],
 	};
 
-	return <ChordDiagram chord={cMajor} view="horizontal-left" />;
+	return <ChordDiagram chord={cMajor} view="horizontal-left" />; // Labels de afinação aparecem à direita e os números dos trastes são exibidos em ordem crescente da direita para a esquerda (lendo da esquerda para a direita: 3, 2, 1, 0).
 };
 
 export default App;

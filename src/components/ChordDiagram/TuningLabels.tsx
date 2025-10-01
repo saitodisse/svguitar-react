@@ -18,6 +18,7 @@ interface TuningLabelsProps {
  */
 export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, frame, tuning }) => {
 	const isVertical = engine.id.startsWith("vertical");
+	const isHorizontalLeft = engine.id === "horizontal-left";
 
 	return (
 		<g>
@@ -43,7 +44,9 @@ export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, f
 				}
 
 				const y = engine.mapStringAxis(stringNumber, frame) + frame.style.tuningTextSize / 3;
-				const x = frame.gridOriginX - frame.style.fretWidth * 0.7;
+				const x = isHorizontalLeft
+					? frame.gridOriginX + frame.gridWidth + frame.style.fretWidth * 0.7
+					: frame.gridOriginX - frame.style.fretWidth * 0.7;
 				return (
 					<text
 						key={`tuning-${index}`}

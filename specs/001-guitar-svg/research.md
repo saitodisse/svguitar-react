@@ -49,7 +49,7 @@
 
 Detalhes:
 
-- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`.
+- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos.
 - Registry interno com extensão opcional: `registerView(engine)` ou prop `layoutEngine`.
 - Precedência: `layoutEngine` > `view`.
 - Garantias: centralização dos dots, labels legíveis, sem transforms globais.
@@ -103,7 +103,7 @@ Detalhes:
 - **Responsividade**: Dimensões proporcionais baseadas na largura/altura total
 - **Views (mapping-per-view, sem transforms)**:
     - Cada `LayoutEngine` define mapeamentos de eixos e coordenadas absolutas para sua view.
-    - `horizontal-left`: inverte o mapeamento de cordas em relação ao `horizontal-right` (sem `scale`).
+- `horizontal-left`: inverte o mapeamento de cordas em relação ao `horizontal-right` (sem `scale`), reposiciona os rótulos de afinação para a direita do braço e apresenta a numeração dos trastes em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos.
     - `vertical-right`: troca papéis de eixos (cordas no eixo X, trastes no eixo Y) mantendo textos legíveis.
     - `vertical-left`: igual ao vertical-right, porém invertendo o eixo de cordas.
 

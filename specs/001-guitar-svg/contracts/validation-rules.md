@@ -72,6 +72,11 @@ function resolveViewId(props: ChordDiagramProps, DEFAULT_VIEW: ViewId = "horizon
 function validateView(registry: Record<ViewId, LayoutEngine>, viewId: ViewId): boolean {
 	return Boolean(registry[viewId]);
 }
+
+// Observação: Para a view "horizontal-left", a engine registrada deve posicionar os rótulos
+// de afinação à direita do braço e garantir que a numeração dos trastes seja exibida em
+// ordem crescente da direita para a esquerda (lendo da esquerda para a direita: 3, 2, 1, 0),
+// com o traste 0 imediatamente antes dos rótulos.
 ```
 
 ## 2. Validação de Chord

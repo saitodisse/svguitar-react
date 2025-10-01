@@ -1,5 +1,31 @@
 # Release Notes
 
+## Version 1.9.0
+
+**Release Date:** October 1, 2025
+
+### 🎯 Horizontal-Left Layout Refinements
+
+Focused release aprimorando a experiência da view `horizontal-left` com labels, numeração e indicadores espelhados corretamente.
+
+#### 🚀 Principais Ajustes
+
+- **Tuning labels espelhados**: agora são renderizados à direita do braço na view `horizontal-left`.
+- **Numeração de trastes invertida**: leitura da esquerda para a direita exibe `3, 2, 1, 0`, respeitando o espelhamento.
+- **Indicadores reposicionados**: cordas soltas/mutadas seguem o novo alinhamento à direita.
+- **Engine atualizado**: `horizontalLeftEngine` recalcula cordas, dedos e pestanas usando coordenadas absolutas sem `transform` global.
+
+#### ✅ Qualidade e Testes
+
+- Novos testes unitários garantindo comportamento espelhado em `TuningLabels` e `FretNumbers`.
+- Teste de integração do `ChordDiagram` assegura labels à direita e numeração invertida.
+- Play-test do Storybook atualizado contemplando a view `horizontal-left`.
+
+#### 📚 Documentação
+
+- Specs, quickstart e tasks atualizados descrevendo o novo comportamento.
+- Changelog expandido com detalhes das mudanças de layout.
+
 ## Version 1.8.0
 
 **Release Date:** January 30, 2025
@@ -50,8 +76,8 @@ This major release completes the implementation of the view-based layout system 
 - `Fretboard.tsx`: Uses engine mapping for frets and strings
 - `Finger.tsx`: Uses engine for finger and indicator positioning
 - `Barre.tsx`: Uses engine for barre rectangle calculations
-- `FretNumbers.tsx`: Uses engine for fret axis mapping
-- `TuningLabels.tsx`: Supports horizontal/vertical with consistent text
+- `FretNumbers.tsx`: Adapted for engine-based fret axis mapping
+- `TuningLabels.tsx`: Supports both horizontal and vertical layouts with consistent text orientation
 
 #### 📚 Updated Documentation
 
@@ -59,25 +85,6 @@ This major release completes the implementation of the view-based layout system 
 - **README**: Added view selection examples and custom engine guide
 - **API Reference**: Complete `LayoutEngine` interface documentation
 - **Migration Guide**: Clear upgrade path from v1.7.0
-
-#### 🎨 Usage Examples
-
-```tsx
-// Select predefined view
-<ChordDiagram chord={chord} view="vertical-right" />
-
-// Inject custom layout engine
-const customEngine: LayoutEngine = {
-	id: "horizontal-right",
-	mapStringAxis: (s, frame) => /* custom logic */,
-	mapFretAxis: (f, frame) => /* custom logic */,
-	fingerPosition: (finger, args) => ({ cx, cy, r }),
-	barreRect: (barre, args) => ({ x, y, width, height }),
-	indicatorPosition: (s, kind, args) => ({ x, y }),
-};
-
-<ChordDiagram chord={chord} layoutEngine={customEngine} />
-```
 
 #### 🧪 Quality Assurance
 

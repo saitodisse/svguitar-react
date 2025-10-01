@@ -70,6 +70,31 @@ describe("ChordDiagram Component", () => {
 		expect(svg?.querySelectorAll("circle").length).toBe(5);
 	});
 
+	it("renders horizontal-left view with tuning labels on the right and mirrored fret numbers", () => {
+		const instrument = {
+			strings: 6,
+			frets: 3,
+			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+			chord: "x32010",
+		};
+		render(<ChordDiagram instrument={instrument} view="horizontal-left" />);
+		const svg = screen.getByTestId("chord-diagram").querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		const textNodes = Array.from(svg!.querySelectorAll("text"));
+		const fretLabels = textNodes.filter(node => node.textContent && /^[0-9]+$/.test(node.textContent));
+		expect(fretLabels.map(label => label.textContent)).toEqual(["3", "2", "1"]);
+		const fretXs = fretLabels.map(label => Number(label.getAttribute("x")));
+		expect(fretXs[0]).toBeGreaterThan(fretXs[1]);
+		expect(fretXs[1]).toBeGreaterThan(fretXs[2]);
+
+		const tuningLabels = textNodes.filter(
+			node => node.textContent && ["E2", "A2", "D3", "G3", "B3", "E4"].includes(node.textContent)
+		);
+		expect(tuningLabels).toHaveLength(6);
+		const tuningXs = tuningLabels.map(label => Number(label.getAttribute("x")));
+		expect(Math.min(...tuningXs)).toBeGreaterThan(Math.max(...fretXs));
+	});
+
 	it("should throw error when no data is provided", () => {
 		// Suppress console.error output from React for this expected error
 		const err = console.error;

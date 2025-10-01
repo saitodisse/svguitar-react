@@ -258,7 +258,7 @@ interface LayoutEngine {
 
 - Precedência: `layoutEngine` > `view`.
 - `view` substitui o uso direto de `orientation`/`handedness` (deprecadas nesta API).
-- As 4 views built-in devem garantir legibilidade horizontal dos textos e não utilizar `transform` global; cada engine retorna coordenadas absolutas.
+- As 4 views built-in devem garantir legibilidade horizontal dos textos e não utilizar `transform` global; cada engine retorna coordenadas absolutas. A view `horizontal-left` deve posicionar os rótulos de afinação à direita do braço e exibir os números dos trastes em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos.
 - A centralização no espaço de traste é obrigatória em todas as views.
 
 ### Tratamento de Erros
