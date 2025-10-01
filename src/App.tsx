@@ -336,32 +336,6 @@ function App() {
 					<h2>{t("controls.title")}</h2>
 
 					<div className="section">
-						<h3>{t("language")}</h3>
-						<div className="control">
-							<div className="radio-group">
-								<label>
-									<input
-										type="radio"
-										name="language"
-										checked={lang === "en"}
-										onChange={() => setLang("en")}
-									/>
-									{t("language.en")}
-								</label>
-								<label>
-									<input
-										type="radio"
-										name="language"
-										checked={lang === "pt"}
-										onChange={() => setLang("pt")}
-									/>
-									{t("language.pt")}
-								</label>
-							</div>
-						</div>
-					</div>
-
-					<div className="section">
 						<h3>{t("controls.chordSection")}</h3>
 						<div className="control">
 							<label htmlFor="chord">{t("controls.chordLabel")}</label>
@@ -674,6 +648,32 @@ function App() {
 								value={tuningTextSize}
 								onChange={e => setTuningTextSize(Number(e.target.value))}
 							/>
+						</div>
+					</div>
+
+					<div className="section">
+						<h3>{t("language")}</h3>
+						<div className="control">
+							<div className="radio-group">
+								<label>
+									<input
+										type="radio"
+										name="language"
+										checked={lang === "en"}
+										onChange={() => setLang("en")}
+									/>
+									{t("language.en")}
+								</label>
+								<label>
+									<input
+										type="radio"
+										name="language"
+										checked={lang === "pt"}
+										onChange={() => setLang("pt")}
+									/>
+									{t("language.pt")}
+								</label>
+							</div>
 						</div>
 					</div>
 				</aside>
