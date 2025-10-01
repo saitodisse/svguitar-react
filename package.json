@@ -1,7 +1,7 @@
 {
 	"name": "svguitar-react",
 	"private": false,
-	"version": "1.10.0",
+	"version": "1.11.0",
 	"type": "module",
 	"description": "A React component for rendering guitar chord diagrams in SVG format",
 	"keywords": [
@@ -100,7 +100,7 @@
 		"prettier": "^3.6.2",
 		"storybook": "9.1.8",
 		"tailwind-merge": "^3.3.1",
-		"tailwindcss": "^4.1.13",
+		"tailwindcss": "^3.4.17",
 		"typescript": "~5.8.3",
 		"typescript-eslint": "^8.44.0",
 		"vite": "^7.1.7",

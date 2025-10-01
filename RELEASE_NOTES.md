@@ -1,5 +1,42 @@
 # Release Notes
 
+## Version 1.11.0
+
+**Release Date:** January 15, 2025
+
+### 🐛 Bug Fixes & Compatibility Improvements
+
+Esta versão corrige um problema crítico de compatibilidade entre o Tailwind CSS v4 e os componentes shadcn/ui, garantindo que todos os componentes funcionem corretamente.
+
+#### 🔧 Correções Principais
+
+- **Correção da Transparência do Select**: Resolvido problema onde as opções do dropdown do componente Select estavam transparentes
+    - Downgrade do Tailwind CSS v4.1.13 para v3.4.17 para melhor compatibilidade
+    - Atualização da configuração do Vite para usar PostCSS com Tailwind v3
+    - Correção das classes `bg-popover` e `text-popover-foreground` que não estavam sendo aplicadas
+    - Todos os componentes UI agora exibem com fundos e cores de texto adequados
+
+#### 🛠️ Melhorias Técnicas
+
+- **Compatibilidade com shadcn/ui**: Melhorada a compatibilidade com componentes shadcn/ui
+    - Atualizado `vite.config.ts` para usar configuração PostCSS
+    - Adicionado `postcss.config.js` para integração adequada do Tailwind v3
+    - Atualizado imports CSS para usar diretivas `@tailwind` ao invés de `@import "tailwindcss"`
+    - Garantido que todos os componentes UI renderizem corretamente com estilização adequada
+
+#### 📦 Dependências Atualizadas
+
+- **Tailwind CSS**: v4.1.13 → v3.4.17 (para compatibilidade)
+- **PostCSS**: Configuração adicionada para suporte ao Tailwind v3
+- **Autoprefixer**: Adicionado para compatibilidade de CSS
+
+#### ✅ Status dos Testes
+
+- ✅ Build principal: Sucesso
+- ✅ Build do Storybook: Sucesso  
+- ✅ Testes unitários: 15/15 passaram
+- ✅ Compatibilidade com shadcn/ui: Restaurada
+
 ## Version 1.10.0
 
 **Release Date:** October 1, 2025

@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.11.0 (2025-01-15)
+
+### Bug Fixes
+
+- **Fixed Select Component Transparency**: Resolved issue where dropdown options in shadcn/ui Select component were transparent
+    - Downgraded from Tailwind CSS v4.1.13 to v3.4.17 for better compatibility
+    - Updated Vite configuration to use PostCSS with Tailwind v3
+    - Fixed `bg-popover` and `text-popover-foreground` classes not being applied correctly
+    - All UI components now display with proper backgrounds and text colors
+
+### Technical Improvements
+
+- **Tailwind CSS Compatibility**: Improved compatibility with shadcn/ui components
+    - Updated `vite.config.ts` to use PostCSS configuration
+    - Added `postcss.config.js` for proper Tailwind v3 integration
+    - Updated CSS imports to use `@tailwind` directives instead of `@import "tailwindcss"`
+    - Ensured all UI components render correctly with proper styling
+
 ## 1.10.0 (2025-10-01)
 
 ### Major Features
