@@ -1,5 +1,49 @@
 # Changelog
 
+## 1.12.0 (2025-01-15)
+
+### Major Features
+
+- **Clear Configuration Button**: Added "Clear" button to reset all settings to defaults
+    - Button positioned in the control panel header for easy access
+    - Resets all configuration parameters while preserving `view` and `lang` in querystring
+    - Internationalized with English ("Clear") and Portuguese ("Limpar") labels
+    - Provides quick way to restore default settings without manual adjustment
+
+### Technical Improvements
+
+- **Centralized Configuration System**: Complete refactor of hardcoded values
+    - All configuration values moved to `DEFAULT_CONFIGS` constant
+    - Single source of truth for all default values across mobile/desktop and horizontal/vertical views
+    - Eliminated all hardcoded values in favor of centralized configuration
+    - Improved maintainability and consistency across different view modes
+
+- **React Pattern Optimization**: Enhanced useMemo implementation
+    - Simplified dependency array with only essential dependencies (`view`, `isMobile`)
+    - Moved constants outside component to prevent recreation on each render
+    - Optimized performance by reducing unnecessary recalculations
+    - Cleaner, more maintainable code structure
+
+### Configuration Management
+
+- **Enhanced Default Values**: Comprehensive configuration coverage
+    - Added all missing properties to `DEFAULT_CONFIGS`: `stringCount`, `backgroundColor`, `fretColor`, `stringColor`, `dotColor`, `dotTextColor`, `barreColor`, `fretTextColor`, `tuningTextColor`, `openStringColor`, `mutedStringColor`, `fontFamily`, `chord`
+    - Consistent values across all view modes (mobile/desktop × horizontal/vertical)
+    - Type-safe configuration with `as const` for better TypeScript support
+
+- **Improved Reset Functionality**: Enhanced clear configuration behavior
+    - `clearConfiguration()` function now uses current defaults instead of hardcoded values
+    - Maintains view-specific and device-specific configurations
+    - Ensures consistency between initial load and reset functionality
+
+### Developer Experience
+
+- **Better Code Organization**: Improved code structure and maintainability
+    - Constants extracted outside component scope
+    - Cleaner separation of concerns
+    - Reduced code duplication
+    - Enhanced readability and maintainability
+
 ## 1.11.0 (2025-01-15)
 
 ### Bug Fixes

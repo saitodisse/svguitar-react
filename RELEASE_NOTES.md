@@ -1,5 +1,63 @@
 # Release Notes
 
+## Version 1.12.0
+
+**Release Date:** January 15, 2025
+
+### 🎯 Enhanced User Experience & Configuration Management
+
+Esta versão introduz melhorias significativas na experiência do usuário com um botão de limpeza de configuração e uma refatoração completa do sistema de configurações para maior manutenibilidade e consistência.
+
+#### ✨ Principais Recursos
+
+- **Botão "Clear" de Configuração**: Novo botão para resetar todas as configurações para os valores padrão
+    - Posicionado no cabeçalho do painel de controles para fácil acesso
+    - Reseta todos os parâmetros de configuração preservando `view` e `lang` na querystring
+    - Internacionalizado com labels em inglês ("Clear") e português ("Limpar")
+    - Fornece forma rápida de restaurar configurações padrão sem ajustes manuais
+
+#### 🔧 Melhorias Técnicas
+
+- **Sistema de Configuração Centralizado**: Refatoração completa dos valores hardcoded
+    - Todos os valores de configuração movidos para constante `DEFAULT_CONFIGS`
+    - Fonte única de verdade para todos os valores padrão entre mobile/desktop e horizontal/vertical
+    - Eliminação de todos os valores hardcoded em favor de configuração centralizada
+    - Melhoria na manutenibilidade e consistência entre diferentes modos de visualização
+
+- **Otimização de Padrões React**: Implementação aprimorada do useMemo
+    - Array de dependências simplificado com apenas dependências essenciais (`view`, `isMobile`)
+    - Constantes movidas para fora do componente para prevenir recriação a cada render
+    - Performance otimizada reduzindo recálculos desnecessários
+    - Estrutura de código mais limpa e manutenível
+
+#### 📊 Gerenciamento de Configuração
+
+- **Valores Padrão Aprimorados**: Cobertura abrangente de configuração
+    - Adicionadas todas as propriedades ausentes ao `DEFAULT_CONFIGS`: `stringCount`, `backgroundColor`, `fretColor`, `stringColor`, `dotColor`, `dotTextColor`, `barreColor`, `fretTextColor`, `tuningTextColor`, `openStringColor`, `mutedStringColor`, `fontFamily`, `chord`
+    - Valores consistentes entre todos os modos de visualização (mobile/desktop × horizontal/vertical)
+    - Configuração type-safe com `as const` para melhor suporte TypeScript
+
+- **Funcionalidade de Reset Aprimorada**: Comportamento de limpeza de configuração aprimorado
+    - Função `clearConfiguration()` agora usa defaults atuais ao invés de valores hardcoded
+    - Mantém configurações específicas de visualização e dispositivo
+    - Garante consistência entre carregamento inicial e funcionalidade de reset
+
+#### 🚀 Experiência do Desenvolvedor
+
+- **Melhor Organização de Código**: Estrutura de código aprimorada e manutenibilidade
+    - Constantes extraídas para fora do escopo do componente
+    - Separação mais limpa de responsabilidades
+    - Redução de duplicação de código
+    - Legibilidade e manutenibilidade aprimoradas
+
+#### ✅ Qualidade e Testes
+
+- ✅ Todos os testes unitários passando
+- ✅ Testes do Storybook executados com sucesso (15/15)
+- ✅ Build principal executado com sucesso
+- ✅ Zero erros de linting
+- ✅ Código formatado e organizado
+
 ## Version 1.11.0
 
 **Release Date:** January 15, 2025

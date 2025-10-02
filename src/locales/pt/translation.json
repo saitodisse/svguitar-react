@@ -6,6 +6,7 @@
 	"validation.invalidChars": "Acorde deve conter apenas números (0-9) e 'x' para cordas abafadas",
 	"validation.atLeastOnePlayed": "Pelo menos uma corda deve ser tocada",
 	"controls.title": "Controles",
+	"controls.clearConfig": "Limpar",
 	"controls.chordSection": "Acorde",
 	"controls.chordLabel": "Acorde",
 	"controls.layoutSection": "Layout",

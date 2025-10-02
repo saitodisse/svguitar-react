@@ -7,6 +7,115 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+
+// Configurações padrão - extraídas para constantes
+const DEFAULT_CONFIGS = {
+	mobileHorizontal: {
+		width: 333,
+		height: 222,
+		fretWidth: 53,
+		fretCount: 4,
+		dotTextSize: 11,
+		dotSize: 18,
+		barreHeight: 6,
+		fretHeight: 27,
+		tuningTextSize: 20,
+		fretTextSize: 21,
+		stringWidth: 2,
+		stringCount: 6,
+		fretTextColor: "#636363",
+		backgroundColor: "#242424",
+		fretColor: "#bfbfbf",
+		stringColor: "#ffffff",
+		dotColor: "#2196F3",
+		dotTextColor: "#ffffff",
+		barreColor: "#2196F3",
+		tuningTextColor: "#707070",
+		openStringColor: "#2196F3",
+		mutedStringColor: "#C65858",
+		fontFamily: "Arial, sans-serif",
+		chord: "x32010",
+	},
+	mobileVertical: {
+		width: 333,
+		height: 222,
+		fretWidth: 53,
+		fretCount: 4,
+		dotTextSize: 11,
+		dotSize: 18,
+		barreHeight: 6,
+		fretHeight: 27,
+		tuningTextSize: 20,
+		fretTextSize: 21,
+		stringWidth: 2,
+		stringCount: 6,
+		fretTextColor: "#636363",
+		backgroundColor: "#242424",
+		fretColor: "#bfbfbf",
+		stringColor: "#ffffff",
+		dotColor: "#2196F3",
+		dotTextColor: "#ffffff",
+		barreColor: "#2196F3",
+		tuningTextColor: "#707070",
+		openStringColor: "#2196F3",
+		mutedStringColor: "#C65858",
+		fontFamily: "Arial, sans-serif",
+		chord: "x32010",
+	},
+	desktopHorizontal: {
+		width: 745,
+		height: 239,
+		fretWidth: 63,
+		fretCount: 10,
+		dotTextSize: 13,
+		dotSize: 16,
+		barreHeight: 7,
+		fretHeight: 30,
+		tuningTextSize: 13,
+		fretTextSize: 21,
+		fretTextColor: "#4a4a4a",
+		stringWidth: 2,
+		stringCount: 6,
+		backgroundColor: "#242424",
+		fretColor: "#bfbfbf",
+		stringColor: "#ffffff",
+		dotColor: "#2196F3",
+		dotTextColor: "#ffffff",
+		barreColor: "#2196F3",
+		tuningTextColor: "#707070",
+		openStringColor: "#2196F3",
+		mutedStringColor: "#C65858",
+		fontFamily: "Arial, sans-serif",
+		chord: "x32010",
+	},
+	desktopVertical: {
+		width: 221,
+		height: 348,
+		fretWidth: 24,
+		fretCount: 4,
+		dotTextSize: 13,
+		dotSize: 16,
+		barreHeight: 5,
+		fretHeight: 58,
+		tuningTextSize: 13,
+		fretTextSize: 21,
+		fretTextColor: "#4a4a4a",
+		stringWidth: 1,
+		stringCount: 6,
+		backgroundColor: "#242424",
+		fretColor: "#bfbfbf",
+		stringColor: "#ffffff",
+		dotColor: "#2196F3",
+		dotTextColor: "#ffffff",
+		barreColor: "#2196F3",
+		tuningTextColor: "#707070",
+		openStringColor: "#2196F3",
+		mutedStringColor: "#C65858",
+		fontFamily: "Arial, sans-serif",
+		chord: "x32010",
+	},
+} as const;
 
 // Hook para detectar se está em modo mobile
 function useIsMobile() {
@@ -126,45 +235,26 @@ function App() {
 		i18n.changeLanguage(lang);
 	}, [lang, i18n]);
 
-	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault("x32010"));
-
-	// Configurações padrão para mobile
-	const mobileDefaults = useMemo(
-		() => ({
-			width: 333,
-			height: 222,
-			fretWidth: 53,
-			fretCount: 4,
-			dotTextSize: 11,
-			dotSize: 18,
-			barreHeight: 6,
-			fretHeight: 27,
-			tuningTextSize: 20,
-			fretTextSize: 21,
-		}),
-		[]
-	);
-
-	// Configurações padrão para desktop
-	const desktopDefaults = useMemo(
-		() => ({
-			width: 695,
-			height: 239,
-			fretWidth: 63,
-			fretCount: 10,
-			dotTextSize: 13,
-			dotSize: 16,
-			barreHeight: 7,
-			fretHeight: 30,
-			tuningTextSize: 13,
-			fretTextSize: 21,
-			fretTextColor: "#4a4a4a",
-		}),
-		[]
+	const [view, setView] = useQueryState(
+		"view",
+		parseAsStringLiteral([
+			"horizontal-right",
+			"horizontal-left",
+			"vertical-right",
+			"vertical-left",
+		]).withDefault("horizontal-right")
 	);
 
 	// Aplica configurações padrão baseadas no modo mobile/desktop
-	const defaults = isMobile ? mobileDefaults : desktopDefaults;
+	const defaults = useMemo(() => {
+		const isHorizontal = view === "horizontal-right" || view === "horizontal-left";
+		const deviceKey = isMobile ? "mobile" : "desktop";
+		const orientationKey = isHorizontal ? "Horizontal" : "Vertical";
+
+		return DEFAULT_CONFIGS[`${deviceKey}${orientationKey}` as keyof typeof DEFAULT_CONFIGS];
+	}, [view, isMobile]);
+
+	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault(defaults.chord));
 
 	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(defaults.width));
 	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(defaults.height));
@@ -172,7 +262,10 @@ function App() {
 		"fretCount",
 		parseAsInteger.withDefault(defaults.fretCount)
 	);
-	const [stringCount, setStringCount] = useQueryState("stringCount", parseAsInteger.withDefault(6));
+	const [stringCount, setStringCount] = useQueryState(
+		"stringCount",
+		parseAsInteger.withDefault(defaults.stringCount)
+	);
 	const [fretWidth, setFretWidth] = useQueryState(
 		"fretWidth",
 		parseAsInteger.withDefault(defaults.fretWidth)
@@ -181,7 +274,10 @@ function App() {
 		"fretHeight",
 		parseAsInteger.withDefault(defaults.fretHeight)
 	);
-	const [stringWidth, setStringWidth] = useQueryState("stringWidth", parseAsInteger.withDefault(2));
+	const [stringWidth, setStringWidth] = useQueryState(
+		"stringWidth",
+		parseAsInteger.withDefault(defaults.stringWidth)
+	);
 	const [dotSize, setDotSize] = useQueryState("dotSize", parseAsInteger.withDefault(defaults.dotSize));
 	const [barreHeight, setBarreHeight] = useQueryState(
 		"barreHeight",
@@ -189,35 +285,44 @@ function App() {
 	);
 	const [backgroundColor, setBackgroundColor] = useQueryState(
 		"backgroundColor",
-		parseAsString.withDefault("#242424")
+		parseAsString.withDefault(defaults.backgroundColor)
 	);
-	const [fretColor, setFretColor] = useQueryState("fretColor", parseAsString.withDefault("#bfbfbf"));
-	const [stringColor, setStringColor] = useQueryState("stringColor", parseAsString.withDefault("#ffffff"));
-	const [dotColor, setDotColor] = useQueryState("dotColor", parseAsString.withDefault("#2196F3"));
+	const [fretColor, setFretColor] = useQueryState(
+		"fretColor",
+		parseAsString.withDefault(defaults.fretColor)
+	);
+	const [stringColor, setStringColor] = useQueryState(
+		"stringColor",
+		parseAsString.withDefault(defaults.stringColor)
+	);
+	const [dotColor, setDotColor] = useQueryState("dotColor", parseAsString.withDefault(defaults.dotColor));
 	const [dotTextColor, setDotTextColor] = useQueryState(
 		"dotTextColor",
-		parseAsString.withDefault("#ffffff")
+		parseAsString.withDefault(defaults.dotTextColor)
 	);
-	const [barreColor, setBarreColor] = useQueryState("barreColor", parseAsString.withDefault("#2196F3"));
+	const [barreColor, setBarreColor] = useQueryState(
+		"barreColor",
+		parseAsString.withDefault(defaults.barreColor)
+	);
 	const [fretTextColor, setFretTextColor] = useQueryState(
 		"fretTextColor",
-		parseAsString.withDefault("#636363")
+		parseAsString.withDefault(defaults.fretTextColor)
 	);
 	const [tuningTextColor, setTuningTextColor] = useQueryState(
 		"tuningTextColor",
-		parseAsString.withDefault("#707070")
+		parseAsString.withDefault(defaults.tuningTextColor)
 	);
 	const [openStringColor, setOpenStringColor] = useQueryState(
 		"openStringColor",
-		parseAsString.withDefault("#2196F3")
+		parseAsString.withDefault(defaults.openStringColor)
 	);
 	const [mutedStringColor, setMutedStringColor] = useQueryState(
 		"mutedStringColor",
-		parseAsString.withDefault("#C65858")
+		parseAsString.withDefault(defaults.mutedStringColor)
 	);
 	const [fontFamily, setFontFamily] = useQueryState(
 		"fontFamily",
-		parseAsString.withDefault("Arial, sans-serif")
+		parseAsString.withDefault(defaults.fontFamily)
 	);
 	const [dotTextSize, setDotTextSize] = useQueryState(
 		"dotTextSize",
@@ -231,55 +336,38 @@ function App() {
 		"tuningTextSize",
 		parseAsInteger.withDefault(defaults.tuningTextSize)
 	);
-	const [view, setView] = useQueryState(
-		"view",
-		parseAsStringLiteral([
-			"horizontal-right",
-			"horizontal-left",
-			"vertical-right",
-			"vertical-left",
-		]).withDefault("horizontal-right")
-	);
 
-	// Aplica configurações mobile quando detectado modo mobile e não há parâmetros na URL
-	useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const hasExplicitParams =
-			urlParams.has("height") ||
-			urlParams.has("fretWidth") ||
-			urlParams.has("dotTextSize") ||
-			urlParams.has("dotSize") ||
-			urlParams.has("barreHeight") ||
-			urlParams.has("fretHeight") ||
-			urlParams.has("tuningTextSize") ||
-			urlParams.has("fretTextSize");
-
-		// Só aplica configurações mobile se não há parâmetros explícitos na URL
-		if (isMobile && !hasExplicitParams) {
-			setHeight(mobileDefaults.height);
-			setFretWidth(mobileDefaults.fretWidth);
-			setDotTextSize(mobileDefaults.dotTextSize);
-			setDotSize(mobileDefaults.dotSize);
-			setBarreHeight(mobileDefaults.barreHeight);
-			setFretHeight(mobileDefaults.fretHeight);
-			setTuningTextSize(mobileDefaults.tuningTextSize);
-			setFretTextSize(mobileDefaults.fretTextSize);
-		}
-	}, [
-		isMobile,
-		setHeight,
-		setFretWidth,
-		setDotTextSize,
-		setDotSize,
-		setBarreHeight,
-		setFretHeight,
-		setTuningTextSize,
-		setFretTextSize,
-		mobileDefaults,
-	]);
+	// Função para limpar a configuração e manter apenas view e lang
+	const clearConfiguration = () => {
+		// Reset all parameters to their default values using current defaults
+		setChord(defaults.chord);
+		setWidth(defaults.width);
+		setHeight(defaults.height);
+		setFretCount(defaults.fretCount);
+		setStringCount(defaults.stringCount);
+		setFretWidth(defaults.fretWidth);
+		setFretHeight(defaults.fretHeight);
+		setStringWidth(defaults.stringWidth);
+		setDotSize(defaults.dotSize);
+		setBarreHeight(defaults.barreHeight);
+		setBackgroundColor(defaults.backgroundColor);
+		setFretColor(defaults.fretColor);
+		setStringColor(defaults.stringColor);
+		setDotColor(defaults.dotColor);
+		setDotTextColor(defaults.dotTextColor);
+		setBarreColor(defaults.barreColor);
+		setFretTextColor(defaults.fretTextColor);
+		setTuningTextColor(defaults.tuningTextColor);
+		setOpenStringColor(defaults.openStringColor);
+		setMutedStringColor(defaults.mutedStringColor);
+		setFontFamily(defaults.fontFamily);
+		setDotTextSize(defaults.dotTextSize);
+		setFretTextSize(defaults.fretTextSize);
+		setTuningTextSize(defaults.tuningTextSize);
+	};
 
 	return (
-		<div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-4 py-10 text-white">
+		<div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-10 text-white">
 			<header className="flex flex-col items-center gap-3 text-center">
 				<h1 className="text-4xl font-semibold tracking-tight">svguitar-react</h1>
 				<nav className="flex items-center gap-4 text-sm font-medium text-sky-300">
@@ -346,7 +434,12 @@ function App() {
 					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur"
 					aria-label={t("aria.controlPanel")}
 				>
-					<h2 className="text-xl font-semibold">{t("controls.title")}</h2>
+					<div className="flex items-center justify-between">
+						<h2 className="text-xl font-semibold">{t("controls.title")}</h2>
+						<Button onClick={clearConfiguration} variant="outline" size="sm" className="text-xs">
+							{t("controls.clearConfig")}
+						</Button>
+					</div>
 
 					<section className="space-y-4">
 						<h3 className="text-xs uppercase tracking-wide text-white/70">

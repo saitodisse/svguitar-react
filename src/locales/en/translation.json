@@ -6,6 +6,7 @@
 	"validation.invalidChars": "Chord must contain only numbers (0-9) and 'x' for muted strings",
 	"validation.atLeastOnePlayed": "At least one string must be played",
 	"controls.title": "Controls",
+	"controls.clearConfig": "Clear",
 	"controls.chordSection": "Chord",
 	"controls.chordLabel": "Chord",
 	"controls.layoutSection": "Layout",
