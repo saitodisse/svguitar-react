@@ -14,6 +14,37 @@ const baseConfig = defineConfig({
 		globals: true,
 		setupFiles: ["./vitest.setup.ts"],
 		include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "json", "html"],
+			include: ["src/components/ChordDiagram/**/*.{ts,tsx}", "src/index.ts"],
+			exclude: [
+				"**/*.test.{ts,tsx}",
+				"**/*.spec.{ts,tsx}",
+				"**/__tests__/**",
+				"src/App.tsx",
+				"src/main.tsx",
+				"src/i18n.ts",
+				"src/components/ui/**",
+				"src/components/theme-provider.tsx",
+				"src/lib/**",
+				"src/stories/**",
+				"src/locales/**",
+				"dist/**",
+				"dist-app/**",
+				"node_modules/**",
+				"*.config.{js,ts}",
+				"*.setup.{js,ts}",
+			],
+			thresholds: {
+				global: {
+					branches: 80,
+					functions: 80,
+					lines: 80,
+					statements: 80,
+				},
+			},
+		},
 	},
 });
 
@@ -22,6 +53,19 @@ export default mergeConfig(
 	defineConfig({
 		test: {
 			projects: [
+				// Unit tests project
+				{
+					extends: true,
+					test: {
+						name: "unit",
+						include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+						exclude: ["src/stories/**/*"],
+						environment: "jsdom",
+						globals: true,
+						setupFiles: ["./vitest.setup.ts"],
+					},
+				},
+				// Storybook tests project
 				{
 					extends: true,
 					plugins: [

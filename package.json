@@ -46,6 +46,12 @@
 		"storybook:ci": "storybook dev -p 6006 --ci",
 		"build-storybook": "storybook build",
 		"test-storybook": "test-storybook",
+		"test": "vitest",
+		"test:run": "vitest run",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage",
+		"test:coverage:unit": "vitest run --coverage --project=unit",
+		"test:watch": "vitest --watch",
 		"format": "prettier --write .",
 		"format:check": "prettier --check ."
 	},

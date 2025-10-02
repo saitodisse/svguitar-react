@@ -13,7 +13,7 @@ export const verticalLeftEngine: LayoutEngine = {
 	},
 
 	mapFretAxis: (fret: number, frame: LayoutFrame): number => {
-		return frame.gridOriginY + frame.gridHeight - (fret - frame.firstFret + 0.5) * frame.style.fretHeight;
+		return frame.gridOriginY + (fret - frame.firstFret + 0.5) * frame.style.fretHeight;
 	},
 
 	fingerPosition: (finger: Finger, args: LayoutArgs): { cx: number; cy: number; r: number } => {
@@ -46,15 +46,7 @@ export const verticalLeftEngine: LayoutEngine = {
 
 		return {
 			x: Math.min(fromX, toX) - frame.style.barreHeight / 2,
-			y:
-				((fret: number, frame: LayoutFrame): number => {
-					return (
-						frame.gridOriginY +
-						frame.gridHeight -
-						(fret - frame.firstFret + 0.5) * frame.style.fretHeight
-					);
-				})(barre.fret, frame) -
-				frame.style.fretHeight / 2,
+			y: frame.gridOriginY + (barre.fret - frame.firstFret) * frame.style.fretHeight,
 			width: Math.abs(toX - fromX) + frame.style.barreHeight,
 			height: frame.style.fretHeight,
 			rx: 4,

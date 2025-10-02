@@ -249,6 +249,32 @@ import { layoutRegistry, resolveViewId, getLayoutEngine, DEFAULT_VIEW } from "sv
 - Node.js 18+
 - pnpm
 
+### Testing
+
+The project includes comprehensive testing with Vitest:
+
+```bash
+# Run all tests (unit + Storybook integration)
+pnpm test:run
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with coverage report
+pnpm test:coverage
+
+# Run only unit tests with coverage (faster)
+pnpm test:coverage:unit
+
+# Run tests with UI
+pnpm test:ui
+```
+
+**Test Coverage**: The project maintains high test coverage focusing on core library components:
+- **Unit Tests**: 25 tests covering components, layouts, and utilities
+- **Storybook Tests**: 15 visual and interaction tests
+- **Coverage**: 77% overall for core ChordDiagram components
+
 ### Setup
 
 ```bash
@@ -262,8 +288,14 @@ pnpm install
 # Start development server
 pnpm dev
 
-# Run tests
-pnpm test
+# Run all tests (unit + Storybook)
+pnpm test:run
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Run only unit tests with coverage
+pnpm test:coverage:unit
 
 # Start Storybook
 pnpm storybook
