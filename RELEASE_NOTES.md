@@ -1,5 +1,66 @@
 # Release Notes
 
+## Version 1.13.0
+
+**Release Date:** January 15, 2025
+
+### 🎯 Vertical Layout Corrections & Enhanced Consistency
+
+Esta versão corrige problemas críticos nos layouts verticais do ChordDiagram, garantindo que a ordem das cordas e a numeração dos trastes estejam corretas e consistentes em todas as views verticais.
+
+#### ✨ Principais Correções
+
+- **Ordem das Cordas Corrigida**: Corrigida a ordem das cordas nos layouts verticais
+    - `vertical-right`: cordas agora exibem `["E2", "A2", "D3", "G3", "B3", "E4"]` da esquerda para a direita
+    - `vertical-left`: cordas agora exibem `["E4", "B3", "G3", "D3", "A2", "E2"]` da esquerda para a direita
+    - Ambas as views verticais agora têm numeração de trastes consistente de cima para baixo (0, 1, 2, 3, 4...)
+    - Números dos trastes posicionados à direita de cada traste nos layouts verticais
+    - Labels de afinação corretamente posicionados acima do traste zero em todas as views verticais
+
+#### 🔧 Melhorias Técnicas
+
+- **Engines de Layout Atualizados**: Engines verticais aprimorados para mapeamento correto de coordenadas
+    - `verticalRightEngine` atualizado para usar ordem correta das cordas e progressão não invertida dos trastes
+    - `verticalLeftEngine` atualizado para usar ordem invertida das cordas mas progressão consistente dos trastes
+    - Funções `mapStringAxis` e `mapFretAxis` aprimoradas para posicionamento preciso
+    - Cálculos `fingerPosition`, `barreRect` e `indicatorPosition` aprimorados
+
+- **Sincronização de Componentes**: Todos os componentes agora funcionam consistentemente com layouts verticais
+    - Componente `FretNumbers` exibe corretamente números de trastes ascendentes em views verticais
+    - Componente `TuningLabels` mantém posicionamento adequado acima do traste zero
+    - Todos os pontos de dedos, pestanas e indicadores respeitam o novo sistema de coordenadas
+
+#### 🧪 Testes e Qualidade
+
+- **Cobertura de Testes Aprimorada**: Adicionados testes abrangentes para comportamento de layout vertical
+    - Testes para verificar mapeamento correto da ordem das cordas em ambos os engines verticais
+    - Testes para garantir que números de trastes aumentam de cima para baixo em views verticais
+    - Stories do Storybook atualizadas para mostrar layouts verticais corrigidos
+    - Todos os testes existentes continuam passando com as novas implementações de layout
+
+#### 📚 Documentação
+
+- **Especificações Atualizadas**: Atualizações abrangentes de documentação
+    - `spec.md` atualizado com requisitos específicos de ordem das cordas para views verticais
+    - Adicionada especificação `FR-025` para comportamento de numeração de trastes verticais
+    - `research.md` atualizado com decisões técnicas para correções de layout vertical
+    - `quickstart.md` aprimorado com exemplos de layouts verticais corrigidos
+
+#### ⚠️ Breaking Changes
+
+- **Comportamento de Layout Vertical**: A ordem das cordas e numeração de trastes em views verticais foi corrigida
+    - Isso pode afetar aplicações que dependiam do comportamento anterior incorreto
+    - Aplicações usando layouts verticais devem verificar se a nova ordem das cordas atende aos seus requisitos
+
+#### ✅ Qualidade e Testes
+
+- ✅ Todos os testes unitários passando (15/15)
+- ✅ Testes do Storybook executados com sucesso (15/15)
+- ✅ Build principal executado com sucesso
+- ✅ Zero erros de linting
+- ✅ Código formatado e organizado
+- ✅ Documentação atualizada e consistente
+
 ## Version 1.12.0
 
 **Release Date:** January 15, 2025

@@ -25,6 +25,7 @@ export const FretNumbers: React.FC<FretNumbersProps> = React.memo(({ engine, fra
 		return { fretNumber, x };
 	});
 
+	const isVertical = engine.id.startsWith("vertical");
 	const orderedFrets = isHorizontalLeft ? frets.reverse() : frets;
 
 	return (

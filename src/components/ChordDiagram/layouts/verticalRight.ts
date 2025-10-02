@@ -8,10 +8,8 @@ export const verticalRightEngine: LayoutEngine = {
 	id: "vertical-right",
 
 	mapStringAxis: (stringNumber: number, frame: LayoutFrame): number => {
-		return (
-			frame.gridOriginX +
-			(frame.stringCount - stringNumber) * (frame.gridWidth / (frame.stringCount - 1))
-		);
+		const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
+		return frame.gridOriginX + (stringNumber - 1) * spacing;
 	},
 
 	mapFretAxis: (fret: number, frame: LayoutFrame): number => {
@@ -21,10 +19,13 @@ export const verticalRightEngine: LayoutEngine = {
 	fingerPosition: (finger: Finger, args: LayoutArgs): { cx: number; cy: number; r: number } => {
 		const { frame } = args;
 		return {
-			cx:
-				frame.gridOriginX +
-				(frame.stringCount - finger.string) * (frame.gridWidth / (frame.stringCount - 1)),
-			cy: frame.gridOriginY + (finger.fret - frame.firstFret + 0.5) * frame.style.fretHeight,
+			cx: ((stringNumber: number, frame: LayoutFrame): number => {
+				const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
+				return frame.gridOriginX + (stringNumber - 1) * spacing;
+			})(finger.string, frame),
+			cy: ((fret: number, frame: LayoutFrame): number => {
+				return frame.gridOriginY + (fret - frame.firstFret + 0.5) * frame.style.fretHeight;
+			})(finger.fret, frame),
 			r: frame.style.dotSize / 2,
 		};
 	},
@@ -34,9 +35,14 @@ export const verticalRightEngine: LayoutEngine = {
 		args: LayoutArgs
 	): { x: number; y: number; width: number; height: number; rx?: number } => {
 		const { frame } = args;
-		const stringSpacing = frame.gridWidth / (frame.stringCount - 1);
-		const fromX = frame.gridOriginX + (frame.stringCount - barre.fromString) * stringSpacing;
-		const toX = frame.gridOriginX + (frame.stringCount - barre.toString) * stringSpacing;
+		const fromX = ((stringNumber: number, frame: LayoutFrame): number => {
+			const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
+			return frame.gridOriginX + (stringNumber - 1) * spacing;
+		})(barre.fromString, frame);
+		const toX = ((stringNumber: number, frame: LayoutFrame): number => {
+			const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
+			return frame.gridOriginX + (stringNumber - 1) * spacing;
+		})(barre.toString, frame);
 
 		return {
 			x: Math.min(fromX, toX) - frame.style.barreHeight / 2,
@@ -54,9 +60,10 @@ export const verticalRightEngine: LayoutEngine = {
 	): { x: number; y: number } => {
 		const { frame } = args;
 		return {
-			x:
-				frame.gridOriginX +
-				(frame.stringCount - stringNumber) * (frame.gridWidth / (frame.stringCount - 1)),
+			x: ((stringNumber: number, frame: LayoutFrame): number => {
+				const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
+				return frame.gridOriginX + (stringNumber - 1) * spacing;
+			})(stringNumber, frame),
 			y: frame.gridOriginY - frame.style.fretHeight * 0.5,
 		};
 	},

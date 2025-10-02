@@ -1,5 +1,51 @@
 # Changelog
 
+## 1.13.0 (2025-01-15)
+
+### Major Features
+
+- **Vertical Layout Corrections**: Fixed string order and fret numbering for vertical chord diagrams
+    - `vertical-right` view now displays strings in order `["E2", "A2", "D3", "G3", "B3", "E4"]` from left to right
+    - `vertical-left` view now displays strings in order `["E4", "B3", "G3", "D3", "A2", "E2"]` from left to right
+    - Both vertical views now have consistent fret numbering from top to bottom (0, 1, 2, 3, 4...)
+    - Fret numbers positioned to the right of each fret in vertical layouts
+    - Tuning labels correctly positioned above fret zero in all vertical views
+
+### Technical Improvements
+
+- **Layout Engine Updates**: Enhanced vertical layout engines for proper coordinate mapping
+    - Updated `verticalRightEngine` to use correct string order and non-inverted fret progression
+    - Updated `verticalLeftEngine` to use inverted string order but consistent fret progression
+    - Improved `mapStringAxis` and `mapFretAxis` functions for accurate positioning
+    - Enhanced `fingerPosition`, `barreRect`, and `indicatorPosition` calculations
+
+- **Component Synchronization**: All components now work consistently with vertical layouts
+    - `FretNumbers` component correctly displays ascending fret numbers in vertical views
+    - `TuningLabels` component maintains proper positioning above fret zero
+    - All finger dots, barres, and indicators respect the new coordinate system
+
+### Testing and Quality
+
+- **Enhanced Test Coverage**: Added comprehensive tests for vertical layout behavior
+    - Added tests to verify correct string order mapping in both vertical engines
+    - Added tests to ensure fret numbers increase from top to bottom in vertical views
+    - Updated Storybook stories to showcase corrected vertical layouts
+    - All existing tests continue to pass with new layout implementations
+
+### Documentation
+
+- **Updated Specifications**: Comprehensive documentation updates
+    - Updated `spec.md` with specific string order requirements for vertical views
+    - Added `FR-025` specification for vertical fret numbering behavior
+    - Updated `research.md` with technical decisions for vertical layout corrections
+    - Enhanced `quickstart.md` with examples of corrected vertical layouts
+
+### Breaking Changes
+
+- **Vertical Layout Behavior**: The string order and fret numbering in vertical views has been corrected
+    - This may affect applications that were relying on the previous incorrect behavior
+    - Applications using vertical layouts should verify that the new string order meets their requirements
+
 ## 1.12.0 (2025-01-15)
 
 ### Major Features
