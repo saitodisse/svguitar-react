@@ -49,7 +49,7 @@
 
 Detalhes:
 
-- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos.
+- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. Para `vertical-right`, as cordas devem ser exibidas, da esquerda para a direita, na ordem `["E2", "A2", "D3", "G3", "B3", "E4"]`; para `vertical-left`, a ordem deve ser `["E4", "B3", "G3", "D3", "A2", "E2"]`, garantindo legibilidade e centralização.
 - Registry interno com extensão opcional: `registerView(engine)` ou prop `layoutEngine`.
 - Precedência: `layoutEngine` > `view`.
 - Garantias: centralização dos dots, labels legíveis, sem transforms globais.
