@@ -258,7 +258,7 @@ interface LayoutEngine {
 
 - Precedência: `layoutEngine` > `view`.
 - `view` substitui o uso direto de `orientation`/`handedness` (deprecadas nesta API).
-- As 4 views built-in devem garantir legibilidade horizontal dos textos e não utilizar `transform` global; cada engine retorna coordenadas absolutas. A view `horizontal-left` deve posicionar os rótulos de afinação à direita do braço e exibir os números dos trastes em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. As views verticais (`vertical-right` e `vertical-left`) devem posicionar os rótulos de afinação à direita de cada traste, começando no traste 0 (nut) e aumentando conforme os próximos trastes abaixo.
+- As 4 views built-in devem garantir legibilidade horizontal dos textos e não utilizar `transform` global; cada engine retorna coordenadas absolutas. A view `horizontal-left` deve posicionar os rótulos de afinação à direita do braço e exibir os números dos trastes em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. As views verticais (`vertical-right` e `vertical-left`) devem posicionar os rótulos de afinação (TuningLabels) acima das cordas verticais, da esquerda para a direita, e os números dos trastes (FretNumbers) à direita do braço, alinhados com cada traste horizontal, formando uma coluna vertical de números.
 - A centralização no espaço de traste é obrigatória em todas as views.
 
 ### Tratamento de Erros

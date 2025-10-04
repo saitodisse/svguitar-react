@@ -250,7 +250,7 @@ export default App;
 
 ### Views (layout)
 
-Use a propriedade `view` para selecionar entre as views predefinidas: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Nas views verticais, os rótulos de afinação são posicionados à direita de cada traste, começando no traste 0 (nut) e aumentando conforme os próximos trastes abaixo.
+Use a propriedade `view` para selecionar entre as views predefinidas: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Nas views verticais, os rótulos de afinação (TuningLabels) são posicionados acima das cordas verticais, da esquerda para a direita, e os números dos trastes (FretNumbers) são posicionados à direita do braço, alinhados com cada traste horizontal, formando uma coluna vertical de números.
 
 ```jsx
 import React from "react";
@@ -290,7 +290,7 @@ const App = () => {
 		barres: [],
 	};
 
-	return <ChordDiagram chord={cMajor} view="horizontal-left" />; // Labels de afinação aparecem à direita e os números dos trastes são exibidos em ordem crescente da direita para a esquerda (lendo da esquerda para a direita: 3, 2, 1, 0). Nas views verticais, os rótulos de afinação ficam à direita de cada traste.
+	return <ChordDiagram chord={cMajor} view="horizontal-left" />; // Labels de afinação aparecem à direita e os números dos trastes são exibidos em ordem crescente da direita para a esquerda (lendo da esquerda para a direita: 3, 2, 1, 0). Nas views verticais, os rótulos de afinação ficam acima das cordas verticais e os números dos trastes ficam à direita do braço, formando uma coluna vertical.
 };
 
 export default App;

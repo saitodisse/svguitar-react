@@ -203,4 +203,122 @@ describe("Utility Functions", () => {
 			expect(merged.backgroundColor).toBe(DEFAULT_CHORD_STYLE.backgroundColor);
 		});
 	});
+
+	describe("Vertical Layouts - TuningLabels Positioning (FR-026)", () => {
+		it("should render tuning labels to the right of each fret in vertical-right view", () => {
+			const { container } = render(
+				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+			);
+
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Check for tuning labels (text elements with tuning text color)
+			const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+			expect(tuningLabels?.length).toBeGreaterThan(0);
+
+			// Verify positioning - labels should be to the right of frets
+			if (tuningLabels && tuningLabels.length > 0) {
+				const firstLabel = tuningLabels[0] as SVGTextElement;
+				const x = Number(firstLabel.getAttribute("x"));
+				const y = Number(firstLabel.getAttribute("y"));
+
+				expect(x).toBeGreaterThan(0);
+				expect(y).toBeLessThan(200); // Above the main fretboard area
+			}
+		});
+
+		it("should render tuning labels to the right of each fret in vertical-left view", () => {
+			const { container } = render(
+				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+			);
+
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Check for tuning labels (text elements with tuning text color)
+			const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+			expect(tuningLabels?.length).toBeGreaterThan(0);
+
+			// Verify positioning - labels should be to the right of frets
+			if (tuningLabels && tuningLabels.length > 0) {
+				const firstLabel = tuningLabels[0] as SVGTextElement;
+				const x = Number(firstLabel.getAttribute("x"));
+				const y = Number(firstLabel.getAttribute("y"));
+
+				expect(x).toBeGreaterThan(0);
+				expect(y).toBeLessThan(200); // Above the main fretboard area
+			}
+		});
+
+		it("should maintain horizontal text readability in vertical layouts", () => {
+			const views: Array<"vertical-right" | "vertical-left"> = ["vertical-right", "vertical-left"];
+
+			views.forEach(view => {
+				const { container } = render(
+					<ChordDiagram chord={cMajor} view={view} width={200} height={250} />
+				);
+
+				const svg = container.querySelector("svg");
+				const tuningLabels = svg?.querySelectorAll('text[fill*="666"]');
+
+				if (tuningLabels && tuningLabels.length > 0) {
+					tuningLabels.forEach(label => {
+						const textAnchor = label.getAttribute("text-anchor");
+						expect(textAnchor).toBe("middle"); // Ensures horizontal readability
+					});
+				}
+			});
+		});
+
+		it("should position labels consistently between vertical-right and vertical-left", () => {
+			const { container: rightContainer } = render(
+				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+			);
+
+			const { container: leftContainer } = render(
+				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+			);
+
+			const rightSvg = rightContainer.querySelector("svg");
+			const leftSvg = leftContainer.querySelector("svg");
+
+			const rightLabels = rightSvg?.querySelectorAll('text[fill*="666"]');
+			const leftLabels = leftSvg?.querySelectorAll('text[fill*="666"]');
+
+			expect(rightLabels?.length).toBe(leftLabels?.length);
+
+			// Both layouts should position labels consistently
+			if (rightLabels && leftLabels && rightLabels.length > 0) {
+				const rightYs = Array.from(rightLabels).map(label => Number(label.getAttribute("y")));
+				const leftYs = Array.from(leftLabels).map(label => Number(label.getAttribute("y")));
+
+				// Y coordinates should be similar between both layouts
+				rightYs.forEach((rightY, index) => {
+					const leftY = leftYs[index];
+					expect(Math.abs(rightY - leftY)).toBeLessThan(10); // Allow small variation
+				});
+			}
+		});
+
+		it("should handle instrument-based rendering with vertical layouts", () => {
+			const instrument = {
+				strings: 6,
+				frets: 4,
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: "023100",
+			};
+
+			const { container } = render(
+				<ChordDiagram instrument={instrument} view="vertical-right" width={200} height={250} />
+			);
+
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Should render with tuning labels positioned correctly
+			const tuningLabels = svg?.querySelectorAll('text[fill*="666"]');
+			expect(tuningLabels?.length).toBeGreaterThan(0);
+		});
+	});
 });

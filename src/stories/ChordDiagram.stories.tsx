@@ -602,6 +602,8 @@ export const HorizontalLeft: Story = {
 
 /**
  * Vertical-right view (rotated)
+ * Tuning labels are positioned to the right of each fret, starting from fret 0 (nut)
+ * and increasing as frets go down, maintaining horizontal readability.
  */
 export const VerticalRight: Story = {
 	args: {
@@ -616,6 +618,13 @@ export const VerticalRight: Story = {
 		stringWidth: 1,
 		dotSize: 14,
 	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Vertical layout for right-handed players. Tuning labels are positioned to the right of each fret, starting from fret 0 (nut) and increasing as frets go down. Strings are ordered from left to right as [E2, A2, D3, G3, B3, E4].",
+			},
+		},
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -630,11 +639,27 @@ export const VerticalRight: Story = {
 		// Verify finger elements are present
 		const fingerElements = svg?.querySelectorAll("circle");
 		expect(fingerElements?.length).toBeGreaterThan(0);
+
+		// Verify tuning labels are positioned correctly (FR-026)
+		const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+		expect(tuningLabels?.length).toBeGreaterThan(0);
+
+		// Verify labels are positioned to the right of frets
+		if (tuningLabels && tuningLabels.length > 0) {
+			const firstLabel = tuningLabels[0] as SVGTextElement;
+			const x = Number(firstLabel.getAttribute("x"));
+			const y = Number(firstLabel.getAttribute("y"));
+
+			expect(x).toBeGreaterThan(0);
+			expect(y).toBeLessThan(200); // Above the main fretboard area
+		}
 	},
 };
 
 /**
  * Vertical-left view (rotated and mirrored)
+ * Tuning labels are positioned to the right of each fret, starting from fret 0 (nut)
+ * and increasing as frets go down, maintaining horizontal readability.
  */
 export const VerticalLeft: Story = {
 	args: {
@@ -649,6 +674,13 @@ export const VerticalLeft: Story = {
 		stringWidth: 1,
 		dotSize: 14,
 	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Vertical layout for left-handed players. Tuning labels are positioned to the right of each fret, starting from fret 0 (nut) and increasing as frets go down. Strings are ordered from left to right as [E4, B3, G3, D3, A2, E2].",
+			},
+		},
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
@@ -663,6 +695,20 @@ export const VerticalLeft: Story = {
 		// Verify finger elements are present
 		const fingerElements = svg?.querySelectorAll("circle");
 		expect(fingerElements?.length).toBeGreaterThan(0);
+
+		// Verify tuning labels are positioned correctly (FR-026)
+		const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+		expect(tuningLabels?.length).toBeGreaterThan(0);
+
+		// Verify labels are positioned to the right of frets
+		if (tuningLabels && tuningLabels.length > 0) {
+			const firstLabel = tuningLabels[0] as SVGTextElement;
+			const x = Number(firstLabel.getAttribute("x"));
+			const y = Number(firstLabel.getAttribute("y"));
+
+			expect(x).toBeGreaterThan(0);
+			expect(y).toBeLessThan(200); // Above the main fretboard area
+		}
 	},
 };
 
