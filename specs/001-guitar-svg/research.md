@@ -49,7 +49,7 @@
 
 Detalhes:
 
-- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. Para `vertical-right`, as cordas devem ser exibidas, da esquerda para a direita, na ordem `["E2", "A2", "D3", "G3", "B3", "E4"]`; para `vertical-left`, a ordem deve ser `["E4", "B3", "G3", "D3", "A2", "E2"]`, garantindo legibilidade e centralização.
+- Views built-in: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. Para `vertical-right`, as cordas devem ser exibidas, da esquerda para a direita, na ordem `["E2", "A2", "D3", "G3", "B3", "E4"]`; para `vertical-left`, a ordem deve ser `["E4", "B3", "G3", "D3", "A2", "E2"]`, garantindo legibilidade e centralização. Nas views verticais, os rótulos de afinação são posicionados à direita de cada traste, começando no traste 0 (nut) e aumentando conforme os próximos trastes abaixo, proporcionando uma visualização mais clara e organizada da afinação em relação aos trastes.
 - Registry interno com extensão opcional: `registerView(engine)` ou prop `layoutEngine`.
 - Precedência: `layoutEngine` > `view`.
 - Garantias: centralização dos dots, labels legíveis, sem transforms globais.
@@ -104,8 +104,8 @@ Detalhes:
 - **Views (mapping-per-view, sem transforms)**:
     - Cada `LayoutEngine` define mapeamentos de eixos e coordenadas absolutas para sua view.
 - `horizontal-left`: inverte o mapeamento de cordas em relação ao `horizontal-right` (sem `scale`), reposiciona os rótulos de afinação para a direita do braço e apresenta a numeração dos trastes em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos.
-    - `vertical-right`: troca papéis de eixos (cordas no eixo X, trastes no eixo Y) mantendo textos legíveis.
-    - `vertical-left`: igual ao vertical-right, porém invertendo o eixo de cordas.
+    - `vertical-right`: troca papéis de eixos (cordas no eixo X, trastes no eixo Y) mantendo textos legíveis, com rótulos de afinação posicionados à direita de cada traste.
+    - `vertical-left`: igual ao vertical-right, porém invertendo o eixo de cordas e mantendo os rótulos de afinação à direita de cada traste.
 
 ## 4. Validação e Tratamento de Erros
 
