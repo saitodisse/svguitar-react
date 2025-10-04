@@ -2,7 +2,7 @@
 
 **Entrada**: Documentos de design de `/home/saito/_git/svguitar-react/specs/001-guitar-svg/`
 **Pré-requisitos**: plan.md (obrigatório), research.md, data-model.md, contracts/
-**Especificação**: FR-026 - Números dos trastes (FretNumbers) nas views verticais posicionados à direita do braço
+**Especificação**: FR-026 - Números das posições dos trastes (FretNumbers) nas views verticais posicionados à direita do braço, nos pontos médios de cada casa do braço
 
 ## Fase 3.1: Configuração
 
@@ -75,21 +75,28 @@
 
 ```
 vertical-right:
-     xo   o  0
-     ||||||  1
-     ||123|  2
-     ||||||  3
+     E2 A2 D3 G3 B3 E4
+     ||||||||||||||||||   ← Nut (traste 0) - sem número
+     |||||||||||||||||| 1 ← Casa 1 (ponto médio entre nut e traste 1)
+     ||||||||||||||||||   ← Traste 1
+     |||||||||||||||||| 2 ← Casa 2 (ponto médio entre traste 1 e 2)
+     ||||||||||||||||||   ← Traste 2
+     |||||||||||||||||| 3 ← Casa 3 (ponto médio entre traste 2 e 3)
+     ||||||||||||||||||   ← Traste 3
 
 vertical-left:
-     o   xo  0
-     ||||||  1
-     ||123|  2
-     ||||||  3
+     E4 B3 G3 D3 A2 E2
+     ||||||||||||||||||   ← Nut (traste 0) - sem número
+     |||||||||||||||||| 1 ← Casa 1 (ponto médio entre nut e traste 1)
+     ||||||||||||||||||   ← Traste 1
+     |||||||||||||||||| 2 ← Casa 2 (ponto médio entre traste 1 e 2)
+     ||||||||||||||||||   ← Traste 2
+     |||||||||||||||||| 3 ← Casa 3 (ponto médio entre traste 2 e 3)
+     ||||||||||||||||||   ← Traste 3
 ```
 
 **Legenda:**
 
-- `xo, o`: TuningLabels (acima das cordas) ✅ já implementado
-- `||||||`: Cordas verticais do braço
-- `213`: Dots dos dedos nas posições
-- `0, 1, 2, 3`: FretNumbers (à direita do braço) ❌ precisa implementar
+- `E2, A2, D3, G3, B3, E4`: TuningLabels (acima das cordas) ✅ já implementado
+- `||||||||||||||||||`: Cordas verticais do braço
+- `1, 2, 3`: FretNumbers (números das casas, à direita do braço) ✅ implementado

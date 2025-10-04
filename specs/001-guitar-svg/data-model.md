@@ -66,7 +66,7 @@ interface ChordDiagramProps {
 
 ### `ViewId`
 
-Identifica as views predefinidas do componente. Cada view corresponde a uma estratégia de mapeamento (mapping-per-view), sem uso de `transform` global. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. Nas views verticais (`vertical-right` e `vertical-left`), os rótulos de afinação (TuningLabels) são posicionados acima das cordas verticais, da esquerda para a direita, e os números dos trastes (FretNumbers) são posicionados à direita do braço, alinhados com cada traste horizontal, formando uma coluna vertical de números.
+Identifica as views predefinidas do componente. Cada view corresponde a uma estratégia de mapeamento (mapping-per-view), sem uso de `transform` global. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. Nas views verticais (`vertical-right` e `vertical-left`), os rótulos de afinação (TuningLabels) são posicionados acima das cordas verticais, da esquerda para a direita, e os números das posições dos trastes (FretNumbers) são posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números. O nut (traste 0) não possui número associado.
 
 ```typescript
 type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
@@ -74,7 +74,7 @@ type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "verti
 
 ### `LayoutEngine` (Strategy)
 
-Estratégia de layout responsável por mapear domínio → coordenadas SVG. Deve manter legibilidade horizontal dos textos em todas as views. Não utilizar `transform` global; cada método retorna coordenadas absolutas na view selecionada. Nas views verticais, os rótulos de afinação (TuningLabels) devem ser posicionados acima das cordas verticais, da esquerda para a direita, e os números dos trastes (FretNumbers) devem ser posicionados à direita do braço, alinhados com cada traste horizontal, formando uma coluna vertical de números.
+Estratégia de layout responsável por mapear domínio → coordenadas SVG. Deve manter legibilidade horizontal dos textos em todas as views. Não utilizar `transform` global; cada método retorna coordenadas absolutas na view selecionada. Nas views verticais, os rótulos de afinação (TuningLabels) devem ser posicionados acima das cordas verticais, da esquerda para a direita, e os números das posições dos trastes (FretNumbers) devem ser posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números. O nut (traste 0) não possui número associado.
 
 ```typescript
 interface LayoutFrame {

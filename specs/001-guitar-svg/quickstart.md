@@ -250,7 +250,7 @@ export default App;
 
 ### Views (layout)
 
-Use a propriedade `view` para selecionar entre as views predefinidas: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Nas views verticais, os rótulos de afinação (TuningLabels) são posicionados acima das cordas verticais, da esquerda para a direita, e os números dos trastes (FretNumbers) são posicionados à direita do braço, alinhados com cada traste horizontal, formando uma coluna vertical de números.
+Use a propriedade `view` para selecionar entre as views predefinidas: `horizontal-right` (padrão), `horizontal-left`, `vertical-right`, `vertical-left`. Nas views verticais, os rótulos de afinação (TuningLabels) são posicionados acima das cordas verticais, da esquerda para a direita, e os números das posições dos trastes (FretNumbers) são posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números. O nut (traste 0) não possui número associado.
 
 ```jsx
 import React from "react";
@@ -290,7 +290,7 @@ const App = () => {
 		barres: [],
 	};
 
-	return <ChordDiagram chord={cMajor} view="horizontal-left" />; // Labels de afinação aparecem à direita e os números dos trastes são exibidos em ordem crescente da direita para a esquerda (lendo da esquerda para a direita: 3, 2, 1, 0). Nas views verticais, os rótulos de afinação ficam acima das cordas verticais e os números dos trastes ficam à direita do braço, formando uma coluna vertical.
+	return <ChordDiagram chord={cMajor} view="horizontal-left" />; // Labels de afinação aparecem à direita e os números dos trastes são exibidos em ordem crescente da direita para a esquerda (lendo da esquerda para a direita: 3, 2, 1, 0). Nas views verticais, os rótulos de afinação ficam acima das cordas verticais e os números das posições dos trastes ficam à direita do braço, nos pontos médios de cada casa do braço, formando uma coluna vertical.
 };
 
 export default App;

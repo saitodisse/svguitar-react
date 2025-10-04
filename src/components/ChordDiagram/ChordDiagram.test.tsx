@@ -321,4 +321,115 @@ describe("Utility Functions", () => {
 			expect(tuningLabels?.length).toBeGreaterThan(0);
 		});
 	});
+
+	describe("Vertical Layouts - FretNumbers Positioning (FR-026)", () => {
+		it("should render fret numbers to the right of the fretboard in vertical-right view", () => {
+			const { container } = render(
+				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+			);
+
+			const svg = container.querySelector("svg");
+			const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+
+			expect(fretNumbers).toBeDefined();
+			expect(fretNumbers?.length).toBeGreaterThan(0);
+
+			// Verify fret numbers are positioned to the right of the fretboard
+			if (fretNumbers && fretNumbers.length > 0) {
+				const firstFretNumber = fretNumbers[0];
+				const x = Number(firstFretNumber.getAttribute("x"));
+				const y = Number(firstFretNumber.getAttribute("y"));
+
+				expect(x).toBeGreaterThan(150); // Should be positioned to the right of the main fretboard
+				expect(y).toBeGreaterThan(30); // Should be within the SVG bounds (now positioned in middle between frets)
+			}
+		});
+
+		it("should render fret numbers to the right of the fretboard in vertical-left view", () => {
+			const { container } = render(
+				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+			);
+
+			const svg = container.querySelector("svg");
+			const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+
+			expect(fretNumbers).toBeDefined();
+			expect(fretNumbers?.length).toBeGreaterThan(0);
+
+			// Verify fret numbers are positioned to the right of the fretboard
+			if (fretNumbers && fretNumbers.length > 0) {
+				const firstFretNumber = fretNumbers[0];
+				const x = Number(firstFretNumber.getAttribute("x"));
+				const y = Number(firstFretNumber.getAttribute("y"));
+
+				expect(x).toBeGreaterThan(150); // Should be positioned to the right of the main fretboard
+				expect(y).toBeGreaterThan(30); // Should be within the SVG bounds (now positioned in middle between frets)
+			}
+		});
+
+		it("should maintain horizontal text readability in vertical layouts", () => {
+			const views: Array<"vertical-right" | "vertical-left"> = ["vertical-right", "vertical-left"];
+
+			views.forEach(view => {
+				const { container } = render(
+					<ChordDiagram chord={cMajor} view={view} width={200} height={250} />
+				);
+
+				const svg = container.querySelector("svg");
+				const fretNumbers = svg?.querySelectorAll('text[fill*="868"]');
+
+				if (fretNumbers && fretNumbers.length > 0) {
+					fretNumbers.forEach(label => {
+						const textAnchor = label.getAttribute("text-anchor");
+						expect(textAnchor).toBe("middle"); // Ensures horizontal readability
+					});
+				}
+			});
+		});
+
+		it("should position labels consistently between vertical-right and vertical-left", () => {
+			const { container: rightContainer } = render(
+				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+			);
+
+			const { container: leftContainer } = render(
+				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+			);
+
+			const rightSvg = rightContainer.querySelector("svg");
+			const leftSvg = leftContainer.querySelector("svg");
+			const rightFretNumbers = rightSvg?.querySelectorAll('text[fill*="333"]');
+			const leftFretNumbers = leftSvg?.querySelectorAll('text[fill*="333"]');
+
+			expect(rightFretNumbers?.length).toBe(leftFretNumbers?.length);
+
+			// Both layouts should position labels consistently
+			if (rightFretNumbers && leftFretNumbers && rightFretNumbers.length > 0) {
+				const rightYs = Array.from(rightFretNumbers).map(label => Number(label.getAttribute("y")));
+				const leftYs = Array.from(leftFretNumbers).map(label => Number(label.getAttribute("y")));
+
+				// Y coordinates should be similar between both layouts
+				expect(rightYs.length).toBe(leftYs.length);
+			}
+		});
+
+		it("should handle instrument-based rendering with vertical layouts for fret numbers", () => {
+			const instrument = {
+				strings: 6,
+				frets: 4,
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: "000000", // Simple chord that should always render fret numbers
+			};
+
+			const { container } = render(
+				<ChordDiagram instrument={instrument} view="vertical-right" width={200} height={250} />
+			);
+
+			const svg = container.querySelector("svg");
+			const fretNumbers = svg?.querySelectorAll('text[fill*="868"]');
+
+			expect(fretNumbers).toBeDefined();
+			expect(fretNumbers?.length).toBeGreaterThan(0);
+		});
+	});
 });

@@ -1,5 +1,43 @@
 # Changelog
 
+## 1.14.0 (2025-01-15)
+
+### Major Features
+
+- **FretNumbers Semantic Correction**: Fixed semantic terminology and positioning for fret numbers in vertical layouts
+    - Corrected terminology: FretNumbers now represent "fret position numbers" (casa numbers) instead of "fret numbers"
+    - Fixed positioning: Numbers now appear in the middle of each fret position (casa) where fingers are placed
+    - Casa 1: Number "1" positioned at the middle between nut (fret 0) and fret 1
+    - Casa 2: Number "2" positioned at the middle between fret 1 and fret 2
+    - Casa 3: Number "3" positioned at the middle between fret 2 and fret 3
+    - Nut (fret 0): No number associated (correct behavior)
+    - Both `vertical-right` and `vertical-left` views maintain consistent positioning
+
+### Technical Improvements
+
+- **Documentation Updates**: Updated all specification documents with correct semantic terminology
+    - Updated `spec.md` with FR-025 and FR-026 corrections
+    - Updated `contracts/chord-diagram-api.md` with proper positioning descriptions
+    - Updated `data-model.md` with correct terminology
+    - Updated `quickstart.md` with accurate usage examples
+    - Updated `research.md` with technical justifications
+    - Updated `tasks.md` with corrected ASCII examples
+
+### Bug Fixes
+
+- **Positioning Correction**: Fixed Y-coordinate calculation in `FretNumbers.tsx`
+    - Changed from `(fretNumber - frame.firstFret - 0.5)` to `(fretNumber - frame.firstFret + 0.5)`
+    - Numbers now correctly positioned in the middle of each fret position
+    - Updated test expectations to match new positioning
+
+### Testing
+
+- **Test Updates**: Updated all tests to reflect new positioning and semantics
+    - Updated `FretNumbers.test.tsx` with correct expected positions
+    - Updated `VerticalLayouts.test.tsx` with adjusted Y-coordinate expectations
+    - Updated `ChordDiagram.test.tsx` with corrected integration tests
+    - Updated Storybook tests with proper positioning validation
+
 ## 1.13.0 (2025-01-15)
 
 ### Major Features

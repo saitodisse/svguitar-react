@@ -602,8 +602,9 @@ export const HorizontalLeft: Story = {
 
 /**
  * Vertical-right view (rotated)
- * Tuning labels are positioned to the right of each fret, starting from fret 0 (nut)
- * and increasing as frets go down, maintaining horizontal readability.
+ * Tuning labels are positioned above the vertical strings, from left to right.
+ * Fret numbers are positioned to the right of the fretboard, one below the other,
+ * starting with "0" at the top (nut) and "1, 2, 3..." below.
  */
 export const VerticalRight: Story = {
 	args: {
@@ -617,11 +618,14 @@ export const VerticalRight: Story = {
 		fretHeight: 39,
 		stringWidth: 1,
 		dotSize: 14,
+		dotTextSize: 12,
+		fretTextSize: 12,
+		tuningTextSize: 9,
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: "Vertical layout for right-handed players. Tuning labels are positioned to the right of each fret, starting from fret 0 (nut) and increasing as frets go down. Strings are ordered from left to right as [E2, A2, D3, G3, B3, E4].",
+				story: "Vertical layout for right-handed players. Tuning labels are positioned above the vertical strings, from left to right. Fret numbers are positioned to the right of the fretboard, one below the other, starting with '0' at the top (nut) and '1, 2, 3...' below. Strings are ordered from left to right as [E2, A2, D3, G3, B3, E4].",
 			},
 		},
 	},
@@ -640,26 +644,45 @@ export const VerticalRight: Story = {
 		const fingerElements = svg?.querySelectorAll("circle");
 		expect(fingerElements?.length).toBeGreaterThan(0);
 
-		// Verify tuning labels are positioned correctly (FR-026)
+		// Verify tuning labels are positioned correctly (above the vertical strings)
 		const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
 		expect(tuningLabels?.length).toBeGreaterThan(0);
 
-		// Verify labels are positioned to the right of frets
+		// Verify tuning labels are positioned above the fretboard
 		if (tuningLabels && tuningLabels.length > 0) {
 			const firstLabel = tuningLabels[0] as SVGTextElement;
 			const x = Number(firstLabel.getAttribute("x"));
 			const y = Number(firstLabel.getAttribute("y"));
 
 			expect(x).toBeGreaterThan(0);
-			expect(y).toBeLessThan(200); // Above the main fretboard area
+			expect(y).toBeLessThan(100); // Above the main fretboard area
+		}
+
+		// Verify fret numbers are positioned to the right of the fretboard (FR-026)
+		const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+		expect(fretNumbers?.length).toBeGreaterThan(0);
+
+		// Verify fret numbers are positioned to the right of the fretboard
+		if (fretNumbers && fretNumbers.length > 0) {
+			fretNumbers.forEach(fretNumber => {
+				const x = Number(fretNumber.getAttribute("x"));
+				const y = Number(fretNumber.getAttribute("y"));
+
+				// X should be positioned to the right of the main fretboard
+				expect(x).toBeGreaterThan(150);
+				// Y should be aligned with each fret
+				expect(y).toBeGreaterThan(50);
+				expect(y).toBeLessThan(260);
+			});
 		}
 	},
 };
 
 /**
  * Vertical-left view (rotated and mirrored)
- * Tuning labels are positioned to the right of each fret, starting from fret 0 (nut)
- * and increasing as frets go down, maintaining horizontal readability.
+ * Tuning labels are positioned above the vertical strings, from left to right.
+ * Fret numbers are positioned to the right of the fretboard, one below the other,
+ * starting with "0" at the top (nut) and "1, 2, 3..." below.
  */
 export const VerticalLeft: Story = {
 	args: {
@@ -673,11 +696,13 @@ export const VerticalLeft: Story = {
 		fretHeight: 39,
 		stringWidth: 1,
 		dotSize: 14,
+		fretTextSize: 25,
+		tuningTextSize: 12,
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: "Vertical layout for left-handed players. Tuning labels are positioned to the right of each fret, starting from fret 0 (nut) and increasing as frets go down. Strings are ordered from left to right as [E4, B3, G3, D3, A2, E2].",
+				story: "Vertical layout for left-handed players. Tuning labels are positioned above the vertical strings, from left to right. Fret numbers are positioned to the right of the fretboard, one below the other, starting with '0' at the top (nut) and '1, 2, 3...' below. Strings are ordered from left to right as [E4, B3, G3, D3, A2, E2].",
 			},
 		},
 	},
@@ -696,18 +721,36 @@ export const VerticalLeft: Story = {
 		const fingerElements = svg?.querySelectorAll("circle");
 		expect(fingerElements?.length).toBeGreaterThan(0);
 
-		// Verify tuning labels are positioned correctly (FR-026)
+		// Verify tuning labels are positioned correctly (above the vertical strings)
 		const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
 		expect(tuningLabels?.length).toBeGreaterThan(0);
 
-		// Verify labels are positioned to the right of frets
+		// Verify tuning labels are positioned above the fretboard
 		if (tuningLabels && tuningLabels.length > 0) {
 			const firstLabel = tuningLabels[0] as SVGTextElement;
 			const x = Number(firstLabel.getAttribute("x"));
 			const y = Number(firstLabel.getAttribute("y"));
 
 			expect(x).toBeGreaterThan(0);
-			expect(y).toBeLessThan(200); // Above the main fretboard area
+			expect(y).toBeLessThan(100); // Above the main fretboard area
+		}
+
+		// Verify fret numbers are positioned to the right of the fretboard (FR-026)
+		const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+		expect(fretNumbers?.length).toBeGreaterThan(0);
+
+		// Verify fret numbers are positioned to the right of the fretboard
+		if (fretNumbers && fretNumbers.length > 0) {
+			fretNumbers.forEach(fretNumber => {
+				const x = Number(fretNumber.getAttribute("x"));
+				const y = Number(fretNumber.getAttribute("y"));
+
+				// X should be positioned to the right of the main fretboard
+				expect(x).toBeGreaterThan(150);
+				// Y should be aligned with each fret
+				expect(y).toBeGreaterThan(50);
+				expect(y).toBeLessThan(260);
+			});
 		}
 	},
 };

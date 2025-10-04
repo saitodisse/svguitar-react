@@ -1,5 +1,70 @@
 # Release Notes
 
+## Version 1.14.0
+
+**Release Date:** January 15, 2025
+
+### 🎯 FretNumbers Semantic Correction & Positioning Fix
+
+Esta versão corrige a semântica e o posicionamento dos números dos trastes (FretNumbers) nas views verticais, garantindo que os números representem corretamente as posições das casas onde os dedos são posicionados.
+
+#### ✨ Principais Correções
+
+- **Correção Semântica**: FretNumbers agora representam corretamente "números das posições dos trastes" (números das casas)
+    - Terminologia corrigida: números das casas onde os dedos são posicionados, não dos trastes em si
+    - Conceito claro: distinção entre "traste" (linhas) e "casa" (espaços entre trastes)
+    - Documentação atualizada em todos os arquivos de especificação
+
+- **Posicionamento Corrigido**: Números agora aparecem no ponto médio de cada casa do braço
+    - **Casa 1**: Número "1" posicionado no ponto médio entre nut (traste 0) e traste 1
+    - **Casa 2**: Número "2" posicionado no ponto médio entre traste 1 e traste 2
+    - **Casa 3**: Número "3" posicionado no ponto médio entre traste 2 e traste 3
+    - **Nut**: Sem número associado (comportamento correto)
+    - Consistência mantida entre `vertical-right` e `vertical-left`
+
+#### 🔧 Melhorias Técnicas
+
+- **Correção de Cálculo**: Ajustada a fórmula de posicionamento Y em `FretNumbers.tsx`
+    - Alterado de `(fretNumber - frame.firstFret - 0.5)` para `(fretNumber - frame.firstFret + 0.5)`
+    - Números agora posicionados corretamente no meio de cada casa
+    - Testes atualizados para refletir o novo posicionamento
+
+- **Documentação Completa**: Atualizados todos os documentos de especificação
+    - `spec.md`: FR-025 e FR-026 corrigidos com semântica adequada
+    - `contracts/chord-diagram-api.md`: Descrições de posicionamento atualizadas
+    - `data-model.md`: Terminologia corrigida
+    - `quickstart.md`: Exemplos de uso precisos
+    - `research.md`: Justificativas técnicas atualizadas
+    - `tasks.md`: Exemplos ASCII corrigidos
+
+#### 🧪 Melhorias de Testes
+
+- **Testes Atualizados**: Todos os testes refletem o novo posicionamento e semântica
+    - `FretNumbers.test.tsx`: Posições esperadas corrigidas
+    - `VerticalLayouts.test.tsx`: Expectativas de coordenadas Y ajustadas
+    - `ChordDiagram.test.tsx`: Testes de integração corrigidos
+    - Testes do Storybook: Validação de posicionamento adequada
+
+#### 📚 Impacto na API
+
+Esta correção não altera a API pública, mas melhora significativamente a precisão semântica e visual dos diagramas de acordes verticais. Os desenvolvedores agora têm uma representação mais precisa e intuitiva das posições dos dedos no braço da guitarra.
+
+#### 🎸 Resultado Visual
+
+```
+vertical-right e vertical-left:
+     E2 A2 D3 G3 B3 E4
+     ||||||||||||||||||   ← Nut (traste 0) - sem número
+     |||||||||||||||||| 1 ← Casa 1 (ponto médio entre nut e traste 1)
+     ||||||||||||||||||   ← Traste 1
+     |||||||||||||||||| 2 ← Casa 2 (ponto médio entre traste 1 e 2)
+     ||||||||||||||||||   ← Traste 2
+     |||||||||||||||||| 3 ← Casa 3 (ponto médio entre traste 2 e 3)
+     ||||||||||||||||||   ← Traste 3
+```
+
+---
+
 ## Version 1.13.0
 
 **Release Date:** January 15, 2025
