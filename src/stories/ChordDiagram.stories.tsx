@@ -72,7 +72,7 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Strings", defaultValue: { summary: "6" } },
 		},
 		stringWidth: {
-			control: { type: "range", min: 0, max: 20 },
+			control: { type: "range", min: 0, max: 10, step: 0.01 },
 			description: "Width of string lines",
 			table: { category: "Strings", defaultValue: { summary: "2" } },
 		},
@@ -91,10 +91,15 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Muted string indicator color",
 			table: { category: "Strings", defaultValue: { summary: "#DC143C" } },
 		},
-		stringIndicatorOffset: {
+		stringIndicatorOffsetX: {
 			control: { type: "range", min: -5, max: 5, step: 0.01 },
-			description: "Distance multiplier for open/muted indicators from nut",
+			description: "Horizontal offset multiplier for open/muted indicators",
 			table: { category: "Strings", defaultValue: { summary: "0.5" } },
+		},
+		stringIndicatorOffsetY: {
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			description: "Vertical offset multiplier for open/muted indicators",
+			table: { category: "Strings", defaultValue: { summary: "0" } },
 		},
 
 		// Frets
@@ -128,6 +133,16 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Fret number text size",
 			table: { category: "Frets", defaultValue: { summary: "12" } },
 		},
+		fretTextOffsetX: {
+			control: { type: "range", min: -50, max: 50, step: 0.01 },
+			description: "Horizontal offset multiplier for fret numbers",
+			table: { category: "Frets", defaultValue: { summary: "0" } },
+		},
+		fretTextOffsetY: {
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			description: "Vertical offset multiplier for fret numbers",
+			table: { category: "Frets", defaultValue: { summary: "0" } },
+		},
 
 		// Tuning
 		tuningTextColor: {
@@ -140,9 +155,14 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Tuning text size",
 			table: { category: "Tuning", defaultValue: { summary: "14" } },
 		},
-		tuningLabelOffset: {
+		tuningLabelOffsetX: {
 			control: { type: "range", min: -5, max: 5, step: 0.01 },
-			description: "Distance multiplier for tuning labels from nut",
+			description: "Horizontal offset multiplier for tuning labels",
+			table: { category: "Tuning", defaultValue: { summary: "0.5" } },
+		},
+		tuningLabelOffsetY: {
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			description: "Vertical offset multiplier for tuning labels",
 			table: { category: "Tuning", defaultValue: { summary: "0.5" } },
 		},
 		tuningLabelFormat: {
@@ -176,7 +196,7 @@ const meta: Meta<typeof ChordDiagram> = {
 
 		// Barres
 		barreHeight: {
-			control: { type: "range", min: 0, max: 38 },
+			control: { type: "range", min: -50, max: 50 },
 			description: "Height of barre rectangles",
 			table: { category: "Barres", defaultValue: { summary: "8" } },
 		},
@@ -184,6 +204,26 @@ const meta: Meta<typeof ChordDiagram> = {
 			control: "color",
 			description: "Barre color",
 			table: { category: "Barres", defaultValue: { summary: "#2196F3" } },
+		},
+		barresWidth: {
+			control: { type: "range", min: 0, max: 500, step: 1 },
+			description: "Width multiplier for barre rectangles",
+			table: { category: "Barres", defaultValue: { summary: "45" } },
+		},
+		barresOpacity: {
+			control: { type: "range", min: 0, max: 1, step: 0.01 },
+			description: "Opacity of barre rectangles",
+			table: { category: "Barres", defaultValue: { summary: "1" } },
+		},
+		barresOffsetX: {
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			description: "Horizontal offset multiplier for barres",
+			table: { category: "Barres", defaultValue: { summary: "0" } },
+		},
+		barresOffsetY: {
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			description: "Vertical offset multiplier for barres",
+			table: { category: "Barres", defaultValue: { summary: "0" } },
 		},
 	},
 	tags: ["autodocs"],
@@ -195,9 +235,17 @@ type Story = StoryObj<typeof meta>;
 // Base configuration with all default props including new customizations
 const BASE_STORY_CONFIG = {
 	...DEFAULT_CHORD_STYLE,
-	tuningLabelOffset: 0.5,
+	tuningLabelOffsetX: 0.5,
+	tuningLabelOffsetY: 0.5,
 	tuningLabelFormat: "scientific" as const,
-	stringIndicatorOffset: 0.5,
+	stringIndicatorOffsetX: 0.5,
+	stringIndicatorOffsetY: 0,
+	barresWidth: 8,
+	barresOpacity: 1,
+	barresOffsetX: 0,
+	barresOffsetY: 0,
+	fretTextOffsetX: 0,
+	fretTextOffsetY: 0,
 };
 
 // Basic chord examples
@@ -266,17 +314,23 @@ export const Default: Story = {
 		stringWidth: 1,
 		dotSize: 17,
 		barreHeight: 9,
-		fretTextColor: "#bebebe",
+		fretTextColor: "#c6c6c6",
 		fontFamily: "monospace",
 		dotTextSize: 11,
-		fretTextSize: 20,
+		fretTextSize: 11,
 		tuningTextSize: 16,
 		fretHeight: 35,
 		tuningTextColor: "#e0e0e0",
-		tuningLabelOffset: 0.23,
 		tuningLabelFormat: "note-only",
 		validation: "strict",
 		invalidBehavior: "render-fallback",
+		tuningLabelOffsetX: 0.01,
+		tuningLabelOffsetY: 0.27,
+		barresOffsetY: -0.11,
+		stringIndicatorOffsetX: 0.58,
+		stringIndicatorOffsetY: 0.63,
+		fretTextOffsetX: -0.13,
+		fretTextOffsetY: 0.11,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -300,20 +354,140 @@ export const Default: Story = {
 /**
  * Chord diagram with barre (F Major)
  */
-export const WithBarre: Story = {
+export const WithBarreHorizontalRight: Story = {
 	args: {
 		...fMajor,
 		...BASE_STORY_CONFIG,
+		view: "horizontal-right",
 		width: 309,
 		fretCount: 5,
-		fretWidth: 49,
+		fretWidth: 47,
 		dotSize: 18,
-		barreHeight: 11,
+		barreHeight: 19,
 		fretTextColor: "#abaaaa",
 		fontFamily: "sans-serif",
 		dotTextSize: 15,
 		fretTextSize: 17,
 		stringWidth: 1,
+		barresWidth: 12,
+		barresOffsetX: 0.37,
+
+		chord: {
+			fingers: [
+				{
+					fret: 3,
+					string: 2,
+					is_muted: false,
+					text: "3",
+				},
+				{
+					fret: 3,
+					string: 3,
+					is_muted: false,
+					text: "4",
+				},
+				{
+					fret: 2,
+					string: 4,
+					is_muted: false,
+					text: "2",
+				},
+			],
+
+			barres: [
+				{
+					fret: 1,
+					fromString: 1,
+					toString: 6,
+				},
+			],
+		},
+
+		barresOffsetY: -0.14,
+		tuningTextColor: "#b2afaf",
+		tuningLabelOffsetX: 0.28,
+		tuningLabelOffsetY: -0.06,
+		tuningLabelFormat: "note-only",
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Verify the chord diagram container is rendered
+		const chordDiagram = canvas.getByTestId("chord-diagram");
+		expect(chordDiagram).toBeInTheDocument();
+
+		// Verify SVG element is present
+		const svg = chordDiagram.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
+	},
+};
+
+/**
+ * Chord diagram with barre (F Major) Vertical
+ */
+export const WithBarreVerticalRight: Story = {
+	args: {
+		...fMajor,
+		...BASE_STORY_CONFIG,
+		view: "vertical-right",
+		width: 192,
+		height: 261,
+		fretCount: 5,
+		fretWidth: 23,
+		fretHeight: 39,
+		dotSize: 18,
+		barreHeight: 10,
+		fretTextColor: "#d1d0d0",
+		fontFamily: "sans-serif",
+		dotTextSize: 15,
+		fretTextSize: 17,
+		stringWidth: 1,
+		barresWidth: 10,
+		barresOffsetX: 0.12,
+
+		chord: {
+			fingers: [
+				{
+					fret: 3,
+					string: 2,
+					is_muted: false,
+					text: "3",
+				},
+				{
+					fret: 3,
+					string: 3,
+					is_muted: false,
+					text: "4",
+				},
+				{
+					fret: 2,
+					string: 4,
+					is_muted: false,
+					text: "2",
+				},
+			],
+
+			barres: [
+				{
+					fret: 1,
+					fromString: 1,
+					toString: 6,
+				},
+			],
+		},
+
+		barresOffsetY: 0.33,
+		tuningTextColor: "#cecbcb",
+		tuningLabelOffsetX: 0.04,
+		tuningLabelOffsetY: 0.15,
+		tuningLabelFormat: "note-only",
+		stringIndicatorOffsetX: 0.35,
+		fretTextOffsetX: -6.32,
+		fretTextOffsetY: 0.16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -344,9 +518,12 @@ export const WithFretNotation: Story = {
 		tuningTextColor: "#cecece",
 		openStringColor: "#708aba",
 		fretTextSize: 19,
-		tuningLabelOffset: -4.29,
-		tuningLabelFormat: "note-only",
-		stringIndicatorOffset: 0.23,
+		tuningLabelOffsetX: -4.41,
+		tuningLabelFormat: "scientific",
+		stringIndicatorOffsetX: 0.23,
+		tuningTextSize: 14,
+		tuningLabelOffsetY: -0.02,
+		fretTextOffsetY: 0.15,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -377,6 +554,12 @@ export const CustomStyle: Story = {
 		height: 228,
 		fretColor: "#b7b2b2",
 		stringColor: "#5b5a5a",
+		backgroundColor: "#323232",
+		tuningTextColor: "#555555",
+		tuningTextSize: 20,
+		tuningLabelOffsetX: 0.41,
+		tuningLabelOffsetY: 0,
+		tuningLabelFormat: "note-only",
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -666,7 +849,7 @@ export const VerticalRight: Story = {
 		fretTextSize: 12,
 		tuningTextSize: 15,
 		tuningTextColor: "#949393",
-		tuningLabelOffset: 0.2,
+		tuningLabelOffsetX: 0.2,
 		tuningLabelFormat: "note-only",
 	},
 	parameters: {
@@ -874,7 +1057,7 @@ export const TuningLabelOffsetDemo: Story = {
 		...cMajor,
 		...BASE_STORY_CONFIG,
 		view: "horizontal-right",
-		tuningLabelOffset: 0.8,
+		tuningLabelOffsetX: 0.8,
 		width: 300,
 		height: 200,
 	},
@@ -951,7 +1134,7 @@ export const StringIndicatorOffsetDemo: Story = {
 		},
 		...BASE_STORY_CONFIG,
 		view: "horizontal-right",
-		stringIndicatorOffset: 0.3,
+		stringIndicatorOffsetX: 0.3,
 		width: 300,
 		height: 200,
 	},
@@ -986,9 +1169,9 @@ export const CombinedCustomizations: Story = {
 		},
 		...BASE_STORY_CONFIG,
 		view: "vertical-right",
-		tuningLabelOffset: 0.3,
+		tuningLabelOffsetX: 0.3,
 		tuningLabelFormat: "note-only",
-		stringIndicatorOffset: 0.7,
+		stringIndicatorOffsetX: 0.7,
 		width: 220,
 		height: 320,
 		dotSize: 16,

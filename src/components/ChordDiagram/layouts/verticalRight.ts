@@ -48,7 +48,7 @@ export const verticalRightEngine: LayoutEngine = {
 			x: Math.min(fromX, toX) - frame.style.barreHeight / 2,
 			y: frame.gridOriginY + (barre.fret - frame.firstFret) * frame.style.fretHeight,
 			width: Math.abs(toX - fromX) + frame.style.barreHeight,
-			height: frame.style.fretHeight,
+			height: frame.style.barresWidth,
 			rx: 4,
 		};
 	},

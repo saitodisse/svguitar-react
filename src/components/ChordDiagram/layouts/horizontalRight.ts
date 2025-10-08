@@ -41,7 +41,7 @@ export const horizontalRightEngine: LayoutEngine = {
 		return {
 			x: frame.gridOriginX + (barre.fret - frame.firstFret) * frame.style.fretWidth,
 			y: Math.min(fromY, toY) - frame.style.barreHeight / 2,
-			width: frame.style.fretWidth,
+			width: frame.style.barresWidth,
 			height: Math.abs(toY - fromY) + frame.style.barreHeight,
 			rx: 4,
 		};

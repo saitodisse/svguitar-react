@@ -85,7 +85,7 @@
 // After (v1.16.0)
 <ChordDiagram
   tuningLabelOffsetX={0.5}  // Horizontal offset
-  tuningLabelOffsetY={0.5}  // Vertical offset  
+  tuningLabelOffsetY={0.5}  // Vertical offset
   stringIndicatorOffsetX={0.7}  // Horizontal offset
   stringIndicatorOffsetY={0}    // Vertical offset (new)
   // New props

@@ -19,7 +19,7 @@ O offset único foi substituído por controles separados X e Y para maior flexib
 <ChordDiagram tuningLabelOffset={0.5} />
 
 // ✅ Agora (v1.16.0)
-<ChordDiagram 
+<ChordDiagram
   tuningLabelOffsetX={0.5}  // Ajuste horizontal
   tuningLabelOffsetY={0.5}  // Ajuste vertical
 />
@@ -34,7 +34,7 @@ Indicadores de cordas ('O' e 'X') agora têm controle separado X/Y.
 <ChordDiagram stringIndicatorOffset={0.7} />
 
 // ✅ Agora (v1.16.0)
-<ChordDiagram 
+<ChordDiagram
   stringIndicatorOffsetX={0.7}  // Distância do nut (horizontal)
   stringIndicatorOffsetY={0}    // Ajuste vertical (novo)
 />
@@ -48,9 +48,9 @@ Controle independente da largura da barre (complementar a `barreHeight`).
 
 ```tsx
 <ChordDiagram
-  chord={fMajor}
-  barresWidth={12}  // Barre mais larga
-  barreHeight={8}   // Mantém altura padrão
+	chord={fMajor}
+	barresWidth={12} // Barre mais larga
+	barreHeight={8} // Mantém altura padrão
 />
 ```
 
@@ -64,8 +64,8 @@ Controle a opacidade das barres para efeitos visuais sutis.
 
 ```tsx
 <ChordDiagram
-  chord={fMajor}
-  barresOpacity={0.7}  // 70% opaco (30% transparente)
+	chord={fMajor}
+	barresOpacity={0.7} // 70% opaco (30% transparente)
 />
 ```
 
@@ -79,9 +79,9 @@ Mova barres horizontal e verticalmente com multiplicadores flexíveis.
 
 ```tsx
 <ChordDiagram
-  chord={fMajor}
-  barresOffsetX={0.1}   // Pequeno deslocamento horizontal
-  barresOffsetY={-0.05} // Leve ajuste para cima
+	chord={fMajor}
+	barresOffsetX={0.1} // Pequeno deslocamento horizontal
+	barresOffsetY={-0.05} // Leve ajuste para cima
 />
 ```
 
@@ -95,9 +95,9 @@ Ajuste a posição dos números dos trastes em qualquer direção.
 
 ```tsx
 <ChordDiagram
-  chord={dMajor}
-  fretTextOffsetX={0.15}  // Move números para direita
-  fretTextOffsetY={-0.1}  // Move números para cima
+	chord={dMajor}
+	fretTextOffsetX={0.15} // Move números para direita
+	fretTextOffsetY={-0.1} // Move números para cima
 />
 ```
 
@@ -126,47 +126,47 @@ Todos os offsets agora suportam valores de -5 a 5 (anteriormente 0-1).
 
 ```tsx
 <ChordDiagram
-  instrument={{
-    tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-    chord: "133211"  // F Major com barre
-  }}
-  view="vertical-right"
-  // Barres customization
-  barresWidth={10}
-  barresOpacity={0.8}
-  barresOffsetX={0}
-  barresOffsetY={0.05}
-  // Tuning labels
-  tuningLabelOffsetX={0}
-  tuningLabelOffsetY={0.3}
-  tuningLabelFormat="note-only"
-  // String indicators
-  stringIndicatorOffsetX={0.4}
-  stringIndicatorOffsetY={0}
-  // Fret numbers
-  fretTextOffsetX={0.2}
-  fretTextOffsetY={0}
-  // Visual styling
-  width={220}
-  height={320}
-  dotSize={16}
+	instrument={{
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		chord: "133211", // F Major com barre
+	}}
+	view="vertical-right"
+	// Barres customization
+	barresWidth={10}
+	barresOpacity={0.8}
+	barresOffsetX={0}
+	barresOffsetY={0.05}
+	// Tuning labels
+	tuningLabelOffsetX={0}
+	tuningLabelOffsetY={0.3}
+	tuningLabelFormat="note-only"
+	// String indicators
+	stringIndicatorOffsetX={0.4}
+	stringIndicatorOffsetY={0}
+	// Fret numbers
+	fretTextOffsetX={0.2}
+	fretTextOffsetY={0}
+	// Visual styling
+	width={220}
+	height={320}
+	dotSize={16}
 />
 ```
 
 #### 🔄 Guia de Migração
 
 1. **Substituir `tuningLabelOffset`**:
-   - Horizontal layouts: Use `tuningLabelOffsetX` com o mesmo valor
-   - Vertical layouts: Use `tuningLabelOffsetY` com o mesmo valor
-   - Ajuste fino: Use ambos X e Y conforme necessário
+    - Horizontal layouts: Use `tuningLabelOffsetX` com o mesmo valor
+    - Vertical layouts: Use `tuningLabelOffsetY` com o mesmo valor
+    - Ajuste fino: Use ambos X e Y conforme necessário
 
 2. **Substituir `stringIndicatorOffset`**:
-   - Mantenha o valor em `stringIndicatorOffsetX`
-   - Defina `stringIndicatorOffsetY={0}` (comportamento padrão)
+    - Mantenha o valor em `stringIndicatorOffsetX`
+    - Defina `stringIndicatorOffsetY={0}` (comportamento padrão)
 
 3. **Novas props opcionais** (sem impacto se não usadas):
-   - `barresWidth`, `barresOpacity`, `barresOffsetX`, `barresOffsetY`
-   - `fretTextOffsetX`, `fretTextOffsetY`
+    - `barresWidth`, `barresOpacity`, `barresOffsetX`, `barresOffsetY`
+    - `fretTextOffsetX`, `fretTextOffsetY`
 
 ---
 
