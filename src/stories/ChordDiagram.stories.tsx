@@ -29,111 +29,25 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Predefined view for layout",
 			table: { category: "Layout", defaultValue: { summary: "horizontal-right" } },
 		},
-
-		// Dimensions
 		width: {
 			control: { type: "range", min: 0, max: 2000 },
 			description: "Total width of the SVG",
-			table: { category: "Dimensions", defaultValue: { summary: "200", detail: "px" } },
+			table: { category: "Layout", defaultValue: { summary: "200", detail: "px" } },
 		},
 		height: {
 			control: { type: "range", min: 0, max: 2000 },
 			description: "Total height of the SVG",
-			table: { category: "Dimensions", defaultValue: { summary: "250" } },
+			table: { category: "Layout", defaultValue: { summary: "250" } },
 		},
-		fretCount: {
-			control: { type: "range", min: 0, max: 20 },
-			description: "Number of frets to render",
-			table: { category: "Dimensions", defaultValue: { summary: "4" } },
-		},
-		stringCount: {
-			control: { type: "range", min: 0, max: 12 },
-			description: "Number of strings",
-			table: { category: "Dimensions", defaultValue: { summary: "6" } },
-		},
-		fretWidth: {
-			control: { type: "range", min: 0, max: 200 },
-			description: "Width of each fret space",
-			table: { category: "Dimensions", defaultValue: { summary: "40" } },
-		},
-		fretHeight: {
-			control: { type: "range", min: 0, max: 200 },
-			description: "Height of each fret space",
-			table: { category: "Dimensions", defaultValue: { summary: "30" } },
-		},
-		stringWidth: {
-			control: { type: "range", min: 0, max: 20 },
-			description: "Width of string lines",
-			table: { category: "Dimensions", defaultValue: { summary: "2" } },
-		},
-		dotSize: {
-			control: { type: "range", min: 0, max: 100 },
-			description: "Size of finger dots",
-			table: { category: "Dimensions", defaultValue: { summary: "12" } },
-		},
-		barreHeight: {
-			control: { type: "range", min: 0, max: 38 },
-			description: "Height of barre rectangles",
-			table: { category: "Dimensions", defaultValue: { summary: "8" } },
-		},
-
-		// Colors
 		backgroundColor: {
 			control: "color",
 			description: "Background color",
-			table: { category: "Colors", defaultValue: { summary: "#ffffff" } },
+			table: { category: "Layout", defaultValue: { summary: "#ffffff" } },
 		},
-		fretColor: {
-			control: "color",
-			description: "Fret line color",
-			table: { category: "Colors", defaultValue: { summary: "#333333" } },
-		},
-		stringColor: {
-			control: "color",
-			description: "String line color",
-			table: { category: "Colors", defaultValue: { summary: "#666666" } },
-		},
-		dotColor: {
-			control: "color",
-			description: "Finger dot color",
-			table: { category: "Colors", defaultValue: { summary: "#2196F3" } },
-		},
-		dotTextColor: {
-			control: "color",
-			description: "Finger dot text color",
-			table: { category: "Colors", defaultValue: { summary: "#ffffff" } },
-		},
-		barreColor: {
-			control: "color",
-			description: "Barre color",
-			table: { category: "Colors", defaultValue: { summary: "#2196F3" } },
-		},
-		fretTextColor: {
-			control: "color",
-			description: "Fret number text color",
-			table: { category: "Colors", defaultValue: { summary: "#333333" } },
-		},
-		tuningTextColor: {
-			control: "color",
-			description: "Tuning text color",
-			table: { category: "Colors", defaultValue: { summary: "#666666" } },
-		},
-		openStringColor: {
-			control: "color",
-			description: "Open string indicator color",
-			table: { category: "Colors", defaultValue: { summary: "#2196F3" } },
-		},
-		mutedStringColor: {
-			control: "color",
-			description: "Muted string indicator color",
-			table: { category: "Colors", defaultValue: { summary: "#DC143C" } },
-		},
-
-		// Fonts
 		fontFamily: {
 			control: "select",
 			description: "Font family",
-			table: { category: "Fonts", defaultValue: { summary: "Arial, sans-serif" } },
+			table: { category: "Layout", defaultValue: { summary: "Arial, sans-serif" } },
 			options: [
 				"Arial, sans-serif",
 				"monospace",
@@ -150,40 +64,126 @@ const meta: Meta<typeof ChordDiagram> = {
 				"Inter, sans-serif",
 			],
 		},
-		dotTextSize: {
-			control: { type: "range", min: 0, max: 100 },
-			description: "Finger dot text size",
-			table: { category: "Fonts", defaultValue: { summary: "10" } },
+
+		// Strings
+		stringCount: {
+			control: { type: "range", min: 0, max: 12 },
+			description: "Number of strings",
+			table: { category: "Strings", defaultValue: { summary: "6" } },
+		},
+		stringWidth: {
+			control: { type: "range", min: 0, max: 20 },
+			description: "Width of string lines",
+			table: { category: "Strings", defaultValue: { summary: "2" } },
+		},
+		stringColor: {
+			control: "color",
+			description: "String line color",
+			table: { category: "Strings", defaultValue: { summary: "#666666" } },
+		},
+		openStringColor: {
+			control: "color",
+			description: "Open string indicator color",
+			table: { category: "Strings", defaultValue: { summary: "#2196F3" } },
+		},
+		mutedStringColor: {
+			control: "color",
+			description: "Muted string indicator color",
+			table: { category: "Strings", defaultValue: { summary: "#DC143C" } },
+		},
+		stringIndicatorOffset: {
+			control: { type: "range", min: 0, max: 1, step: 0.1 },
+			description: "Distance multiplier for open/muted indicators from nut",
+			table: { category: "Strings", defaultValue: { summary: "0.5" } },
+		},
+
+		// Frets
+		fretCount: {
+			control: { type: "range", min: 0, max: 20 },
+			description: "Number of frets to render",
+			table: { category: "Frets", defaultValue: { summary: "4" } },
+		},
+		fretWidth: {
+			control: { type: "range", min: 0, max: 200 },
+			description: "Width of each fret space",
+			table: { category: "Frets", defaultValue: { summary: "40" } },
+		},
+		fretHeight: {
+			control: { type: "range", min: 0, max: 200 },
+			description: "Height of each fret space",
+			table: { category: "Frets", defaultValue: { summary: "30" } },
+		},
+		fretColor: {
+			control: "color",
+			description: "Fret line color",
+			table: { category: "Frets", defaultValue: { summary: "#333333" } },
+		},
+		fretTextColor: {
+			control: "color",
+			description: "Fret number text color",
+			table: { category: "Frets", defaultValue: { summary: "#333333" } },
 		},
 		fretTextSize: {
 			control: { type: "range", min: 0, max: 100 },
 			description: "Fret number text size",
-			table: { category: "Fonts", defaultValue: { summary: "12" } },
+			table: { category: "Frets", defaultValue: { summary: "12" } },
+		},
+
+		// Tuning
+		tuningTextColor: {
+			control: "color",
+			description: "Tuning text color",
+			table: { category: "Tuning", defaultValue: { summary: "#666666" } },
 		},
 		tuningTextSize: {
 			control: { type: "range", min: 0, max: 100 },
 			description: "Tuning text size",
-			table: { category: "Fonts", defaultValue: { summary: "14" } },
+			table: { category: "Tuning", defaultValue: { summary: "14" } },
 		},
-
-		// TuningLabels customization
 		tuningLabelOffset: {
-			control: { type: "range", min: 0, max: 1, step: 0.1 },
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
 			description: "Distance multiplier for tuning labels from nut",
-			table: { category: "TuningLabels", defaultValue: { summary: "0.5" } },
+			table: { category: "Tuning", defaultValue: { summary: "0.5" } },
 		},
 		tuningLabelFormat: {
 			control: { type: "radio" },
 			options: ["scientific", "note-only"],
 			description: "Format for tuning labels (scientific: E2, note-only: E)",
-			table: { category: "TuningLabels", defaultValue: { summary: "scientific" } },
+			table: { category: "Tuning", defaultValue: { summary: "scientific" } },
 		},
 
-		// String indicators customization
-		stringIndicatorOffset: {
-			control: { type: "range", min: 0, max: 1, step: 0.1 },
-			description: "Distance multiplier for open/muted indicators from nut",
-			table: { category: "String Indicators", defaultValue: { summary: "0.5" } },
+		// Dots (Fingers)
+		dotSize: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Size of finger dots",
+			table: { category: "Dots", defaultValue: { summary: "12" } },
+		},
+		dotColor: {
+			control: "color",
+			description: "Finger dot color",
+			table: { category: "Dots", defaultValue: { summary: "#2196F3" } },
+		},
+		dotTextColor: {
+			control: "color",
+			description: "Finger dot text color",
+			table: { category: "Dots", defaultValue: { summary: "#ffffff" } },
+		},
+		dotTextSize: {
+			control: { type: "range", min: 0, max: 100 },
+			description: "Finger dot text size",
+			table: { category: "Dots", defaultValue: { summary: "10" } },
+		},
+
+		// Barres
+		barreHeight: {
+			control: { type: "range", min: 0, max: 38 },
+			description: "Height of barre rectangles",
+			table: { category: "Barres", defaultValue: { summary: "8" } },
+		},
+		barreColor: {
+			control: "color",
+			description: "Barre color",
+			table: { category: "Barres", defaultValue: { summary: "#2196F3" } },
 		},
 	},
 	tags: ["autodocs"],
