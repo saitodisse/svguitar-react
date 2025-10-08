@@ -756,9 +756,15 @@ export const PerformanceTest: Story = {
 	args: {
 		...cMajor,
 		...DEFAULT_CHORD_STYLE,
-		width: 236,
+		width: 255,
 		height: 236,
 		tuningLabelFormat: "note-only",
+		fretWidth: 49,
+		dotSize: 20,
+		fontFamily: "monospace",
+		dotTextSize: 16,
+		validation: "strict",
+		invalidBehavior: "keep-previous",
 	},
 	render: args => {
 		// Create 50 chord diagrams for performance testing
