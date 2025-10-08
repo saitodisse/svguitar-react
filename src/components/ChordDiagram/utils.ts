@@ -4,6 +4,7 @@
  * @version 1.0.0
  */
 
+import { Note } from "tonal";
 import type { Chord, Finger, Barre, Instrument, ViewId } from "./types";
 import { ChordDiagramError, ERROR_CODES } from "./types";
 import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT, VALID_FRET_CHARS, DEFAULT_VIEW } from "./constants";
@@ -279,6 +280,33 @@ export function getStartY(style: { fretTextSize: number }): number {
 	// Calculate space needed for fret numbers based on text size
 	// Add some padding to ensure numbers don't overlap with fretboard
 	return Math.max(50, style.fretTextSize * 3);
+}
+
+/**
+ * Formats a tuning label based on the specified format
+ * @param noteName - Scientific notation of the note (e.g., "E2", "A#2", "Db3")
+ * @param format - Format to use: "scientific" (full notation) or "note-only" (just the note name)
+ * @returns Formatted string
+ * @example
+ * formatTuningLabel("E2", "scientific") // returns "E2"
+ * formatTuningLabel("E2", "note-only")  // returns "E"
+ * formatTuningLabel("A#2", "note-only") // returns "A#"
+ * formatTuningLabel("Db3", "note-only") // returns "Db"
+ */
+export function formatTuningLabel(noteName: string, format: "scientific" | "note-only"): string {
+	if (format === "scientific") {
+		return noteName;
+	}
+
+	// Use tonal to parse the note and extract just the note name (without octave)
+	const note = Note.get(noteName);
+	// If parsing fails, return the original string
+	if (note.empty || !note.name) {
+		return noteName;
+	}
+
+	// Return just the pitch class (note name without octave)
+	return note.pc || note.name;
 }
 
 /**

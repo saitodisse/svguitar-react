@@ -36,6 +36,9 @@ const DEFAULT_CONFIGS = {
 		mutedStringColor: "#C65858",
 		fontFamily: "Arial, sans-serif",
 		chord: "x32010",
+		tuningLabelOffset: 0.5,
+		tuningLabelFormat: "scientific",
+		stringIndicatorOffset: 0.5,
 	},
 	mobileVertical: {
 		width: 333,
@@ -62,6 +65,9 @@ const DEFAULT_CONFIGS = {
 		mutedStringColor: "#C65858",
 		fontFamily: "Arial, sans-serif",
 		chord: "x32010",
+		tuningLabelOffset: 0.5,
+		tuningLabelFormat: "scientific",
+		stringIndicatorOffset: 0.5,
 	},
 	desktopHorizontal: {
 		width: 745,
@@ -88,6 +94,9 @@ const DEFAULT_CONFIGS = {
 		mutedStringColor: "#C65858",
 		fontFamily: "Arial, sans-serif",
 		chord: "x32010",
+		tuningLabelOffset: 0.5,
+		tuningLabelFormat: "scientific",
+		stringIndicatorOffset: 0.5,
 	},
 	desktopVertical: {
 		width: 221,
@@ -114,6 +123,9 @@ const DEFAULT_CONFIGS = {
 		mutedStringColor: "#C65858",
 		fontFamily: "Arial, sans-serif",
 		chord: "x32010",
+		tuningLabelOffset: 0.5,
+		tuningLabelFormat: "scientific",
+		stringIndicatorOffset: 0.5,
 	},
 } as const;
 
@@ -336,6 +348,18 @@ function App() {
 		"tuningTextSize",
 		parseAsInteger.withDefault(defaults.tuningTextSize)
 	);
+	const [tuningLabelOffset, setTuningLabelOffset] = useQueryState(
+		"tuningLabelOffset",
+		parseAsInteger.withDefault(Math.round(defaults.tuningLabelOffset * 100))
+	);
+	const [tuningLabelFormat, setTuningLabelFormat] = useQueryState(
+		"tuningLabelFormat",
+		parseAsStringLiteral(["scientific", "note-only"]).withDefault(defaults.tuningLabelFormat)
+	);
+	const [stringIndicatorOffset, setStringIndicatorOffset] = useQueryState(
+		"stringIndicatorOffset",
+		parseAsInteger.withDefault(Math.round(defaults.stringIndicatorOffset * 100))
+	);
 
 	// Função para limpar a configuração e manter apenas view e lang
 	const clearConfiguration = () => {
@@ -364,6 +388,9 @@ function App() {
 		setDotTextSize(defaults.dotTextSize);
 		setFretTextSize(defaults.fretTextSize);
 		setTuningTextSize(defaults.tuningTextSize);
+		setTuningLabelOffset(Math.round(defaults.tuningLabelOffset * 100));
+		setTuningLabelFormat(defaults.tuningLabelFormat as "scientific" | "note-only");
+		setStringIndicatorOffset(Math.round(defaults.stringIndicatorOffset * 100));
 	};
 
 	return (
@@ -420,6 +447,9 @@ function App() {
 						dotTextSize={dotTextSize}
 						fretTextSize={fretTextSize}
 						tuningTextSize={tuningTextSize}
+						tuningLabelOffset={tuningLabelOffset / 100}
+						tuningLabelFormat={tuningLabelFormat as "scientific" | "note-only"}
+						stringIndicatorOffset={stringIndicatorOffset / 100}
 						view={
 							view as
 								| "horizontal-right"
@@ -755,6 +785,67 @@ function App() {
 								/>
 							</div>
 						))}
+					</section>
+
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.tuningLabelsSection")}
+						</h3>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="tuningLabelOffset" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.tuningLabelOffsetLabel")}
+									<span className="text-xs text-white/60">{tuningLabelOffset / 100}</span>
+								</span>
+							</Label>
+							<Slider
+								id="tuningLabelOffset"
+								min={-1000}
+								max={1000}
+								value={[tuningLabelOffset]}
+								onValueChange={values => setTuningLabelOffset(values[0])}
+							/>
+						</div>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="tuningLabelFormat" className="text-sm text-white/80">
+								{t("controls.tuningLabelFormatLabel")}
+							</Label>
+							<Select
+								value={tuningLabelFormat}
+								onValueChange={value =>
+									setTuningLabelFormat(value as "scientific" | "note-only")
+								}
+							>
+								<SelectTrigger id="tuningLabelFormat">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="scientific">
+										{t("controls.tuningLabelFormatScientific")}
+									</SelectItem>
+									<SelectItem value="note-only">
+										{t("controls.tuningLabelFormatNoteOnly")}
+									</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="stringIndicatorOffset" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.stringIndicatorOffsetLabel")}
+									<span className="text-xs text-white/60">
+										{stringIndicatorOffset / 100}
+									</span>
+								</span>
+							</Label>
+							<Slider
+								id="stringIndicatorOffset"
+								min={-1000}
+								max={1000}
+								value={[stringIndicatorOffset]}
+								onValueChange={values => setStringIndicatorOffset(values[0])}
+							/>
+						</div>
 					</section>
 
 					<section className="space-y-4">

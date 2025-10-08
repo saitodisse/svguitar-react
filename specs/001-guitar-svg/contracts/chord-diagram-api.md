@@ -62,6 +62,13 @@ interface ChordDiagramProps {
 	dotTextSize?: number;
 	fretTextSize?: number;
 	tuningTextSize?: number;
+
+	// TuningLabels customization
+	tuningLabelOffset?: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight (padrão: 0.5)
+	tuningLabelFormat?: "scientific" | "note-only"; // Formato dos rótulos (padrão: "scientific")
+
+	// String indicators customization
+	stringIndicatorOffset?: number; // Multiplicador (0-1) para indicadores 'O' e 'X' (padrão: 0.5)
 }
 ```
 
@@ -184,6 +191,13 @@ interface ChordStyle {
 	dotTextSize?: number;
 	fretTextSize?: number;
 	tuningTextSize?: number;
+
+	// TuningLabels customization
+	tuningLabelOffset?: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight (padrão: 0.5)
+	tuningLabelFormat?: "scientific" | "note-only"; // Formato dos rótulos (padrão: "scientific")
+
+	// String indicators customization
+	stringIndicatorOffset?: number; // Multiplicador (0-1) para indicadores 'O' e 'X' (padrão: 0.5)
 }
 ```
 
@@ -192,6 +206,8 @@ interface ChordStyle {
 - Todos os valores numéricos devem ser > 0
 - Todas as cores devem ser strings válidas (hex, rgb, nome)
 - `fontFamily` deve ser uma string válida de fonte
+- `tuningLabelOffset` deve estar entre 0 e 1
+- `stringIndicatorOffset` deve estar entre 0 e 1
 
 ## Comportamento do Componente
 

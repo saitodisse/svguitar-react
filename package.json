@@ -1,7 +1,7 @@
 {
 	"name": "svguitar-react",
 	"private": false,
-	"version": "1.14.0",
+	"version": "1.15.0",
 	"type": "module",
 	"description": "A React component for rendering guitar chord diagrams in SVG format",
 	"keywords": [
@@ -69,7 +69,8 @@
 		"nuqs": "^2.6.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
-		"react-i18next": "^16.0.0"
+		"react-i18next": "^16.0.0",
+		"tonal": "^6.4.2"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "4.1.1",

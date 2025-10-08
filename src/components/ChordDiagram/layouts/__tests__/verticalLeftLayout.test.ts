@@ -43,4 +43,56 @@ describe("verticalLeftEngine", () => {
 			expect(frets[i]).toBeGreaterThan(frets[i - 1]);
 		}
 	});
+
+	describe("barreRect", () => {
+		it("should calculate barre rectangle correctly in vertical-left layout", () => {
+			const frame = createFrame();
+			const barre: import("../../types").Barre = {
+				fret: 1,
+				fromString: 1,
+				toString: 6,
+			};
+
+			const rect = verticalLeftEngine.barreRect(barre, { frame });
+
+			expect(rect.width).toBeGreaterThan(0);
+			expect(rect.height).toBe(frame.style.fretHeight);
+			expect(rect.rx).toBe(4);
+		});
+
+		it("should handle partial barres in vertical-left layout", () => {
+			const frame = createFrame();
+			const barre: import("../../types").Barre = {
+				fret: 2,
+				fromString: 2,
+				toString: 5,
+			};
+
+			const rect = verticalLeftEngine.barreRect(barre, { frame });
+
+			expect(rect.width).toBeGreaterThan(0);
+			expect(rect.height).toBe(frame.style.fretHeight);
+		});
+	});
+
+	describe("indicatorPosition", () => {
+		it("should position indicators above the fretboard", () => {
+			const frame = createFrame();
+			const pos = verticalLeftEngine.indicatorPosition(1, "open", { frame });
+
+			// Should be above the grid (negative Y from origin)
+			expect(pos.y).toBeLessThan(frame.gridOriginY);
+		});
+
+		it("should respect stringIndicatorOffset", () => {
+			const customOffset = 0.4;
+			const frame = createFrame();
+			frame.style.stringIndicatorOffset = customOffset;
+
+			const pos = verticalLeftEngine.indicatorPosition(1, "open", { frame });
+
+			const expectedY = frame.gridOriginY - frame.style.fretHeight * customOffset;
+			expect(Math.abs(pos.y - expectedY)).toBeLessThan(0.1);
+		});
+	});
 });

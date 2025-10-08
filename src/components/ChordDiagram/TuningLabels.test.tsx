@@ -161,4 +161,148 @@ describe("TuningLabels", () => {
 			expect(rightY).toBe(leftY);
 		});
 	});
+
+	describe("tuningLabelOffset customization", () => {
+		it("applies tuningLabelOffset to horizontal-right layout", () => {
+			const customOffset = 0.8;
+			const customFrame = createFrame({
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelOffset: customOffset, fretCount: 3 },
+			});
+			const { container } = render(
+				<svg>
+					<TuningLabels
+						engine={horizontalRightEngine}
+						frame={customFrame}
+						tuning={["E2", "A2", "D3", "G3", "B3", "E4"]}
+					/>
+				</svg>
+			);
+
+			const labels = Array.from(container.querySelectorAll("text"));
+			const firstLabel = labels[0];
+			const x = Number(firstLabel.getAttribute("x"));
+
+			// With higher offset, labels should be further to the left (more negative)
+			const expectedX = customFrame.gridOriginX - customFrame.style.fretWidth * customOffset;
+			expect(Math.abs(x - expectedX)).toBeLessThan(1); // Allow small floating point differences
+		});
+
+		it("applies tuningLabelOffset to vertical-right layout", () => {
+			const customOffset = 0.3;
+			const customFrame = createFrame({
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelOffset: customOffset, fretCount: 3 },
+			});
+			const { container } = render(
+				<svg>
+					<TuningLabels
+						engine={verticalRightEngine}
+						frame={customFrame}
+						tuning={["E2", "A2", "D3", "G3", "B3", "E4"]}
+					/>
+				</svg>
+			);
+
+			const labels = Array.from(container.querySelectorAll("text"));
+			const firstLabel = labels[0];
+			const y = Number(firstLabel.getAttribute("y"));
+
+			// With lower offset, labels should be closer to the grid (less negative Y)
+			const expectedY = customFrame.gridOriginY - customFrame.style.fretHeight * customOffset;
+			expect(Math.abs(y - expectedY)).toBeLessThan(1);
+		});
+	});
+
+	describe("tuningLabelFormat customization", () => {
+		it('displays full scientific notation with format "scientific"', () => {
+			const frame = createFrame({
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelFormat: "scientific", fretCount: 3 },
+			});
+			const { container } = render(
+				<svg>
+					<TuningLabels
+						engine={horizontalRightEngine}
+						frame={frame}
+						tuning={["E2", "A2", "D3", "G3", "B3", "E4"]}
+					/>
+				</svg>
+			);
+
+			const labels = Array.from(container.querySelectorAll("text"));
+			expect(labels).toHaveLength(6);
+
+			// Verify full scientific notation is displayed
+			expect(labels[0].textContent).toBe("E2");
+			expect(labels[1].textContent).toBe("A2");
+			expect(labels[2].textContent).toBe("D3");
+			expect(labels[3].textContent).toBe("G3");
+			expect(labels[4].textContent).toBe("B3");
+			expect(labels[5].textContent).toBe("E4");
+		});
+
+		it('displays only note names with format "note-only"', () => {
+			const frame = createFrame({
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelFormat: "note-only", fretCount: 3 },
+			});
+			const { container } = render(
+				<svg>
+					<TuningLabels
+						engine={horizontalRightEngine}
+						frame={frame}
+						tuning={["E2", "A2", "D3", "G3", "B3", "E4"]}
+					/>
+				</svg>
+			);
+
+			const labels = Array.from(container.querySelectorAll("text"));
+			expect(labels).toHaveLength(6);
+
+			// Verify only note names are displayed (without octave numbers)
+			expect(labels[0].textContent).toBe("E");
+			expect(labels[1].textContent).toBe("A");
+			expect(labels[2].textContent).toBe("D");
+			expect(labels[3].textContent).toBe("G");
+			expect(labels[4].textContent).toBe("B");
+			expect(labels[5].textContent).toBe("E");
+		});
+
+		it('handles sharps correctly in "note-only" format', () => {
+			const frame = createFrame({
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelFormat: "note-only", fretCount: 3 },
+			});
+			const { container } = render(
+				<svg>
+					<TuningLabels
+						engine={horizontalRightEngine}
+						frame={frame}
+						tuning={["C#2", "F#2", "A#3"]}
+					/>
+				</svg>
+			);
+
+			const labels = Array.from(container.querySelectorAll("text"));
+			expect(labels[0].textContent).toBe("C#");
+			expect(labels[1].textContent).toBe("F#");
+			expect(labels[2].textContent).toBe("A#");
+		});
+
+		it('handles flats correctly in "note-only" format', () => {
+			const frame = createFrame({
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelFormat: "note-only", fretCount: 3 },
+			});
+			const { container } = render(
+				<svg>
+					<TuningLabels
+						engine={horizontalRightEngine}
+						frame={frame}
+						tuning={["Db2", "Eb3", "Ab4"]}
+					/>
+				</svg>
+			);
+
+			const labels = Array.from(container.querySelectorAll("text"));
+			expect(labels[0].textContent).toBe("Db");
+			expect(labels[1].textContent).toBe("Eb");
+			expect(labels[2].textContent).toBe("Ab");
+		});
+	});
 });

@@ -61,6 +61,13 @@ interface ChordDiagramProps {
 	dotTextSize?: number;
 	fretTextSize?: number;
 	tuningTextSize?: number;
+
+	// TuningLabels customization
+	tuningLabelOffset?: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância do nut (padrão: 0.5)
+	tuningLabelFormat?: "scientific" | "note-only"; // Formato dos rótulos: "scientific" (E2) ou "note-only" (E) (padrão: "scientific")
+
+	// String indicators customization
+	stringIndicatorOffset?: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância dos indicadores 'O' e 'X' do nut (padrão: 0.5)
 }
 ```
 
@@ -209,6 +216,13 @@ interface ChordStyle {
 	dotTextSize: number;
 	fretTextSize: number;
 	tuningTextSize: number;
+
+	// TuningLabels customization
+	tuningLabelOffset: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância do nut
+	tuningLabelFormat: "scientific" | "note-only"; // Formato dos rótulos: "scientific" (E2) ou "note-only" (E)
+
+	// String indicators customization
+	stringIndicatorOffset: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância dos indicadores 'O' e 'X' do nut
 }
 ```
 

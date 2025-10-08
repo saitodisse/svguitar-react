@@ -1,5 +1,80 @@
 # Changelog
 
+## 1.15.0 (2025-01-08)
+
+### New Features
+
+- **TuningLabel Customization**: Added `tuningLabelOffset` prop to control distance of tuning labels from nut
+    - Type: `number` (0-1 multiplier applied to fretWidth/fretHeight)
+    - Default: 0.5
+    - Horizontal-right: higher values move labels left (away from nut)
+    - Horizontal-left: higher values move labels right (away from nut)
+    - Vertical: higher values move labels up (away from nut)
+
+- **TuningLabel Format Toggle**: Added `tuningLabelFormat` prop to switch between scientific notation and note-only
+    - Type: `"scientific" | "note-only"`
+    - Default: `"scientific"`
+    - `"scientific"`: Shows full notation (E2, A2, D3, G3, B3, E4)
+    - `"note-only"`: Shows only note names (E, A, D, G, B, E) - saves space
+    - Uses `tonal` library for correct parsing of accidentals (C#, Db, etc.)
+
+- **String Indicator Customization**: Added `stringIndicatorOffset` prop to control distance of open/muted indicators from nut
+    - Type: `number` (0-1 multiplier applied to fretWidth/fretHeight)
+    - Default: 0.5
+    - Controls positioning of 'O' (open) and 'X' (muted) indicators
+    - Works consistently across all 4 views (horizontal-right, horizontal-left, vertical-right, vertical-left)
+
+### Technical Improvements
+
+- **Dependencies**: Added `tonal@6.4.2` for music theory calculations
+    - Provides robust note parsing and formatting
+    - Handles sharps, flats, and double accidentals correctly
+    - Lightweight and modular
+
+- **Layout Engines**: Updated all 4 layout engines to support `stringIndicatorOffset`
+    - `horizontalRight.ts`: Updated `indicatorPosition` method
+    - `horizontalLeft.ts`: Updated `indicatorPosition` method
+    - `verticalRight.ts`: Updated `indicatorPosition` method
+    - `verticalLeft.ts`: Updated `indicatorPosition` method
+
+- **UI Controls**: Added 3 new controls to App.tsx
+    - Slider for `tuningLabelOffset` (0-100%)
+    - Select dropdown for `tuningLabelFormat`
+    - Slider for `stringIndicatorOffset` (0-100%)
+    - Full i18n support (English/Portuguese)
+
+### Testing
+
+- **Test Coverage Improvement**: Increased from 80.17% to 87.35%
+    - Added 41 new tests (53 → 94 tests)
+    - Created `utils.test.ts` with 10 tests for `formatTuningLabel`
+    - Extended `TuningLabels.test.tsx` with 6 new tests
+    - Extended `ChordDiagram.test.tsx` with 9 new tests
+    - Created `horizontalLeftLayout.test.ts` with 7 comprehensive tests
+    - Extended vertical layout tests with barre and indicator tests
+    - All layout engines now have 100% code coverage
+
+- **Test Results**: 109/109 tests passing
+    - 94 unit tests
+    - 15 Storybook integration tests
+    - Fixed VerticalRight story test selector
+
+### Documentation
+
+- **Specifications**: Updated all spec documents with FR-027, FR-028, FR-029
+    - `spec.md`: Added 3 new functional requirements
+    - `data-model.md`: Updated ChordDiagramProps and ChordStyle interfaces
+    - `contracts/chord-diagram-api.md`: Documented new props and validation rules
+    - `quickstart.md`: Added 4 new usage examples
+
+- **Tasks**: Created detailed task documents
+    - `tasks-tuning-customization.md`: Implementation plan for tuning label features
+    - `tasks-string-indicator-offset.md`: Implementation plan for indicator positioning
+
+### Breaking Changes
+
+None - All changes are backward compatible. New props are optional with sensible defaults.
+
 ## 1.14.0 (2025-01-15)
 
 ### Major Features

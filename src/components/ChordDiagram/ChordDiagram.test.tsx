@@ -432,4 +432,206 @@ describe("Utility Functions", () => {
 			expect(fretNumbers?.length).toBeGreaterThan(0);
 		});
 	});
+
+	describe("TuningLabel customization", () => {
+		it("should respect tuningLabelOffset prop", () => {
+			const { container } = render(
+				<ChordDiagram chord={cMajor} tuningLabelOffset={0.8} view="horizontal-right" />
+			);
+
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Tuning labels should be rendered
+			const tuningLabels = svg?.querySelectorAll('text[font-weight="bold"]');
+			expect(tuningLabels?.length).toBeGreaterThan(0);
+		});
+
+		it('should render note-only format when tuningLabelFormat is "note-only"', () => {
+			const instrument = {
+				strings: 6,
+				frets: 4,
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: "x32010",
+			};
+
+			const { container } = render(
+				<ChordDiagram instrument={instrument} tuningLabelFormat="note-only" />
+			);
+
+			const svg = container.querySelector("svg");
+			const allTextElements = svg?.querySelectorAll("text");
+
+			// Should render text elements
+			expect(allTextElements?.length).toBeGreaterThan(0);
+			const textContent = Array.from(allTextElements || []).map(label => label.textContent);
+			// Should contain note-only format (without octave)
+			expect(textContent).toContain("E");
+			expect(textContent).toContain("A");
+			expect(textContent).toContain("D");
+			expect(textContent).toContain("G");
+			expect(textContent).toContain("B");
+		});
+
+		it('should render scientific notation when tuningLabelFormat is "scientific"', () => {
+			const instrument = {
+				strings: 6,
+				frets: 4,
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: "x32010",
+			};
+
+			const { container } = render(
+				<ChordDiagram instrument={instrument} tuningLabelFormat="scientific" />
+			);
+
+			const svg = container.querySelector("svg");
+			const allTextElements = svg?.querySelectorAll("text");
+
+			// Should render text elements
+			expect(allTextElements?.length).toBeGreaterThan(0);
+			const textContent = Array.from(allTextElements || []).map(label => label.textContent);
+			// Should contain scientific notation (with octave)
+			expect(textContent).toContain("E2");
+			expect(textContent).toContain("A2");
+			expect(textContent).toContain("D3");
+			expect(textContent).toContain("G3");
+			expect(textContent).toContain("B3");
+			expect(textContent).toContain("E4");
+		});
+
+		it("should use scientific notation by default", () => {
+			const instrument = {
+				strings: 6,
+				frets: 4,
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: "x32010",
+			};
+
+			const { container } = render(<ChordDiagram instrument={instrument} />);
+
+			const svg = container.querySelector("svg");
+			const allTextElements = svg?.querySelectorAll("text");
+
+			// Should render full scientific notation by default
+			const textContent = Array.from(allTextElements || []).map(label => label.textContent);
+			expect(textContent).toContain("E2");
+		});
+	});
+
+	describe("StringIndicator customization", () => {
+		it("should respect stringIndicatorOffset prop for open strings", () => {
+			const chordWithOpenStrings = {
+				fingers: [
+					{ fret: 0, string: 1, is_muted: false }, // Open string
+					{ fret: 1, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container } = render(
+				<ChordDiagram chord={chordWithOpenStrings} stringIndicatorOffset={0.3} />
+			);
+
+			const svg = container.querySelector("svg");
+			// Should have 1 open string circle and 1 regular finger circle
+			const circles = svg?.querySelectorAll("circle");
+			expect(circles?.length).toBe(2);
+		});
+
+		it("should respect stringIndicatorOffset prop for muted strings", () => {
+			const chordWithMutedStrings = {
+				fingers: [
+					{ fret: 0, string: 1, is_muted: true }, // Muted string
+					{ fret: 1, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container } = render(
+				<ChordDiagram chord={chordWithMutedStrings} stringIndicatorOffset={0.7} />
+			);
+
+			const svg = container.querySelector("svg");
+			// Should have 1 regular finger circle + X marks (as lines)
+			const circles = svg?.querySelectorAll("circle");
+			const lines = svg?.querySelectorAll("line");
+
+			expect(circles?.length).toBe(1); // 1 regular finger
+			expect(lines?.length).toBeGreaterThan(2); // Grid lines + 2 for X mark
+		});
+
+		it("should render indicators in all views with custom offset", () => {
+			const chordWithIndicators = {
+				fingers: [
+					{ fret: 0, string: 1, is_muted: true }, // Muted
+					{ fret: 0, string: 6, is_muted: false }, // Open
+				],
+				barres: [],
+			};
+
+			const views: Array<"horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left"> =
+				["horizontal-right", "horizontal-left", "vertical-right", "vertical-left"];
+
+			views.forEach(view => {
+				const { container } = render(
+					<ChordDiagram chord={chordWithIndicators} stringIndicatorOffset={0.4} view={view} />
+				);
+
+				const svg = container.querySelector("svg");
+				const circles = svg?.querySelectorAll("circle");
+				const lines = svg?.querySelectorAll("line");
+
+				// Should have 1 open string circle + X marks
+				expect(circles?.length).toBe(1); // 1 open circle
+				expect(lines?.length).toBeGreaterThan(2); // Grid lines + 2 for X mark
+			});
+		});
+	});
+
+	describe("Barre with text", () => {
+		it("should render text on barre when provided", () => {
+			const chordWithBarreText = {
+				fingers: [],
+				barres: [
+					{
+						fret: 1,
+						fromString: 1,
+						toString: 6,
+						text: "1",
+					},
+				],
+			};
+
+			const { container } = render(<ChordDiagram chord={chordWithBarreText} />);
+
+			const svg = container.querySelector("svg");
+			const textElements = svg?.querySelectorAll("text");
+
+			// Should include barre text
+			const textContent = Array.from(textElements || []).map(label => label.textContent);
+			expect(textContent).toContain("1");
+		});
+
+		it("should render barre without text when not provided", () => {
+			const chordWithoutBarreText = {
+				fingers: [],
+				barres: [
+					{
+						fret: 1,
+						fromString: 1,
+						toString: 6,
+					},
+				],
+			};
+
+			const { container } = render(<ChordDiagram chord={chordWithoutBarreText} />);
+
+			const svg = container.querySelector("svg");
+			const rects = svg?.querySelectorAll("rect");
+
+			// Should have at least 2 rects: background + barre
+			expect(rects?.length).toBeGreaterThan(1);
+		});
+	});
 });

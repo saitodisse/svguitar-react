@@ -38,6 +38,13 @@ export const DEFAULT_CHORD_STYLE = {
 	dotTextSize: 11,
 	fretTextSize: 20,
 	tuningTextSize: 17,
+
+	// TuningLabels customization
+	tuningLabelOffset: 0.5, // Multiplier (0-1) for tuning label distance from nut
+	tuningLabelFormat: "scientific" as "scientific" | "note-only", // Format for tuning labels
+
+	// String indicators customization
+	stringIndicatorOffset: 0.5, // Multiplier (0-1) for open/muted string indicators distance from nut
 };
 
 /**

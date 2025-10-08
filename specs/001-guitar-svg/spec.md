@@ -65,6 +65,9 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-020**: O sistema DEVE aceitar `fallbackChord` (string/objeto) usado quando não houver acorde válido anterior (padrão: `"000000"`).
 - **FR-021**: O sistema DEVE exportar helpers utilitários: `isValidChord`, `tryParseChord`, `normalizeChord`, além de `ERROR_CODES` e `ChordDiagramError`.
 - **FR-022**: O sistema DEVE permitir extensão de layout via prop `layoutEngine` (Strategy customizada) ou registro interno opcional, com precedência sobre `view`.
+- **FR-027**: O sistema DEVE permitir customização da distância dos TuningLabels em relação ao nut através da prop `tuningLabelOffset` (multiplicador de 0-1 aplicado a fretWidth/fretHeight, padrão: 0.5).
+- **FR-028**: O sistema DEVE permitir alternar entre notação científica completa e apenas nota nos TuningLabels através da prop `tuningLabelFormat` com valores `"scientific" | "note-only"` (padrão: "scientific").
+- **FR-029**: O sistema DEVE permitir customização da distância dos indicadores de cordas soltas ('O') e mutadas ('X') em relação ao nut através da prop `stringIndicatorOffset` (multiplicador de 0-1 aplicado a fretWidth/fretHeight, padrão: 0.5).
 
 ### Política de Validação e Tratamento de Erros
 

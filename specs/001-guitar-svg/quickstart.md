@@ -296,6 +296,123 @@ const App = () => {
 export default App;
 ```
 
+### Customização dos TuningLabels
+
+#### Ajustar Distância dos Rótulos
+
+Você pode ajustar a distância dos rótulos de afinação em relação ao nut usando `tuningLabelOffset` (multiplicador de 0-1):
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const cMajor = {
+		fingers: [
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+		],
+		barres: [],
+	};
+
+	return (
+		<ChordDiagram
+			chord={cMajor}
+			tuningLabelOffset={0.7} // Labels mais distantes do nut (padrão: 0.5)
+		/>
+	);
+};
+
+export default App;
+```
+
+#### Simplificar Formato dos Rótulos
+
+Para economizar espaço, você pode mostrar apenas a nota sem o número da oitava:
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const gMajor = {
+		strings: 6,
+		frets: 5,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		chord: "320003",
+	};
+
+	return (
+		<ChordDiagram
+			instrument={gMajor}
+			tuningLabelFormat="note-only" // Mostra "E A D G B E" ao invés de "E2 A2 D3 G3 B3 E4"
+		/>
+	);
+};
+
+export default App;
+```
+
+#### Combinando Ambas Customizações
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	return (
+		<ChordDiagram
+			instrument={{
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: "x32010",
+			}}
+			view="vertical-right"
+			tuningLabelOffset={0.3} // Labels mais próximos do braço
+			tuningLabelFormat="note-only" // Formato simplificado
+			width={200}
+			height={300}
+		/>
+	);
+};
+
+export default App;
+```
+
+#### Customização da Distância dos Indicadores
+
+Você pode ajustar a distância dos indicadores de cordas soltas ('O') e mutadas ('X') em relação ao nut:
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const cMajor = {
+		fingers: [
+			{ fret: 0, string: 1, is_muted: true }, // X
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 0, string: 4, is_muted: false }, // O
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+			{ fret: 0, string: 6, is_muted: false }, // O
+		],
+		barres: [],
+	};
+
+	return (
+		<ChordDiagram
+			chord={cMajor}
+			stringIndicatorOffset={0.3} // Indicadores mais próximos do nut
+			tuningLabelOffset={0.7} // Labels mais distantes
+			tuningLabelFormat="note-only" // Formato simplificado
+		/>
+	);
+};
+
+export default App;
+```
+
 ## 5. Tratamento de Erros
 
 O componente lança erros específicos para dados inválidos.

@@ -188,6 +188,16 @@ export interface ChordDiagramProps {
 	/** Tuning text size */
 	tuningTextSize?: number;
 
+	// TuningLabels customization
+	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for tuning label positioning (default: 0.5) */
+	tuningLabelOffset?: number;
+	/** Format for tuning labels: "scientific" (E2) or "note-only" (E) (default: "scientific") */
+	tuningLabelFormat?: "scientific" | "note-only";
+
+	// String indicators customization
+	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for open/muted string indicators positioning (default: 0.5) */
+	stringIndicatorOffset?: number;
+
 	// Validation & error handling
 	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
 	validation?: "strict" | "lenient";
@@ -259,6 +269,16 @@ export interface ChordStyle {
 	fretTextSize: number;
 	/** Tuning text size */
 	tuningTextSize: number;
+
+	// TuningLabels customization
+	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for tuning label positioning */
+	tuningLabelOffset: number;
+	/** Format for tuning labels: "scientific" (E2) or "note-only" (E) */
+	tuningLabelFormat: "scientific" | "note-only";
+
+	// String indicators customization
+	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for open/muted string indicators positioning */
+	stringIndicatorOffset: number;
 }
 
 /**
