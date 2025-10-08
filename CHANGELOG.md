@@ -1,5 +1,103 @@
 # Changelog
 
+## 1.16.0 (2025-10-08)
+
+### Breaking Changes ⚠️
+
+- **`tuningLabelOffset` removed** → Replaced by `tuningLabelOffsetX` and `tuningLabelOffsetY`
+    - Old behavior: Single offset value (0-1) controlling distance from nut
+    - New behavior: Separate X/Y control for horizontal and vertical adjustments
+    - Migration: `tuningLabelOffset: 0.5` → `tuningLabelOffsetX: 0.5, tuningLabelOffsetY: 0.5`
+
+- **`stringIndicatorOffset` renamed** → Now `stringIndicatorOffsetX` with added `stringIndicatorOffsetY`
+    - Old: Single offset for open/muted indicators
+    - New: Separate X/Y control
+    - Migration: `stringIndicatorOffset: 0.7` → `stringIndicatorOffsetX: 0.7, stringIndicatorOffsetY: 0`
+
+### New Features
+
+- **Barres Width**: Added `barresWidth` prop to control horizontal width of barre rectangles
+    - Type: `number` (pixels)
+    - Default: 8
+    - Independent control from `barreHeight`
+
+- **Barres Opacity**: Added `barresOpacity` prop to control transparency of barres
+    - Type: `number` (0-1)
+    - Default: 1.0
+    - Useful for subtle barre rendering or layering effects
+
+- **Barres Offset**: Added `barresOffsetX` and `barresOffsetY` props for fine-tuning barre positioning
+    - Type: `number` (-5 to 5 multiplier)
+    - Default: 0 for both
+    - Applied to fretWidth (X) and fretHeight (Y)
+
+- **Tuning Labels Split Offsets**: Replaced single offset with X/Y control
+    - `tuningLabelOffsetX`: Horizontal adjustment (-5 to 5 multiplier)
+    - `tuningLabelOffsetY`: Vertical adjustment (-5 to 5 multiplier)
+    - Default: 0.5 for both
+    - More flexible positioning across different layouts
+
+- **String Indicators Split Offsets**: Enhanced with Y-axis control
+    - `stringIndicatorOffsetX`: Horizontal distance from nut (-5 to 5 multiplier)
+    - `stringIndicatorOffsetY`: Vertical adjustment (-5 to 5 multiplier)
+    - Default: 0.5 for X, 0 for Y
+    - Better control of 'O' and 'X' indicator positioning
+
+- **Fret Numbers Offset**: Added `fretTextOffsetX` and `fretTextOffsetY` props
+    - Type: `number` (-5 to 5 multiplier for each)
+    - Default: 0 for both
+    - Fine-tune positioning of fret number labels
+    - Works across all 4 views (horizontal/vertical, right/left)
+
+### Technical Improvements
+
+- **Extended Offset Range**: All offset multipliers now support -5 to 5 (previously 0-1)
+    - Negative values for reverse direction
+    - Greater flexibility for custom layouts
+    - Backward compatible with default values
+
+- **Layout Engines Updated**: All 4 layout engines updated to support new offset props
+    - horizontalRight, horizontalLeft, verticalRight, verticalLeft
+    - Consistent offset application across different views
+
+- **Test Coverage**: 113/113 tests passing
+    - Updated unit tests for all layout engines
+    - Updated component tests (Barre, TuningLabels, Finger, FretNumbers)
+    - Updated integration tests
+
+### Documentation
+
+- Updated `spec.md` with FR-030 to FR-033
+- Updated `data-model.md` with new interfaces
+- Updated `contracts/chord-diagram-api.md` with validation rules
+- Added 5 new examples in `quickstart.md` (Examples 14-18)
+- Created `tasks-advanced-offsets.md` with implementation plan
+
+### Migration Guide
+
+```jsx
+// Before (v1.15.0)
+<ChordDiagram
+  tuningLabelOffset={0.5}
+  stringIndicatorOffset={0.7}
+/>
+
+// After (v1.16.0)
+<ChordDiagram
+  tuningLabelOffsetX={0.5}  // Horizontal offset
+  tuningLabelOffsetY={0.5}  // Vertical offset  
+  stringIndicatorOffsetX={0.7}  // Horizontal offset
+  stringIndicatorOffsetY={0}    // Vertical offset (new)
+  // New props
+  barresWidth={8}
+  barresOpacity={1.0}
+  barresOffsetX={0}
+  barresOffsetY={0}
+  fretTextOffsetX={0}
+  fretTextOffsetY={0}
+/>
+```
+
 ## 1.15.0 (2025-01-08)
 
 ### New Features

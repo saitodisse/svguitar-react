@@ -94,10 +94,10 @@ describe("horizontalLeftEngine", () => {
 			expect(pos.y).toBeGreaterThanOrEqual(frame.gridOriginY);
 		});
 
-	it("should respect stringIndicatorOffsetX", () => {
-		const customOffset = 0.8;
-		const frame = createFrame();
-		frame.style.stringIndicatorOffsetX = customOffset;
+		it("should respect stringIndicatorOffsetX", () => {
+			const customOffset = 0.8;
+			const frame = createFrame();
+			frame.style.stringIndicatorOffsetX = customOffset;
 
 			const pos = horizontalLeftEngine.indicatorPosition(1, "open", { frame });
 

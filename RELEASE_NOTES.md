@@ -1,5 +1,175 @@
 # Release Notes
 
+## Version 1.16.0
+
+**Release Date:** October 8, 2025
+
+### 🎯 Advanced Offsets & Barres Customization
+
+Esta versão adiciona controle fino sobre todos os elementos do diagrama com offsets separados X/Y e novas customizações para barres (pestanas).
+
+#### ⚠️ Breaking Changes
+
+##### 1. `tuningLabelOffset` → `tuningLabelOffsetX` + `tuningLabelOffsetY`
+
+O offset único foi substituído por controles separados X e Y para maior flexibilidade.
+
+```tsx
+// ❌ Antes (v1.15.0)
+<ChordDiagram tuningLabelOffset={0.5} />
+
+// ✅ Agora (v1.16.0)
+<ChordDiagram 
+  tuningLabelOffsetX={0.5}  // Ajuste horizontal
+  tuningLabelOffsetY={0.5}  // Ajuste vertical
+/>
+```
+
+##### 2. `stringIndicatorOffset` → `stringIndicatorOffsetX` + `stringIndicatorOffsetY`
+
+Indicadores de cordas ('O' e 'X') agora têm controle separado X/Y.
+
+```tsx
+// ❌ Antes (v1.15.0)
+<ChordDiagram stringIndicatorOffset={0.7} />
+
+// ✅ Agora (v1.16.0)
+<ChordDiagram 
+  stringIndicatorOffsetX={0.7}  // Distância do nut (horizontal)
+  stringIndicatorOffsetY={0}    // Ajuste vertical (novo)
+/>
+```
+
+#### ✨ Novas Funcionalidades
+
+##### 1. Barres Width - Largura Horizontal das Pestanas
+
+Controle independente da largura da barre (complementar a `barreHeight`).
+
+```tsx
+<ChordDiagram
+  chord={fMajor}
+  barresWidth={12}  // Barre mais larga
+  barreHeight={8}   // Mantém altura padrão
+/>
+```
+
+- **Tipo**: `number` (pixels)
+- **Padrão**: 8
+- **Uso**: Ajustar espessura visual das barres
+
+##### 2. Barres Opacity - Transparência
+
+Controle a opacidade das barres para efeitos visuais sutis.
+
+```tsx
+<ChordDiagram
+  chord={fMajor}
+  barresOpacity={0.7}  // 70% opaco (30% transparente)
+/>
+```
+
+- **Tipo**: `number` (0-1)
+- **Padrão**: 1.0
+- **Uso**: Criar diagramas com efeitos de layering ou destaque
+
+##### 3. Barres Offsets X/Y - Ajuste Fino de Posição
+
+Mova barres horizontal e verticalmente com multiplicadores flexíveis.
+
+```tsx
+<ChordDiagram
+  chord={fMajor}
+  barresOffsetX={0.1}   // Pequeno deslocamento horizontal
+  barresOffsetY={-0.05} // Leve ajuste para cima
+/>
+```
+
+- **Tipo**: `number` (-5 a 5 multiplicador)
+- **Padrão**: 0 para ambos
+- **Uso**: Correções precisas de alinhamento
+
+##### 4. Fret Numbers Offsets X/Y - Posicionamento dos Números
+
+Ajuste a posição dos números dos trastes em qualquer direção.
+
+```tsx
+<ChordDiagram
+  chord={dMajor}
+  fretTextOffsetX={0.15}  // Move números para direita
+  fretTextOffsetY={-0.1}  // Move números para cima
+/>
+```
+
+- **Tipo**: `number` (-5 a 5 multiplicador)
+- **Padrão**: 0 para ambos
+- **Aplicação**: Funciona em todos os 4 views (horizontal/vertical, right/left)
+
+##### 5. Range Estendido de Offsets (-5 a 5)
+
+Todos os offsets agora suportam valores de -5 a 5 (anteriormente 0-1).
+
+- **Valores negativos**: Invertem a direção
+- **Valores > 1**: Permitem deslocamentos maiores
+- **Retrocompatível**: Defaults mantêm comportamento anterior
+
+#### 📊 Melhorias Técnicas
+
+- **4 Layout Engines Atualizados**: horizontalRight, horizontalLeft, verticalRight, verticalLeft
+- **113/113 Testes Passando**: Cobertura completa de unit e integration tests
+- **TypeScript Completo**: Todas as novas props totalmente tipadas
+- **Documentação Atualizada**: Specs, data-model, contracts e quickstart
+
+#### 📖 Exemplos de Uso
+
+##### Exemplo Completo: Todas as Novas Customizações
+
+```tsx
+<ChordDiagram
+  instrument={{
+    tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+    chord: "133211"  // F Major com barre
+  }}
+  view="vertical-right"
+  // Barres customization
+  barresWidth={10}
+  barresOpacity={0.8}
+  barresOffsetX={0}
+  barresOffsetY={0.05}
+  // Tuning labels
+  tuningLabelOffsetX={0}
+  tuningLabelOffsetY={0.3}
+  tuningLabelFormat="note-only"
+  // String indicators
+  stringIndicatorOffsetX={0.4}
+  stringIndicatorOffsetY={0}
+  // Fret numbers
+  fretTextOffsetX={0.2}
+  fretTextOffsetY={0}
+  // Visual styling
+  width={220}
+  height={320}
+  dotSize={16}
+/>
+```
+
+#### 🔄 Guia de Migração
+
+1. **Substituir `tuningLabelOffset`**:
+   - Horizontal layouts: Use `tuningLabelOffsetX` com o mesmo valor
+   - Vertical layouts: Use `tuningLabelOffsetY` com o mesmo valor
+   - Ajuste fino: Use ambos X e Y conforme necessário
+
+2. **Substituir `stringIndicatorOffset`**:
+   - Mantenha o valor em `stringIndicatorOffsetX`
+   - Defina `stringIndicatorOffsetY={0}` (comportamento padrão)
+
+3. **Novas props opcionais** (sem impacto se não usadas):
+   - `barresWidth`, `barresOpacity`, `barresOffsetX`, `barresOffsetY`
+   - `fretTextOffsetX`, `fretTextOffsetY`
+
+---
+
 ## Version 1.15.0
 
 **Release Date:** October 8, 2025

@@ -93,10 +93,10 @@ describe("verticalRightEngine", () => {
 			expect(pos.y).toBeLessThan(frame.gridOriginY);
 		});
 
-	it("should respect stringIndicatorOffsetX", () => {
-		const customOffset = 0.3;
-		const frame = createFrame();
-		frame.style.stringIndicatorOffsetX = customOffset;
+		it("should respect stringIndicatorOffsetX", () => {
+			const customOffset = 0.3;
+			const frame = createFrame();
+			frame.style.stringIndicatorOffsetX = customOffset;
 
 			const pos = verticalRightEngine.indicatorPosition(1, "open", { frame });
 
