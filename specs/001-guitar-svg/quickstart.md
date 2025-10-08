@@ -577,3 +577,221 @@ const App: React.FC = () => {
 
 export default App;
 ```
+
+## 11. Customização Avançada de Offsets
+
+### Exemplo 14: Barres com Opacity e Offsets
+
+Customize a aparência das barres (pestanas) com largura, opacidade e deslocamento.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const fMajor = {
+		fingers: [
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 3, string: 3, is_muted: false, text: "4" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }],
+	};
+
+	return (
+		<ChordDiagram
+			chord={fMajor}
+			barresWidth={12} // Largura da barre em pixels
+			barresOpacity={0.7} // Opacidade (0-1)
+			barresOffsetX={0.1} // Deslocamento horizontal (multiplicador)
+			barresOffsetY={-0.05} // Deslocamento vertical (multiplicador)
+		/>
+	);
+};
+
+export default App;
+```
+
+### Exemplo 15: Tuning Labels com Offsets X e Y
+
+Ajuste a posição dos rótulos de afinação horizontal e verticalmente.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const cMajor = {
+		fingers: [
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+		],
+		barres: [],
+	};
+
+	return (
+		<ChordDiagram
+			chord={cMajor}
+			tuningLabelOffsetX={0.2} // Deslocamento horizontal
+			tuningLabelOffsetY={0.7} // Deslocamento vertical (para baixo em vertical, para esquerda/direita em horizontal)
+			tuningLabelFormat="note-only" // Mostrar apenas nota (E, A, D) ao invés de E2, A2, D3
+		/>
+	);
+};
+
+export default App;
+```
+
+### Exemplo 16: String Indicators (O/X) com Offsets
+
+Controle a posição dos indicadores de cordas soltas e mutadas.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const chord = {
+		fingers: [
+			{ fret: 0, string: 1, is_muted: true }, // X
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 0, string: 4, is_muted: false }, // O
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+			{ fret: 0, string: 6, is_muted: false }, // O
+		],
+		barres: [],
+	};
+
+	return (
+		<ChordDiagram
+			chord={chord}
+			stringIndicatorOffsetX={0.3} // Mais próximo do nut (horizontal)
+			stringIndicatorOffsetY={0.1} // Deslocamento vertical
+		/>
+	);
+};
+
+export default App;
+```
+
+### Exemplo 17: Fret Numbers com Offsets
+
+Ajuste a posição dos números dos trastes.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const dMajor = {
+		fingers: [
+			{ fret: 5, string: 2, is_muted: false },
+			{ fret: 7, string: 3, is_muted: false, text: "2" },
+			{ fret: 7, string: 4, is_muted: false, text: "3" },
+			{ fret: 7, string: 5, is_muted: false, text: "4" },
+		],
+		barres: [],
+		firstFret: 5,
+	};
+
+	return (
+		<ChordDiagram
+			chord={dMajor}
+			fretTextOffsetX={0.15} // Deslocamento horizontal dos números
+			fretTextOffsetY={-0.1} // Deslocamento vertical dos números
+			fretTextSize={14}
+		/>
+	);
+};
+
+export default App;
+```
+
+### Exemplo 18: Customização Completa (Todas as Novas Props)
+
+Combine todas as customizações avançadas em um único diagrama.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const chord = {
+		fingers: [
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 3, string: 3, is_muted: false, text: "4" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+			{ fret: 0, string: 6, is_muted: false }, // O
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 5 }],
+	};
+
+	return (
+		<ChordDiagram
+			chord={chord}
+			view="vertical-right"
+			// Barres customization
+			barresWidth={10}
+			barresOpacity={0.8}
+			barresOffsetX={0}
+			barresOffsetY={0.05}
+			// Tuning labels customization
+			tuningLabelOffsetX={0}
+			tuningLabelOffsetY={0.3}
+			tuningLabelFormat="note-only"
+			// String indicators customization
+			stringIndicatorOffsetX={0.4}
+			stringIndicatorOffsetY={0}
+			// Fret numbers customization
+			fretTextOffsetX={0.2}
+			fretTextOffsetY={0}
+			// Visual styling
+			width={220}
+			height={320}
+			dotSize={16}
+			fretTextSize={14}
+			tuningTextSize={16}
+			fontFamily="monospace"
+		/>
+	);
+};
+
+export default App;
+```
+
+## 12. Breaking Changes (v1.16.0)
+
+⚠️ **Atenção**: A versão 1.16.0 introduz breaking changes relacionados aos offsets de tuning labels e string indicators.
+
+### Migration Guide
+
+```jsx
+// ❌ Antes (v1.15.0)
+<ChordDiagram
+  tuningLabelOffset={0.5}
+  stringIndicatorOffset={0.7}
+/>
+
+// ✅ Depois (v1.16.0)
+<ChordDiagram
+  tuningLabelOffsetX={0}        // Offset horizontal (novo)
+  tuningLabelOffsetY={0.5}      // Offset vertical (equivale ao antigo tuningLabelOffset)
+  stringIndicatorOffsetX={0.7}  // Offset horizontal (equivale ao antigo stringIndicatorOffset)
+  stringIndicatorOffsetY={0}    // Offset vertical (novo)
+/>
+```
+
+**Mudanças**:
+
+- `tuningLabelOffset` foi substituído por `tuningLabelOffsetX` e `tuningLabelOffsetY`
+- `stringIndicatorOffset` foi renomeado para `stringIndicatorOffsetX` e adicionado `stringIndicatorOffsetY`
+- Todos os offsets agora suportam range -5 a 5 (ao invés de 0-1)
+
+**Novas funcionalidades**:
+
+- `barresWidth`: Largura horizontal das barres em pixels
+- `barresOpacity`: Opacidade das barres (0-1)
+- `barresOffsetX` e `barresOffsetY`: Deslocamento das barres
+- `fretTextOffsetX` e `fretTextOffsetY`: Deslocamento dos números dos trastes

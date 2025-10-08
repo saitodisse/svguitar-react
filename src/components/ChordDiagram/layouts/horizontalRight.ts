@@ -54,7 +54,7 @@ export const horizontalRightEngine: LayoutEngine = {
 	): { x: number; y: number } => {
 		const { frame } = args;
 		return {
-			x: frame.gridOriginX - frame.style.fretWidth * frame.style.stringIndicatorOffset,
+			x: frame.gridOriginX - frame.style.fretWidth * frame.style.stringIndicatorOffsetX,
 			y:
 				frame.gridOriginY +
 				(frame.stringCount - stringNumber) * (frame.gridHeight / (frame.stringCount - 1)),

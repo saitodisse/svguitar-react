@@ -20,7 +20,7 @@ interface TuningLabelsProps {
 export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, frame, tuning }) => {
 	const isVertical = engine.id.startsWith("vertical");
 	const isHorizontalLeft = engine.id === "horizontal-left";
-	const { tuningLabelOffset, tuningLabelFormat } = frame.style;
+	const { tuningLabelOffsetX, tuningLabelOffsetY, tuningLabelFormat } = frame.style;
 
 	return (
 		<g>
@@ -29,9 +29,16 @@ export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, f
 				const formattedNote = formatTuningLabel(note, tuningLabelFormat);
 
 				if (isVertical) {
-					const x = engine.mapStringAxis(stringNumber, frame);
-					// Apply tuningLabelOffset: in vertical views, labels move down (negative offset)
-					const y = frame.gridOriginY - frame.style.fretHeight * tuningLabelOffset;
+					const baseX = engine.mapStringAxis(stringNumber, frame);
+					const baseY = frame.gridOriginY;
+
+					// Apply offsets: offsetX moves horizontally, offsetY moves vertically (down is positive)
+					const offsetX = tuningLabelOffsetX * frame.style.fretWidth;
+					const offsetY = tuningLabelOffsetY * frame.style.fretHeight;
+
+					const x = baseX + offsetX;
+					const y = baseY - offsetY; // Subtract because labels are above the grid
+
 					return (
 						<text
 							key={`tuning-${index}`}
@@ -48,12 +55,16 @@ export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, f
 					);
 				}
 
-				const y = engine.mapStringAxis(stringNumber, frame) + frame.style.tuningTextSize / 3;
-				// Apply tuningLabelOffset: horizontal-right moves left (negative), horizontal-left moves right (positive)
-				const baseOffset = frame.style.fretWidth * tuningLabelOffset;
-				const x = isHorizontalLeft
-					? frame.gridOriginX + frame.gridWidth + baseOffset
-					: frame.gridOriginX - baseOffset;
+				const baseY = engine.mapStringAxis(stringNumber, frame) + frame.style.tuningTextSize / 3;
+				const baseX = isHorizontalLeft ? frame.gridOriginX + frame.gridWidth : frame.gridOriginX;
+
+				// Apply offsets: offsetX moves horizontally, offsetY moves vertically
+				const offsetX = tuningLabelOffsetX * frame.style.fretWidth;
+				const offsetY = tuningLabelOffsetY * frame.style.fretHeight;
+
+				const x = isHorizontalLeft ? baseX + offsetX : baseX - offsetX;
+				const y = baseY + offsetY;
+
 				return (
 					<text
 						key={`tuning-${index}`}

@@ -65,9 +65,13 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-020**: O sistema DEVE aceitar `fallbackChord` (string/objeto) usado quando não houver acorde válido anterior (padrão: `"000000"`).
 - **FR-021**: O sistema DEVE exportar helpers utilitários: `isValidChord`, `tryParseChord`, `normalizeChord`, além de `ERROR_CODES` e `ChordDiagramError`.
 - **FR-022**: O sistema DEVE permitir extensão de layout via prop `layoutEngine` (Strategy customizada) ou registro interno opcional, com precedência sobre `view`.
-- **FR-027**: O sistema DEVE permitir customização da distância dos TuningLabels em relação ao nut através da prop `tuningLabelOffset` (multiplicador de 0-1 aplicado a fretWidth/fretHeight, padrão: 0.5).
+- **FR-027**: O sistema DEVE permitir customização da distância dos TuningLabels em relação ao nut através das props `tuningLabelOffsetX` e `tuningLabelOffsetY` (multiplicadores de -5 a 5 aplicados a fretWidth/fretHeight, padrão: 0 para X, 0.5 para Y).
 - **FR-028**: O sistema DEVE permitir alternar entre notação científica completa e apenas nota nos TuningLabels através da prop `tuningLabelFormat` com valores `"scientific" | "note-only"` (padrão: "scientific").
-- **FR-029**: O sistema DEVE permitir customização da distância dos indicadores de cordas soltas ('O') e mutadas ('X') em relação ao nut através da prop `stringIndicatorOffset` (multiplicador de 0-1 aplicado a fretWidth/fretHeight, padrão: 0.5).
+- **FR-029**: O sistema DEVE permitir customização da distância dos indicadores de cordas soltas ('O') e mutadas ('X') em relação ao nut através das props `stringIndicatorOffsetX` e `stringIndicatorOffsetY` (multiplicadores de -5 a 5 aplicados a fretWidth/fretHeight, padrão: 0.5 para X, 0 para Y).
+- **FR-030**: O sistema DEVE permitir customização da largura horizontal das barres (pestanas) através da prop `barresWidth` (número em pixels, padrão: 8).
+- **FR-031**: O sistema DEVE permitir customização da opacidade das barres através da prop `barresOpacity` (valor entre 0 e 1, padrão: 1.0).
+- **FR-032**: O sistema DEVE permitir customização do deslocamento horizontal e vertical das barres através das props `barresOffsetX` e `barresOffsetY` (multiplicadores de -5 a 5 aplicados a fretWidth/fretHeight, padrão: 0 para ambos).
+- **FR-033**: O sistema DEVE permitir customização do deslocamento horizontal e vertical dos números dos trastes através das props `fretTextOffsetX` e `fretTextOffsetY` (multiplicadores de -5 a 5 aplicados a fretWidth/fretHeight, padrão: 0 para ambos).
 
 ### Política de Validação e Tratamento de Erros
 

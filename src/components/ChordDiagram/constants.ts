@@ -40,11 +40,23 @@ export const DEFAULT_CHORD_STYLE = {
 	tuningTextSize: 17,
 
 	// TuningLabels customization
-	tuningLabelOffset: 0.5, // Multiplier (0-1) for tuning label distance from nut
+	tuningLabelOffsetX: 0.5, // Horizontal multiplier (-5 to 5) - controls distance from nut in horizontal layouts, perpendicular adjustment in vertical
+	tuningLabelOffsetY: 0.5, // Vertical multiplier (-5 to 5) - controls distance from nut in vertical layouts, perpendicular adjustment in horizontal
 	tuningLabelFormat: "scientific" as "scientific" | "note-only", // Format for tuning labels
 
 	// String indicators customization
-	stringIndicatorOffset: 0.5, // Multiplier (0-1) for open/muted string indicators distance from nut
+	stringIndicatorOffsetX: 0.5, // Horizontal multiplier (-5 to 5) for open/muted string indicators positioning
+	stringIndicatorOffsetY: 0, // Vertical multiplier (-5 to 5) for open/muted string indicators positioning
+
+	// Barres customization
+	barresWidth: 8, // Width of barre rectangles in pixels
+	barresOpacity: 1.0, // Opacity of barre rectangles from 0 to 1
+	barresOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for barre positioning
+	barresOffsetY: 0, // Vertical offset multiplier (-5 to 5) for barre positioning
+
+	// Fret numbers customization
+	fretTextOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for fret number positioning
+	fretTextOffsetY: 0, // Vertical offset multiplier (-5 to 5) for fret number positioning
 };
 
 /**

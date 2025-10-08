@@ -63,11 +63,23 @@ interface ChordDiagramProps {
 	tuningTextSize?: number;
 
 	// TuningLabels customization
-	tuningLabelOffset?: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância do nut (padrão: 0.5)
+	tuningLabelOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal (padrão: 0)
+	tuningLabelOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical (padrão: 0.5)
 	tuningLabelFormat?: "scientific" | "note-only"; // Formato dos rótulos: "scientific" (E2) ou "note-only" (E) (padrão: "scientific")
 
 	// String indicators customization
-	stringIndicatorOffset?: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância dos indicadores 'O' e 'X' do nut (padrão: 0.5)
+	stringIndicatorOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal dos indicadores 'O' e 'X' do nut (padrão: 0.5)
+	stringIndicatorOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical dos indicadores 'O' e 'X' do nut (padrão: 0)
+
+	// Barres customization
+	barresWidth?: number; // Largura horizontal da barre em pixels (padrão: 8)
+	barresOpacity?: number; // Opacidade da barre de 0 a 1 (padrão: 1.0)
+	barresOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal (padrão: 0)
+	barresOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical (padrão: 0)
+
+	// Fret numbers customization
+	fretTextOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal dos números dos trastes (padrão: 0)
+	fretTextOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical dos números dos trastes (padrão: 0)
 }
 ```
 
@@ -218,11 +230,23 @@ interface ChordStyle {
 	tuningTextSize: number;
 
 	// TuningLabels customization
-	tuningLabelOffset: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância do nut
+	tuningLabelOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal
+	tuningLabelOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical
 	tuningLabelFormat: "scientific" | "note-only"; // Formato dos rótulos: "scientific" (E2) ou "note-only" (E)
 
 	// String indicators customization
-	stringIndicatorOffset: number; // Multiplicador (0-1) aplicado a fretWidth/fretHeight para ajustar distância dos indicadores 'O' e 'X' do nut
+	stringIndicatorOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal dos indicadores 'O' e 'X' do nut
+	stringIndicatorOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical dos indicadores 'O' e 'X' do nut
+
+	// Barres customization
+	barresWidth: number; // Largura horizontal da barre em pixels
+	barresOpacity: number; // Opacidade da barre de 0 a 1
+	barresOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal
+	barresOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical
+
+	// Fret numbers customization
+	fretTextOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal dos números dos trastes
+	fretTextOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical dos números dos trastes
 }
 ```
 

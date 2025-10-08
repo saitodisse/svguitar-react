@@ -86,9 +86,9 @@ describe("TuningLabels", () => {
 			const x = Number(label.getAttribute("x"));
 			const y = Number(label.getAttribute("y"));
 
-			// X should be within the grid area (string positions)
-			expect(x).toBeGreaterThanOrEqual(frame.gridOriginX);
-			expect(x).toBeLessThanOrEqual(frame.gridOriginX + frame.gridWidth);
+			// X should be near the grid area (string positions), allowing for offsetX adjustments
+			expect(x).toBeGreaterThan(frame.gridOriginX - frame.style.fretWidth);
+			expect(x).toBeLessThan(frame.gridOriginX + frame.gridWidth + frame.style.fretWidth);
 
 			// Y should be above the fretboard (negative offset from gridOriginY)
 			expect(y).toBeLessThan(frame.gridOriginY);
@@ -116,9 +116,9 @@ describe("TuningLabels", () => {
 			const x = Number(label.getAttribute("x"));
 			const y = Number(label.getAttribute("y"));
 
-			// X should be within the grid area (string positions)
-			expect(x).toBeGreaterThanOrEqual(frame.gridOriginX);
-			expect(x).toBeLessThanOrEqual(frame.gridOriginX + frame.gridWidth);
+			// X should be near the grid area (string positions), allowing for offsetX adjustments
+			expect(x).toBeGreaterThan(frame.gridOriginX - frame.style.fretWidth);
+			expect(x).toBeLessThan(frame.gridOriginX + frame.gridWidth + frame.style.fretWidth);
 
 			// Y should be above the fretboard (negative offset from gridOriginY)
 			expect(y).toBeLessThan(frame.gridOriginY);
@@ -163,10 +163,10 @@ describe("TuningLabels", () => {
 	});
 
 	describe("tuningLabelOffset customization", () => {
-		it("applies tuningLabelOffset to horizontal-right layout", () => {
+		it("applies tuningLabelOffsetX to horizontal-right layout", () => {
 			const customOffset = 0.8;
 			const customFrame = createFrame({
-				style: { ...DEFAULT_CHORD_STYLE, tuningLabelOffset: customOffset, fretCount: 3 },
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelOffsetX: customOffset, fretCount: 3 },
 			});
 			const { container } = render(
 				<svg>
@@ -187,10 +187,10 @@ describe("TuningLabels", () => {
 			expect(Math.abs(x - expectedX)).toBeLessThan(1); // Allow small floating point differences
 		});
 
-		it("applies tuningLabelOffset to vertical-right layout", () => {
+		it("applies tuningLabelOffsetY to vertical-right layout", () => {
 			const customOffset = 0.3;
 			const customFrame = createFrame({
-				style: { ...DEFAULT_CHORD_STYLE, tuningLabelOffset: customOffset, fretCount: 3 },
+				style: { ...DEFAULT_CHORD_STYLE, tuningLabelOffsetY: customOffset, fretCount: 3 },
 			});
 			const { container } = render(
 				<svg>

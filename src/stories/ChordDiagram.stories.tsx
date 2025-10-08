@@ -336,7 +336,18 @@ export const WithBarre: Story = {
  * Chord diagram using fret notation (G Major)
  */
 export const WithFretNotation: Story = {
-	args: { ...gMajorInstrument, ...BASE_STORY_CONFIG },
+	args: {
+		...gMajorInstrument,
+		...BASE_STORY_CONFIG,
+		width: 249,
+		height: 237,
+		tuningTextColor: "#cecece",
+		openStringColor: "#708aba",
+		fretTextSize: 19,
+		tuningLabelOffset: -4.29,
+		tuningLabelFormat: "note-only",
+		stringIndicatorOffset: 0.23,
+	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 

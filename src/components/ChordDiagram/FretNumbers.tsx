@@ -20,12 +20,16 @@ export const FretNumbers: React.FC<FretNumbersProps> = React.memo(({ engine, fra
 	const isVertical = engine.id.startsWith("vertical");
 	const isHorizontalLeft = engine.id === "horizontal-left";
 
+	// Calculate offsets
+	const offsetX = frame.style.fretTextOffsetX * frame.style.fretWidth;
+	const offsetY = frame.style.fretTextOffsetY * frame.style.fretHeight;
+
 	const frets = Array.from({ length: frame.fretCount }, (_, i) => {
 		const fretNumber = frame.firstFret + i;
 
 		if (isVertical) {
 			// For vertical layouts: position to the right of the fretboard
-			const x = frame.gridOriginX + frame.gridWidth + frame.style.fretWidth * 0.5; // Right of the fretboard
+			const baseX = frame.gridOriginX + frame.gridWidth + frame.style.fretWidth * 0.5; // Right of the fretboard
 
 			// Skip fret 0 (nut) - it's not displayed in vertical layouts
 			if (fretNumber === 0) {
@@ -36,12 +40,22 @@ export const FretNumbers: React.FC<FretNumbersProps> = React.memo(({ engine, fra
 			// Casa 1: middle between nut (fret 0) and fret 1
 			// Casa 2: middle between fret 1 and fret 2
 			// etc.
-			const y = frame.gridOriginY + (fretNumber - frame.firstFret + 0.5) * frame.style.fretHeight;
+			const baseY = frame.gridOriginY + (fretNumber - frame.firstFret + 0.5) * frame.style.fretHeight;
+
+			// Apply offsets
+			const x = baseX + offsetX;
+			const y = baseY + offsetY;
+
 			return { fretNumber, x, y };
 		} else {
 			// For horizontal layouts: position above the fretboard
-			const x = engine.mapFretAxis(frame.firstFret + i, frame);
-			const y = frame.gridOriginY - frame.style.fretHeight * 0.7;
+			const baseX = engine.mapFretAxis(frame.firstFret + i, frame);
+			const baseY = frame.gridOriginY - frame.style.fretHeight * 0.7;
+
+			// Apply offsets
+			const x = baseX + offsetX;
+			const y = baseY + offsetY;
+
 			return { fretNumber, x, y };
 		}
 	}).filter((fret): fret is { fretNumber: number; x: number; y: number } => fret !== null);

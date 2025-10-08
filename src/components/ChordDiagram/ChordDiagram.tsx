@@ -211,6 +211,10 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 						fontFamily={style.fontFamily}
 						dotTextSize={style.dotTextSize}
 						dotTextColor={style.dotTextColor}
+						barresWidth={style.barresWidth}
+						barresOpacity={style.barresOpacity}
+						barresOffsetX={style.barresOffsetX}
+						barresOffsetY={style.barresOffsetY}
 					/>
 				))}
 			</svg>

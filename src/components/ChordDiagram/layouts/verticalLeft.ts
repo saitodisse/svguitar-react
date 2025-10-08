@@ -64,7 +64,7 @@ export const verticalLeftEngine: LayoutEngine = {
 				const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
 				return frame.gridOriginX + (frame.stringCount - stringNumber) * spacing;
 			})(stringNumber, frame),
-			y: frame.gridOriginY - frame.style.fretHeight * frame.style.stringIndicatorOffset,
+			y: frame.gridOriginY - frame.style.fretHeight * frame.style.stringIndicatorOffsetX,
 		};
 	},
 };

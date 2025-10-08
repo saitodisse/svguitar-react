@@ -51,6 +51,17 @@ const createMockStyle = (overrides: Partial<ChordStyle> = {}): ChordStyle => ({
 	dotTextSize: 10,
 	fretTextSize: 12,
 	tuningTextSize: 14,
+	tuningLabelOffsetX: 0,
+	tuningLabelOffsetY: 0.5,
+	tuningLabelFormat: "scientific" as const,
+	stringIndicatorOffsetX: 0.5,
+	stringIndicatorOffsetY: 0,
+	barresWidth: 8,
+	barresOpacity: 1.0,
+	barresOffsetX: 0,
+	barresOffsetY: 0,
+	fretTextOffsetX: 0,
+	fretTextOffsetY: 0,
 	...overrides,
 });
 

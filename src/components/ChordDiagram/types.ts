@@ -189,14 +189,34 @@ export interface ChordDiagramProps {
 	tuningTextSize?: number;
 
 	// TuningLabels customization
-	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for tuning label positioning (default: 0.5) */
-	tuningLabelOffset?: number;
+	/** Horizontal distance multiplier (-5 to 5) applied to fretWidth for tuning label positioning (default: 0) */
+	tuningLabelOffsetX?: number;
+	/** Vertical distance multiplier (-5 to 5) applied to fretHeight for tuning label positioning (default: 0.5) */
+	tuningLabelOffsetY?: number;
 	/** Format for tuning labels: "scientific" (E2) or "note-only" (E) (default: "scientific") */
 	tuningLabelFormat?: "scientific" | "note-only";
 
 	// String indicators customization
-	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for open/muted string indicators positioning (default: 0.5) */
-	stringIndicatorOffset?: number;
+	/** Horizontal distance multiplier (-5 to 5) applied to fretWidth for open/muted string indicators positioning (default: 0.5) */
+	stringIndicatorOffsetX?: number;
+	/** Vertical distance multiplier (-5 to 5) applied to fretHeight for open/muted string indicators positioning (default: 0) */
+	stringIndicatorOffsetY?: number;
+
+	// Barres customization
+	/** Width of barre rectangles in pixels (default: 8) */
+	barresWidth?: number;
+	/** Opacity of barre rectangles from 0 to 1 (default: 1.0) */
+	barresOpacity?: number;
+	/** Horizontal offset multiplier (-5 to 5) applied to fretWidth for barre positioning (default: 0) */
+	barresOffsetX?: number;
+	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for barre positioning (default: 0) */
+	barresOffsetY?: number;
+
+	// Fret numbers customization
+	/** Horizontal offset multiplier (-5 to 5) applied to fretWidth for fret number positioning (default: 0) */
+	fretTextOffsetX?: number;
+	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for fret number positioning (default: 0) */
+	fretTextOffsetY?: number;
 
 	// Validation & error handling
 	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
@@ -271,14 +291,34 @@ export interface ChordStyle {
 	tuningTextSize: number;
 
 	// TuningLabels customization
-	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for tuning label positioning */
-	tuningLabelOffset: number;
+	/** Horizontal distance multiplier (-5 to 5) applied to fretWidth for tuning label positioning */
+	tuningLabelOffsetX: number;
+	/** Vertical distance multiplier (-5 to 5) applied to fretHeight for tuning label positioning */
+	tuningLabelOffsetY: number;
 	/** Format for tuning labels: "scientific" (E2) or "note-only" (E) */
 	tuningLabelFormat: "scientific" | "note-only";
 
 	// String indicators customization
-	/** Distance multiplier (0-1) applied to fretWidth/fretHeight for open/muted string indicators positioning */
-	stringIndicatorOffset: number;
+	/** Horizontal distance multiplier (-5 to 5) applied to fretWidth for open/muted string indicators positioning */
+	stringIndicatorOffsetX: number;
+	/** Vertical distance multiplier (-5 to 5) applied to fretHeight for open/muted string indicators positioning */
+	stringIndicatorOffsetY: number;
+
+	// Barres customization
+	/** Width of barre rectangles in pixels */
+	barresWidth: number;
+	/** Opacity of barre rectangles from 0 to 1 */
+	barresOpacity: number;
+	/** Horizontal offset multiplier (-5 to 5) applied to fretWidth for barre positioning */
+	barresOffsetX: number;
+	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for barre positioning */
+	barresOffsetY: number;
+
+	// Fret numbers customization
+	/** Horizontal offset multiplier (-5 to 5) applied to fretWidth for fret number positioning */
+	fretTextOffsetX: number;
+	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for fret number positioning */
+	fretTextOffsetY: number;
 }
 
 /**
