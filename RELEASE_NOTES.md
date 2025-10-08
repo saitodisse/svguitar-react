@@ -16,17 +16,17 @@ Ajuste a distância dos rótulos de afinação em relação ao nut usando um mul
 
 ```tsx
 <ChordDiagram
-  instrument={{ tuning: ["E2", "A2", "D3", "G3", "B3", "E4"], chord: "x32010" }}
-  tuningLabelOffset={0.7}  // Labels 70% mais distantes
+	instrument={{ tuning: ["E2", "A2", "D3", "G3", "B3", "E4"], chord: "x32010" }}
+	tuningLabelOffset={0.7} // Labels 70% mais distantes
 />
 ```
 
 - **Tipo**: `number` (0-1)
 - **Padrão**: 0.5
 - **Comportamento**:
-  - Horizontal-right: valores maiores afastam labels para esquerda
-  - Horizontal-left: valores maiores afastam labels para direita
-  - Vertical: valores maiores afastam labels para cima
+    - Horizontal-right: valores maiores afastam labels para esquerda
+    - Horizontal-left: valores maiores afastam labels para direita
+    - Vertical: valores maiores afastam labels para cima
 
 ##### 2. `tuningLabelFormat` - Formato Simplificado dos Rótulos
 
@@ -34,16 +34,16 @@ Alterne entre notação científica completa e apenas o nome da nota para econom
 
 ```tsx
 <ChordDiagram
-  instrument={{ tuning: ["E2", "A2", "D3", "G3", "B3", "E4"], chord: "320003" }}
-  tuningLabelFormat="note-only"  // Mostra "E A D G B E"
+	instrument={{ tuning: ["E2", "A2", "D3", "G3", "B3", "E4"], chord: "320003" }}
+	tuningLabelFormat="note-only" // Mostra "E A D G B E"
 />
 ```
 
 - **Tipo**: `"scientific" | "note-only"`
 - **Padrão**: `"scientific"`
 - **Valores**:
-  - `"scientific"`: E2, A2, D3, G3, B3, E4
-  - `"note-only"`: E, A, D, G, B, E
+    - `"scientific"`: E2, A2, D3, G3, B3, E4
+    - `"note-only"`: E, A, D, G, B, E
 - **Suporte**: Trata corretamente acidentes (C#, Db, F#, Bb, etc.)
 
 ##### 3. `stringIndicatorOffset` - Distância dos Indicadores O/X
@@ -52,15 +52,15 @@ Controle a distância dos indicadores de cordas soltas ('O') e mutadas ('X') em 
 
 ```tsx
 <ChordDiagram
-  chord={{
-    fingers: [
-      { fret: 0, string: 1, is_muted: true },   // X
-      { fret: 0, string: 6, is_muted: false },  // O
-      { fret: 1, string: 5, is_muted: false },
-    ],
-    barres: []
-  }}
-  stringIndicatorOffset={0.3}  // Indicadores 30% mais próximos
+	chord={{
+		fingers: [
+			{ fret: 0, string: 1, is_muted: true }, // X
+			{ fret: 0, string: 6, is_muted: false }, // O
+			{ fret: 1, string: 5, is_muted: false },
+		],
+		barres: [],
+	}}
+	stringIndicatorOffset={0.3} // Indicadores 30% mais próximos
 />
 ```
 
@@ -72,20 +72,20 @@ Controle a distância dos indicadores de cordas soltas ('O') e mutadas ('X') em 
 #### 🔧 Melhorias Técnicas
 
 - **Nova Dependência**: `tonal@6.4.2`
-  - Biblioteca de teoria musical para parsing robusto de notas
-  - Trata corretamente acidentes simples e duplos (C#, Db, C##, Dbb)
-  - Lightweight e modular
+    - Biblioteca de teoria musical para parsing robusto de notas
+    - Trata corretamente acidentes simples e duplos (C#, Db, C##, Dbb)
+    - Lightweight e modular
 
 - **Layout Engines Atualizados**: Todos os 4 engines suportam `stringIndicatorOffset`
-  - `horizontalRight.ts`, `horizontalLeft.ts`, `verticalRight.ts`, `verticalLeft.ts`
-  - Método `indicatorPosition` agora respeita o offset customizável
+    - `horizontalRight.ts`, `horizontalLeft.ts`, `verticalRight.ts`, `verticalLeft.ts`
+    - Método `indicatorPosition` agora respeita o offset customizável
 
 - **Interface do Usuário**:
-  - 3 novos controles no painel de customização do App.tsx
-  - Slider para `tuningLabelOffset` (0-100%)
-  - Select para `tuningLabelFormat` (Scientific/Note Only)
-  - Slider para `stringIndicatorOffset` (0-100%)
-  - Suporte i18n completo (Inglês/Português)
+    - 3 novos controles no painel de customização do App.tsx
+    - Slider para `tuningLabelOffset` (0-100%)
+    - Select para `tuningLabelFormat` (Scientific/Note Only)
+    - Slider para `stringIndicatorOffset` (0-100%)
+    - Suporte i18n completo (Inglês/Português)
 
 #### 🧪 Cobertura de Testes
 
@@ -93,49 +93,47 @@ Controle a distância dos indicadores de cordas soltas ('O') e mutadas ('X') em 
 - **Novos Testes**: +41 testes (53 → 94 testes unitários + 15 Storybook)
 - **Total**: 109/109 testes passando (100% sucesso)
 - **Arquivos Novos**:
-  - `utils.test.ts`: 10 testes para `formatTuningLabel`
-  - `horizontalLeftLayout.test.ts`: 7 testes completos
+    - `utils.test.ts`: 10 testes para `formatTuningLabel`
+    - `horizontalLeftLayout.test.ts`: 7 testes completos
 - **Coverage 100%**: Todos os layout engines + componentes de renderização
 
 #### 📚 Documentação
 
 - **Especificações Atualizadas**:
-  - FR-027: `tuningLabelOffset` specification
-  - FR-028: `tuningLabelFormat` specification
-  - FR-029: `stringIndicatorOffset` specification
-  - Contratos de API atualizados
-  - 4 novos exemplos no quickstart.md
+    - FR-027: `tuningLabelOffset` specification
+    - FR-028: `tuningLabelFormat` specification
+    - FR-029: `stringIndicatorOffset` specification
+    - Contratos de API atualizados
+    - 4 novos exemplos no quickstart.md
 
 - **Task Plans**:
-  - `tasks-tuning-customization.md`: Plano de implementação detalhado
-  - `tasks-string-indicator-offset.md`: Plano de implementação detalhado
+    - `tasks-tuning-customization.md`: Plano de implementação detalhado
+    - `tasks-string-indicator-offset.md`: Plano de implementação detalhado
 
 #### 💡 Exemplos de Uso
 
 ```tsx
 // Exemplo completo com todas as customizações
 <ChordDiagram
-  instrument={{
-    tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-    chord: "x32010"
-  }}
-  view="vertical-right"
-  
-  // Customizações dos labels
-  tuningLabelOffset={0.3}         // Labels próximos (30%)
-  tuningLabelFormat="note-only"   // Formato simplificado
-  
-  // Customização dos indicadores
-  stringIndicatorOffset={0.7}     // Indicadores distantes (70%)
-  
-  width={220}
-  height={300}
+	instrument={{
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		chord: "x32010",
+	}}
+	view="vertical-right"
+	// Customizações dos labels
+	tuningLabelOffset={0.3} // Labels próximos (30%)
+	tuningLabelFormat="note-only" // Formato simplificado
+	// Customização dos indicadores
+	stringIndicatorOffset={0.7} // Indicadores distantes (70%)
+	width={220}
+	height={300}
 />
 ```
 
 #### 🔄 Retrocompatibilidade
 
 ✅ **100% Backward Compatible**
+
 - Todas as novas props são opcionais
 - Valores padrão mantêm o comportamento anterior
 - Nenhuma breaking change
