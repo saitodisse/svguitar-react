@@ -39,6 +39,19 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Total height of the SVG",
 			table: { category: "Layout", defaultValue: { summary: "250" } },
 		},
+
+		// Canvas Positioning
+		canvasOffsetX: {
+			control: { type: "range", min: -100, max: 100, step: 1 },
+			description: "Horizontal offset in pixels for entire diagram (padding/margin/zoom prep)",
+			table: { category: "Canvas", defaultValue: { summary: "0" } },
+		},
+		canvasOffsetY: {
+			control: { type: "range", min: -100, max: 100, step: 1 },
+			description: "Vertical offset in pixels for entire diagram (padding/margin/zoom prep)",
+			table: { category: "Canvas", defaultValue: { summary: "0" } },
+		},
+
 		backgroundColor: {
 			control: "color",
 			description: "Background color",
@@ -134,7 +147,7 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Frets", defaultValue: { summary: "12" } },
 		},
 		fretTextOffsetX: {
-			control: { type: "range", min: -50, max: 50, step: 0.01 },
+			control: { type: "range", min: -1, max: 1, step: 0.01 },
 			description: "Horizontal offset multiplier for fret numbers",
 			table: { category: "Frets", defaultValue: { summary: "0" } },
 		},
@@ -225,6 +238,33 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Vertical offset multiplier for barres",
 			table: { category: "Barres", defaultValue: { summary: "0" } },
 		},
+
+		// Nut (Fret Zero)
+		nutStrokeWidth: {
+			control: { type: "range", min: 0, max: 0.5, step: 0.001 },
+			description: "Stroke width multiplier for nut line (0.075 * fretWidth ≈ 3px)",
+			table: { category: "Nut", defaultValue: { summary: "0.075" } },
+		},
+		nutOffsetX: {
+			control: { type: "range", min: -0.5, max: 0.5, step: 0.01 },
+			description: "Horizontal offset multiplier for nut positioning",
+			table: { category: "Nut", defaultValue: { summary: "0" } },
+		},
+		nutOffsetY: {
+			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			description: "Vertical offset multiplier for nut positioning",
+			table: { category: "Nut", defaultValue: { summary: "0" } },
+		},
+		nutOpacity: {
+			control: { type: "range", min: 0, max: 1, step: 0.01 },
+			description: "Nut opacity from 0 to 1",
+			table: { category: "Nut", defaultValue: { summary: "1.0" } },
+		},
+		nutColor: {
+			control: "color",
+			description: "Nut line color",
+			table: { category: "Nut", defaultValue: { summary: "#333333" } },
+		},
 	},
 	tags: ["autodocs"],
 };
@@ -246,6 +286,13 @@ const BASE_STORY_CONFIG = {
 	barresOffsetY: 0,
 	fretTextOffsetX: 0,
 	fretTextOffsetY: 0,
+	nutStrokeWidth: 0.075,
+	nutOffsetX: 0,
+	nutOffsetY: 0,
+	nutOpacity: 1.0,
+	nutColor: "#333333",
+	canvasOffsetX: 0,
+	canvasOffsetY: 0,
 };
 
 // Basic chord examples
@@ -307,8 +354,10 @@ export const Default: Story = {
 		...cMajor,
 		...BASE_STORY_CONFIG,
 		view: "vertical-right",
-		width: 185,
-		height: 261,
+		width: 128,
+		height: 219,
+		canvasOffsetX: -39,
+		canvasOffsetY: -19,
 		fretCount: 5,
 		fretWidth: 19,
 		stringWidth: 1,
@@ -550,7 +599,7 @@ export const CustomStyle: Story = {
 		...BASE_STORY_CONFIG,
 		...customStyleProps,
 		chord: customStyleChord,
-		width: 229,
+		width: 228,
 		height: 228,
 		fretColor: "#b7b2b2",
 		stringColor: "#5b5a5a",
@@ -560,6 +609,10 @@ export const CustomStyle: Story = {
 		tuningLabelOffsetX: 0.41,
 		tuningLabelOffsetY: 0,
 		tuningLabelFormat: "note-only",
+		fretWidth: 41,
+		stringWidth: 2.57,
+		dotSize: 17,
+		fretTextOffsetY: 0.33,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -573,7 +626,7 @@ export const CustomStyle: Story = {
 		expect(svg).toBeInTheDocument();
 
 		// Verify custom dimensions are applied
-		expect(svg).toHaveAttribute("width", "229");
+		expect(svg).toHaveAttribute("width", "228");
 		expect(svg).toHaveAttribute("height", "228");
 	},
 };
@@ -720,9 +773,31 @@ export const CustomOpenMutedStyle: Story = {
 			],
 			barres: [],
 		},
+
 		...BASE_STORY_CONFIG,
-		openStringColor: "#00FF00", // Green for open strings
-		mutedStringColor: "#FF0000", // Red for muted strings
+
+		// Green for open strings
+		openStringColor: "#7174bd",
+
+		// Red for muted strings
+		mutedStringColor: "#FF0000",
+
+		width: 224,
+		height: 215,
+		stringWidth: 1.78,
+		tuningTextColor: "#9a9999",
+		tuningLabelOffsetY: -0.05,
+		tuningLabelFormat: "note-only",
+		stringIndicatorOffsetX: 0.06,
+		stringIndicatorOffsetY: 0,
+		fretTextOffsetX: -0.03,
+		fretTextOffsetY: 0.47,
+		nutStrokeWidth: 0.101,
+		nutOffsetX: -0.07,
+		nutOffsetY: -0.03,
+		canvasOffsetX: -8,
+		canvasOffsetY: -25,
+		dotSize: 16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -984,7 +1059,7 @@ export const PerformanceTest: Story = {
 		...cMajor,
 		...BASE_STORY_CONFIG,
 		width: 255,
-		height: 236,
+		height: 213,
 		tuningLabelFormat: "note-only",
 		fretWidth: 49,
 		dotSize: 20,
@@ -992,6 +1067,13 @@ export const PerformanceTest: Story = {
 		dotTextSize: 16,
 		validation: "strict",
 		invalidBehavior: "keep-previous",
+		fretTextColor: "#c6c6c6",
+		tuningTextColor: "#b2b2b2",
+		tuningLabelOffsetX: 0.25,
+		tuningLabelOffsetY: -0.07,
+		fretTextOffsetY: 0.31,
+		canvasOffsetX: -12,
+		canvasOffsetY: -23,
 	},
 	render: args => {
 		// Create 50 chord diagrams for performance testing
@@ -1198,5 +1280,93 @@ export const CombinedCustomizations: Story = {
 		expect(textContent).toContain("E");
 		expect(textContent).toContain("A");
 		expect(textContent).toContain("D");
+	},
+};
+
+/**
+ * Nut Customization Demonstration
+ * Shows how nut properties affect the fret zero appearance
+ */
+export const NutCustomization: Story = {
+	args: {
+		...cMajor,
+		...BASE_STORY_CONFIG,
+		view: "horizontal-right",
+		nutStrokeWidth: 0.2,
+		nutColor: "#FF5733",
+		nutOpacity: 0.8,
+		width: 300,
+		height: 250,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Demonstrates nut customization with thicker, semi-transparent red nut.",
+			},
+		},
+	},
+};
+
+/**
+ * Canvas Positioning Demonstration
+ */
+export const CanvasPositioning: Story = {
+	args: {
+		...cMajor,
+		...BASE_STORY_CONFIG,
+		canvasOffsetX: -9,
+		canvasOffsetY: -7,
+		backgroundColor: "#f0f0f0",
+		tuningTextSize: 11,
+		tuningLabelOffsetY: -0.02,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Demonstrates canvas positioning for padding/margin and zoom preparation.",
+			},
+		},
+	},
+};
+
+/**
+ * Combined Advanced Customization
+ */
+export const CombinedAdvancedCustomization: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 1, string: 1, is_muted: false, text: "1" },
+				{ fret: 3, string: 2, is_muted: false, text: "3" },
+				{ fret: 3, string: 3, is_muted: false, text: "4" },
+				{ fret: 3, string: 4, is_muted: false, text: "5" },
+				{ fret: 1, string: 5, is_muted: false, text: "1" },
+				{ fret: 1, string: 6, is_muted: false, text: "1" },
+			],
+			barres: [{ fret: 1, fromString: 1, toString: 6 }],
+		},
+
+		...BASE_STORY_CONFIG,
+		nutStrokeWidth: 0.15,
+		nutColor: "#0066CC",
+		nutOpacity: 0.9,
+		canvasOffsetX: -12,
+		canvasOffsetY: -9,
+		barresOpacity: 0.7,
+		dotColor: "#00AA66",
+		barreColor: "#00AA66",
+		width: 217,
+		height: 226,
+		tuningLabelOffsetX: 0.35,
+		tuningLabelOffsetY: -0.11,
+		tuningLabelFormat: "note-only",
+		nutOffsetX: 0.08,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "All advanced customizations together: nut, canvas, barres, and colors.",
+			},
+		},
 	},
 };

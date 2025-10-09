@@ -44,16 +44,17 @@ export const Finger: React.FC<FingerProps> = React.memo(
 		// Handle open strings and muted strings (fret 0)
 		if (finger.fret === 0) {
 			// Position for open/muted markers near the nut and tuning labels
+			// Note: The layout engine already applies stringIndicatorOffsetX (distance from nut)
 			const basePosition = engine.indicatorPosition(finger.string, finger.is_muted ? "muted" : "open", {
 				frame,
 			});
 
-			// Apply offsets
-			const offsetX = frame.style.stringIndicatorOffsetX * frame.style.fretWidth;
+			// Apply stringIndicatorOffsetY for perpendicular adjustment (along the strings)
+			// stringIndicatorOffsetX is already applied by the layout engine in indicatorPosition
 			const offsetY = frame.style.stringIndicatorOffsetY * frame.style.fretHeight;
 
 			const open = {
-				x: basePosition.x + offsetX,
+				x: basePosition.x,
 				y: basePosition.y + offsetY,
 			};
 

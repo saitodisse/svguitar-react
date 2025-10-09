@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.17.0 (2025-10-09)
+
+### New Features ✨
+
+- **Nut (Fret Zero) Customization**: Complete control over nut appearance
+  - `nutStrokeWidth`: Multiplier (0-0.5) for nut line thickness (default: 0.075)
+  - `nutOffsetX`: Multiplier (-0.5-0.5) for horizontal offset (default: 0)
+  - `nutOffsetY`: Multiplier (-5-5) for vertical offset (default: 0)
+  - `nutOpacity`: Opacity from 0 to 1 (default: 1.0)
+  - `nutColor`: Custom color for nut line (default: same as fretColor)
+
+- **Canvas Positioning**: Global diagram positioning for layouts
+  - `canvasOffsetX`: Pixels for horizontal offset (default: 0)
+  - `canvasOffsetY`: Pixels for vertical offset (default: 0)
+  - Useful for padding/margin and preparing for future zoom functionality
+
+- **38 New Tests**: Comprehensive test coverage for all new features
+- **New Storybook Stories**: Interactive demonstrations of nut and canvas customization
+
+### Bug Fixes 🐛
+
+- **`stringIndicatorOffsetX`**: Fixed bug where offset was being applied twice
+  - Now correctly moves open/muted string indicators in all views
+  - Removed duplicate offset application in Finger component
+  
+- **Vertical Layout Barres**: Fixed incorrect height calculation
+  - Barres now use `fretHeight` instead of `barresWidth` for proper rendering
+
+### Improvements 🎨
+
+- Better Storybook control ranges for improved UX:
+  - `nutStrokeWidth`: 0-0.5 (more realistic range)
+  - `nutOffsetX`: -0.5-0.5 (more controlled range)
+  - `fretTextOffsetX`: -1-1 (more practical range)
+
 ## 1.16.0 (2025-10-08)
 
 ### Breaking Changes ⚠️

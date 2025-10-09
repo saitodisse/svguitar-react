@@ -218,6 +218,24 @@ export interface ChordDiagramProps {
 	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for fret number positioning (default: 0) */
 	fretTextOffsetY?: number;
 
+	// Nut (fret zero) customization
+	/** Stroke width multiplier (-5 to 5) applied to fretWidth for nut line thickness (default: 0.075 ≈ 3px) */
+	nutStrokeWidth?: number;
+	/** Horizontal offset multiplier (-5 to 5) applied to fretWidth for nut positioning (default: 0) */
+	nutOffsetX?: number;
+	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for nut positioning (default: 0) */
+	nutOffsetY?: number;
+	/** Nut opacity from 0 to 1 (default: 1.0) */
+	nutOpacity?: number;
+	/** Nut line color (default: same as fretColor) */
+	nutColor?: string;
+
+	// Canvas positioning (global diagram offset)
+	/** Horizontal offset in pixels for entire diagram (default: 0) - useful for padding/margin and future zoom */
+	canvasOffsetX?: number;
+	/** Vertical offset in pixels for entire diagram (default: 0) - useful for padding/margin and future zoom */
+	canvasOffsetY?: number;
+
 	// Validation & error handling
 	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
 	validation?: "strict" | "lenient";
@@ -319,6 +337,24 @@ export interface ChordStyle {
 	fretTextOffsetX: number;
 	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for fret number positioning */
 	fretTextOffsetY: number;
+
+	// Nut (fret zero) customization
+	/** Stroke width multiplier (-5 to 5) applied to fretWidth for nut line thickness */
+	nutStrokeWidth: number;
+	/** Horizontal offset multiplier (-5 to 5) applied to fretWidth for nut positioning */
+	nutOffsetX: number;
+	/** Vertical offset multiplier (-5 to 5) applied to fretHeight for nut positioning */
+	nutOffsetY: number;
+	/** Nut opacity from 0 to 1 */
+	nutOpacity: number;
+	/** Nut line color */
+	nutColor: string;
+
+	// Canvas positioning (global diagram offset)
+	/** Horizontal offset in pixels for entire diagram */
+	canvasOffsetX: number;
+	/** Vertical offset in pixels for entire diagram */
+	canvasOffsetY: number;
 }
 
 /**

@@ -167,56 +167,71 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				{/* Background */}
 				<rect width={style.width} height={style.height} fill={style.backgroundColor} />
 
-				{/* Fret numbers */}
-				<FretNumbers engine={resolvedLayoutEngine!} frame={frame} />
+				{/* Canvas group with global positioning */}
+				<g
+					data-testid="canvas-group"
+					transform={`translate(${style.canvasOffsetX}, ${style.canvasOffsetY})`}
+				>
+					{/* Fret numbers */}
+					<FretNumbers engine={resolvedLayoutEngine!} frame={frame} />
 
-				{/* Tuning labels */}
-				<TuningLabels engine={resolvedLayoutEngine!} frame={frame} tuning={instrumentData.tuning} />
-
-				{/* Fretboard */}
-				<Fretboard
-					engine={resolvedLayoutEngine!}
-					frame={frame}
-					fretColor={style.fretColor}
-					stringColor={style.stringColor}
-					stringWidth={style.stringWidth}
-				/>
-
-				{/* Fingers */}
-				{chordData.fingers.map((finger, index) => (
-					<Finger
-						key={`finger-${index}`}
+					{/* Tuning labels */}
+					<TuningLabels
 						engine={resolvedLayoutEngine!}
 						frame={frame}
-						finger={finger}
-						dotSize={style.dotSize}
-						dotColor={style.dotColor}
-						dotTextColor={style.dotTextColor}
-						dotTextSize={style.dotTextSize}
-						fontFamily={style.fontFamily}
-						openStringColor={style.openStringColor}
-						mutedStringColor={style.mutedStringColor}
+						tuning={instrumentData.tuning}
 					/>
-				))}
 
-				{/* Barres */}
-				{chordData.barres.map((barre, index) => (
-					<Barre
-						key={`barre-${index}`}
+					{/* Fretboard */}
+					<Fretboard
 						engine={resolvedLayoutEngine!}
 						frame={frame}
-						barre={barre}
-						barreHeight={style.barreHeight}
-						barreColor={style.barreColor}
-						fontFamily={style.fontFamily}
-						dotTextSize={style.dotTextSize}
-						dotTextColor={style.dotTextColor}
-						barresWidth={style.barresWidth}
-						barresOpacity={style.barresOpacity}
-						barresOffsetX={style.barresOffsetX}
-						barresOffsetY={style.barresOffsetY}
+						fretColor={style.fretColor}
+						stringColor={style.stringColor}
+						stringWidth={style.stringWidth}
+						nutStrokeWidth={style.nutStrokeWidth}
+						nutOffsetX={style.nutOffsetX}
+						nutOffsetY={style.nutOffsetY}
+						nutOpacity={style.nutOpacity}
+						nutColor={style.nutColor}
 					/>
-				))}
+
+					{/* Fingers */}
+					{chordData.fingers.map((finger, index) => (
+						<Finger
+							key={`finger-${index}`}
+							engine={resolvedLayoutEngine!}
+							frame={frame}
+							finger={finger}
+							dotSize={style.dotSize}
+							dotColor={style.dotColor}
+							dotTextColor={style.dotTextColor}
+							dotTextSize={style.dotTextSize}
+							fontFamily={style.fontFamily}
+							openStringColor={style.openStringColor}
+							mutedStringColor={style.mutedStringColor}
+						/>
+					))}
+
+					{/* Barres */}
+					{chordData.barres.map((barre, index) => (
+						<Barre
+							key={`barre-${index}`}
+							engine={resolvedLayoutEngine!}
+							frame={frame}
+							barre={barre}
+							barreHeight={style.barreHeight}
+							barreColor={style.barreColor}
+							fontFamily={style.fontFamily}
+							dotTextSize={style.dotTextSize}
+							dotTextColor={style.dotTextColor}
+							barresWidth={style.barresWidth}
+							barresOpacity={style.barresOpacity}
+							barresOffsetX={style.barresOffsetX}
+							barresOffsetY={style.barresOffsetY}
+						/>
+					))}
+				</g>
 			</svg>
 			{renderError &&
 				(typeof errorFallback === "function"

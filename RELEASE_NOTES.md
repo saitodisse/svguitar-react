@@ -1,5 +1,158 @@
 # Release Notes
 
+## Version 1.17.0
+
+**Release Date:** October 9, 2025
+
+### 🎸 Nut Customization & Canvas Positioning
+
+Esta versão adiciona controle completo sobre o nut (traste zero) e posicionamento global do canvas, permitindo maior flexibilidade visual e preparando o terreno para features futuras como zoom.
+
+#### ✨ New Features
+
+##### 1. Nut (Fret Zero) Customization
+
+Controle total sobre a aparência do nut (pestana/traste zero):
+
+```tsx
+<ChordDiagram
+  chord={myChord}
+  nutStrokeWidth={0.15}    // Nut mais grosso
+  nutColor="#FF5733"        // Cor customizada
+  nutOpacity={0.8}          // Semi-transparente
+  nutOffsetX={0.1}          // Offset horizontal
+  nutOffsetY={0}            // Offset vertical
+/>
+```
+
+**Novas Props:**
+- `nutStrokeWidth` (0-0.5): Multiplicador para espessura (padrão: 0.075 ≈ 3px)
+- `nutOffsetX` (-0.5-0.5): Offset horizontal (padrão: 0)
+- `nutOffsetY` (-5-5): Offset vertical (padrão: 0)
+- `nutOpacity` (0-1): Opacidade (padrão: 1.0)
+- `nutColor`: Cor customizável (padrão: igual a `fretColor`)
+
+**Casos de Uso:**
+- Destacar o nut com cores diferentes
+- Ajustar espessura para diagramas grandes
+- Criar efeitos visuais com semi-transparência
+- Fine-tuning de posicionamento
+
+##### 2. Canvas Positioning
+
+Posicionamento global de todo o diagrama:
+
+```tsx
+<ChordDiagram
+  chord={myChord}
+  canvasOffsetX={30}  // 30px de padding horizontal
+  canvasOffsetY={30}  // 30px de padding vertical
+/>
+```
+
+**Novas Props:**
+- `canvasOffsetX` (pixels): Deslocamento horizontal de todo o diagrama
+- `canvasOffsetY` (pixels): Deslocamento vertical de todo o diagrama
+
+**Casos de Uso:**
+- Adicionar padding/margem ao redor do diagrama
+- Ajustar posicionamento para layouts específicos
+- Preparação para funcionalidade de zoom futuro
+- Centralização e alinhamento em containers
+
+##### 3. Storybook Enhancements
+
+**3 novas stories interativas:**
+- "Nut Customization": Demonstra todas as props do nut
+- "Canvas Positioning": Mostra offsets do canvas
+- "Combined Advanced Customization": Todas as features juntas
+
+**Controles melhorados:**
+- Nova categoria "Nut" com 5 controles
+- Nova categoria "Canvas" com 2 controles
+- Ranges otimizados para melhor usabilidade
+
+#### 🐛 Bug Fixes
+
+##### `stringIndicatorOffsetX` não funcionava corretamente
+
+**Problema:** O offset estava sendo aplicado duas vezes - uma vez no layout engine e outra vez no componente Finger, causando movimento excessivo.
+
+**Solução:** Removida duplicação. Agora o offset é aplicado apenas no layout engine.
+
+```tsx
+// ✅ ANTES: Funcionamento incorreto
+<ChordDiagram stringIndicatorOffsetX={0.5} /> // Movia 2x mais que deveria
+
+// ✅ DEPOIS: Funcionamento correto
+<ChordDiagram stringIndicatorOffsetX={0.5} /> // Move a distância correta
+```
+
+##### Barres em layouts verticais com altura incorreta
+
+**Problema:** Barres em layouts verticais (`vertical-right`, `vertical-left`) estavam usando `barresWidth` (8px) ao invés de `fretHeight` (30px), resultando em barres muito finas.
+
+**Solução:** Corrigido para usar `fretHeight` em layouts verticais, garantindo renderização adequada.
+
+#### 🎨 Improvements
+
+**Ranges otimizados no Storybook:**
+- `nutStrokeWidth`: 0-0.5 (antes: -5-5) - range mais realista
+- `nutOffsetX`: -0.5-0.5 (antes: -5-5) - controle mais fino
+- `fretTextOffsetX`: -1-1 (antes: -50-50) - range mais prático
+
+#### 📊 Testing
+
+**38 novos testes adicionados:**
+- 17 testes para nut customization
+- 21 testes para canvas positioning
+- Cobertura completa de todos os cenários
+
+**Total: 155 testes (100% passando)**
+
+#### 📚 Documentation
+
+- Documentação completa de todas as novas props
+- Exemplos práticos de uso
+- JSDoc atualizado para todas as interfaces
+- Guia de migração incluído no CHANGELOG
+
+#### 🔧 API Changes
+
+**Não-Breaking:** Todas as mudanças são backward-compatible. Propriedades existentes mantêm seus valores padrão.
+
+```typescript
+// Antes (continua funcionando):
+<ChordDiagram chord={myChord} />
+
+// Depois (com novas features):
+<ChordDiagram 
+  chord={myChord}
+  nutStrokeWidth={0.15}
+  nutColor="#0066CC"
+  canvasOffsetX={20}
+  canvasOffsetY={20}
+/>
+```
+
+### 📦 Installation
+
+```bash
+npm install svguitar-react@1.17.0
+# ou
+pnpm add svguitar-react@1.17.0
+# ou
+yarn add svguitar-react@1.17.0
+```
+
+### 🔗 Links
+
+- [Changelog completo](./CHANGELOG.md)
+- [Documentação](./README.md)
+- [Storybook](https://svguitar-react.vercel.app/)
+
+---
+
 ## Version 1.16.0
 
 **Release Date:** October 8, 2025

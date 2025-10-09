@@ -57,6 +57,17 @@ export const DEFAULT_CHORD_STYLE = {
 	// Fret numbers customization
 	fretTextOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for fret number positioning
 	fretTextOffsetY: 0, // Vertical offset multiplier (-5 to 5) for fret number positioning
+
+	// Nut (fret zero) customization
+	nutStrokeWidth: 0.075, // Stroke width multiplier (-5 to 5) - 0.075 * 40 (default fretWidth) ≈ 3px
+	nutOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for nut positioning
+	nutOffsetY: 0, // Vertical offset multiplier (-5 to 5) for nut positioning
+	nutOpacity: 1.0, // Opacity from 0 to 1
+	nutColor: "#333333", // Same as default fretColor
+
+	// Canvas positioning (global diagram offset)
+	canvasOffsetX: 0, // Horizontal offset in pixels for entire diagram
+	canvasOffsetY: 0, // Vertical offset in pixels for entire diagram
 };
 
 /**
