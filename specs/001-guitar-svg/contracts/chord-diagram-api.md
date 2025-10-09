@@ -81,6 +81,17 @@ interface ChordDiagramProps {
 	// Fret numbers customization
 	fretTextOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth (padrão: 0)
 	fretTextOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight (padrão: 0)
+
+	// Nut (fret zero) customization
+	nutStrokeWidth?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para espessura da linha do nut (padrão: 0.075)
+	nutOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth (padrão: 0)
+	nutOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight (padrão: 0)
+	nutOpacity?: number; // Opacidade de 0 a 1 (padrão: 1.0)
+	nutColor?: string; // Cor da linha do nut (padrão: igual a fretColor)
+
+	// Canvas positioning (global diagram offset)
+	canvasOffsetX?: number; // Deslocamento horizontal em pixels (padrão: 0)
+	canvasOffsetY?: number; // Deslocamento vertical em pixels (padrão: 0)
 }
 ```
 
@@ -95,6 +106,9 @@ interface ChordDiagramProps {
 - `tuningLabelOffsetX`, `tuningLabelOffsetY`, `stringIndicatorOffsetX`, `stringIndicatorOffsetY`, `barresOffsetX`, `barresOffsetY`, `fretTextOffsetX` e `fretTextOffsetY` devem estar entre -5 e 5
 - `barresOpacity` deve estar entre 0 e 1
 - `barresWidth` deve ser um número positivo
+- `nutStrokeWidth`, `nutOffsetX`, `nutOffsetY` devem estar entre -5 e 5
+- `nutOpacity` deve estar entre 0 e 1
+- `canvasOffsetX` e `canvasOffsetY` podem ser qualquer número (pixels)
 
 ## Entidades de Dados
 

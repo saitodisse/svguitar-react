@@ -80,6 +80,17 @@ interface ChordDiagramProps {
 	// Fret numbers customization
 	fretTextOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal dos números dos trastes (padrão: 0)
 	fretTextOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical dos números dos trastes (padrão: 0)
+
+	// Nut (fret zero) customization
+	nutStrokeWidth?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para espessura da linha do nut (padrão: 0.075 ≈ 3px)
+	nutOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal do nut (padrão: 0)
+	nutOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical do nut (padrão: 0)
+	nutOpacity?: number; // Opacidade do nut de 0 a 1 (padrão: 1.0)
+	nutColor?: string; // Cor da linha do nut (padrão: igual a fretColor)
+
+	// Canvas positioning (global diagram offset)
+	canvasOffsetX?: number; // Deslocamento horizontal em pixels de todo o diagrama (padrão: 0)
+	canvasOffsetY?: number; // Deslocamento vertical em pixels de todo o diagrama (padrão: 0)
 }
 ```
 
@@ -247,6 +258,17 @@ interface ChordStyle {
 	// Fret numbers customization
 	fretTextOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal dos números dos trastes
 	fretTextOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical dos números dos trastes
+
+	// Nut (fret zero) customization
+	nutStrokeWidth: number; // Multiplicador (-5 a 5) aplicado a fretWidth para espessura da linha do nut (padrão: 0.075 ≈ 3px)
+	nutOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal do nut
+	nutOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical do nut
+	nutOpacity: number; // Opacidade do nut de 0 a 1 (padrão: 1.0)
+	nutColor: string; // Cor da linha do nut (padrão: igual a fretColor)
+
+	// Canvas positioning (global diagram offset)
+	canvasOffsetX: number; // Deslocamento horizontal em pixels de todo o diagrama (padrão: 0)
+	canvasOffsetY: number; // Deslocamento vertical em pixels de todo o diagrama (padrão: 0)
 }
 ```
 

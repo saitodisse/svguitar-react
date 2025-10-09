@@ -1,0 +1,90 @@
+# Build outputs
+dist/
+dist-app/
+dist-ssr/
+storybook-static/
+coverage/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Lock files (já ignorados por padrão, mas explicitando)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Environment files
+.env*
+!.env.example
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.sw?
+
+# Logs
+*.log
+logs/
+*storybook.log
+
+# Cache directories
+.cache/
+.eslintcache/
+.parcel-cache/
+.playwright-mcp/
+.vercel/
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.bak
+*.local
+
+# Media files (não precisam ser indexados)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.svg
+*.webp
+*.ico
+*.mp4
+*.mov
+*.avi
+*.webm
+
+# Font files
+*.woff
+*.woff2
+*.ttf
+*.otf
+*.eot
+
+# Archive files
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+
+# Version control
+.git/
+.svn/
+.hg/
+
+# Negations - Files to INCLUDE despite parent directory being ignored
+# (Add specific files here if needed)
+
