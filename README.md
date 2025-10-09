@@ -324,6 +324,41 @@ src/
 └── index.ts                    # Library entry point
 ```
 
+## 📚 Documentation & Storybook
+
+### Interactive Documentation
+
+Explore all components and features in our interactive Storybook documentation:
+
+- 🌐 **Live Storybook**: [https://svguitar-react-storybook.vercel.app](https://svguitar-react-storybook.vercel.app) _(Coming soon)_
+
+### Running Storybook Locally
+
+```bash
+# Start Storybook development server
+pnpm storybook
+
+# Build Storybook for production
+pnpm build-storybook
+
+# Preview built Storybook
+pnpm preview-storybook
+```
+
+### Deploying Storybook
+
+For detailed instructions on deploying Storybook to Vercel, see [STORYBOOK_DEPLOY.md](STORYBOOK_DEPLOY.md).
+
+Quick deploy:
+
+```bash
+# Deploy preview
+pnpm deploy-storybook
+
+# Deploy to production
+pnpm deploy-storybook:prod
+```
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.

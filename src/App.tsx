@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
 import { ChordDiagram } from "./components/ChordDiagram/ChordDiagram";
+import type { ChordDiagramProps } from "./components/ChordDiagram/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,15 +10,63 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 
+// Type para configuração padrão baseado nas props do ChordDiagram
+type DefaultConfig = Required<
+	Pick<
+		ChordDiagramProps,
+		| "width"
+		| "height"
+		| "fretWidth"
+		| "fretCount"
+		| "dotTextSize"
+		| "dotSize"
+		| "barreHeight"
+		| "fretHeight"
+		| "tuningTextSize"
+		| "fretTextSize"
+		| "stringWidth"
+		| "stringCount"
+		| "fretTextColor"
+		| "backgroundColor"
+		| "fretColor"
+		| "stringColor"
+		| "dotColor"
+		| "dotTextColor"
+		| "barreColor"
+		| "tuningTextColor"
+		| "openStringColor"
+		| "mutedStringColor"
+		| "fontFamily"
+		| "tuningLabelFormat"
+	>
+> & {
+	chord: string;
+	tuningLabelOffset: number;
+	stringIndicatorOffset: number;
+	canvasOffsetX?: number;
+	canvasOffsetY?: number;
+	tuningLabelOffsetX?: number;
+	tuningLabelOffsetY?: number;
+	stringIndicatorOffsetX?: number;
+	nutStrokeWidth?: number;
+	nutColor?: string;
+	stringIndicatorOffsetY?: number;
+	fretTextOffsetY?: number;
+	fretTextOffsetX?: number;
+};
+
+// Type para as chaves de configuração
+type ConfigKey = "mobileHorizontal" | "mobileVertical" | "desktopHorizontal" | "desktopVertical";
+
 // Configurações padrão - extraídas para constantes
-const DEFAULT_CONFIGS = {
+const DEFAULT_CONFIGS: Record<ConfigKey, DefaultConfig> = {
 	mobileHorizontal: {
-		width: 333,
+		width: 304,
 		height: 222,
 		fretWidth: 53,
 		fretCount: 4,
-		dotTextSize: 11,
-		dotSize: 18,
+		dotTextSize: 17,
+		dotSize: 20,
 		barreHeight: 6,
 		fretHeight: 27,
 		tuningTextSize: 20,
@@ -31,29 +80,35 @@ const DEFAULT_CONFIGS = {
 		dotColor: "#2196F3",
 		dotTextColor: "#ffffff",
 		barreColor: "#2196F3",
-		tuningTextColor: "#707070",
+		tuningTextColor: "#575757",
 		openStringColor: "#2196F3",
 		mutedStringColor: "#C65858",
 		fontFamily: "Arial, sans-serif",
 		chord: "x32010",
 		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "scientific",
+		tuningLabelFormat: "note-only",
 		stringIndicatorOffset: 0.5,
+		canvasOffsetX: 21,
+		canvasOffsetY: -11,
+		fretTextOffsetY: 21,
+		tuningLabelOffsetY: 4,
+		tuningLabelOffsetX: 75,
+		stringIndicatorOffsetX: 21,
 	},
 	mobileVertical: {
-		width: 333,
-		height: 222,
-		fretWidth: 53,
+		width: 182,
+		height: 270,
+		fretWidth: 25,
 		fretCount: 4,
 		dotTextSize: 11,
 		dotSize: 18,
 		barreHeight: 6,
-		fretHeight: 27,
-		tuningTextSize: 20,
-		fretTextSize: 21,
+		fretHeight: 47,
+		tuningTextSize: 13,
+		fretTextSize: 13,
 		stringWidth: 2,
 		stringCount: 6,
-		fretTextColor: "#636363",
+		fretTextColor: "#5e5e5e",
 		backgroundColor: "#242424",
 		fretColor: "#bfbfbf",
 		stringColor: "#ffffff",
@@ -66,12 +121,17 @@ const DEFAULT_CONFIGS = {
 		fontFamily: "Arial, sans-serif",
 		chord: "x32010",
 		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "scientific",
+		tuningLabelFormat: "note-only",
 		stringIndicatorOffset: 0.5,
+		canvasOffsetX: -23,
+		tuningLabelOffsetX: 1,
+		tuningLabelOffsetY: 57,
+		stringIndicatorOffsetX: 16,
+		fretTextOffsetX: -5,
 	},
 	desktopHorizontal: {
-		width: 745,
-		height: 239,
+		width: 702,
+		height: 217,
 		fretWidth: 63,
 		fretCount: 10,
 		dotTextSize: 13,
@@ -79,36 +139,7 @@ const DEFAULT_CONFIGS = {
 		barreHeight: 7,
 		fretHeight: 30,
 		tuningTextSize: 13,
-		fretTextSize: 21,
-		fretTextColor: "#4a4a4a",
-		stringWidth: 2,
-		stringCount: 6,
-		backgroundColor: "#242424",
-		fretColor: "#bfbfbf",
-		stringColor: "#ffffff",
-		dotColor: "#2196F3",
-		dotTextColor: "#ffffff",
-		barreColor: "#2196F3",
-		tuningTextColor: "#707070",
-		openStringColor: "#2196F3",
-		mutedStringColor: "#C65858",
-		fontFamily: "Arial, sans-serif",
-		chord: "x32010",
-		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "scientific",
-		stringIndicatorOffset: 0.5,
-	},
-	desktopVertical: {
-		width: 221,
-		height: 348,
-		fretWidth: 24,
-		fretCount: 4,
-		dotTextSize: 13,
-		dotSize: 16,
-		barreHeight: 5,
-		fretHeight: 58,
-		tuningTextSize: 13,
-		fretTextSize: 21,
+		fretTextSize: 16,
 		fretTextColor: "#4a4a4a",
 		stringWidth: 1,
 		stringCount: 6,
@@ -126,6 +157,48 @@ const DEFAULT_CONFIGS = {
 		tuningLabelOffset: 0.5,
 		tuningLabelFormat: "scientific",
 		stringIndicatorOffset: 0.5,
+		tuningLabelOffsetX: 48,
+		tuningLabelOffsetY: 5,
+		stringIndicatorOffsetX: 5,
+		canvasOffsetY: -9,
+		fretTextOffsetY: 35,
+	},
+	desktopVertical: {
+		width: 166,
+		height: 296,
+		fretWidth: 24,
+		fretCount: 5,
+		dotTextSize: 13,
+		dotSize: 16,
+		barreHeight: 5,
+		fretHeight: 46,
+		tuningTextSize: 13,
+		fretTextSize: 14,
+		fretTextColor: "#4a4a4a",
+		stringWidth: 1,
+		stringCount: 6,
+		backgroundColor: "#242424",
+		fretColor: "#bfbfbf",
+		stringColor: "#ffffff",
+		dotColor: "#2196F3",
+		dotTextColor: "#ffffff",
+		barreColor: "#2196F3",
+		tuningTextColor: "#4d4d4d",
+		openStringColor: "#2196F3",
+		mutedStringColor: "#C65858",
+		fontFamily: "Arial, sans-serif",
+		chord: "x32010",
+		tuningLabelOffset: 0.5,
+		tuningLabelFormat: "note-only",
+		stringIndicatorOffset: 0.5,
+		canvasOffsetX: -30,
+		tuningLabelOffsetX: 5,
+		tuningLabelOffsetY: 61,
+		nutStrokeWidth: 218,
+		nutColor: "#878787",
+		stringIndicatorOffsetY: 25,
+		fretTextOffsetY: 9,
+		fretTextOffsetX: 7,
 	},
 } as const;
 
@@ -151,8 +224,15 @@ function useIsMobile() {
 	return isMobile;
 }
 
+// Interface tipada para o componente com tratamento de erro
+interface ChordDiagramWithErrorHandlingProps extends Omit<ChordDiagramProps, "instrument" | "chord"> {
+	chord: string;
+	instrument?: ChordDiagramProps["instrument"];
+}
+
 // Componente para tratamento de erro do ChordDiagram
-function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [key: string]: unknown }) {
+function ChordDiagramWithErrorHandling(props: ChordDiagramWithErrorHandlingProps) {
+	const { chord, instrument, ...restProps } = props;
 	const { t } = useTranslation();
 	const [error, setError] = useState<string | null>(null);
 	const [lastValidChord, setLastValidChord] = useState<string>(chord);
@@ -208,52 +288,11 @@ function ChordDiagramWithErrorHandling({ chord, ...props }: { chord: string; [ke
 	return (
 		<>
 			<ChordDiagram
+				{...restProps}
 				instrument={{
-					...(props.instrument as Record<string, unknown>),
+					...instrument,
 					chord: chordToUse,
 				}}
-				view={props.view as "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left"}
-				width={props.width as number}
-				height={props.height as number}
-				fretCount={props.fretCount as number}
-				stringCount={props.stringCount as number}
-				fretWidth={props.fretWidth as number}
-				fretHeight={props.fretHeight as number}
-				stringWidth={props.stringWidth as number}
-				dotSize={props.dotSize as number}
-				barreHeight={props.barreHeight as number}
-				backgroundColor={props.backgroundColor as string}
-				fretColor={props.fretColor as string}
-				stringColor={props.stringColor as string}
-				dotColor={props.dotColor as string}
-				dotTextColor={props.dotTextColor as string}
-				barreColor={props.barreColor as string}
-				fretTextColor={props.fretTextColor as string}
-				tuningTextColor={props.tuningTextColor as string}
-				openStringColor={props.openStringColor as string}
-				mutedStringColor={props.mutedStringColor as string}
-				fontFamily={props.fontFamily as string}
-				dotTextSize={props.dotTextSize as number}
-				fretTextSize={props.fretTextSize as number}
-				tuningTextSize={props.tuningTextSize as number}
-				tuningLabelOffsetX={props.tuningLabelOffsetX as number}
-				tuningLabelOffsetY={props.tuningLabelOffsetY as number}
-				tuningLabelFormat={props.tuningLabelFormat as "scientific" | "note-only"}
-				stringIndicatorOffsetX={props.stringIndicatorOffsetX as number}
-				stringIndicatorOffsetY={props.stringIndicatorOffsetY as number}
-				barresWidth={props.barresWidth as number}
-				barresOpacity={props.barresOpacity as number}
-				barresOffsetX={props.barresOffsetX as number}
-				barresOffsetY={props.barresOffsetY as number}
-				fretTextOffsetX={props.fretTextOffsetX as number}
-				fretTextOffsetY={props.fretTextOffsetY as number}
-				nutStrokeWidth={props.nutStrokeWidth as number}
-				nutOffsetX={props.nutOffsetX as number}
-				nutOffsetY={props.nutOffsetY as number}
-				nutOpacity={props.nutOpacity as number}
-				nutColor={props.nutColor as string}
-				canvasOffsetX={props.canvasOffsetX as number}
-				canvasOffsetY={props.canvasOffsetY as number}
 			/>
 
 			{error && (
@@ -392,25 +431,31 @@ function App() {
 	// Tuning customization
 	const [tuningLabelOffsetX, setTuningLabelOffsetX] = useQueryState(
 		"tuningLabelOffsetX",
-		parseAsInteger.withDefault(50)
+		parseAsInteger.withDefault(
+			defaults.tuningLabelOffsetX ?? Math.round(defaults.tuningLabelOffset * 100)
+		)
 	);
 	const [tuningLabelOffsetY, setTuningLabelOffsetY] = useQueryState(
 		"tuningLabelOffsetY",
-		parseAsInteger.withDefault(50)
+		parseAsInteger.withDefault(
+			defaults.tuningLabelOffsetY ?? Math.round(defaults.tuningLabelOffset * 100)
+		)
 	);
 	const [tuningLabelFormat, setTuningLabelFormat] = useQueryState(
 		"tuningLabelFormat",
-		parseAsStringLiteral(["scientific", "note-only"]).withDefault("scientific")
+		parseAsStringLiteral(["scientific", "note-only"]).withDefault(defaults.tuningLabelFormat)
 	);
 
 	// String indicators customization
 	const [stringIndicatorOffsetX, setStringIndicatorOffsetX] = useQueryState(
 		"stringIndicatorOffsetX",
-		parseAsInteger.withDefault(50)
+		parseAsInteger.withDefault(
+			defaults.stringIndicatorOffsetX ?? Math.round(defaults.stringIndicatorOffset * 100)
+		)
 	);
 	const [stringIndicatorOffsetY, setStringIndicatorOffsetY] = useQueryState(
 		"stringIndicatorOffsetY",
-		parseAsInteger.withDefault(0)
+		parseAsInteger.withDefault(defaults.stringIndicatorOffsetY ?? 0)
 	);
 
 	// Barres customization
@@ -422,26 +467,35 @@ function App() {
 	// Fret numbers customization
 	const [fretTextOffsetX, setFretTextOffsetX] = useQueryState(
 		"fretTextOffsetX",
-		parseAsInteger.withDefault(0)
+		parseAsInteger.withDefault(defaults.fretTextOffsetX ?? 0)
 	);
 	const [fretTextOffsetY, setFretTextOffsetY] = useQueryState(
 		"fretTextOffsetY",
-		parseAsInteger.withDefault(0)
+		parseAsInteger.withDefault(defaults.fretTextOffsetY ?? 0)
 	);
 
 	// Nut customization
 	const [nutStrokeWidth, setNutStrokeWidth] = useQueryState(
 		"nutStrokeWidth",
-		parseAsInteger.withDefault(75)
+		parseAsInteger.withDefault(defaults.nutStrokeWidth ?? 75)
 	);
 	const [nutOffsetX, setNutOffsetX] = useQueryState("nutOffsetX", parseAsInteger.withDefault(0));
 	const [nutOffsetY, setNutOffsetY] = useQueryState("nutOffsetY", parseAsInteger.withDefault(0));
 	const [nutOpacity, setNutOpacity] = useQueryState("nutOpacity", parseAsInteger.withDefault(100));
-	const [nutColor, setNutColor] = useQueryState("nutColor", parseAsString.withDefault("#333333"));
+	const [nutColor, setNutColor] = useQueryState(
+		"nutColor",
+		parseAsString.withDefault(defaults.nutColor ?? "#333333")
+	);
 
 	// Canvas positioning
-	const [canvasOffsetX, setCanvasOffsetX] = useQueryState("canvasOffsetX", parseAsInteger.withDefault(0));
-	const [canvasOffsetY, setCanvasOffsetY] = useQueryState("canvasOffsetY", parseAsInteger.withDefault(0));
+	const [canvasOffsetX, setCanvasOffsetX] = useQueryState(
+		"canvasOffsetX",
+		parseAsInteger.withDefault(defaults.canvasOffsetX ?? 0)
+	);
+	const [canvasOffsetY, setCanvasOffsetY] = useQueryState(
+		"canvasOffsetY",
+		parseAsInteger.withDefault(defaults.canvasOffsetY ?? 0)
+	);
 
 	// Função para limpar a configuração e manter apenas view e lang
 	const clearConfiguration = () => {
@@ -471,29 +525,31 @@ function App() {
 		setFretTextSize(defaults.fretTextSize);
 		setTuningTextSize(defaults.tuningTextSize);
 		// Tuning
-		setTuningLabelOffsetX(50);
-		setTuningLabelOffsetY(50);
-		setTuningLabelFormat("scientific");
+		setTuningLabelOffsetX(defaults.tuningLabelOffsetX ?? Math.round(defaults.tuningLabelOffset * 100));
+		setTuningLabelOffsetY(defaults.tuningLabelOffsetY ?? Math.round(defaults.tuningLabelOffset * 100));
+		setTuningLabelFormat(defaults.tuningLabelFormat);
 		// String indicators
-		setStringIndicatorOffsetX(50);
-		setStringIndicatorOffsetY(0);
+		setStringIndicatorOffsetX(
+			defaults.stringIndicatorOffsetX ?? Math.round(defaults.stringIndicatorOffset * 100)
+		);
+		setStringIndicatorOffsetY(defaults.stringIndicatorOffsetY ?? 0);
 		// Barres
 		setBarresWidth(8);
 		setBarresOpacity(100);
 		setBarresOffsetX(0);
 		setBarresOffsetY(0);
 		// Fret numbers
-		setFretTextOffsetX(0);
-		setFretTextOffsetY(0);
+		setFretTextOffsetX(defaults.fretTextOffsetX ?? 0);
+		setFretTextOffsetY(defaults.fretTextOffsetY ?? 0);
 		// Nut
-		setNutStrokeWidth(75);
+		setNutStrokeWidth(defaults.nutStrokeWidth ?? 75);
 		setNutOffsetX(0);
 		setNutOffsetY(0);
 		setNutOpacity(100);
-		setNutColor("#333333");
+		setNutColor(defaults.nutColor ?? "#333333");
 		// Canvas
-		setCanvasOffsetX(0);
-		setCanvasOffsetY(0);
+		setCanvasOffsetX(defaults.canvasOffsetX ?? 0);
+		setCanvasOffsetY(defaults.canvasOffsetY ?? 0);
 	};
 
 	return (
@@ -521,7 +577,7 @@ function App() {
 			</header>
 
 			<div className="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur">
+				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
 					<ChordDiagramWithErrorHandling
 						chord={chord}
 						instrument={{
@@ -582,7 +638,7 @@ function App() {
 				</div>
 
 				<aside
-					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur"
+					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur-sm"
 					aria-label={t("aria.controlPanel")}
 				>
 					<div className="flex items-center justify-between">
@@ -741,6 +797,7 @@ function App() {
 								onChange: (value: number) => setStringWidth(value),
 								min: 0,
 								max: 10,
+								step: 0.01,
 								source: stringWidth,
 							},
 						].map(control => (
@@ -755,6 +812,7 @@ function App() {
 									id={control.id}
 									min={control.min}
 									max={control.max}
+									step={control.step}
 									value={[control.source]}
 									onValueChange={values => control.onChange(values[0])}
 								/>

@@ -5,7 +5,7 @@ import { resolve } from "path";
 
 // App build configuration for Vercel deployment
 export default defineConfig({
-	plugins: [react(), tailwindcss()],
+	plugins: [tailwindcss(), react()],
 	resolve: {
 		alias: {
 			"@": resolve(__dirname, "./src"),
