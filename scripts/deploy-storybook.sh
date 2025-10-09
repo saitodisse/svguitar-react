@@ -40,13 +40,35 @@ echo "✅ Build concluído!"
 echo ""
 echo "🚀 Fazendo deploy..."
 
+# Criar um package.json temporário na pasta storybook-static
+cat > storybook-static/package.json << 'EOF'
+{
+  "name": "svguitar-react-storybook",
+  "version": "1.0.0",
+  "private": true
+}
+EOF
+
+# Criar vercel.json na pasta storybook-static para servir como site estático
+cat > storybook-static/vercel.json << 'EOF'
+{
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "framework": null
+}
+EOF
+
 if [ "$1" == "--production" ] || [ "$1" == "-p" ]; then
     echo "📦 Deploy de PRODUÇÃO"
-    vercel deploy storybook-static --prod --yes
+    cd storybook-static && vercel --prod --yes && cd ..
 else
     echo "🔍 Deploy de PREVIEW"
-    vercel deploy storybook-static --yes
+    cd storybook-static && vercel --yes && cd ..
 fi
+
+# Limpar arquivos temporários
+rm -f storybook-static/package.json
+rm -f storybook-static/vercel.json
 
 echo ""
 echo "✨ Deploy concluído!"
