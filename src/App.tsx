@@ -577,7 +577,7 @@ function App() {
 			</header>
 
 			<div className="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur">
+				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
 					<ChordDiagramWithErrorHandling
 						chord={chord}
 						instrument={{
@@ -638,7 +638,7 @@ function App() {
 				</div>
 
 				<aside
-					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur"
+					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur-sm"
 					aria-label={t("aria.controlPanel")}
 				>
 					<div className="flex items-center justify-between">

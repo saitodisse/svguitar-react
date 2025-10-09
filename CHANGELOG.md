@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.18.0 (2025-10-09)
+
+### Breaking Changes ⚠️
+
+- **Tailwind CSS v4 Upgrade**: Upgraded from Tailwind CSS v3.4.17 to v4.1.14
+    - New `@tailwindcss/vite` plugin for better performance
+    - Removed `tailwind.config.ts` - theme configuration now in CSS with `@theme`
+    - Removed `autoprefixer` dependency (now integrated)
+    - Added compatibility styles to maintain visual consistency
+    - All builds and tests passing successfully
+
+### Infrastructure 🔧
+
+- **Storybook Deployment**: Complete setup for Storybook deployment to Vercel
+    - Created `vercel.storybook.json` configuration
+    - Added GitHub Actions workflow for automatic deployment
+    - Added deployment scripts: `deploy-storybook` and `deploy-storybook:prod`
+    - Updated documentation with deployment guides
+
+### Improvements 🎨
+
+- **Build Performance**: Faster builds with Tailwind CSS v4's dedicated Vite plugin
+- **CSS Processing**: More efficient CSS generation and tree-shaking
+- **Developer Experience**: Simplified configuration with CSS-native theme definitions
+
+### Documentation 📚
+
+- Updated README with Storybook deployment information
+- Added comprehensive Tailwind v4 upgrade documentation (deleted by user)
+- Added Storybook deployment guides (deleted by user)
+- Added GitHub Actions workflow for automated deployments
+
 ## 1.17.0 (2025-10-09)
 
 ### New Features ✨
@@ -379,7 +411,7 @@ None - All changes are backward compatible. New props are optional with sensible
 
 - **Redesigned Demo App**: Modern interface with Tailwind utilities
     - Responsive grid layout (mobile/desktop breakpoints)
-    - Glassmorphism effects with backdrop-blur
+    - Glassmorphism effects with backdrop-blur-sm
     - Improved visual hierarchy and spacing
     - Better color contrast and accessibility
 
