@@ -384,64 +384,67 @@ function App() {
 
 			<div className="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
 				{/* Main Content - Chord Diagram */}
-				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
-					<ChordDiagram
-						chord={chordObject}
-						instrument={{
-							tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-						}}
-						view={view}
-						// Dimensions
-						width={width}
-						height={height}
-						fretCount={fretCount}
-						stringCount={stringCount}
-						fretWidth={fretWidth}
-						fretHeight={fretHeight}
-						stringWidth={stringWidth}
-						dotSize={dotSize}
-						barreHeight={barreHeight}
-						// Colors
-						backgroundColor={backgroundColor}
-						fretColor={fretColor}
-						stringColor={stringColor}
-						dotColor={dotColor}
-						dotTextColor={dotTextColor}
-						barreColor={barreColor}
-						fretTextColor={fretTextColor}
-						tuningTextColor={tuningTextColor}
-						openStringColor={openStringColor}
-						mutedStringColor={mutedStringColor}
-						// Fonts
-						fontFamily={fontFamily}
-						dotTextSize={dotTextSize}
-						fretTextSize={fretTextSize}
-						tuningTextSize={tuningTextSize}
-						// Tuning customization
-						tuningLabelOffsetX={tuningLabelOffsetX / 100}
-						tuningLabelOffsetY={tuningLabelOffsetY / 100}
-						tuningLabelFormat={tuningLabelFormat}
-						// String indicators customization
-						stringIndicatorOffsetX={stringIndicatorOffsetX / 100}
-						stringIndicatorOffsetY={stringIndicatorOffsetY / 100}
-						// Barres customization
-						barresWidth={barresWidth}
-						barresOpacity={barresOpacity / 100}
-						barresOffsetX={barresOffsetX / 100}
-						barresOffsetY={barresOffsetY / 100}
-						// Fret numbers customization
-						fretTextOffsetX={fretTextOffsetX / 100}
-						fretTextOffsetY={fretTextOffsetY / 100}
-						// Nut customization
-						nutStrokeWidth={nutStrokeWidth / 1000}
-						nutOffsetX={nutOffsetX / 100}
-						nutOffsetY={nutOffsetY / 100}
-						nutOpacity={nutOpacity / 100}
-						nutColor={nutColor}
-						// Canvas positioning
-						canvasOffsetX={canvasOffsetX}
-						canvasOffsetY={canvasOffsetY}
-					/>
+				<div className="flex justify-center items-center w-full m-auto">
+					<div className="w-full m-auto border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
+						<ChordDiagram
+							// chord={chordObject}
+							instrument={{
+								tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+								chord: "x32010",
+							}}
+							view={view}
+							// Dimensions
+							width={width}
+							height={height}
+							fretCount={fretCount}
+							stringCount={stringCount}
+							fretWidth={fretWidth}
+							fretHeight={fretHeight}
+							stringWidth={stringWidth}
+							dotSize={dotSize}
+							barreHeight={barreHeight}
+							// Colors
+							backgroundColor={backgroundColor}
+							fretColor={fretColor}
+							stringColor={stringColor}
+							dotColor={dotColor}
+							dotTextColor={dotTextColor}
+							barreColor={barreColor}
+							fretTextColor={fretTextColor}
+							tuningTextColor={tuningTextColor}
+							openStringColor={openStringColor}
+							mutedStringColor={mutedStringColor}
+							// Fonts
+							fontFamily={fontFamily}
+							dotTextSize={dotTextSize}
+							fretTextSize={fretTextSize}
+							tuningTextSize={tuningTextSize}
+							// Tuning customization
+							tuningLabelOffsetX={tuningLabelOffsetX / 100}
+							tuningLabelOffsetY={tuningLabelOffsetY / 100}
+							tuningLabelFormat={tuningLabelFormat}
+							// String indicators customization
+							stringIndicatorOffsetX={stringIndicatorOffsetX / 100}
+							stringIndicatorOffsetY={stringIndicatorOffsetY / 100}
+							// Barres customization
+							barresWidth={barresWidth}
+							barresOpacity={barresOpacity / 100}
+							barresOffsetX={barresOffsetX / 100}
+							barresOffsetY={barresOffsetY / 100}
+							// Fret numbers customization
+							fretTextOffsetX={fretTextOffsetX / 100}
+							fretTextOffsetY={fretTextOffsetY / 100}
+							// Nut customization
+							nutStrokeWidth={nutStrokeWidth / 1000}
+							nutOffsetX={nutOffsetX / 100}
+							nutOffsetY={nutOffsetY / 100}
+							nutOpacity={nutOpacity / 100}
+							nutColor={nutColor}
+							// Canvas positioning
+							canvasOffsetX={canvasOffsetX}
+							canvasOffsetY={canvasOffsetY}
+						/>
+					</div>
 				</div>
 
 				{/* Right Sidebar - Controls */}
@@ -471,7 +474,9 @@ function App() {
 
 					{/* Barre Configuration */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Barre</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.barreSection")}
+						</h3>
 						<div className="flex items-center space-x-2">
 							<input
 								id="barreEnabled"
@@ -481,7 +486,7 @@ function App() {
 								className="h-4 w-4 cursor-pointer rounded border border-white/20 bg-transparent"
 							/>
 							<Label htmlFor="barreEnabled" className="text-sm text-white/80">
-								Enable Barre
+								{t("controls.barreEnabled")}
 							</Label>
 						</div>
 						{barreEnabled === 1 && (
@@ -489,7 +494,7 @@ function App() {
 								<div className="flex flex-col gap-1">
 									<Label htmlFor="barreFret" className="text-sm text-white/80">
 										<span className="flex items-center justify-between">
-											Barre Fret (Casa)
+											{t("controls.barreFret")}
 											<span className="text-xs text-white/60">{barreFret}</span>
 										</span>
 									</Label>
@@ -504,7 +509,7 @@ function App() {
 								<div className="flex flex-col gap-1">
 									<Label htmlFor="barreFromString" className="text-sm text-white/80">
 										<span className="flex items-center justify-between">
-											From String (Corda Inicial)
+											{t("controls.barreFromString")}
 											<span className="text-xs text-white/60">{barreFromString}</span>
 										</span>
 									</Label>
@@ -519,7 +524,7 @@ function App() {
 								<div className="flex flex-col gap-1">
 									<Label htmlFor="barreToString" className="text-sm text-white/80">
 										<span className="flex items-center justify-between">
-											To String (Corda Final)
+											{t("controls.barreToString")}
 											<span className="text-xs text-white/60">{barreToString}</span>
 										</span>
 									</Label>
@@ -648,7 +653,9 @@ function App() {
 
 					{/* Strings */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Strings</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.stringsSection")}
+						</h3>
 						{[
 							{
 								id: "stringCount",
@@ -723,7 +730,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="stringIndicatorOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									String Indicator Offset X
+									{t("controls.stringIndicatorOffsetXLabel")}
 									<span className="text-xs text-white/60">
 										{(stringIndicatorOffsetX / 100).toFixed(2)}
 									</span>
@@ -740,7 +747,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="stringIndicatorOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									String Indicator Offset Y
+									{t("controls.stringIndicatorOffsetYLabel")}
 									<span className="text-xs text-white/60">
 										{(stringIndicatorOffsetY / 100).toFixed(2)}
 									</span>
@@ -758,7 +765,9 @@ function App() {
 
 					{/* Frets */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Frets</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.fretsSection")}
+						</h3>
 						{[
 							{
 								id: "fretCount",
@@ -844,7 +853,9 @@ function App() {
 
 					{/* Tuning */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Tuning</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.tuningSection")}
+						</h3>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="tuningTextSize" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
@@ -875,7 +886,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="tuningLabelOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Tuning Label Offset X
+									{t("controls.tuningLabelOffsetXLabel")}
 									<span className="text-xs text-white/60">
 										{(tuningLabelOffsetX / 100).toFixed(2)}
 									</span>
@@ -892,7 +903,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="tuningLabelOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Tuning Label Offset Y
+									{t("controls.tuningLabelOffsetYLabel")}
 									<span className="text-xs text-white/60">
 										{(tuningLabelOffsetY / 100).toFixed(2)}
 									</span>
@@ -933,7 +944,9 @@ function App() {
 
 					{/* Dots (Fingers) */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Dots (Fingers)</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.dotsSection")}
+						</h3>
 						{[
 							{
 								id: "dotSize",
@@ -1001,7 +1014,9 @@ function App() {
 
 					{/* Barres */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Barres</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.barresSection")}
+						</h3>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="barreHeight" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
@@ -1032,7 +1047,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="barresWidth" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Barres Width
+									{t("controls.barresWidthLabel")}
 									<span className="text-xs text-white/60">{barresWidth}px</span>
 								</span>
 							</Label>
@@ -1047,7 +1062,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="barresOpacity" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Barres Opacity
+									{t("controls.barresOpacityLabel")}
 									<span className="text-xs text-white/60">
 										{(barresOpacity / 100).toFixed(2)}
 									</span>
@@ -1064,7 +1079,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="barresOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Barres Offset X
+									{t("controls.barresOffsetXLabel")}
 									<span className="text-xs text-white/60">
 										{(barresOffsetX / 100).toFixed(2)}
 									</span>
@@ -1081,7 +1096,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="barresOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Barres Offset Y
+									{t("controls.barresOffsetYLabel")}
 									<span className="text-xs text-white/60">
 										{(barresOffsetY / 100).toFixed(2)}
 									</span>
@@ -1099,11 +1114,13 @@ function App() {
 
 					{/* Fret Numbers */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Fret Numbers</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.fretNumbersSection")}
+						</h3>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="fretTextOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Fret Text Offset X
+									{t("controls.fretTextOffsetXLabel")}
 									<span className="text-xs text-white/60">
 										{(fretTextOffsetX / 100).toFixed(2)}
 									</span>
@@ -1120,7 +1137,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="fretTextOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Fret Text Offset Y
+									{t("controls.fretTextOffsetYLabel")}
 									<span className="text-xs text-white/60">
 										{(fretTextOffsetY / 100).toFixed(2)}
 									</span>
@@ -1138,11 +1155,13 @@ function App() {
 
 					{/* Nut (Fret Zero) */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Nut (Fret Zero)</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.nutSection")}
+						</h3>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="nutStrokeWidth" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Nut Stroke Width
+									{t("controls.nutStrokeWidthLabel")}
 									<span className="text-xs text-white/60">
 										{(nutStrokeWidth / 1000).toFixed(3)}
 									</span>
@@ -1159,7 +1178,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="nutOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Nut Offset X
+									{t("controls.nutOffsetXLabel")}
 									<span className="text-xs text-white/60">
 										{(nutOffsetX / 100).toFixed(2)}
 									</span>
@@ -1176,7 +1195,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="nutOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Nut Offset Y
+									{t("controls.nutOffsetYLabel")}
 									<span className="text-xs text-white/60">
 										{(nutOffsetY / 100).toFixed(2)}
 									</span>
@@ -1193,7 +1212,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="nutOpacity" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Nut Opacity
+									{t("controls.nutOpacityLabel")}
 									<span className="text-xs text-white/60">
 										{(nutOpacity / 100).toFixed(2)}
 									</span>
@@ -1209,7 +1228,7 @@ function App() {
 						</div>
 						<div className="flex items-center justify-between gap-4">
 							<Label htmlFor="nutColor" className="text-sm text-white/80">
-								Nut Color
+								{t("controls.nutColorLabel")}
 							</Label>
 							<input
 								id="nutColor"
@@ -1223,11 +1242,13 @@ function App() {
 
 					{/* Canvas Positioning */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">Canvas Positioning</h3>
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.canvasSection")}
+						</h3>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="canvasOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Canvas Offset X
+									{t("controls.canvasOffsetXLabel")}
 									<span className="text-xs text-white/60">{canvasOffsetX}px</span>
 								</span>
 							</Label>
@@ -1242,7 +1263,7 @@ function App() {
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="canvasOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
-									Canvas Offset Y
+									{t("controls.canvasOffsetYLabel")}
 									<span className="text-xs text-white/60">{canvasOffsetY}px</span>
 								</span>
 							</Label>

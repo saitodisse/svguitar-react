@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.19.0 (2025-10-11)
+
+### New Features ✨
+
+- **Internationalization (i18n)**: Complete multilingual support for the demo application
+    - Added `react-i18next` for translation management
+    - Support for English (en) and Portuguese (pt) languages
+    - Language switcher in the control panel
+    - All UI text now fully translatable
+    - Organized translation files in `src/locales/` directory
+    - Easy to add new languages with structured JSON files
+
+### Improvements 🎨
+
+- **Code Quality**: Removed debug console.log statements from ChordDiagram component
+- **UI Consistency**: All sections and labels now use translation function `t()`
+- **Developer Experience**: Simplified maintenance with centralized translation management
+
+### Documentation 📚
+
+- Translation files structure documented
+- Easy-to-follow pattern for adding new translations
+
 ## 1.18.0 (2025-10-09)
 
 ### Breaking Changes ⚠️

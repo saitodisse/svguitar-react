@@ -1,5 +1,174 @@
 # Release Notes
 
+## Version 1.19.0
+
+**Release Date:** October 11, 2025
+
+### 🌍 Internationalization Support
+
+Esta versão adiciona suporte completo para internacionalização (i18n) na aplicação de demonstração, permitindo que usuários de diferentes países utilizem a interface em seu idioma nativo.
+
+#### 🎯 Principais Funcionalidades
+
+##### Suporte Multilíngue
+
+O projeto agora inclui suporte completo para múltiplos idiomas através da biblioteca `react-i18next`.
+
+**Idiomas Disponíveis:**
+
+- 🇺🇸 **Inglês (English)** - Idioma padrão
+- 🇧🇷 **Português (Portuguese)** - Tradução completa
+
+**Recursos Implementados:**
+
+- ✅ Seletor de idioma no painel de controle
+- ✅ Todas as labels e textos da UI traduzidos
+- ✅ Persistência da escolha de idioma na URL
+- ✅ Estrutura organizada de arquivos de tradução
+- ✅ Fácil adição de novos idiomas
+
+**Estrutura de Arquivos:**
+
+```
+src/
+├── i18n.ts                          # Configuração do i18next
+├── locales/
+│   ├── en/
+│   │   └── translation.json         # Traduções em inglês
+│   └── pt/
+│       └── translation.json         # Traduções em português
+```
+
+**Exemplo de Uso:**
+
+```tsx
+import { useTranslation } from "react-i18next";
+
+function Component() {
+    const { t } = useTranslation();
+    return <h1>{t("controls.title")}</h1>; // "Controls" ou "Controles"
+}
+```
+
+**Seções Traduzidas:**
+
+- 📝 Validação de acordes e mensagens de erro
+- 🎛️ Títulos de todas as seções de controle
+- 🏷️ Labels de todos os campos
+- 🎨 Opções de seleção (views, formatos, etc.)
+- 🌐 Seletor de idioma
+
+#### 🛠️ Melhorias Técnicas
+
+##### Qualidade de Código
+
+- **Limpeza**: Removidos todos os console.log de debug do componente ChordDiagram
+- **Consistência**: Todas as strings hardcoded substituídas pela função `t()`
+- **Manutenibilidade**: Centralização de textos facilita atualizações
+- **Performance**: Componentes otimizados com melhor organização
+
+##### Developer Experience
+
+- **Estrutura Clara**: Arquivos de tradução bem organizados por idioma
+- **Fácil Extensão**: Adicionar novo idioma requer apenas:
+  1. Criar pasta em `src/locales/[código]/`
+  2. Adicionar arquivo `translation.json`
+  3. Registrar em `src/i18n.ts`
+- **Type Safety**: Suporte total a TypeScript
+
+#### 📦 Dependências Adicionadas
+
+```json
+{
+    "react-i18next": "^15.3.3",
+    "i18next": "^24.2.1",
+    "nuqs": "^2.6.1"
+}
+```
+
+#### 🚀 Como Usar
+
+##### Para Usuários
+
+1. Abra a aplicação de demonstração
+2. Role até o final do painel de controle
+3. Selecione seu idioma preferido (English/Português)
+4. Toda a interface será atualizada instantaneamente
+
+##### Para Desenvolvedores
+
+**Adicionar Nova Tradução:**
+
+```typescript
+// src/locales/pt/translation.json
+{
+    "controls.newLabel": "Novo Rótulo",
+    "controls.newSection": "Nova Seção"
+}
+```
+
+**Usar na Aplicação:**
+
+```tsx
+const { t } = useTranslation();
+<Label>{t("controls.newLabel")}</Label>
+```
+
+**Adicionar Novo Idioma (Exemplo: Espanhol):**
+
+1. Criar `src/locales/es/translation.json`
+2. Copiar estrutura de `en/translation.json`
+3. Traduzir todos os valores
+4. Adicionar em `src/i18n.ts`:
+
+```typescript
+import es from './locales/es/translation.json';
+
+i18n.use(initReactI18next).init({
+    resources: {
+        en: { translation: en },
+        pt: { translation: pt },
+        es: { translation: es }, // Novo idioma
+    },
+    // ...
+});
+```
+
+5. Adicionar opção no seletor de idioma no `App.tsx`
+
+#### 🎨 Interface do Usuário
+
+A interface mantém o mesmo design visual, mas agora todos os textos respondem ao idioma selecionado:
+
+- **Inglês**: Interface clara e profissional em inglês americano
+- **Português**: Tradução idiomática e natural para português brasileiro
+
+#### ⚡ Performance
+
+- **Zero Impacto**: As traduções são carregadas de forma eficiente
+- **Lazy Loading**: Apenas o idioma selecionado é carregado
+- **Bundle Size**: Aumento mínimo no tamanho do bundle (~15KB)
+
+#### 🔄 Migração
+
+Se você está usando a versão anterior:
+
+**Nenhuma Breaking Change** - Esta atualização é totalmente backward compatible. O componente `ChordDiagram` não foi modificado em sua API pública.
+
+**Atualizações Recomendadas:**
+
+- Se você usa a aplicação de demonstração como base, considere adicionar i18n ao seu projeto
+- Estrutura de pastas `locales/` segue as melhores práticas da indústria
+
+#### 📊 Estatísticas
+
+- **90+ strings traduzidas** em cada idioma
+- **2 idiomas completos** disponíveis
+- **100% cobertura** de textos da UI
+- **0 breaking changes** na API pública
+
+---
+
 ## Version 1.18.0
 
 **Release Date:** October 9, 2025

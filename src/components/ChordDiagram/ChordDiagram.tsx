@@ -65,17 +65,6 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	let resolvedViewId: ViewId | null = null;
 	let resolvedLayoutEngine: LayoutEngine | null = null;
 
-	console.log("[ChordDiagram] 🎼 Component render with error handling configuration:", {
-		validation,
-		invalidBehavior,
-		hasFallbackChord: !!fallbackChord,
-		fallbackChordType: typeof fallbackChord,
-		hasOnError: !!onError,
-		hasErrorFallback: !!errorFallback,
-		errorFallbackType: errorFallback ? typeof errorFallback : undefined,
-		inputType: chord ? "chord" : instrument?.chord ? "instrument.chord" : "none",
-	});
-
 	try {
 		// Validate and resolve view
 		resolvedViewId = validateViewProps({ view, layoutEngine });
@@ -83,11 +72,6 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 
 		chordData = processChordData({ chord, instrument });
 		lastValidRef.current = chordData;
-		console.log("[ChordDiagram] ✅ Chord data processed successfully:", {
-			fingers: chordData.fingers.length,
-			barres: chordData.barres.length,
-			firstFret: chordData.firstFret,
-		});
 	} catch (err) {
 		const error = err as ChordDiagramError;
 		renderError = error;
@@ -103,10 +87,6 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		});
 
 		if (onError) {
-			console.log("[ChordDiagram] 🔔 Calling onError callback:", {
-				code: error.code,
-				message: error.message,
-			});
 			onError(error, {
 				input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
 				code: error.code as ErrorCode,
@@ -117,21 +97,9 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		}
 
 		if (invalidBehavior === "keep-previous") {
-			console.log("[ChordDiagram] 🔄 Using invalidBehavior: 'keep-previous'");
 			if (lastValidRef.current) {
-				console.log("[ChordDiagram] ⏮️  Using last valid chord:", {
-					fingers: lastValidRef.current.fingers.length,
-					barres: lastValidRef.current.barres.length,
-				});
 				chordData = lastValidRef.current;
 			} else {
-				console.log("[ChordDiagram] 📋 No previous valid chord, using fallbackChord:", {
-					fallbackChord:
-						typeof fallbackChord === "string"
-							? fallbackChord
-							: `{fingers: ${fallbackChord.fingers?.length ?? 0}, barres: ${fallbackChord.barres?.length ?? 0}}`,
-					type: typeof fallbackChord,
-				});
 				// Use fallback chord
 				chordData =
 					typeof fallbackChord === "string"
@@ -145,17 +113,8 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 							})
 						: (fallbackChord as Chord);
 				lastValidRef.current = chordData;
-				console.log("[ChordDiagram] ✅ Fallback chord processed and stored as last valid");
 			}
 		} else if (invalidBehavior === "render-fallback") {
-			console.log("[ChordDiagram] 🔄 Using invalidBehavior: 'render-fallback'");
-			console.log("[ChordDiagram] 📋 Using fallbackChord:", {
-				fallbackChord:
-					typeof fallbackChord === "string"
-						? fallbackChord
-						: `{fingers: ${fallbackChord.fingers?.length ?? 0}, barres: ${fallbackChord.barres?.length ?? 0}}`,
-				type: typeof fallbackChord,
-			});
 			chordData =
 				typeof fallbackChord === "string"
 					? processChordData({
@@ -169,8 +128,6 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 					: (fallbackChord as Chord);
 		} else {
 			// suppress: render empty chord (no fingers/barres)
-			console.log("[ChordDiagram] 🔄 Using invalidBehavior: 'suppress'");
-			console.log("[ChordDiagram] 🚫 Rendering empty chord (no fingers/barres)");
 			chordData = { fingers: [], barres: [] } as Chord;
 		}
 	}
@@ -211,7 +168,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	};
 
 	return (
-		<div data-testid="chord-diagram">
+		<div data-testid="chord-diagram" className="w-full m-auto">
 			<svg
 				width={style.width}
 				height={style.height}
@@ -288,24 +245,15 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				</g>
 			</svg>
 			{renderError &&
-				(() => {
-					console.log("[ChordDiagram] 🎨 Rendering errorFallback:", {
-						hasErrorFallback: !!errorFallback,
-						errorFallbackType: typeof errorFallback,
-						errorCode: renderError.code,
-						errorMessage: renderError.message,
-					});
-					return typeof errorFallback === "function"
-						? errorFallback(renderError, {
-								input:
-									(instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
-								code: renderError.code as ErrorCode,
-								message: renderError.message,
-								normalized: null,
-								warnings: [],
-							})
-						: (errorFallback ?? null);
-				})()}
+				(typeof errorFallback === "function"
+					? errorFallback(renderError, {
+							input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
+							code: renderError.code as ErrorCode,
+							message: renderError.message,
+							normalized: null,
+							warnings: [],
+						})
+					: (errorFallback ?? null))}
 		</div>
 	);
 };
