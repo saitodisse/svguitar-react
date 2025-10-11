@@ -75,6 +75,17 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	} catch (err) {
 		const error = err as ChordDiagramError;
 		renderError = error;
+
+		console.error("[ChordDiagram] ❌ Error processing chord data:", {
+			code: error.code,
+			message: error.message,
+			input: instrument?.chord ?? chord,
+			invalidBehavior,
+			hasFallbackChord: !!fallbackChord,
+			hasOnError: !!onError,
+			hasErrorFallback: !!errorFallback,
+		});
+
 		if (onError) {
 			onError(error, {
 				input: (instrument?.chord as unknown as string) ?? (chord as unknown as Chord),
@@ -157,7 +168,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	};
 
 	return (
-		<div data-testid="chord-diagram">
+		<div data-testid="chord-diagram" className="w-full m-auto">
 			<svg
 				width={style.width}
 				height={style.height}
