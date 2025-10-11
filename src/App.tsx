@@ -10,10 +10,10 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { exportChordDiagramState, copyStateToClipboard } from "@/components/ChordDiagram/utils/exportState";
 import { importChordDiagramState } from "@/components/ChordDiagram/utils/importState";
-import type { ChordDiagramProps } from "@/components/ChordDiagram/types";
+import type { ChordDiagramProps, ChordDiagramState } from "@/components/ChordDiagram/types";
 
 // Valores padrão completos (estrutura compatível com ChordDiagramState)
-const SIMPLE_DEFAULTS = {
+const SIMPLE_DEFAULTS: ChordDiagramState = {
 	_version: "1.0.0",
 	_timestamp: "2025-10-11T19:42:34.020Z",
 	chord: {
@@ -188,22 +188,31 @@ function App() {
 			"horizontal-left",
 			"vertical-right",
 			"vertical-left",
-		]).withDefault("horizontal-right")
+		]).withDefault(SIMPLE_DEFAULTS.view)
 	);
 
 	const [chord, setChord] = useQueryState(
 		"chord",
-		parseAsString.withDefault(SIMPLE_DEFAULTS.instrument.chord)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.instrument?.chord ?? "000000")
 	);
 
-	// Barre configuration
-	const [barreEnabled, setBarreEnabled] = useQueryState("barreEnabled", parseAsInteger.withDefault(0));
-	const [barreFret, setBarreFret] = useQueryState("barreFret", parseAsInteger.withDefault(1));
+	// Barre configuration - usando valores de SIMPLE_DEFAULTS
+	const [barreEnabled, setBarreEnabled] = useQueryState(
+		"barreEnabled",
+		parseAsInteger.withDefault((SIMPLE_DEFAULTS.chord?.barres?.length ?? 0) > 0 ? 1 : 0)
+	);
+	const [barreFret, setBarreFret] = useQueryState(
+		"barreFret",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.chord?.barres?.[0]?.fret ?? 1)
+	);
 	const [barreFromString, setBarreFromString] = useQueryState(
 		"barreFromString",
-		parseAsInteger.withDefault(1)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.chord?.barres?.[0]?.fromString ?? 1)
 	);
-	const [barreToString, setBarreToString] = useQueryState("barreToString", parseAsInteger.withDefault(6));
+	const [barreToString, setBarreToString] = useQueryState(
+		"barreToString",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.chord?.barres?.[0]?.toString ?? 6)
+	);
 
 	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(SIMPLE_DEFAULTS.width));
 	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(SIMPLE_DEFAULTS.height));
@@ -316,47 +325,68 @@ function App() {
 	);
 
 	// Barres customization
-	const [barresWidth, setBarresWidth] = useQueryState("barresWidth", parseAsInteger.withDefault(8));
-	const [barresOpacity, setBarresOpacity] = useQueryState("barresOpacity", parseAsInteger.withDefault(100));
-	const [barresOffsetX, setBarresOffsetX] = useQueryState("barresOffsetX", parseAsInteger.withDefault(0));
-	const [barresOffsetY, setBarresOffsetY] = useQueryState("barresOffsetY", parseAsInteger.withDefault(0));
+	const [barresWidth, setBarresWidth] = useQueryState(
+		"barresWidth",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresWidth)
+	);
+	const [barresOpacity, setBarresOpacity] = useQueryState(
+		"barresOpacity",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresOpacity)
+	);
+	const [barresOffsetX, setBarresOffsetX] = useQueryState(
+		"barresOffsetX",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresOffsetX)
+	);
+	const [barresOffsetY, setBarresOffsetY] = useQueryState(
+		"barresOffsetY",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresOffsetY)
+	);
 
 	// Fret numbers customization
 	const [fretTextOffsetX, setFretTextOffsetX] = useQueryState(
 		"fretTextOffsetX",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetX ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetX)
 	);
 	const [fretTextOffsetY, setFretTextOffsetY] = useQueryState(
 		"fretTextOffsetY",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetY)
 	);
 
 	// Nut customization
 	const [nutStrokeWidth, setNutStrokeWidth] = useQueryState(
 		"nutStrokeWidth",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutStrokeWidth ?? 75)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutStrokeWidth)
 	);
-	const [nutOffsetX, setNutOffsetX] = useQueryState("nutOffsetX", parseAsInteger.withDefault(0));
-	const [nutOffsetY, setNutOffsetY] = useQueryState("nutOffsetY", parseAsInteger.withDefault(0));
-	const [nutOpacity, setNutOpacity] = useQueryState("nutOpacity", parseAsInteger.withDefault(100));
+	const [nutOffsetX, setNutOffsetX] = useQueryState(
+		"nutOffsetX",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutOffsetX)
+	);
+	const [nutOffsetY, setNutOffsetY] = useQueryState(
+		"nutOffsetY",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutOffsetY)
+	);
+	const [nutOpacity, setNutOpacity] = useQueryState(
+		"nutOpacity",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutOpacity)
+	);
 	const [nutColor, setNutColor] = useQueryState(
 		"nutColor",
-		parseAsString.withDefault(SIMPLE_DEFAULTS.nutColor ?? "#333333")
+		parseAsString.withDefault(SIMPLE_DEFAULTS.nutColor)
 	);
 
 	// Canvas positioning
 	const [canvasOffsetX, setCanvasOffsetX] = useQueryState(
 		"canvasOffsetX",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetX ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetX)
 	);
 	const [canvasOffsetY, setCanvasOffsetY] = useQueryState(
 		"canvasOffsetY",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetY)
 	);
 
 	// Chord/Instrument configuration for ChordDiagram
 	const chordConfig = useMemo(() => {
-		const tuning = ["E2", "A2", "D3", "G3", "B3", "E4"];
+		const tuning = SIMPLE_DEFAULTS.instrument?.tuning ?? ["E2", "A2", "D3", "G3", "B3", "E4"];
 
 		// If barre is not enabled, use instrument with chord string
 		if (barreEnabled === 0) {

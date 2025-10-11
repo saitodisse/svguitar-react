@@ -1,5 +1,50 @@
 # Release Notes
 
+## Version 1.21.0
+
+**Release Date:** October 11, 2025
+
+### 🔧 Major Improvements: Default Values Synchronization
+
+Esta versão traz melhorias significativas na consistência e confiabilidade dos valores padrão em todo o sistema, garantindo que export/import, defaults, e interface de usuário estejam sempre sincronizados.
+
+#### 🎯 Melhorias Principais
+
+**Sincronização Completa de Defaults:**
+
+- `SIMPLE_DEFAULTS` agora usa a interface `ChordDiagramState` para garantir type safety
+- Todos os hooks `useQueryState` referenciam `SIMPLE_DEFAULTS` como fonte única de verdade
+- Eliminados valores hardcoded em todo o código
+- View, configuração de barres, e todos os offsets inicializam corretamente dos defaults
+- Optional chaining adicionado para acesso seguro a propriedades opcionais
+
+**Correções de Bugs:**
+
+- ✅ Corrigido campo `instrument.chord` faltando na exportação quando barres estão habilitados
+- ✅ Corrigida inicialização dos estados de barre a partir de `SIMPLE_DEFAULTS.chord.barres`
+- ✅ Adicionadas anotações de tipo TypeScript apropriadas ao `SIMPLE_DEFAULTS`
+- ✅ Alinhado array de tuning para usar `SIMPLE_DEFAULTS.instrument.tuning`
+
+**Melhorias Técnicas:**
+
+- Consistência garantida entre estado padrão, export, import e renderização UI
+- Type safety aprimorado com optional chaining em todos os acessos a `SIMPLE_DEFAULTS`
+- Todas as 40+ propriedades agora garantidas para corresponder em todo o sistema
+- Melhor experiência de desenvolvedor com fonte única de verdade para todos os defaults
+
+#### 💡 Impacto para Desenvolvedores
+
+- **Mais Confiável**: Export/import agora sempre incluem todos os campos necessários
+- **Mais Seguro**: Type safety garantido pelo TypeScript em todos os defaults
+- **Mais Consistente**: UI sempre reflete os mesmos valores que export/import
+- **Mais Fácil de Manter**: Um único local (`SIMPLE_DEFAULTS`) para atualizar valores padrão
+
+#### 🔄 Migração
+
+Não há breaking changes nesta versão. Todas as melhorias são internas e transparentes para o usuário.
+
+---
+
 ## Version 1.20.0
 
 **Release Date:** October 11, 2025

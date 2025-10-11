@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.21.0 (2025-10-11)
+
+### Improvements 🎨
+
+- **Default Values Synchronization**: Complete alignment of default values across all components
+    - `SIMPLE_DEFAULTS` now uses `ChordDiagramState` interface for type safety
+    - All `useQueryState` hooks now reference `SIMPLE_DEFAULTS` as single source of truth
+    - View, barres configuration, and all offsets properly initialized from defaults
+    - Eliminated hardcoded values throughout the application
+    - Added optional chaining for safe access to potentially undefined properties
+
+### Bug Fixes 🐛
+
+- **Export State**: Fixed missing `instrument.chord` field in export when barres are enabled
+- **Default State**: Fixed initialization of barre-related states from `SIMPLE_DEFAULTS.chord.barres`
+- **Type Safety**: Added proper TypeScript type annotations to `SIMPLE_DEFAULTS`
+- **Tuning**: Aligned tuning array to use `SIMPLE_DEFAULTS.instrument.tuning`
+
+### Technical Improvements 🔧
+
+- Improved consistency between default state, export, import, and UI rendering
+- Enhanced type safety with optional chaining for all `SIMPLE_DEFAULTS` accesses
+- All 40+ properties now guaranteed to match across the system
+- Better developer experience with single source of truth for all defaults
+
 ## 1.20.0 (2025-10-11)
 
 ### New Features ✨
