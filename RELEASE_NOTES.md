@@ -1,5 +1,72 @@
 # Release Notes
 
+## Version 1.19.1
+
+**Release Date:** October 11, 2025
+
+### 🐛 Bug Fix: barresWidth in Vertical Layouts
+
+Esta versão corrige um bug crítico onde a propriedade `barresWidth` não estava afetando a grossura das barres (pestanas) nas views verticais.
+
+#### 🎯 Problema Corrigido
+
+Nas views verticais (`vertical-right` e `vertical-left`), o parâmetro `barresWidth` não estava mudando a grossura visual das barres porque o código estava usando incorretamente `fretHeight` em vez de `barresWidth`.
+
+#### ✨ Solução Implementada
+
+**Correção no Código:**
+
+- Atualizados os layout engines `verticalRight.ts` e `verticalLeft.ts`
+- Nas views verticais, as barres são desenhadas horizontalmente
+- A propriedade `barresWidth` agora controla corretamente a altura (height) do retângulo SVG, que corresponde à "grossura" visual
+- Nas views horizontais, `barresWidth` continua controlando a largura (width) como antes
+
+**Comportamento Correto:**
+
+- **Views horizontais** (`horizontal-right`, `horizontal-left`): `barresWidth` controla a **largura** (width) do retângulo SVG
+- **Views verticais** (`vertical-right`, `vertical-left`): `barresWidth` controla a **altura/grossura** (height) do retângulo SVG
+
+#### 📚 Documentação Atualizada
+
+Toda a documentação e especificações foram atualizadas para refletir o comportamento correto:
+
+- `specs/001-guitar-svg/data-model.md`
+- `specs/001-guitar-svg/spec.md`
+- `specs/001-guitar-svg/quickstart.md`
+- `specs/001-guitar-svg/contracts/chord-diagram-api.md`
+- `specs/001-guitar-svg/tasks-advanced-offsets.md`
+- JSDoc comments em `types.ts` e `constants.ts`
+
+#### ✅ Testes
+
+- Atualizados os testes unitários para verificar o comportamento correto
+- Todos os 155 testes unitários passando
+- Todos os 23 testes do Storybook passando
+
+#### 🔧 Arquivos Alterados
+
+**Código:**
+
+- `src/components/ChordDiagram/layouts/verticalRight.ts`
+- `src/components/ChordDiagram/layouts/verticalLeft.ts`
+- `src/components/ChordDiagram/types.ts`
+- `src/components/ChordDiagram/constants.ts`
+
+**Testes:**
+
+- `src/components/ChordDiagram/layouts/__tests__/verticalRightLayout.test.ts`
+- `src/components/ChordDiagram/layouts/__tests__/verticalLeftLayout.test.ts`
+
+**Especificações:**
+
+- Múltiplos arquivos de especificação atualizados
+
+#### 💡 Impacto
+
+Esta correção garante que os usuários possam agora controlar adequadamente a grossura das barres em todas as orientações de view, proporcionando maior flexibilidade na customização visual dos diagramas de acordes.
+
+---
+
 ## Version 1.19.0
 
 **Release Date:** October 11, 2025
@@ -45,8 +112,8 @@ src/
 import { useTranslation } from "react-i18next";
 
 function Component() {
-    const { t } = useTranslation();
-    return <h1>{t("controls.title")}</h1>; // "Controls" ou "Controles"
+	const { t } = useTranslation();
+	return <h1>{t("controls.title")}</h1>; // "Controls" ou "Controles"
 }
 ```
 
@@ -71,18 +138,18 @@ function Component() {
 
 - **Estrutura Clara**: Arquivos de tradução bem organizados por idioma
 - **Fácil Extensão**: Adicionar novo idioma requer apenas:
-  1. Criar pasta em `src/locales/[código]/`
-  2. Adicionar arquivo `translation.json`
-  3. Registrar em `src/i18n.ts`
+    1. Criar pasta em `src/locales/[código]/`
+    2. Adicionar arquivo `translation.json`
+    3. Registrar em `src/i18n.ts`
 - **Type Safety**: Suporte total a TypeScript
 
 #### 📦 Dependências Adicionadas
 
 ```json
 {
-    "react-i18next": "^15.3.3",
-    "i18next": "^24.2.1",
-    "nuqs": "^2.6.1"
+	"react-i18next": "^15.3.3",
+	"i18next": "^24.2.1",
+	"nuqs": "^2.6.1"
 }
 ```
 
@@ -111,7 +178,7 @@ function Component() {
 
 ```tsx
 const { t } = useTranslation();
-<Label>{t("controls.newLabel")}</Label>
+<Label>{t("controls.newLabel")}</Label>;
 ```
 
 **Adicionar Novo Idioma (Exemplo: Espanhol):**
@@ -122,15 +189,15 @@ const { t } = useTranslation();
 4. Adicionar em `src/i18n.ts`:
 
 ```typescript
-import es from './locales/es/translation.json';
+import es from "./locales/es/translation.json";
 
 i18n.use(initReactI18next).init({
-    resources: {
-        en: { translation: en },
-        pt: { translation: pt },
-        es: { translation: es }, // Novo idioma
-    },
-    // ...
+	resources: {
+		en: { translation: en },
+		pt: { translation: pt },
+		es: { translation: es }, // Novo idioma
+	},
+	// ...
 });
 ```
 

@@ -57,7 +57,7 @@ describe("verticalRightEngine", () => {
 			const rect = verticalRightEngine.barreRect(barre, { frame });
 
 			expect(rect.width).toBeGreaterThan(0);
-			expect(rect.height).toBe(frame.style.fretHeight);
+			expect(rect.height).toBe(frame.style.barresWidth); // In vertical views, barresWidth controls the height/thickness
 			expect(rect.rx).toBe(4);
 		});
 
@@ -72,7 +72,7 @@ describe("verticalRightEngine", () => {
 			const rect = verticalRightEngine.barreRect(barre, { frame });
 
 			expect(rect.width).toBeGreaterThan(0);
-			expect(rect.height).toBe(frame.style.fretHeight);
+			expect(rect.height).toBe(frame.style.barresWidth); // In vertical views, barresWidth controls the height/thickness
 		});
 	});
 

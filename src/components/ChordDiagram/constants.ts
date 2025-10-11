@@ -49,7 +49,7 @@ export const DEFAULT_CHORD_STYLE = {
 	stringIndicatorOffsetY: 0, // Vertical multiplier (-5 to 5) for open/muted string indicators positioning
 
 	// Barres customization
-	barresWidth: 8, // Width of barre rectangles in pixels
+	barresWidth: 8, // Width/thickness of barre rectangles in pixels (width in horizontal views, height in vertical views)
 	barresOpacity: 1.0, // Opacity of barre rectangles from 0 to 1
 	barresOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for barre positioning
 	barresOffsetY: 0, // Vertical offset multiplier (-5 to 5) for barre positioning

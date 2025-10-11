@@ -38,7 +38,7 @@ Tarefas marcadas com [P] podem ser executadas em paralelo, pois afetam arquivos 
 
 - **Arquivo**: `specs/001-guitar-svg/spec.md`
 - **Descrição**: Adicionar FR-030 a FR-037 para as novas customizações
-- **FR-030**: Sistema DEVE suportar `barresWidth` para largura horizontal das barres
+- **FR-030**: Sistema DEVE suportar `barresWidth` para largura/grossura das barres (em views horizontais controla width; em views verticais controla height)
 - **FR-031**: Sistema DEVE suportar `barresOpacity` (0-1, padrão: 1.0)
 - **FR-032**: Sistema DEVE suportar `barresOffsetX` e `barresOffsetY` (multiplicadores -5 a 5)
 - **FR-033**: Sistema DEVE substituir `tuningLabelOffset` por `tuningLabelOffsetX` e `tuningLabelOffsetY`
@@ -292,5 +292,5 @@ Tarefas marcadas com [P] podem ser executadas em paralelo, pois afetam arquivos 
 - Todos os offsets são multiplicadores aplicados a `fretWidth` (para X) e `fretHeight` (para Y)
 - Range dos offsets: -5 a 5 (consistente com offsets existentes)
 - `barresOpacity`: 0 (transparente) a 1 (opaco)
-- `barresWidth`: valor em pixels, padrão 8 (consistente com `barreHeight`)
+- `barresWidth`: valor em pixels, padrão 8 (consistente com `barreHeight`). Em views horizontais, controla a largura (width) do retângulo SVG; em views verticais, controla a altura/grossura (height) do retângulo SVG.
 - Manter retrocompatibilidade onde possível, mas documentar breaking changes claramente
