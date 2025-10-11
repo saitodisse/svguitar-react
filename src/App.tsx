@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 // Valores padrão simples e fixos
 const SIMPLE_DEFAULTS = {
 	chord: "x32010",
-	width: 535,
-	height: 214,
+	width: 325,
+	height: 233,
 	fretCount: 5,
 	stringCount: 6,
 	fretWidth: 47,
@@ -28,17 +28,17 @@ const SIMPLE_DEFAULTS = {
 	dotTextColor: "#ffffff",
 	barreColor: "#2196F3",
 	fretTextColor: "#abaaaa",
-	tuningTextColor: "#9e9a9a",
+	tuningTextColor: "#cecaca",
 	openStringColor: "#2196F3",
 	mutedStringColor: "#DC143C",
 	fontFamily: "sans-serif",
 	dotTextSize: 15,
 	fretTextSize: 17,
 	tuningTextSize: 17,
-	tuningLabelOffsetX: 28,
+	tuningLabelOffsetX: -532,
 	tuningLabelOffsetY: -4,
 	tuningLabelFormat: "note-only" as const,
-	stringIndicatorOffsetX: 50,
+	stringIndicatorOffsetX: 24,
 	stringIndicatorOffsetY: 0,
 	barresWidth: 12,
 	barresOpacity: 100,
@@ -51,7 +51,7 @@ const SIMPLE_DEFAULTS = {
 	nutOffsetY: 0,
 	nutOpacity: 100,
 	nutColor: "#333333",
-	canvasOffsetX: 0,
+	canvasOffsetX: -8,
 	canvasOffsetY: 0,
 };
 
@@ -738,8 +738,8 @@ function App() {
 							</Label>
 							<Slider
 								id="stringIndicatorOffsetX"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[stringIndicatorOffsetX]}
 								onValueChange={values => setStringIndicatorOffsetX(values[0])}
 							/>
@@ -755,8 +755,8 @@ function App() {
 							</Label>
 							<Slider
 								id="stringIndicatorOffsetY"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[stringIndicatorOffsetY]}
 								onValueChange={values => setStringIndicatorOffsetY(values[0])}
 							/>
@@ -894,8 +894,8 @@ function App() {
 							</Label>
 							<Slider
 								id="tuningLabelOffsetX"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[tuningLabelOffsetX]}
 								onValueChange={values => setTuningLabelOffsetX(values[0])}
 							/>
@@ -911,8 +911,8 @@ function App() {
 							</Label>
 							<Slider
 								id="tuningLabelOffsetY"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[tuningLabelOffsetY]}
 								onValueChange={values => setTuningLabelOffsetY(values[0])}
 							/>
@@ -1087,8 +1087,8 @@ function App() {
 							</Label>
 							<Slider
 								id="barresOffsetX"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[barresOffsetX]}
 								onValueChange={values => setBarresOffsetX(values[0])}
 							/>
@@ -1104,8 +1104,8 @@ function App() {
 							</Label>
 							<Slider
 								id="barresOffsetY"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[barresOffsetY]}
 								onValueChange={values => setBarresOffsetY(values[0])}
 							/>
@@ -1145,8 +1145,8 @@ function App() {
 							</Label>
 							<Slider
 								id="fretTextOffsetY"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[fretTextOffsetY]}
 								onValueChange={values => setFretTextOffsetY(values[0])}
 							/>
@@ -1170,7 +1170,7 @@ function App() {
 							<Slider
 								id="nutStrokeWidth"
 								min={0}
-								max={500}
+								max={5000}
 								value={[nutStrokeWidth]}
 								onValueChange={values => setNutStrokeWidth(values[0])}
 							/>
@@ -1203,8 +1203,8 @@ function App() {
 							</Label>
 							<Slider
 								id="nutOffsetY"
-								min={-500}
-								max={500}
+								min={-5000}
+								max={5000}
 								value={[nutOffsetY]}
 								onValueChange={values => setNutOffsetY(values[0])}
 							/>
