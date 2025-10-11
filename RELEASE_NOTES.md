@@ -30,12 +30,12 @@ O projeto foi atualizado do Tailwind CSS v3.4.17 para v4.1.14, trazendo melhoria
 @tailwind utilities;
 
 /* Agora (v4) */
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
-  --color-primary: hsl(var(--primary));
-  --color-background: hsl(var(--background));
-  /* ... */
+	--color-primary: hsl(var(--primary));
+	--color-background: hsl(var(--background));
+	/* ... */
 }
 ```
 

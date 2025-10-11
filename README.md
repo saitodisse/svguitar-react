@@ -2,6 +2,7 @@
 
 A React component for rendering guitar chord diagrams in SVG format with high performance and full customization.
 
+🌐 **Storybook**: [https://storybook-svguitar-react.vercel.app/](https://svguitar-react-storybook.vercel.app/)
 🌐 **Live Demo**: [https://svguitar-react.vercel.app/](https://svguitar-react.vercel.app/)
 🔗 **NPM Package**: [https://www.npmjs.com/package/svguitar-react](https://www.npmjs.com/package/svguitar-react)
 

@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { PresetsSidebar } from "@/components/PresetsSidebar";
+import type { PresetConfig } from "@/utils/storyPresets";
 
 // Type para configuração padrão baseado nas props do ChordDiagram
 type DefaultConfig = Required<
@@ -348,6 +350,15 @@ function App() {
 
 	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault(defaults.chord));
 
+	// Barre configuration
+	const [barreEnabled, setBarreEnabled] = useQueryState("barreEnabled", parseAsInteger.withDefault(0));
+	const [barreFret, setBarreFret] = useQueryState("barreFret", parseAsInteger.withDefault(1));
+	const [barreFromString, setBarreFromString] = useQueryState(
+		"barreFromString",
+		parseAsInteger.withDefault(1)
+	);
+	const [barreToString, setBarreToString] = useQueryState("barreToString", parseAsInteger.withDefault(6));
+
 	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(defaults.width));
 	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(defaults.height));
 	const [fretCount, setFretCount] = useQueryState(
@@ -501,6 +512,11 @@ function App() {
 	const clearConfiguration = () => {
 		// Reset all parameters to their default values using current defaults
 		setChord(defaults.chord);
+		// Barre
+		setBarreEnabled(0);
+		setBarreFret(1);
+		setBarreFromString(1);
+		setBarreToString(6);
 		setWidth(defaults.width);
 		setHeight(defaults.height);
 		setFretCount(defaults.fretCount);
@@ -552,6 +568,130 @@ function App() {
 		setCanvasOffsetY(defaults.canvasOffsetY ?? 0);
 	};
 
+	// Função para carregar preset
+	const loadPreset = (preset: PresetConfig) => {
+		const props = preset.props;
+
+		// Extract chord notation from either chord or instrument
+		let chordNotation = "x32010"; // default
+		if (props.instrument?.chord) {
+			chordNotation = props.instrument.chord;
+		}
+
+		// Set all properties
+		setChord(chordNotation);
+
+		// Extract barre information from chord object
+		if (props.chord?.barres && props.chord.barres.length > 0) {
+			const firstBarre = props.chord.barres[0];
+			setBarreEnabled(1);
+			setBarreFret(firstBarre.fret);
+			setBarreFromString(firstBarre.fromString);
+			setBarreToString(firstBarre.toString);
+		} else {
+			setBarreEnabled(0);
+		}
+
+		// View
+		if (props.view) {
+			setView(props.view);
+		}
+
+		// Dimensions
+		if (props.width !== undefined) setWidth(props.width);
+		if (props.height !== undefined) setHeight(props.height);
+		if (props.fretCount !== undefined) setFretCount(props.fretCount);
+		if (props.stringCount !== undefined) setStringCount(props.stringCount);
+		if (props.fretWidth !== undefined) setFretWidth(props.fretWidth);
+		if (props.fretHeight !== undefined) setFretHeight(props.fretHeight);
+		if (props.stringWidth !== undefined) setStringWidth(props.stringWidth);
+		if (props.dotSize !== undefined) setDotSize(props.dotSize);
+		if (props.barreHeight !== undefined) setBarreHeight(props.barreHeight);
+
+		// Colors
+		if (props.backgroundColor !== undefined) setBackgroundColor(props.backgroundColor);
+		if (props.fretColor !== undefined) setFretColor(props.fretColor);
+		if (props.stringColor !== undefined) setStringColor(props.stringColor);
+		if (props.dotColor !== undefined) setDotColor(props.dotColor);
+		if (props.dotTextColor !== undefined) setDotTextColor(props.dotTextColor);
+		if (props.barreColor !== undefined) setBarreColor(props.barreColor);
+		if (props.fretTextColor !== undefined) setFretTextColor(props.fretTextColor);
+		if (props.tuningTextColor !== undefined) setTuningTextColor(props.tuningTextColor);
+		if (props.openStringColor !== undefined) setOpenStringColor(props.openStringColor);
+		if (props.mutedStringColor !== undefined) setMutedStringColor(props.mutedStringColor);
+
+		// Fonts
+		if (props.fontFamily !== undefined) setFontFamily(props.fontFamily);
+		if (props.dotTextSize !== undefined) setDotTextSize(props.dotTextSize);
+		if (props.fretTextSize !== undefined) setFretTextSize(props.fretTextSize);
+		if (props.tuningTextSize !== undefined) setTuningTextSize(props.tuningTextSize);
+
+		// Tuning customization - convert from decimal to integer (multiply by 100)
+		if (props.tuningLabelOffsetX !== undefined)
+			setTuningLabelOffsetX(Math.round(props.tuningLabelOffsetX * 100));
+		if (props.tuningLabelOffsetY !== undefined)
+			setTuningLabelOffsetY(Math.round(props.tuningLabelOffsetY * 100));
+		if (props.tuningLabelFormat !== undefined) setTuningLabelFormat(props.tuningLabelFormat);
+
+		// String indicators - convert from decimal to integer (multiply by 100)
+		if (props.stringIndicatorOffsetX !== undefined)
+			setStringIndicatorOffsetX(Math.round(props.stringIndicatorOffsetX * 100));
+		if (props.stringIndicatorOffsetY !== undefined)
+			setStringIndicatorOffsetY(Math.round(props.stringIndicatorOffsetY * 100));
+
+		// Barres customization
+		if (props.barresWidth !== undefined) setBarresWidth(props.barresWidth);
+		if (props.barresOpacity !== undefined) setBarresOpacity(Math.round(props.barresOpacity * 100));
+		if (props.barresOffsetX !== undefined) setBarresOffsetX(Math.round(props.barresOffsetX * 100));
+		if (props.barresOffsetY !== undefined) setBarresOffsetY(Math.round(props.barresOffsetY * 100));
+
+		// Fret numbers - convert from decimal to integer (multiply by 100)
+		if (props.fretTextOffsetX !== undefined) setFretTextOffsetX(Math.round(props.fretTextOffsetX * 100));
+		if (props.fretTextOffsetY !== undefined) setFretTextOffsetY(Math.round(props.fretTextOffsetY * 100));
+
+		// Nut customization
+		setNutStrokeWidth(props.nutStrokeWidth !== undefined ? Math.round(props.nutStrokeWidth * 1000) : 75);
+		setNutOffsetX(props.nutOffsetX !== undefined ? Math.round(props.nutOffsetX * 100) : 0);
+		setNutOffsetY(props.nutOffsetY !== undefined ? Math.round(props.nutOffsetY * 100) : 0);
+		setNutOpacity(props.nutOpacity !== undefined ? Math.round(props.nutOpacity * 100) : 100);
+		setNutColor(props.nutColor !== undefined ? props.nutColor : "#333333");
+
+		// Canvas positioning
+		if (props.canvasOffsetX !== undefined) setCanvasOffsetX(props.canvasOffsetX);
+		if (props.canvasOffsetY !== undefined) setCanvasOffsetY(props.canvasOffsetY);
+	};
+
+	// Construct chord object with barre if enabled
+	const chordObject = useMemo(() => {
+		// Parse the fret notation to get fingers
+		const fingers: { fret: number; string: number; is_muted: boolean; text?: string }[] = [];
+		for (let i = 0; i < chord.length && i < 6; i++) {
+			const char = chord[i];
+			if (char === "x") {
+				fingers.push({ fret: 0, string: i + 1, is_muted: true });
+			} else if (char === "0" || char === "o") {
+				fingers.push({ fret: 0, string: i + 1, is_muted: false });
+			} else {
+				const fret = parseInt(char, 10);
+				if (!isNaN(fret) && fret > 0) {
+					fingers.push({ fret, string: i + 1, is_muted: false });
+				}
+			}
+		}
+
+		// Add barre if enabled
+		const barres: { fret: number; fromString: number; toString: number }[] = [];
+		if (barreEnabled === 1) {
+			barres.push({
+				fret: barreFret,
+				fromString: barreFromString,
+				toString: barreToString,
+			});
+		}
+
+		return { fingers, barres };
+	}, [chord, barreEnabled, barreFret, barreFromString, barreToString]);
+
 	return (
 		<div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-10 text-white">
 			<header className="flex flex-col items-center gap-3 text-center">
@@ -576,10 +716,16 @@ function App() {
 				</nav>
 			</header>
 
-			<div className="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+			<div className="grid w-full items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)_360px]">
+				{/* Left Sidebar - Presets */}
+				<div className="hidden lg:block">
+					<PresetsSidebar onSelectPreset={loadPreset} />
+				</div>
+
+				{/* Main Content - Chord Diagram */}
 				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
-					<ChordDiagramWithErrorHandling
-						chord={chord}
+					<ChordDiagram
+						chord={chordObject}
 						instrument={{
 							tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 						}}
@@ -637,6 +783,7 @@ function App() {
 					/>
 				</div>
 
+				{/* Right Sidebar - Controls */}
 				<aside
 					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur-sm"
 					aria-label={t("aria.controlPanel")}
@@ -664,6 +811,72 @@ function App() {
 								onChange={e => setChord(e.target.value)}
 							/>
 						</div>
+					</section>
+
+					{/* Barre Configuration */}
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">Barre</h3>
+						<div className="flex items-center space-x-2">
+							<input
+								id="barreEnabled"
+								type="checkbox"
+								checked={barreEnabled === 1}
+								onChange={e => setBarreEnabled(e.target.checked ? 1 : 0)}
+								className="h-4 w-4 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+							<Label htmlFor="barreEnabled" className="text-sm text-white/80">
+								Enable Barre
+							</Label>
+						</div>
+						{barreEnabled === 1 && (
+							<>
+								<div className="flex flex-col gap-1">
+									<Label htmlFor="barreFret" className="text-sm text-white/80">
+										<span className="flex items-center justify-between">
+											Barre Fret (Casa)
+											<span className="text-xs text-white/60">{barreFret}</span>
+										</span>
+									</Label>
+									<Slider
+										id="barreFret"
+										min={1}
+										max={18}
+										value={[barreFret]}
+										onValueChange={values => setBarreFret(values[0])}
+									/>
+								</div>
+								<div className="flex flex-col gap-1">
+									<Label htmlFor="barreFromString" className="text-sm text-white/80">
+										<span className="flex items-center justify-between">
+											From String (Corda Inicial)
+											<span className="text-xs text-white/60">{barreFromString}</span>
+										</span>
+									</Label>
+									<Slider
+										id="barreFromString"
+										min={1}
+										max={6}
+										value={[barreFromString]}
+										onValueChange={values => setBarreFromString(values[0])}
+									/>
+								</div>
+								<div className="flex flex-col gap-1">
+									<Label htmlFor="barreToString" className="text-sm text-white/80">
+										<span className="flex items-center justify-between">
+											To String (Corda Final)
+											<span className="text-xs text-white/60">{barreToString}</span>
+										</span>
+									</Label>
+									<Slider
+										id="barreToString"
+										min={1}
+										max={6}
+										value={[barreToString]}
+										onValueChange={values => setBarreToString(values[0])}
+									/>
+								</div>
+							</>
+						)}
 					</section>
 
 					{/* Layout */}
