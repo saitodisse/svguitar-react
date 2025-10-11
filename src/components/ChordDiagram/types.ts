@@ -384,3 +384,84 @@ export const ERROR_CODES = {
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
+
+/**
+ * Complete state of a ChordDiagram component for export/import
+ */
+export interface ChordDiagramState {
+	// Metadata
+	_version: string;
+	_timestamp: string;
+
+	// Chord data
+	chord?: Chord;
+	instrument?: {
+		strings: number;
+		frets: number;
+		tuning: string[];
+		chord: string;
+	};
+
+	// Layout
+	view: ViewId;
+
+	// All style properties (matching ChordStyle)
+	width: number;
+	height: number;
+	fretCount: number;
+	stringCount: number;
+	fretWidth: number;
+	fretHeight: number;
+	stringWidth: number;
+	dotSize: number;
+	barreHeight: number;
+
+	backgroundColor: string;
+	fretColor: string;
+	stringColor: string;
+	dotColor: string;
+	dotTextColor: string;
+	barreColor: string;
+	fretTextColor: string;
+	tuningTextColor: string;
+	openStringColor: string;
+	mutedStringColor: string;
+
+	fontFamily: string;
+	dotTextSize: number;
+	fretTextSize: number;
+	tuningTextSize: number;
+
+	tuningLabelOffsetX: number;
+	tuningLabelOffsetY: number;
+	tuningLabelFormat: "scientific" | "note-only";
+
+	stringIndicatorOffsetX: number;
+	stringIndicatorOffsetY: number;
+
+	barresWidth: number;
+	barresOpacity: number;
+	barresOffsetX: number;
+	barresOffsetY: number;
+
+	fretTextOffsetX: number;
+	fretTextOffsetY: number;
+
+	nutStrokeWidth: number;
+	nutOffsetX: number;
+	nutOffsetY: number;
+	nutOpacity: number;
+	nutColor: string;
+
+	canvasOffsetX: number;
+	canvasOffsetY: number;
+}
+
+/**
+ * Fretboard internal state for deterministic rendering
+ */
+export interface FretboardState {
+	frame: Omit<LayoutFrame, "style">;
+	engineId: ViewId;
+	style: ChordStyle;
+}

@@ -84,6 +84,13 @@
 	"controls.canvasOffsetXLabel": "Deslocamento X do Canvas",
 	"controls.canvasOffsetYLabel": "Deslocamento Y do Canvas",
 	"aria.controlPanel": "Painel de Controle do ChordDiagram",
+	"controls.stateSection": "Exportar / Importar",
+	"controls.exportState": "Exportar Estado",
+	"controls.importState": "Importar Estado",
+	"controls.exportSuccess": "Estado copiado para a área de transferência!",
+	"controls.exportError": "Falha ao exportar estado",
+	"controls.importSuccess": "Estado importado com sucesso!",
+	"controls.importError": "Falha ao importar estado",
 	"language": "Idioma",
 	"language.en": "Inglês",
 	"language.pt": "Português"

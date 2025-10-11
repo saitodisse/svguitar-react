@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.20.0 (2025-10-11)
+
+### New Features ✨
+
+- **Export/Import State**: Complete state management system for ChordDiagram
+    - Export entire diagram state as JSON with `exportChordDiagramState()`
+    - Import state from JSON with `importChordDiagramState()`
+    - Copy state to clipboard with `copyStateToClipboard()`
+    - Visual feedback buttons in demo app (Export State 📋 / Import State 📥)
+    - Complete validation of imported JSON state
+    - Automatic fallback values for missing properties
+    - Deterministic serialization - same state always produces same JSON
+    - State includes metadata (version, timestamp)
+    - All 40+ customization properties included in export/import
+
+### Improvements 🎨
+
+- **Developer Experience**: Easy state debugging via console.log of exported JSON
+- **Preset Management**: Save and load favorite chord diagram configurations
+- **Sharing**: Share exact diagram configurations via JSON
+- **Persistence**: Maintain state between sessions
+
+### Documentation 📚
+
+- Added complete export/import specification in `specs/001-guitar-svg/export-import-spec.md`
+- Updated data model with `ChordDiagramState` and `FretboardState` interfaces
+- Implementation guide in `specs/001-guitar-svg/implement-export-import.md`
+- Tasks breakdown in `specs/001-guitar-svg/tasks-export-import-state.md`
+- Multilingual support (EN/PT) for export/import UI
+
+### API Changes
+
+- New utility functions in `utils/exportState.ts`:
+    - `exportChordDiagramState(props: ChordDiagramProps): ChordDiagramState`
+    - `copyStateToClipboard(state: ChordDiagramState): Promise<void>`
+- New utility functions in `utils/importState.ts`:
+    - `validateChordDiagramState(json: unknown): ValidationResult`
+    - `importChordDiagramState(state: ChordDiagramState): ChordDiagramProps`
+- New utility functions in `utils/fretboardState.ts`:
+    - `getFretboardState(frame: LayoutFrame, engine: LayoutEngine): FretboardState`
+- New TypeScript interfaces:
+    - `ChordDiagramState` - Complete state for export/import
+    - `FretboardState` - Deterministic fretboard state
+    - `ValidationResult` - State validation result
+
 ## 1.19.1 (2025-10-11)
 
 ### Bug Fixes 🐛

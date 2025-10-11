@@ -84,6 +84,13 @@
 	"controls.canvasOffsetXLabel": "Canvas Offset X",
 	"controls.canvasOffsetYLabel": "Canvas Offset Y",
 	"aria.controlPanel": "ChordDiagram Control Panel",
+	"controls.stateSection": "Export / Import",
+	"controls.exportState": "Export State",
+	"controls.importState": "Import State",
+	"controls.exportSuccess": "State copied to clipboard!",
+	"controls.exportError": "Failed to export state",
+	"controls.importSuccess": "State imported successfully!",
+	"controls.importError": "Failed to import state",
 	"language": "Language",
 	"language.en": "English",
 	"language.pt": "Portuguese"
