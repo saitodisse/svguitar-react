@@ -2,235 +2,63 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
 import { ChordDiagram } from "./components/ChordDiagram/ChordDiagram";
-import type { ChordDiagramProps } from "./components/ChordDiagram/types";
-import { DEFAULT_CHORD_STYLE } from "./components/ChordDiagram/constants";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { PresetsSidebar } from "@/components/PresetsSidebar";
-import type { PresetConfig } from "@/utils/storyPresets";
 
-// Type para configuração padrão baseado nas props do ChordDiagram
-type DefaultConfig = Required<
-	Pick<
-		ChordDiagramProps,
-		| "width"
-		| "height"
-		| "fretWidth"
-		| "fretCount"
-		| "dotTextSize"
-		| "dotSize"
-		| "barreHeight"
-		| "fretHeight"
-		| "tuningTextSize"
-		| "fretTextSize"
-		| "stringWidth"
-		| "stringCount"
-		| "fretTextColor"
-		| "backgroundColor"
-		| "fretColor"
-		| "stringColor"
-		| "dotColor"
-		| "dotTextColor"
-		| "barreColor"
-		| "tuningTextColor"
-		| "openStringColor"
-		| "mutedStringColor"
-		| "fontFamily"
-		| "tuningLabelFormat"
-	>
-> & {
-	chord: string;
-	tuningLabelOffset: number;
-	stringIndicatorOffset: number;
-	canvasOffsetX?: number;
-	canvasOffsetY?: number;
-	tuningLabelOffsetX?: number;
-	tuningLabelOffsetY?: number;
-	stringIndicatorOffsetX?: number;
-	nutStrokeWidth?: number;
-	nutColor?: string;
-	stringIndicatorOffsetY?: number;
-	fretTextOffsetY?: number;
-	fretTextOffsetX?: number;
+// Valores padrão simples e fixos
+const SIMPLE_DEFAULTS = {
+	chord: "x32010",
+	width: 535,
+	height: 214,
+	fretCount: 5,
+	stringCount: 6,
+	fretWidth: 47,
+	fretHeight: 30,
+	stringWidth: 1,
+	dotSize: 18,
+	barreHeight: 19,
+	backgroundColor: "#ffffff",
+	fretColor: "#333333",
+	stringColor: "#666666",
+	dotColor: "#2196F3",
+	dotTextColor: "#ffffff",
+	barreColor: "#2196F3",
+	fretTextColor: "#abaaaa",
+	tuningTextColor: "#9e9a9a",
+	openStringColor: "#2196F3",
+	mutedStringColor: "#DC143C",
+	fontFamily: "sans-serif",
+	dotTextSize: 15,
+	fretTextSize: 17,
+	tuningTextSize: 17,
+	tuningLabelOffsetX: 28,
+	tuningLabelOffsetY: -4,
+	tuningLabelFormat: "note-only" as const,
+	stringIndicatorOffsetX: 50,
+	stringIndicatorOffsetY: 0,
+	barresWidth: 12,
+	barresOpacity: 100,
+	barresOffsetX: 37,
+	barresOffsetY: -14,
+	fretTextOffsetX: 0,
+	fretTextOffsetY: 0,
+	nutStrokeWidth: 75,
+	nutOffsetX: 0,
+	nutOffsetY: 0,
+	nutOpacity: 100,
+	nutColor: "#333333",
+	canvasOffsetX: 0,
+	canvasOffsetY: 0,
 };
 
-// Type para as chaves de configuração
-type ConfigKey = "mobileHorizontal" | "mobileVertical" | "desktopHorizontal" | "desktopVertical";
-
-// Configurações padrão - extraídas para constantes
-const DEFAULT_CONFIGS: Record<ConfigKey, DefaultConfig> = {
-	mobileHorizontal: {
-		width: 304,
-		height: 222,
-		fretWidth: 53,
-		fretCount: 4,
-		dotTextSize: 17,
-		dotSize: 20,
-		barreHeight: 6,
-		fretHeight: 27,
-		tuningTextSize: 20,
-		fretTextSize: 21,
-		stringWidth: 2,
-		stringCount: 6,
-		fretTextColor: "#636363",
-		backgroundColor: "#242424",
-		fretColor: "#bfbfbf",
-		stringColor: "#ffffff",
-		dotColor: "#2196F3",
-		dotTextColor: "#ffffff",
-		barreColor: "#2196F3",
-		tuningTextColor: "#575757",
-		openStringColor: "#2196F3",
-		mutedStringColor: "#C65858",
-		fontFamily: "Arial, sans-serif",
-		chord: "x32010",
-		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "note-only",
-		stringIndicatorOffset: 0.5,
-		canvasOffsetX: 21,
-		canvasOffsetY: -11,
-		fretTextOffsetY: 21,
-		tuningLabelOffsetY: 4,
-		tuningLabelOffsetX: 75,
-		stringIndicatorOffsetX: 21,
-	},
-	mobileVertical: {
-		width: 182,
-		height: 270,
-		fretWidth: 25,
-		fretCount: 4,
-		dotTextSize: 11,
-		dotSize: 18,
-		barreHeight: 6,
-		fretHeight: 47,
-		tuningTextSize: 13,
-		fretTextSize: 13,
-		stringWidth: 2,
-		stringCount: 6,
-		fretTextColor: "#5e5e5e",
-		backgroundColor: "#242424",
-		fretColor: "#bfbfbf",
-		stringColor: "#ffffff",
-		dotColor: "#2196F3",
-		dotTextColor: "#ffffff",
-		barreColor: "#2196F3",
-		tuningTextColor: "#707070",
-		openStringColor: "#2196F3",
-		mutedStringColor: "#C65858",
-		fontFamily: "Arial, sans-serif",
-		chord: "x32010",
-		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "note-only",
-		stringIndicatorOffset: 0.5,
-		canvasOffsetX: -23,
-		tuningLabelOffsetX: 1,
-		tuningLabelOffsetY: 57,
-		stringIndicatorOffsetX: 16,
-		fretTextOffsetX: -5,
-	},
-	desktopHorizontal: {
-		width: 702,
-		height: 217,
-		fretWidth: 63,
-		fretCount: 10,
-		dotTextSize: 13,
-		dotSize: 16,
-		barreHeight: 7,
-		fretHeight: 30,
-		tuningTextSize: 13,
-		fretTextSize: 16,
-		fretTextColor: "#4a4a4a",
-		stringWidth: 1,
-		stringCount: 6,
-		backgroundColor: "#242424",
-		fretColor: "#bfbfbf",
-		stringColor: "#ffffff",
-		dotColor: "#2196F3",
-		dotTextColor: "#ffffff",
-		barreColor: "#2196F3",
-		tuningTextColor: "#707070",
-		openStringColor: "#2196F3",
-		mutedStringColor: "#C65858",
-		fontFamily: "Arial, sans-serif",
-		chord: "x32010",
-		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "scientific",
-		stringIndicatorOffset: 0.5,
-		tuningLabelOffsetX: 48,
-		tuningLabelOffsetY: 5,
-		stringIndicatorOffsetX: 5,
-		canvasOffsetY: -9,
-		fretTextOffsetY: 35,
-	},
-	desktopVertical: {
-		width: 166,
-		height: 296,
-		fretWidth: 24,
-		fretCount: 5,
-		dotTextSize: 13,
-		dotSize: 16,
-		barreHeight: 5,
-		fretHeight: 46,
-		tuningTextSize: 13,
-		fretTextSize: 14,
-		fretTextColor: "#4a4a4a",
-		stringWidth: 1,
-		stringCount: 6,
-		backgroundColor: "#242424",
-		fretColor: "#bfbfbf",
-		stringColor: "#ffffff",
-		dotColor: "#2196F3",
-		dotTextColor: "#ffffff",
-		barreColor: "#2196F3",
-		tuningTextColor: "#4d4d4d",
-		openStringColor: "#2196F3",
-		mutedStringColor: "#C65858",
-		fontFamily: "Arial, sans-serif",
-		chord: "x32010",
-		tuningLabelOffset: 0.5,
-		tuningLabelFormat: "note-only",
-		stringIndicatorOffset: 0.5,
-		canvasOffsetX: -30,
-		tuningLabelOffsetX: 5,
-		tuningLabelOffsetY: 61,
-		nutStrokeWidth: 218,
-		nutColor: "#878787",
-		stringIndicatorOffsetY: 25,
-		fretTextOffsetY: 9,
-		fretTextOffsetX: 7,
-	},
-} as const;
-
-// Hook para detectar se está em modo mobile
-function useIsMobile() {
-	const [isMobile, setIsMobile] = useState(false);
-
-	useEffect(() => {
-		const checkIsMobile = () => {
-			setIsMobile(window.innerWidth <= 960);
-		};
-
-		// Verifica no carregamento inicial
-		checkIsMobile();
-
-		// Adiciona listener para mudanças de tamanho
-		window.addEventListener("resize", checkIsMobile);
-
-		// Cleanup
-		return () => window.removeEventListener("resize", checkIsMobile);
-	}, []);
-
-	return isMobile;
-}
-
 // Interface tipada para o componente com tratamento de erro
-interface ChordDiagramWithErrorHandlingProps extends Omit<ChordDiagramProps, "instrument" | "chord"> {
+interface ChordDiagramWithErrorHandlingProps {
 	chord: string;
-	instrument?: ChordDiagramProps["instrument"];
+	instrument?: { tuning?: string[]; strings?: number; frets?: number; chord?: string };
 }
 
 // Componente para tratamento de erro do ChordDiagram
@@ -323,7 +151,6 @@ function ChordDiagramWithErrorHandling(props: ChordDiagramWithErrorHandlingProps
 
 function App() {
 	const { t, i18n } = useTranslation();
-	const isMobile = useIsMobile();
 	const [lang, setLang] = useQueryState("lang", parseAsStringLiteral(["en", "pt"]).withDefault("en"));
 
 	useEffect(() => {
@@ -340,16 +167,7 @@ function App() {
 		]).withDefault("horizontal-right")
 	);
 
-	// Aplica configurações padrão baseadas no modo mobile/desktop
-	const defaults = useMemo(() => {
-		const isHorizontal = view === "horizontal-right" || view === "horizontal-left";
-		const deviceKey = isMobile ? "mobile" : "desktop";
-		const orientationKey = isHorizontal ? "Horizontal" : "Vertical";
-
-		return DEFAULT_CONFIGS[`${deviceKey}${orientationKey}` as keyof typeof DEFAULT_CONFIGS];
-	}, [view, isMobile]);
-
-	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault(defaults.chord));
+	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault(SIMPLE_DEFAULTS.chord));
 
 	// Barre configuration
 	const [barreEnabled, setBarreEnabled] = useQueryState("barreEnabled", parseAsInteger.withDefault(0));
@@ -360,114 +178,114 @@ function App() {
 	);
 	const [barreToString, setBarreToString] = useQueryState("barreToString", parseAsInteger.withDefault(6));
 
-	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(defaults.width));
-	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(defaults.height));
+	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(SIMPLE_DEFAULTS.width));
+	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(SIMPLE_DEFAULTS.height));
 	const [fretCount, setFretCount] = useQueryState(
 		"fretCount",
-		parseAsInteger.withDefault(defaults.fretCount)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretCount)
 	);
 	const [stringCount, setStringCount] = useQueryState(
 		"stringCount",
-		parseAsInteger.withDefault(defaults.stringCount)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.stringCount)
 	);
 	const [fretWidth, setFretWidth] = useQueryState(
 		"fretWidth",
-		parseAsInteger.withDefault(defaults.fretWidth)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretWidth)
 	);
 	const [fretHeight, setFretHeight] = useQueryState(
 		"fretHeight",
-		parseAsInteger.withDefault(defaults.fretHeight)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretHeight)
 	);
 	const [stringWidth, setStringWidth] = useQueryState(
 		"stringWidth",
-		parseAsInteger.withDefault(defaults.stringWidth)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.stringWidth)
 	);
-	const [dotSize, setDotSize] = useQueryState("dotSize", parseAsInteger.withDefault(defaults.dotSize));
+	const [dotSize, setDotSize] = useQueryState(
+		"dotSize",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.dotSize)
+	);
 	const [barreHeight, setBarreHeight] = useQueryState(
 		"barreHeight",
-		parseAsInteger.withDefault(defaults.barreHeight)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barreHeight)
 	);
 	const [backgroundColor, setBackgroundColor] = useQueryState(
 		"backgroundColor",
-		parseAsString.withDefault(defaults.backgroundColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.backgroundColor)
 	);
 	const [fretColor, setFretColor] = useQueryState(
 		"fretColor",
-		parseAsString.withDefault(defaults.fretColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.fretColor)
 	);
 	const [stringColor, setStringColor] = useQueryState(
 		"stringColor",
-		parseAsString.withDefault(defaults.stringColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.stringColor)
 	);
-	const [dotColor, setDotColor] = useQueryState("dotColor", parseAsString.withDefault(defaults.dotColor));
+	const [dotColor, setDotColor] = useQueryState(
+		"dotColor",
+		parseAsString.withDefault(SIMPLE_DEFAULTS.dotColor)
+	);
 	const [dotTextColor, setDotTextColor] = useQueryState(
 		"dotTextColor",
-		parseAsString.withDefault(defaults.dotTextColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.dotTextColor)
 	);
 	const [barreColor, setBarreColor] = useQueryState(
 		"barreColor",
-		parseAsString.withDefault(defaults.barreColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.barreColor)
 	);
 	const [fretTextColor, setFretTextColor] = useQueryState(
 		"fretTextColor",
-		parseAsString.withDefault(defaults.fretTextColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.fretTextColor)
 	);
 	const [tuningTextColor, setTuningTextColor] = useQueryState(
 		"tuningTextColor",
-		parseAsString.withDefault(defaults.tuningTextColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.tuningTextColor)
 	);
 	const [openStringColor, setOpenStringColor] = useQueryState(
 		"openStringColor",
-		parseAsString.withDefault(defaults.openStringColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.openStringColor)
 	);
 	const [mutedStringColor, setMutedStringColor] = useQueryState(
 		"mutedStringColor",
-		parseAsString.withDefault(defaults.mutedStringColor)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.mutedStringColor)
 	);
 	const [fontFamily, setFontFamily] = useQueryState(
 		"fontFamily",
-		parseAsString.withDefault(defaults.fontFamily)
+		parseAsString.withDefault(SIMPLE_DEFAULTS.fontFamily)
 	);
 	const [dotTextSize, setDotTextSize] = useQueryState(
 		"dotTextSize",
-		parseAsInteger.withDefault(defaults.dotTextSize)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.dotTextSize)
 	);
 	const [fretTextSize, setFretTextSize] = useQueryState(
 		"fretTextSize",
-		parseAsInteger.withDefault(defaults.fretTextSize)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextSize)
 	);
 	const [tuningTextSize, setTuningTextSize] = useQueryState(
 		"tuningTextSize",
-		parseAsInteger.withDefault(defaults.tuningTextSize)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.tuningTextSize)
 	);
 	// Tuning customization
 	const [tuningLabelOffsetX, setTuningLabelOffsetX] = useQueryState(
 		"tuningLabelOffsetX",
-		parseAsInteger.withDefault(
-			defaults.tuningLabelOffsetX ?? Math.round(defaults.tuningLabelOffset * 100)
-		)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.tuningLabelOffsetX)
 	);
 	const [tuningLabelOffsetY, setTuningLabelOffsetY] = useQueryState(
 		"tuningLabelOffsetY",
-		parseAsInteger.withDefault(
-			defaults.tuningLabelOffsetY ?? Math.round(defaults.tuningLabelOffset * 100)
-		)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.tuningLabelOffsetY)
 	);
 	const [tuningLabelFormat, setTuningLabelFormat] = useQueryState(
 		"tuningLabelFormat",
-		parseAsStringLiteral(["scientific", "note-only"]).withDefault(defaults.tuningLabelFormat)
+		parseAsStringLiteral(["scientific", "note-only"]).withDefault(SIMPLE_DEFAULTS.tuningLabelFormat)
 	);
 
 	// String indicators customization
 	const [stringIndicatorOffsetX, setStringIndicatorOffsetX] = useQueryState(
 		"stringIndicatorOffsetX",
-		parseAsInteger.withDefault(
-			defaults.stringIndicatorOffsetX ?? Math.round(defaults.stringIndicatorOffset * 100)
-		)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.stringIndicatorOffsetX)
 	);
 	const [stringIndicatorOffsetY, setStringIndicatorOffsetY] = useQueryState(
 		"stringIndicatorOffsetY",
-		parseAsInteger.withDefault(defaults.stringIndicatorOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.stringIndicatorOffsetY)
 	);
 
 	// Barres customization
@@ -479,159 +297,35 @@ function App() {
 	// Fret numbers customization
 	const [fretTextOffsetX, setFretTextOffsetX] = useQueryState(
 		"fretTextOffsetX",
-		parseAsInteger.withDefault(defaults.fretTextOffsetX ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetX ?? 0)
 	);
 	const [fretTextOffsetY, setFretTextOffsetY] = useQueryState(
 		"fretTextOffsetY",
-		parseAsInteger.withDefault(defaults.fretTextOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetY ?? 0)
 	);
 
 	// Nut customization
 	const [nutStrokeWidth, setNutStrokeWidth] = useQueryState(
 		"nutStrokeWidth",
-		parseAsInteger.withDefault(defaults.nutStrokeWidth ?? 75)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutStrokeWidth ?? 75)
 	);
 	const [nutOffsetX, setNutOffsetX] = useQueryState("nutOffsetX", parseAsInteger.withDefault(0));
 	const [nutOffsetY, setNutOffsetY] = useQueryState("nutOffsetY", parseAsInteger.withDefault(0));
 	const [nutOpacity, setNutOpacity] = useQueryState("nutOpacity", parseAsInteger.withDefault(100));
 	const [nutColor, setNutColor] = useQueryState(
 		"nutColor",
-		parseAsString.withDefault(defaults.nutColor ?? "#333333")
+		parseAsString.withDefault(SIMPLE_DEFAULTS.nutColor ?? "#333333")
 	);
 
 	// Canvas positioning
 	const [canvasOffsetX, setCanvasOffsetX] = useQueryState(
 		"canvasOffsetX",
-		parseAsInteger.withDefault(defaults.canvasOffsetX ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetX ?? 0)
 	);
 	const [canvasOffsetY, setCanvasOffsetY] = useQueryState(
 		"canvasOffsetY",
-		parseAsInteger.withDefault(defaults.canvasOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetY ?? 0)
 	);
-
-	// Função para limpar a configuração e manter apenas view e lang
-	const clearConfiguration = () => {
-		// Reset all parameters to their default values using current defaults
-		setChord(defaults.chord);
-		// Barre
-		setBarreEnabled(0);
-		setBarreFret(1);
-		setBarreFromString(1);
-		setBarreToString(6);
-		setWidth(defaults.width);
-		setHeight(defaults.height);
-		setFretCount(defaults.fretCount);
-		setStringCount(defaults.stringCount);
-		setFretWidth(defaults.fretWidth);
-		setFretHeight(defaults.fretHeight);
-		setStringWidth(defaults.stringWidth);
-		setDotSize(defaults.dotSize);
-		setBarreHeight(defaults.barreHeight);
-		setBackgroundColor(defaults.backgroundColor);
-		setFretColor(defaults.fretColor);
-		setStringColor(defaults.stringColor);
-		setDotColor(defaults.dotColor);
-		setDotTextColor(defaults.dotTextColor);
-		setBarreColor(defaults.barreColor);
-		setFretTextColor(defaults.fretTextColor);
-		setTuningTextColor(defaults.tuningTextColor);
-		setOpenStringColor(defaults.openStringColor);
-		setMutedStringColor(defaults.mutedStringColor);
-		setFontFamily(defaults.fontFamily);
-		setDotTextSize(defaults.dotTextSize);
-		setFretTextSize(defaults.fretTextSize);
-		setTuningTextSize(defaults.tuningTextSize);
-		// Tuning
-		setTuningLabelOffsetX(defaults.tuningLabelOffsetX ?? Math.round(defaults.tuningLabelOffset * 100));
-		setTuningLabelOffsetY(defaults.tuningLabelOffsetY ?? Math.round(defaults.tuningLabelOffset * 100));
-		setTuningLabelFormat(defaults.tuningLabelFormat);
-		// String indicators
-		setStringIndicatorOffsetX(
-			defaults.stringIndicatorOffsetX ?? Math.round(defaults.stringIndicatorOffset * 100)
-		);
-		setStringIndicatorOffsetY(defaults.stringIndicatorOffsetY ?? 0);
-		// Barres
-		setBarresWidth(8);
-		setBarresOpacity(100);
-		setBarresOffsetX(0);
-		setBarresOffsetY(0);
-		// Fret numbers
-		setFretTextOffsetX(defaults.fretTextOffsetX ?? 0);
-		setFretTextOffsetY(defaults.fretTextOffsetY ?? 0);
-		// Nut
-		setNutStrokeWidth(defaults.nutStrokeWidth ?? 75);
-		setNutOffsetX(0);
-		setNutOffsetY(0);
-		setNutOpacity(100);
-		setNutColor(defaults.nutColor ?? "#333333");
-		// Canvas
-		setCanvasOffsetX(defaults.canvasOffsetX ?? 0);
-		setCanvasOffsetY(defaults.canvasOffsetY ?? 0);
-	};
-
-	// Função para carregar preset - TOTALMENTE SIMPLIFICADA
-	const loadPreset = (preset: PresetConfig) => {
-		const p = preset.props;
-
-		// Extract chord notation
-		setChord(p.instrument?.chord || "x32010");
-
-		// Extract barre information from chord object
-		if (p.chord?.barres && p.chord.barres.length > 0) {
-			const firstBarre = p.chord.barres[0];
-			setBarreEnabled(1);
-			setBarreFret(firstBarre.fret);
-			setBarreFromString(firstBarre.fromString);
-			setBarreToString(firstBarre.toString);
-		} else {
-			setBarreEnabled(0);
-		}
-
-		// IMPORTANTE: Usar valores DIRETO do preset, sem fallbacks
-		// Isso garante que o preset seja a única fonte de verdade
-		setView(p.view!);
-		setWidth(p.width!);
-		setHeight(p.height!);
-		setFretCount(p.fretCount!);
-		setStringCount(p.stringCount!);
-		setFretWidth(p.fretWidth!);
-		setFretHeight(p.fretHeight!);
-		setStringWidth(p.stringWidth!);
-		setDotSize(p.dotSize!);
-		setBarreHeight(p.barreHeight!);
-		setBackgroundColor(p.backgroundColor!);
-		setFretColor(p.fretColor!);
-		setStringColor(p.stringColor!);
-		setDotColor(p.dotColor!);
-		setDotTextColor(p.dotTextColor!);
-		setBarreColor(p.barreColor!);
-		setFretTextColor(p.fretTextColor!);
-		setTuningTextColor(p.tuningTextColor!);
-		setOpenStringColor(p.openStringColor!);
-		setMutedStringColor(p.mutedStringColor!);
-		setFontFamily(p.fontFamily!);
-		setDotTextSize(p.dotTextSize!);
-		setFretTextSize(p.fretTextSize!);
-		setTuningTextSize(p.tuningTextSize!);
-		setTuningLabelOffsetX(Math.round(p.tuningLabelOffsetX! * 100));
-		setTuningLabelOffsetY(Math.round(p.tuningLabelOffsetY! * 100));
-		setTuningLabelFormat(p.tuningLabelFormat!);
-		setStringIndicatorOffsetX(Math.round(p.stringIndicatorOffsetX! * 100));
-		setStringIndicatorOffsetY(Math.round(p.stringIndicatorOffsetY! * 100));
-		setBarresWidth(p.barresWidth!);
-		setBarresOpacity(Math.round(p.barresOpacity! * 100));
-		setBarresOffsetX(Math.round(p.barresOffsetX! * 100));
-		setBarresOffsetY(Math.round(p.barresOffsetY! * 100));
-		setFretTextOffsetX(Math.round(p.fretTextOffsetX! * 100));
-		setFretTextOffsetY(Math.round(p.fretTextOffsetY! * 100));
-		setNutStrokeWidth(Math.round(p.nutStrokeWidth! * 1000));
-		setNutOffsetX(Math.round(p.nutOffsetX! * 100));
-		setNutOffsetY(Math.round(p.nutOffsetY! * 100));
-		setNutOpacity(Math.round(p.nutOpacity! * 100));
-		setNutColor(p.nutColor!);
-		setCanvasOffsetX(p.canvasOffsetX!);
-		setCanvasOffsetY(p.canvasOffsetY!);
-	};
 
 	// Construct chord object with barre if enabled
 	const chordObject = useMemo(() => {
@@ -664,72 +358,6 @@ function App() {
 		return { fingers, barres };
 	}, [chord, barreEnabled, barreFret, barreFromString, barreToString]);
 
-	// Função para copiar a configuração atual como PresetConfig JSON
-	const copyCurrentConfigAsJSON = async () => {
-		const config: PresetConfig = {
-			id: "custom-preset",
-			name: "Custom Preset",
-			description: "Current configuration",
-			props: {
-				view,
-				instrument: {
-					tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-					strings: 6,
-					frets: fretCount,
-					chord,
-				},
-				chord: chordObject,
-				width,
-				height,
-				fretCount,
-				stringCount,
-				fretWidth,
-				fretHeight,
-				stringWidth,
-				dotSize,
-				barreHeight,
-				backgroundColor,
-				fretColor,
-				stringColor,
-				dotColor,
-				dotTextColor,
-				barreColor,
-				fretTextColor,
-				tuningTextColor,
-				openStringColor,
-				mutedStringColor,
-				fontFamily,
-				dotTextSize,
-				fretTextSize,
-				tuningTextSize,
-				tuningLabelOffsetX: tuningLabelOffsetX / 100,
-				tuningLabelOffsetY: tuningLabelOffsetY / 100,
-				tuningLabelFormat,
-				stringIndicatorOffsetX: stringIndicatorOffsetX / 100,
-				stringIndicatorOffsetY: stringIndicatorOffsetY / 100,
-				barresWidth,
-				barresOpacity: barresOpacity / 100,
-				barresOffsetX: barresOffsetX / 100,
-				barresOffsetY: barresOffsetY / 100,
-				fretTextOffsetX: fretTextOffsetX / 100,
-				fretTextOffsetY: fretTextOffsetY / 100,
-				nutStrokeWidth: nutStrokeWidth / 1000,
-				nutOffsetX: nutOffsetX / 100,
-				nutOffsetY: nutOffsetY / 100,
-				nutOpacity: nutOpacity / 100,
-				nutColor,
-				canvasOffsetX,
-				canvasOffsetY,
-			},
-		};
-
-		const json = JSON.stringify(config, null, 2);
-		await navigator.clipboard.writeText(json);
-
-		// Show feedback
-		alert("Configuration copied to clipboard!");
-	};
-
 	return (
 		<div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-10 text-white">
 			<header className="flex flex-col items-center gap-3 text-center">
@@ -751,23 +379,10 @@ function App() {
 					>
 						npm
 					</a>
-					<Button
-						onClick={copyCurrentConfigAsJSON}
-						variant="outline"
-						size="sm"
-						className="text-xs text-sky-300 hover:text-sky-200"
-					>
-						📋 Copy Config JSON
-					</Button>
 				</nav>
 			</header>
 
-			<div className="grid w-full items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)_360px]">
-				{/* Left Sidebar - Presets */}
-				<div className="hidden lg:block">
-					<PresetsSidebar onSelectPreset={loadPreset} />
-				</div>
-
+			<div className="grid w-full items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
 				{/* Main Content - Chord Diagram */}
 				<div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
 					<ChordDiagram
@@ -834,12 +449,7 @@ function App() {
 					className="flex max-h-[calc(100vh-200px)] flex-col gap-6 overflow-y-auto rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg backdrop-blur-sm"
 					aria-label={t("aria.controlPanel")}
 				>
-					<div className="flex items-center justify-between">
-						<h2 className="text-xl font-semibold">{t("controls.title")}</h2>
-						<Button onClick={clearConfiguration} variant="outline" size="sm" className="text-xs">
-							{t("controls.clearConfig")}
-						</Button>
-					</div>
+					<h2 className="text-xl font-semibold">{t("controls.title")}</h2>
 
 					{/* Chord Input */}
 					<section className="space-y-4">
