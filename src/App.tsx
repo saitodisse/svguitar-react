@@ -8,18 +8,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { exportChordDiagramState, copyStateToClipboard } from "@/components/ChordDiagram/utils/exportState";
+import { importChordDiagramState } from "@/components/ChordDiagram/utils/importState";
+import type { ChordDiagramProps } from "@/components/ChordDiagram/types";
 
 // Valores padrão simples e fixos
 const SIMPLE_DEFAULTS = {
 	chord: "x32010",
-	width: 325,
-	height: 233,
+	width: 337,
+	height: 217,
 	fretCount: 5,
 	stringCount: 6,
-	fretWidth: 47,
+	fretWidth: 51,
 	fretHeight: 30,
-	stringWidth: 1,
-	dotSize: 18,
+	stringWidth: 2,
+	dotSize: 15,
 	barreHeight: 19,
 	backgroundColor: "#ffffff",
 	fretColor: "#333333",
@@ -32,27 +35,27 @@ const SIMPLE_DEFAULTS = {
 	openStringColor: "#2196F3",
 	mutedStringColor: "#DC143C",
 	fontFamily: "sans-serif",
-	dotTextSize: 15,
+	dotTextSize: 18,
 	fretTextSize: 17,
-	tuningTextSize: 17,
-	tuningLabelOffsetX: -532,
-	tuningLabelOffsetY: -4,
+	tuningTextSize: 18,
+	tuningLabelOffsetX: -5.3,
+	tuningLabelOffsetY: 0.01,
 	tuningLabelFormat: "note-only" as const,
-	stringIndicatorOffsetX: 24,
+	stringIndicatorOffsetX: 0,
 	stringIndicatorOffsetY: 0,
-	barresWidth: 12,
+	barresWidth: 9,
 	barresOpacity: 100,
-	barresOffsetX: 37,
-	barresOffsetY: -14,
+	barresOffsetX: 0,
+	barresOffsetY: 0,
 	fretTextOffsetX: 0,
-	fretTextOffsetY: 0,
-	nutStrokeWidth: 75,
+	fretTextOffsetY: 6.4,
+	nutStrokeWidth: 0.1,
 	nutOffsetX: 0,
 	nutOffsetY: 0,
 	nutOpacity: 100,
 	nutColor: "#333333",
-	canvasOffsetX: -8,
-	canvasOffsetY: 0,
+	canvasOffsetX: -13,
+	canvasOffsetY: -23,
 };
 
 // Interface tipada para o componente com tratamento de erro
@@ -152,6 +155,8 @@ function ChordDiagramWithErrorHandling(props: ChordDiagramWithErrorHandlingProps
 function App() {
 	const { t, i18n } = useTranslation();
 	const [lang, setLang] = useQueryState("lang", parseAsStringLiteral(["en", "pt"]).withDefault("en"));
+	const [exportStatus, setExportStatus] = useState<"idle" | "success" | "error">("idle");
+	const [importStatus, setImportStatus] = useState<"idle" | "success" | "error">("idle");
 
 	useEffect(() => {
 		i18n.changeLanguage(lang);
@@ -358,6 +363,180 @@ function App() {
 		return { fingers, barres };
 	}, [chord, barreEnabled, barreFret, barreFromString, barreToString]);
 
+	// Create props object for export/import
+	const currentProps: ChordDiagramProps = useMemo(
+		() => ({
+			instrument: {
+				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+				chord: chord,
+			},
+			view,
+			width,
+			height,
+			fretCount,
+			stringCount,
+			fretWidth,
+			fretHeight,
+			stringWidth,
+			dotSize,
+			barreHeight,
+			backgroundColor,
+			fretColor,
+			stringColor,
+			dotColor,
+			dotTextColor,
+			barreColor,
+			fretTextColor,
+			tuningTextColor,
+			openStringColor,
+			mutedStringColor,
+			fontFamily,
+			dotTextSize,
+			fretTextSize,
+			tuningTextSize,
+			tuningLabelOffsetX,
+			tuningLabelOffsetY,
+			tuningLabelFormat,
+			stringIndicatorOffsetX,
+			stringIndicatorOffsetY,
+			barresWidth,
+			barresOpacity,
+			barresOffsetX,
+			barresOffsetY,
+			fretTextOffsetX,
+			fretTextOffsetY,
+			nutStrokeWidth,
+			nutOffsetX,
+			nutOffsetY,
+			nutOpacity,
+			nutColor,
+			canvasOffsetX,
+			canvasOffsetY,
+		}),
+		[
+			chord,
+			view,
+			width,
+			height,
+			fretCount,
+			stringCount,
+			fretWidth,
+			fretHeight,
+			stringWidth,
+			dotSize,
+			barreHeight,
+			backgroundColor,
+			fretColor,
+			stringColor,
+			dotColor,
+			dotTextColor,
+			barreColor,
+			fretTextColor,
+			tuningTextColor,
+			openStringColor,
+			mutedStringColor,
+			fontFamily,
+			dotTextSize,
+			fretTextSize,
+			tuningTextSize,
+			tuningLabelOffsetX,
+			tuningLabelOffsetY,
+			tuningLabelFormat,
+			stringIndicatorOffsetX,
+			stringIndicatorOffsetY,
+			barresWidth,
+			barresOpacity,
+			barresOffsetX,
+			barresOffsetY,
+			fretTextOffsetX,
+			fretTextOffsetY,
+			nutStrokeWidth,
+			nutOffsetX,
+			nutOffsetY,
+			nutOpacity,
+			nutColor,
+			canvasOffsetX,
+			canvasOffsetY,
+		]
+	);
+
+	// Export state handler
+	const handleExportState = async () => {
+		try {
+			const state = exportChordDiagramState(currentProps);
+			await copyStateToClipboard(state);
+			setExportStatus("success");
+			setTimeout(() => setExportStatus("idle"), 3000);
+		} catch (error) {
+			console.error("Export error:", error);
+			setExportStatus("error");
+			setTimeout(() => setExportStatus("idle"), 3000);
+		}
+	};
+
+	// Import state handler
+	const handleImportState = async () => {
+		try {
+			const json = await navigator.clipboard.readText();
+			const state = JSON.parse(json);
+			const props = importChordDiagramState(state);
+
+			// Apply imported props to all state setters
+			if (props.instrument?.chord) setChord(props.instrument.chord);
+			if (props.view) setView(props.view);
+			if (props.width) setWidth(props.width);
+			if (props.height) setHeight(props.height);
+			if (props.fretCount) setFretCount(props.fretCount);
+			if (props.stringCount) setStringCount(props.stringCount);
+			if (props.fretWidth) setFretWidth(props.fretWidth);
+			if (props.fretHeight) setFretHeight(props.fretHeight);
+			if (props.stringWidth) setStringWidth(props.stringWidth);
+			if (props.dotSize) setDotSize(props.dotSize);
+			if (props.barreHeight) setBarreHeight(props.barreHeight);
+			if (props.backgroundColor) setBackgroundColor(props.backgroundColor);
+			if (props.fretColor) setFretColor(props.fretColor);
+			if (props.stringColor) setStringColor(props.stringColor);
+			if (props.dotColor) setDotColor(props.dotColor);
+			if (props.dotTextColor) setDotTextColor(props.dotTextColor);
+			if (props.barreColor) setBarreColor(props.barreColor);
+			if (props.fretTextColor) setFretTextColor(props.fretTextColor);
+			if (props.tuningTextColor) setTuningTextColor(props.tuningTextColor);
+			if (props.openStringColor) setOpenStringColor(props.openStringColor);
+			if (props.mutedStringColor) setMutedStringColor(props.mutedStringColor);
+			if (props.fontFamily) setFontFamily(props.fontFamily);
+			if (props.dotTextSize) setDotTextSize(props.dotTextSize);
+			if (props.fretTextSize) setFretTextSize(props.fretTextSize);
+			if (props.tuningTextSize) setTuningTextSize(props.tuningTextSize);
+			if (props.tuningLabelOffsetX !== undefined) setTuningLabelOffsetX(props.tuningLabelOffsetX);
+			if (props.tuningLabelOffsetY !== undefined) setTuningLabelOffsetY(props.tuningLabelOffsetY);
+			if (props.tuningLabelFormat) setTuningLabelFormat(props.tuningLabelFormat);
+			if (props.stringIndicatorOffsetX !== undefined)
+				setStringIndicatorOffsetX(props.stringIndicatorOffsetX);
+			if (props.stringIndicatorOffsetY !== undefined)
+				setStringIndicatorOffsetY(props.stringIndicatorOffsetY);
+			if (props.barresWidth) setBarresWidth(props.barresWidth);
+			if (props.barresOpacity !== undefined) setBarresOpacity(props.barresOpacity);
+			if (props.barresOffsetX !== undefined) setBarresOffsetX(props.barresOffsetX);
+			if (props.barresOffsetY !== undefined) setBarresOffsetY(props.barresOffsetY);
+			if (props.fretTextOffsetX !== undefined) setFretTextOffsetX(props.fretTextOffsetX);
+			if (props.fretTextOffsetY !== undefined) setFretTextOffsetY(props.fretTextOffsetY);
+			if (props.nutStrokeWidth !== undefined) setNutStrokeWidth(props.nutStrokeWidth);
+			if (props.nutOffsetX !== undefined) setNutOffsetX(props.nutOffsetX);
+			if (props.nutOffsetY !== undefined) setNutOffsetY(props.nutOffsetY);
+			if (props.nutOpacity !== undefined) setNutOpacity(props.nutOpacity);
+			if (props.nutColor) setNutColor(props.nutColor);
+			if (props.canvasOffsetX !== undefined) setCanvasOffsetX(props.canvasOffsetX);
+			if (props.canvasOffsetY !== undefined) setCanvasOffsetY(props.canvasOffsetY);
+
+			setImportStatus("success");
+			setTimeout(() => setImportStatus("idle"), 3000);
+		} catch (error) {
+			console.error("Import error:", error);
+			setImportStatus("error");
+			setTimeout(() => setImportStatus("idle"), 3000);
+		}
+	};
+
 	return (
 		<div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-10 text-white">
 			<header className="flex flex-col items-center gap-3 text-center">
@@ -420,25 +599,25 @@ function App() {
 							fretTextSize={fretTextSize}
 							tuningTextSize={tuningTextSize}
 							// Tuning customization
-							tuningLabelOffsetX={tuningLabelOffsetX / 100}
-							tuningLabelOffsetY={tuningLabelOffsetY / 100}
+							tuningLabelOffsetX={tuningLabelOffsetX}
+							tuningLabelOffsetY={tuningLabelOffsetY}
 							tuningLabelFormat={tuningLabelFormat}
 							// String indicators customization
-							stringIndicatorOffsetX={stringIndicatorOffsetX / 100}
-							stringIndicatorOffsetY={stringIndicatorOffsetY / 100}
+							stringIndicatorOffsetX={stringIndicatorOffsetX}
+							stringIndicatorOffsetY={stringIndicatorOffsetY}
 							// Barres customization
 							barresWidth={barresWidth}
-							barresOpacity={barresOpacity / 100}
-							barresOffsetX={barresOffsetX / 100}
-							barresOffsetY={barresOffsetY / 100}
+							barresOpacity={barresOpacity}
+							barresOffsetX={barresOffsetX}
+							barresOffsetY={barresOffsetY}
 							// Fret numbers customization
-							fretTextOffsetX={fretTextOffsetX / 100}
-							fretTextOffsetY={fretTextOffsetY / 100}
+							fretTextOffsetX={fretTextOffsetX}
+							fretTextOffsetY={fretTextOffsetY}
 							// Nut customization
-							nutStrokeWidth={nutStrokeWidth / 1000}
-							nutOffsetX={nutOffsetX / 100}
-							nutOffsetY={nutOffsetY / 100}
-							nutOpacity={nutOpacity / 100}
+							nutStrokeWidth={nutStrokeWidth}
+							nutOffsetX={nutOffsetX}
+							nutOffsetY={nutOffsetY}
+							nutOpacity={nutOpacity}
 							nutColor={nutColor}
 							// Canvas positioning
 							canvasOffsetX={canvasOffsetX}
@@ -453,6 +632,33 @@ function App() {
 					aria-label={t("aria.controlPanel")}
 				>
 					<h2 className="text-xl font-semibold">{t("controls.title")}</h2>
+
+					{/* Export/Import State */}
+					<section className="space-y-4">
+						<h3 className="text-xs uppercase tracking-wide text-white/70">
+							{t("controls.stateSection")}
+						</h3>
+						<div className="flex flex-col gap-2">
+							<Button onClick={handleExportState} className="w-full" variant="outline">
+								📋 {t("controls.exportState")}
+							</Button>
+							<Button onClick={handleImportState} className="w-full" variant="outline">
+								📥 {t("controls.importState")}
+							</Button>
+							{exportStatus === "success" && (
+								<p className="text-xs text-green-400">✓ {t("controls.exportSuccess")}</p>
+							)}
+							{exportStatus === "error" && (
+								<p className="text-xs text-red-400">✗ {t("controls.exportError")}</p>
+							)}
+							{importStatus === "success" && (
+								<p className="text-xs text-green-400">✓ {t("controls.importSuccess")}</p>
+							)}
+							{importStatus === "error" && (
+								<p className="text-xs text-red-400">✗ {t("controls.importError")}</p>
+							)}
+						</div>
+					</section>
 
 					{/* Chord Input */}
 					<section className="space-y-4">
@@ -580,42 +786,37 @@ function App() {
 								</SelectContent>
 							</Select>
 						</div>
-						{[
-							{
-								id: "width",
-								title: t("controls.widthLabel"),
-								value: `${width}px`,
-								onChange: (value: number) => setWidth(value),
-								min: 0,
-								max: 1000,
-								source: width,
-							},
-							{
-								id: "height",
-								title: t("controls.heightLabel"),
-								value: `${height}px`,
-								onChange: (value: number) => setHeight(value),
-								min: 0,
-								max: 1000,
-								source: height,
-							},
-						].map(control => (
-							<div key={control.id} className="flex flex-col gap-1">
-								<Label htmlFor={control.id} className="text-sm text-white/80">
-									<span className="flex items-center justify-between">
-										{control.title}
-										<span className="text-xs text-white/60">{control.value}</span>
-									</span>
-								</Label>
-								<Slider
-									id={control.id}
-									min={control.min}
-									max={control.max}
-									value={[control.source]}
-									onValueChange={values => control.onChange(values[0])}
-								/>
-							</div>
-						))}
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="width" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.widthLabel")}
+									<span className="text-xs text-white/60">{width}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="width"
+								min={0}
+								max={1000}
+								value={[width]}
+								onValueChange={values => setWidth(values[0])}
+							/>
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="height" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.heightLabel")}
+									<span className="text-xs text-white/60">{height}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="height"
+								min={0}
+								max={1000}
+								value={[height]}
+								onValueChange={values => setHeight(values[0])}
+							/>
+						</div>
 						<div className="flex items-center justify-between gap-4">
 							<Label htmlFor="backgroundColor" className="text-sm text-white/80">
 								{t("controls.backgroundColorLabel")}
@@ -656,90 +857,90 @@ function App() {
 						<h3 className="text-xs uppercase tracking-wide text-white/70">
 							{t("controls.stringsSection")}
 						</h3>
-						{[
-							{
-								id: "stringCount",
-								title: t("controls.stringCountLabel"),
-								value: `${stringCount}`,
-								onChange: (value: number) => setStringCount(value),
-								min: 0,
-								max: 12,
-								source: stringCount,
-							},
-							{
-								id: "stringWidth",
-								title: t("controls.stringWidthLabel"),
-								value: `${stringWidth}px`,
-								onChange: (value: number) => setStringWidth(value),
-								min: 0,
-								max: 10,
-								step: 0.01,
-								source: stringWidth,
-							},
-						].map(control => (
-							<div key={control.id} className="flex flex-col gap-1">
-								<Label htmlFor={control.id} className="text-sm text-white/80">
-									<span className="flex items-center justify-between">
-										{control.title}
-										<span className="text-xs text-white/60">{control.value}</span>
-									</span>
-								</Label>
-								<Slider
-									id={control.id}
-									min={control.min}
-									max={control.max}
-									step={control.step}
-									value={[control.source]}
-									onValueChange={values => control.onChange(values[0])}
-								/>
-							</div>
-						))}
-						{[
-							{
-								id: "stringColor",
-								title: t("controls.stringColorLabel"),
-								value: stringColor,
-								onChange: setStringColor,
-							},
-							{
-								id: "openStringColor",
-								title: t("controls.openStringColorLabel"),
-								value: openStringColor,
-								onChange: setOpenStringColor,
-							},
-							{
-								id: "mutedStringColor",
-								title: t("controls.mutedStringColorLabel"),
-								value: mutedStringColor,
-								onChange: setMutedStringColor,
-							},
-						].map(colorControl => (
-							<div key={colorControl.id} className="flex items-center justify-between gap-4">
-								<Label htmlFor={colorControl.id} className="text-sm text-white/80">
-									{colorControl.title}
-								</Label>
-								<input
-									id={colorControl.id}
-									type="color"
-									value={colorControl.value}
-									onChange={e => colorControl.onChange(e.target.value)}
-									className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
-								/>
-							</div>
-						))}
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="stringCount" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.stringCountLabel")}
+									<span className="text-xs text-white/60">{stringCount}</span>
+								</span>
+							</Label>
+							<Slider
+								id="stringCount"
+								min={0}
+								max={12}
+								step={1}
+								value={[stringCount]}
+								onValueChange={values => setStringCount(values[0])}
+							/>
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="stringWidth" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.stringWidthLabel")}
+									<span className="text-xs text-white/60">{stringWidth}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="stringWidth"
+								min={0}
+								max={10}
+								step={0.01}
+								value={[stringWidth]}
+								onValueChange={values => setStringWidth(values[0])}
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="stringColor" className="text-sm text-white/80">
+								{t("controls.stringColorLabel")}
+							</Label>
+							<input
+								id="stringColor"
+								type="color"
+								value={stringColor}
+								onChange={e => setStringColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="openStringColor" className="text-sm text-white/80">
+								{t("controls.openStringColorLabel")}
+							</Label>
+							<input
+								id="openStringColor"
+								type="color"
+								value={openStringColor}
+								onChange={e => setOpenStringColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="mutedStringColor" className="text-sm text-white/80">
+								{t("controls.mutedStringColorLabel")}
+							</Label>
+							<input
+								id="mutedStringColor"
+								type="color"
+								value={mutedStringColor}
+								onChange={e => setMutedStringColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="stringIndicatorOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.stringIndicatorOffsetXLabel")}
-									<span className="text-xs text-white/60">
-										{(stringIndicatorOffsetX / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{stringIndicatorOffsetX}</span>
 								</span>
 							</Label>
 							<Slider
 								id="stringIndicatorOffsetX"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[stringIndicatorOffsetX]}
 								onValueChange={values => setStringIndicatorOffsetX(values[0])}
 							/>
@@ -748,15 +949,14 @@ function App() {
 							<Label htmlFor="stringIndicatorOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.stringIndicatorOffsetYLabel")}
-									<span className="text-xs text-white/60">
-										{(stringIndicatorOffsetY / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{stringIndicatorOffsetY}</span>
 								</span>
 							</Label>
 							<Slider
 								id="stringIndicatorOffsetY"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[stringIndicatorOffsetY]}
 								onValueChange={values => setStringIndicatorOffsetY(values[0])}
 							/>
@@ -768,87 +968,99 @@ function App() {
 						<h3 className="text-xs uppercase tracking-wide text-white/70">
 							{t("controls.fretsSection")}
 						</h3>
-						{[
-							{
-								id: "fretCount",
-								title: t("controls.fretCountLabel"),
-								value: `${fretCount}`,
-								onChange: (value: number) => setFretCount(value),
-								min: 0,
-								max: 18,
-								source: fretCount,
-							},
-							{
-								id: "fretWidth",
-								title: t("controls.fretWidthLabel"),
-								value: `${fretWidth}px`,
-								onChange: (value: number) => setFretWidth(value),
-								min: 0,
-								max: 100,
-								source: fretWidth,
-							},
-							{
-								id: "fretHeight",
-								title: t("controls.fretHeightLabel"),
-								value: `${fretHeight}px`,
-								onChange: (value: number) => setFretHeight(value),
-								min: 0,
-								max: 100,
-								source: fretHeight,
-							},
-							{
-								id: "fretTextSize",
-								title: t("controls.fretTextSizeLabel"),
-								value: `${fretTextSize}px`,
-								onChange: (value: number) => setFretTextSize(value),
-								min: 0,
-								max: 100,
-								source: fretTextSize,
-							},
-						].map(control => (
-							<div key={control.id} className="flex flex-col gap-1">
-								<Label htmlFor={control.id} className="text-sm text-white/80">
-									<span className="flex items-center justify-between">
-										{control.title}
-										<span className="text-xs text-white/60">{control.value}</span>
-									</span>
-								</Label>
-								<Slider
-									id={control.id}
-									min={control.min}
-									max={control.max}
-									value={[control.source]}
-									onValueChange={values => control.onChange(values[0])}
-								/>
-							</div>
-						))}
-						{[
-							{
-								id: "fretColor",
-								title: t("controls.fretColorLabel"),
-								value: fretColor,
-								onChange: setFretColor,
-							},
-							{
-								id: "fretTextColor",
-								title: t("controls.fretTextColorLabel"),
-								value: fretTextColor,
-								onChange: setFretTextColor,
-							},
-						].map(colorControl => (
-							<div key={colorControl.id} className="flex items-center justify-between gap-4">
-								<Label htmlFor={colorControl.id} className="text-sm text-white/80">
-									{colorControl.title}
-								</Label>
-								<input
-									id={colorControl.id}
-									type="color"
-									value={colorControl.value}
-									onChange={e => colorControl.onChange(e.target.value)}
-									className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
-								/>
-							</div>
-						))}
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="fretCount" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.fretCountLabel")}
+									<span className="text-xs text-white/60">{fretCount}</span>
+								</span>
+							</Label>
+							<Slider
+								id="fretCount"
+								min={0}
+								max={18}
+								step={1}
+								value={[fretCount]}
+								onValueChange={values => setFretCount(values[0])}
+							/>
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="fretWidth" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.fretWidthLabel")}
+									<span className="text-xs text-white/60">{fretWidth}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="fretWidth"
+								min={0}
+								max={100}
+								step={1}
+								value={[fretWidth]}
+								onValueChange={values => setFretWidth(values[0])}
+							/>
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="fretHeight" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.fretHeightLabel")}
+									<span className="text-xs text-white/60">{fretHeight}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="fretHeight"
+								min={0}
+								max={100}
+								step={1}
+								value={[fretHeight]}
+								onValueChange={values => setFretHeight(values[0])}
+							/>
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="fretTextSize" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.fretTextSizeLabel")}
+									<span className="text-xs text-white/60">{fretTextSize}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="fretTextSize"
+								min={0}
+								max={100}
+								step={0.01}
+								value={[fretTextSize]}
+								onValueChange={values => setFretTextSize(values[0])}
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="fretColor" className="text-sm text-white/80">
+								{t("controls.fretColorLabel")}
+							</Label>
+							<input
+								id="fretColor"
+								type="color"
+								value={fretColor}
+								onChange={e => setFretColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="fretTextColor" className="text-sm text-white/80">
+								{t("controls.fretTextColorLabel")}
+							</Label>
+							<input
+								id="fretTextColor"
+								type="color"
+								value={fretTextColor}
+								onChange={e => setFretTextColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
 					</section>
 
 					{/* Tuning */}
@@ -867,6 +1079,7 @@ function App() {
 								id="tuningTextSize"
 								min={0}
 								max={100}
+								step={0.01}
 								value={[tuningTextSize]}
 								onValueChange={values => setTuningTextSize(values[0])}
 							/>
@@ -887,15 +1100,14 @@ function App() {
 							<Label htmlFor="tuningLabelOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.tuningLabelOffsetXLabel")}
-									<span className="text-xs text-white/60">
-										{(tuningLabelOffsetX / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{tuningLabelOffsetX}</span>
 								</span>
 							</Label>
 							<Slider
 								id="tuningLabelOffsetX"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[tuningLabelOffsetX]}
 								onValueChange={values => setTuningLabelOffsetX(values[0])}
 							/>
@@ -904,15 +1116,14 @@ function App() {
 							<Label htmlFor="tuningLabelOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.tuningLabelOffsetYLabel")}
-									<span className="text-xs text-white/60">
-										{(tuningLabelOffsetY / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{tuningLabelOffsetY}</span>
 								</span>
 							</Label>
 							<Slider
 								id="tuningLabelOffsetY"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[tuningLabelOffsetY]}
 								onValueChange={values => setTuningLabelOffsetY(values[0])}
 							/>
@@ -947,69 +1158,65 @@ function App() {
 						<h3 className="text-xs uppercase tracking-wide text-white/70">
 							{t("controls.dotsSection")}
 						</h3>
-						{[
-							{
-								id: "dotSize",
-								title: t("controls.dotSizeLabel"),
-								value: `${dotSize}px`,
-								onChange: (value: number) => setDotSize(value),
-								min: 0,
-								max: 20,
-								source: dotSize,
-							},
-							{
-								id: "dotTextSize",
-								title: t("controls.dotTextSizeLabel"),
-								value: `${dotTextSize}px`,
-								onChange: (value: number) => setDotTextSize(value),
-								min: 0,
-								max: 100,
-								source: dotTextSize,
-							},
-						].map(control => (
-							<div key={control.id} className="flex flex-col gap-1">
-								<Label htmlFor={control.id} className="text-sm text-white/80">
-									<span className="flex items-center justify-between">
-										{control.title}
-										<span className="text-xs text-white/60">{control.value}</span>
-									</span>
-								</Label>
-								<Slider
-									id={control.id}
-									min={control.min}
-									max={control.max}
-									value={[control.source]}
-									onValueChange={values => control.onChange(values[0])}
-								/>
-							</div>
-						))}
-						{[
-							{
-								id: "dotColor",
-								title: t("controls.dotColorLabel"),
-								value: dotColor,
-								onChange: setDotColor,
-							},
-							{
-								id: "dotTextColor",
-								title: t("controls.dotTextColorLabel"),
-								value: dotTextColor,
-								onChange: setDotTextColor,
-							},
-						].map(colorControl => (
-							<div key={colorControl.id} className="flex items-center justify-between gap-4">
-								<Label htmlFor={colorControl.id} className="text-sm text-white/80">
-									{colorControl.title}
-								</Label>
-								<input
-									id={colorControl.id}
-									type="color"
-									value={colorControl.value}
-									onChange={e => colorControl.onChange(e.target.value)}
-									className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
-								/>
-							</div>
-						))}
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="dotSize" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.dotSizeLabel")}
+									<span className="text-xs text-white/60">{dotSize}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="dotSize"
+								min={0}
+								max={20}
+								step={0.01}
+								value={[dotSize]}
+								onValueChange={values => setDotSize(values[0])}
+							/>
+						</div>
+
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="dotTextSize" className="text-sm text-white/80">
+								<span className="flex items-center justify-between">
+									{t("controls.dotTextSizeLabel")}
+									<span className="text-xs text-white/60">{dotTextSize}px</span>
+								</span>
+							</Label>
+							<Slider
+								id="dotTextSize"
+								min={0}
+								max={100}
+								step={0.01}
+								value={[dotTextSize]}
+								onValueChange={values => setDotTextSize(values[0])}
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="dotColor" className="text-sm text-white/80">
+								{t("controls.dotColorLabel")}
+							</Label>
+							<input
+								id="dotColor"
+								type="color"
+								value={dotColor}
+								onChange={e => setDotColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
+
+						<div className="flex items-center justify-between gap-4">
+							<Label htmlFor="dotTextColor" className="text-sm text-white/80">
+								{t("controls.dotTextColorLabel")}
+							</Label>
+							<input
+								id="dotTextColor"
+								type="color"
+								value={dotTextColor}
+								onChange={e => setDotTextColor(e.target.value)}
+								className="h-9 w-14 cursor-pointer rounded border border-white/20 bg-transparent"
+							/>
+						</div>
 					</section>
 
 					{/* Barres */}
@@ -1063,9 +1270,7 @@ function App() {
 							<Label htmlFor="barresOpacity" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.barresOpacityLabel")}
-									<span className="text-xs text-white/60">
-										{(barresOpacity / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{barresOpacity}</span>
 								</span>
 							</Label>
 							<Slider
@@ -1080,15 +1285,14 @@ function App() {
 							<Label htmlFor="barresOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.barresOffsetXLabel")}
-									<span className="text-xs text-white/60">
-										{(barresOffsetX / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{barresOffsetX}</span>
 								</span>
 							</Label>
 							<Slider
 								id="barresOffsetX"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[barresOffsetX]}
 								onValueChange={values => setBarresOffsetX(values[0])}
 							/>
@@ -1097,15 +1301,14 @@ function App() {
 							<Label htmlFor="barresOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.barresOffsetYLabel")}
-									<span className="text-xs text-white/60">
-										{(barresOffsetY / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{barresOffsetY}</span>
 								</span>
 							</Label>
 							<Slider
 								id="barresOffsetY"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[barresOffsetY]}
 								onValueChange={values => setBarresOffsetY(values[0])}
 							/>
@@ -1121,15 +1324,14 @@ function App() {
 							<Label htmlFor="fretTextOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.fretTextOffsetXLabel")}
-									<span className="text-xs text-white/60">
-										{(fretTextOffsetX / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{fretTextOffsetX}</span>
 								</span>
 							</Label>
 							<Slider
 								id="fretTextOffsetX"
 								min={-100}
 								max={100}
+								step={0.01}
 								value={[fretTextOffsetX]}
 								onValueChange={values => setFretTextOffsetX(values[0])}
 							/>
@@ -1138,15 +1340,14 @@ function App() {
 							<Label htmlFor="fretTextOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.fretTextOffsetYLabel")}
-									<span className="text-xs text-white/60">
-										{(fretTextOffsetY / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{fretTextOffsetY}</span>
 								</span>
 							</Label>
 							<Slider
 								id="fretTextOffsetY"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[fretTextOffsetY]}
 								onValueChange={values => setFretTextOffsetY(values[0])}
 							/>
@@ -1162,15 +1363,14 @@ function App() {
 							<Label htmlFor="nutStrokeWidth" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.nutStrokeWidthLabel")}
-									<span className="text-xs text-white/60">
-										{(nutStrokeWidth / 1000).toFixed(3)}
-									</span>
+									<span className="text-xs text-white/60">{nutStrokeWidth}</span>
 								</span>
 							</Label>
 							<Slider
 								id="nutStrokeWidth"
 								min={0}
-								max={5000}
+								max={50}
+								step={0.01}
 								value={[nutStrokeWidth]}
 								onValueChange={values => setNutStrokeWidth(values[0])}
 							/>
@@ -1179,15 +1379,14 @@ function App() {
 							<Label htmlFor="nutOffsetX" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.nutOffsetXLabel")}
-									<span className="text-xs text-white/60">
-										{(nutOffsetX / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{nutOffsetX}</span>
 								</span>
 							</Label>
 							<Slider
 								id="nutOffsetX"
 								min={-50}
 								max={50}
+								step={0.01}
 								value={[nutOffsetX]}
 								onValueChange={values => setNutOffsetX(values[0])}
 							/>
@@ -1196,15 +1395,14 @@ function App() {
 							<Label htmlFor="nutOffsetY" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.nutOffsetYLabel")}
-									<span className="text-xs text-white/60">
-										{(nutOffsetY / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{nutOffsetY}</span>
 								</span>
 							</Label>
 							<Slider
 								id="nutOffsetY"
-								min={-5000}
-								max={5000}
+								min={-50}
+								max={50}
+								step={0.01}
 								value={[nutOffsetY]}
 								onValueChange={values => setNutOffsetY(values[0])}
 							/>
@@ -1213,15 +1411,14 @@ function App() {
 							<Label htmlFor="nutOpacity" className="text-sm text-white/80">
 								<span className="flex items-center justify-between">
 									{t("controls.nutOpacityLabel")}
-									<span className="text-xs text-white/60">
-										{(nutOpacity / 100).toFixed(2)}
-									</span>
+									<span className="text-xs text-white/60">{nutOpacity}</span>
 								</span>
 							</Label>
 							<Slider
 								id="nutOpacity"
 								min={0}
 								max={100}
+								step={0.01}
 								value={[nutOpacity]}
 								onValueChange={values => setNutOpacity(values[0])}
 							/>
@@ -1256,6 +1453,7 @@ function App() {
 								id="canvasOffsetX"
 								min={-100}
 								max={100}
+								step={0.01}
 								value={[canvasOffsetX]}
 								onValueChange={values => setCanvasOffsetX(values[0])}
 							/>
@@ -1271,6 +1469,7 @@ function App() {
 								id="canvasOffsetY"
 								min={-100}
 								max={100}
+								step={0.01}
 								value={[canvasOffsetY]}
 								onValueChange={values => setCanvasOffsetY(values[0])}
 							/>
