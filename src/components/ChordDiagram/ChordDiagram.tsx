@@ -133,7 +133,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	}
 
 	// Merge custom styles with defaults
-	const style = mergeStyles(styleProps);
+	const style = React.useMemo(() => mergeStyles(styleProps), [styleProps]);
 
 	// Get instrument data for tuning labels
 	const instrumentData = mergeInstrument(instrument);
@@ -154,18 +154,21 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		? style.fretCount * style.fretHeight
 		: (style.stringCount - 1) * style.fretHeight;
 
-	const frame: LayoutFrame = {
-		width: style.width,
-		height: style.height,
-		gridOriginX: startX,
-		gridOriginY: startY,
-		gridWidth,
-		gridHeight,
-		firstFret,
-		stringCount: style.stringCount,
-		fretCount: style.fretCount,
-		style,
-	};
+	const frame: LayoutFrame = React.useMemo(
+		() => ({
+			width: style.width,
+			height: style.height,
+			gridOriginX: startX,
+			gridOriginY: startY,
+			gridWidth,
+			gridHeight,
+			firstFret,
+			stringCount: style.stringCount,
+			fretCount: style.fretCount,
+			style,
+		}),
+		[style, startX, startY, gridWidth, gridHeight, firstFret]
+	);
 
 	return (
 		<div data-testid="chord-diagram" className="w-full m-auto">
