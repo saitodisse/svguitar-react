@@ -9,4 +9,5 @@ Somente prosseguir se todos os testes passarem, o build for criado e o storybook
 - GIT: adicione todos os arquivos modificados para stage
 - GIT: crie uma mensagem de commit para o release
 - GIT: faça push
+- VERCEL: rode `pnpm deploy-storybook:prod` para atualizar a versão no storybook
 - peça para o usuário finalizar o release rodando o comando `pnpm publish`
