@@ -10,19 +10,38 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { exportChordDiagramState, copyStateToClipboard } from "@/components/ChordDiagram/utils/exportState";
 import { importChordDiagramState } from "@/components/ChordDiagram/utils/importState";
-import type { ChordDiagramProps } from "@/components/ChordDiagram/types";
+import type { ChordDiagramProps, ChordDiagramState } from "@/components/ChordDiagram/types";
 
-// Valores padrão simples e fixos
-const SIMPLE_DEFAULTS = {
-	chord: "x32010",
-	width: 337,
-	height: 217,
+// Valores padrão completos (estrutura compatível com ChordDiagramState)
+const SIMPLE_DEFAULTS: ChordDiagramState = {
+	_version: "1.0.0",
+	_timestamp: "2025-10-11T19:42:34.020Z",
+	chord: {
+		fingers: [
+			{ fret: 1, string: 1, is_muted: false },
+			{ fret: 3, string: 2, is_muted: false },
+			{ fret: 3, string: 3, is_muted: false },
+			{ fret: 2, string: 4, is_muted: false },
+			{ fret: 1, string: 5, is_muted: false },
+			{ fret: 1, string: 6, is_muted: false },
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }],
+	},
+	instrument: {
+		strings: 6,
+		frets: 4,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		chord: "133211",
+	},
+	view: "vertical-right" as const,
+	width: 196,
+	height: 291,
 	fretCount: 5,
 	stringCount: 6,
-	fretWidth: 51,
-	fretHeight: 30,
+	fretWidth: 27,
+	fretHeight: 45,
 	stringWidth: 2,
-	dotSize: 15,
+	dotSize: 19,
 	barreHeight: 19,
 	backgroundColor: "#ffffff",
 	fretColor: "#333333",
@@ -31,31 +50,31 @@ const SIMPLE_DEFAULTS = {
 	dotTextColor: "#ffffff",
 	barreColor: "#2196F3",
 	fretTextColor: "#abaaaa",
-	tuningTextColor: "#cecaca",
+	tuningTextColor: "#c2c2c2",
 	openStringColor: "#2196F3",
 	mutedStringColor: "#DC143C",
 	fontFamily: "sans-serif",
 	dotTextSize: 18,
 	fretTextSize: 17,
 	tuningTextSize: 18,
-	tuningLabelOffsetX: -5.3,
-	tuningLabelOffsetY: 0.01,
+	tuningLabelOffsetX: 0,
+	tuningLabelOffsetY: -5.48,
 	tuningLabelFormat: "note-only" as const,
 	stringIndicatorOffsetX: 0,
 	stringIndicatorOffsetY: 0,
-	barresWidth: 9,
+	barresWidth: 8,
 	barresOpacity: 100,
 	barresOffsetX: 0,
-	barresOffsetY: 0,
-	fretTextOffsetX: 0,
-	fretTextOffsetY: 6.4,
-	nutStrokeWidth: 0.1,
+	barresOffsetY: 0.39,
+	fretTextOffsetX: -6.16,
+	fretTextOffsetY: 0.1,
+	nutStrokeWidth: 0.21,
 	nutOffsetX: 0,
 	nutOffsetY: 0,
 	nutOpacity: 100,
-	nutColor: "#333333",
-	canvasOffsetX: -13,
-	canvasOffsetY: -23,
+	nutColor: "#6c6565",
+	canvasOffsetX: -11.48,
+	canvasOffsetY: -23.85,
 };
 
 // Interface tipada para o componente com tratamento de erro
@@ -169,19 +188,31 @@ function App() {
 			"horizontal-left",
 			"vertical-right",
 			"vertical-left",
-		]).withDefault("horizontal-right")
+		]).withDefault(SIMPLE_DEFAULTS.view)
 	);
 
-	const [chord, setChord] = useQueryState("chord", parseAsString.withDefault(SIMPLE_DEFAULTS.chord));
+	const [chord, setChord] = useQueryState(
+		"chord",
+		parseAsString.withDefault(SIMPLE_DEFAULTS.instrument?.chord ?? "000000")
+	);
 
-	// Barre configuration
-	const [barreEnabled, setBarreEnabled] = useQueryState("barreEnabled", parseAsInteger.withDefault(0));
-	const [barreFret, setBarreFret] = useQueryState("barreFret", parseAsInteger.withDefault(1));
+	// Barre configuration - usando valores de SIMPLE_DEFAULTS
+	const [barreEnabled, setBarreEnabled] = useQueryState(
+		"barreEnabled",
+		parseAsInteger.withDefault((SIMPLE_DEFAULTS.chord?.barres?.length ?? 0) > 0 ? 1 : 0)
+	);
+	const [barreFret, setBarreFret] = useQueryState(
+		"barreFret",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.chord?.barres?.[0]?.fret ?? 1)
+	);
 	const [barreFromString, setBarreFromString] = useQueryState(
 		"barreFromString",
-		parseAsInteger.withDefault(1)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.chord?.barres?.[0]?.fromString ?? 1)
 	);
-	const [barreToString, setBarreToString] = useQueryState("barreToString", parseAsInteger.withDefault(6));
+	const [barreToString, setBarreToString] = useQueryState(
+		"barreToString",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.chord?.barres?.[0]?.toString ?? 6)
+	);
 
 	const [width, setWidth] = useQueryState("width", parseAsInteger.withDefault(SIMPLE_DEFAULTS.width));
 	const [height, setHeight] = useQueryState("height", parseAsInteger.withDefault(SIMPLE_DEFAULTS.height));
@@ -294,47 +325,81 @@ function App() {
 	);
 
 	// Barres customization
-	const [barresWidth, setBarresWidth] = useQueryState("barresWidth", parseAsInteger.withDefault(8));
-	const [barresOpacity, setBarresOpacity] = useQueryState("barresOpacity", parseAsInteger.withDefault(100));
-	const [barresOffsetX, setBarresOffsetX] = useQueryState("barresOffsetX", parseAsInteger.withDefault(0));
-	const [barresOffsetY, setBarresOffsetY] = useQueryState("barresOffsetY", parseAsInteger.withDefault(0));
+	const [barresWidth, setBarresWidth] = useQueryState(
+		"barresWidth",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresWidth)
+	);
+	const [barresOpacity, setBarresOpacity] = useQueryState(
+		"barresOpacity",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresOpacity)
+	);
+	const [barresOffsetX, setBarresOffsetX] = useQueryState(
+		"barresOffsetX",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresOffsetX)
+	);
+	const [barresOffsetY, setBarresOffsetY] = useQueryState(
+		"barresOffsetY",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.barresOffsetY)
+	);
 
 	// Fret numbers customization
 	const [fretTextOffsetX, setFretTextOffsetX] = useQueryState(
 		"fretTextOffsetX",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetX ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetX)
 	);
 	const [fretTextOffsetY, setFretTextOffsetY] = useQueryState(
 		"fretTextOffsetY",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.fretTextOffsetY)
 	);
 
 	// Nut customization
 	const [nutStrokeWidth, setNutStrokeWidth] = useQueryState(
 		"nutStrokeWidth",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutStrokeWidth ?? 75)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutStrokeWidth)
 	);
-	const [nutOffsetX, setNutOffsetX] = useQueryState("nutOffsetX", parseAsInteger.withDefault(0));
-	const [nutOffsetY, setNutOffsetY] = useQueryState("nutOffsetY", parseAsInteger.withDefault(0));
-	const [nutOpacity, setNutOpacity] = useQueryState("nutOpacity", parseAsInteger.withDefault(100));
+	const [nutOffsetX, setNutOffsetX] = useQueryState(
+		"nutOffsetX",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutOffsetX)
+	);
+	const [nutOffsetY, setNutOffsetY] = useQueryState(
+		"nutOffsetY",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutOffsetY)
+	);
+	const [nutOpacity, setNutOpacity] = useQueryState(
+		"nutOpacity",
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.nutOpacity)
+	);
 	const [nutColor, setNutColor] = useQueryState(
 		"nutColor",
-		parseAsString.withDefault(SIMPLE_DEFAULTS.nutColor ?? "#333333")
+		parseAsString.withDefault(SIMPLE_DEFAULTS.nutColor)
 	);
 
 	// Canvas positioning
 	const [canvasOffsetX, setCanvasOffsetX] = useQueryState(
 		"canvasOffsetX",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetX ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetX)
 	);
 	const [canvasOffsetY, setCanvasOffsetY] = useQueryState(
 		"canvasOffsetY",
-		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetY ?? 0)
+		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetY)
 	);
 
-	// Construct chord object with barre if enabled
-	const chordObject = useMemo(() => {
-		// Parse the fret notation to get fingers
+	// Chord/Instrument configuration for ChordDiagram
+	const chordConfig = useMemo(() => {
+		const tuning = SIMPLE_DEFAULTS.instrument?.tuning ?? ["E2", "A2", "D3", "G3", "B3", "E4"];
+
+		// If barre is not enabled, use instrument with chord string
+		if (barreEnabled === 0) {
+			return {
+				instrument: {
+					tuning,
+					chord,
+				},
+			};
+		}
+
+		// If barre is enabled, we need to use chord object with barres
+		// Parse the chord string to create fingers
 		const fingers: { fret: number; string: number; is_muted: boolean; text?: string }[] = [];
 		for (let i = 0; i < chord.length && i < 6; i++) {
 			const char = chord[i];
@@ -350,26 +415,25 @@ function App() {
 			}
 		}
 
-		// Add barre if enabled
-		const barres: { fret: number; fromString: number; toString: number }[] = [];
-		if (barreEnabled === 1) {
-			barres.push({
+		// Add barre
+		const barres = [
+			{
 				fret: barreFret,
 				fromString: barreFromString,
 				toString: barreToString,
-			});
-		}
+			},
+		];
 
-		return { fingers, barres };
+		return {
+			instrument: { tuning, chord },
+			chord: { fingers, barres },
+		};
 	}, [chord, barreEnabled, barreFret, barreFromString, barreToString]);
 
 	// Create props object for export/import
 	const currentProps: ChordDiagramProps = useMemo(
 		() => ({
-			instrument: {
-				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-				chord: chord,
-			},
+			...chordConfig,
 			view,
 			width,
 			height,
@@ -414,7 +478,7 @@ function App() {
 			canvasOffsetY,
 		}),
 		[
-			chord,
+			chordConfig,
 			view,
 			width,
 			height,
@@ -482,7 +546,20 @@ function App() {
 			const props = importChordDiagramState(state);
 
 			// Apply imported props to all state setters
+			// Handle chord and instrument
 			if (props.instrument?.chord) setChord(props.instrument.chord);
+
+			// Handle barres from chord object
+			if (props.chord?.barres && props.chord.barres.length > 0) {
+				const firstBarre = props.chord.barres[0];
+				setBarreEnabled(1);
+				setBarreFret(firstBarre.fret);
+				setBarreFromString(firstBarre.fromString);
+				setBarreToString(firstBarre.toString);
+			} else {
+				setBarreEnabled(0);
+			}
+
 			if (props.view) setView(props.view);
 			if (props.width) setWidth(props.width);
 			if (props.height) setHeight(props.height);
@@ -566,11 +643,7 @@ function App() {
 				<div className="flex justify-center items-center w-full m-auto">
 					<div className="w-full m-auto border border-white/10 bg-white/5 p-4 shadow-lg backdrop-blur-sm">
 						<ChordDiagram
-							// chord={chordObject}
-							instrument={{
-								tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-								chord: "x32010",
-							}}
+							{...chordConfig}
 							view={view}
 							// Dimensions
 							width={width}
@@ -635,7 +708,7 @@ function App() {
 
 					{/* Export/Import State */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.stateSection")}
 						</h3>
 						<div className="flex flex-col gap-2">
@@ -662,7 +735,7 @@ function App() {
 
 					{/* Chord Input */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.chordSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -680,7 +753,7 @@ function App() {
 
 					{/* Barre Configuration */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.barreSection")}
 						</h3>
 						<div className="flex items-center space-x-2">
@@ -748,7 +821,7 @@ function App() {
 
 					{/* Layout */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.layoutSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -854,7 +927,7 @@ function App() {
 
 					{/* Strings */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.stringsSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -965,7 +1038,7 @@ function App() {
 
 					{/* Frets */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.fretsSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1065,7 +1138,7 @@ function App() {
 
 					{/* Tuning */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.tuningSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1155,7 +1228,7 @@ function App() {
 
 					{/* Dots (Fingers) */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.dotsSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1168,7 +1241,7 @@ function App() {
 							<Slider
 								id="dotSize"
 								min={0}
-								max={20}
+								max={50}
 								step={0.01}
 								value={[dotSize]}
 								onValueChange={values => setDotSize(values[0])}
@@ -1221,7 +1294,7 @@ function App() {
 
 					{/* Barres */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.barresSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1317,7 +1390,7 @@ function App() {
 
 					{/* Fret Numbers */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.fretNumbersSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1356,7 +1429,7 @@ function App() {
 
 					{/* Nut (Fret Zero) */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.nutSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1439,7 +1512,7 @@ function App() {
 
 					{/* Canvas Positioning */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
 							{t("controls.canvasSection")}
 						</h3>
 						<div className="flex flex-col gap-1">
@@ -1478,7 +1551,9 @@ function App() {
 
 					{/* Language */}
 					<section className="space-y-4">
-						<h3 className="text-xs uppercase tracking-wide text-white/70">{t("language")}</h3>
+						<h3 className="text-base mt-4 uppercase tracking-wide text-white/70">
+							{t("language")}
+						</h3>
 						<RadioGroup value={lang} onValueChange={value => setLang(value as "en" | "pt")}>
 							<div className="flex items-center space-x-2">
 								<RadioGroupItem value="en" id="lang-en" />

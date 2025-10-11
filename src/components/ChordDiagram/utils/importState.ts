@@ -77,6 +77,78 @@ export function validateChordDiagramState(json: unknown): ValidationResult {
 		}
 	}
 
+	// Validate chord object if present
+	if (state.chord) {
+		if (typeof state.chord !== "object") {
+			errors.push("chord must be an object");
+		} else {
+			// Validate fingers array
+			if (state.chord.fingers && !Array.isArray(state.chord.fingers)) {
+				errors.push("chord.fingers must be an array");
+			} else if (state.chord.fingers) {
+				state.chord.fingers.forEach((finger, index) => {
+					if (typeof finger.fret !== "number" || finger.fret < 0) {
+						errors.push(`chord.fingers[${index}].fret must be a non-negative number`);
+					}
+					if (typeof finger.string !== "number" || finger.string < 1) {
+						errors.push(`chord.fingers[${index}].string must be a positive number`);
+					}
+					if (typeof finger.is_muted !== "boolean") {
+						errors.push(`chord.fingers[${index}].is_muted must be a boolean`);
+					}
+				});
+			}
+
+			// Validate barres array
+			if (state.chord.barres && !Array.isArray(state.chord.barres)) {
+				errors.push("chord.barres must be an array");
+			} else if (state.chord.barres) {
+				state.chord.barres.forEach((barre, index) => {
+					if (typeof barre.fret !== "number" || barre.fret < 1) {
+						errors.push(`chord.barres[${index}].fret must be a positive number`);
+					}
+					if (typeof barre.fromString !== "number" || barre.fromString < 1) {
+						errors.push(`chord.barres[${index}].fromString must be a positive number`);
+					}
+					if (typeof barre.toString !== "number" || barre.toString < 1) {
+						errors.push(`chord.barres[${index}].toString must be a positive number`);
+					}
+					if (barre.fromString >= barre.toString) {
+						errors.push(`chord.barres[${index}].fromString must be less than toString`);
+					}
+				});
+			}
+		}
+	}
+
+	// Validate instrument object if present
+	if (state.instrument) {
+		if (typeof state.instrument !== "object") {
+			errors.push("instrument must be an object");
+		} else {
+			if (typeof state.instrument.strings !== "number" || state.instrument.strings < 1) {
+				errors.push("instrument.strings must be a positive number");
+			}
+			if (typeof state.instrument.frets !== "number" || state.instrument.frets < 1) {
+				errors.push("instrument.frets must be a positive number");
+			}
+			if (!Array.isArray(state.instrument.tuning)) {
+				errors.push("instrument.tuning must be an array");
+			} else {
+				state.instrument.tuning.forEach((note, index) => {
+					if (typeof note !== "string" || !note.match(/^[A-G][#b]?\d$/)) {
+						warnings.push(
+							`instrument.tuning[${index}] should be in scientific notation (e.g., "E2")`
+						);
+					}
+				});
+			}
+			if (typeof state.instrument.chord !== "string") {
+				errors.push("instrument.chord must be a string");
+			}
+		}
+	}
+
 	return {
 		valid: errors.length === 0,
 		errors,

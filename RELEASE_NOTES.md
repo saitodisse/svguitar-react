@@ -1,5 +1,50 @@
 # Release Notes
 
+## Version 1.21.0
+
+**Release Date:** October 11, 2025
+
+### 🔧 Major Improvements: Default Values Synchronization
+
+Esta versão traz melhorias significativas na consistência e confiabilidade dos valores padrão em todo o sistema, garantindo que export/import, defaults, e interface de usuário estejam sempre sincronizados.
+
+#### 🎯 Melhorias Principais
+
+**Sincronização Completa de Defaults:**
+
+- `SIMPLE_DEFAULTS` agora usa a interface `ChordDiagramState` para garantir type safety
+- Todos os hooks `useQueryState` referenciam `SIMPLE_DEFAULTS` como fonte única de verdade
+- Eliminados valores hardcoded em todo o código
+- View, configuração de barres, e todos os offsets inicializam corretamente dos defaults
+- Optional chaining adicionado para acesso seguro a propriedades opcionais
+
+**Correções de Bugs:**
+
+- ✅ Corrigido campo `instrument.chord` faltando na exportação quando barres estão habilitados
+- ✅ Corrigida inicialização dos estados de barre a partir de `SIMPLE_DEFAULTS.chord.barres`
+- ✅ Adicionadas anotações de tipo TypeScript apropriadas ao `SIMPLE_DEFAULTS`
+- ✅ Alinhado array de tuning para usar `SIMPLE_DEFAULTS.instrument.tuning`
+
+**Melhorias Técnicas:**
+
+- Consistência garantida entre estado padrão, export, import e renderização UI
+- Type safety aprimorado com optional chaining em todos os acessos a `SIMPLE_DEFAULTS`
+- Todas as 40+ propriedades agora garantidas para corresponder em todo o sistema
+- Melhor experiência de desenvolvedor com fonte única de verdade para todos os defaults
+
+#### 💡 Impacto para Desenvolvedores
+
+- **Mais Confiável**: Export/import agora sempre incluem todos os campos necessários
+- **Mais Seguro**: Type safety garantido pelo TypeScript em todos os defaults
+- **Mais Consistente**: UI sempre reflete os mesmos valores que export/import
+- **Mais Fácil de Manter**: Um único local (`SIMPLE_DEFAULTS`) para atualizar valores padrão
+
+#### 🔄 Migração
+
+Não há breaking changes nesta versão. Todas as melhorias são internas e transparentes para o usuário.
+
+---
+
 ## Version 1.20.0
 
 **Release Date:** October 11, 2025
@@ -11,6 +56,7 @@ Esta versão adiciona um sistema completo de gerenciamento de estado para o Chor
 #### 🎯 Funcionalidades Principais
 
 **Export de Estado:**
+
 - Exporta todo o estado atual do diagrama em formato JSON
 - Inclui todas as 40+ propriedades de customização
 - Metadados incluídos (versão, timestamp)
@@ -19,6 +65,7 @@ Esta versão adiciona um sistema completo de gerenciamento de estado para o Chor
 - Console.log formatado para debug
 
 **Import de Estado:**
+
 - Importa estado completo de JSON
 - Validação completa do schema antes de aplicar
 - Valores padrão automáticos para propriedades faltantes
@@ -26,6 +73,7 @@ Esta versão adiciona um sistema completo de gerenciamento de estado para o Chor
 - Feedback visual de sucesso/erro
 
 **Interface de Usuário:**
+
 - Botão "Export State 📋" no painel de controles
 - Botão "Import State 📥" no painel de controles
 - Mensagens de status em tempo real
@@ -34,8 +82,9 @@ Esta versão adiciona um sistema completo de gerenciamento de estado para o Chor
 #### 💻 API de Uso
 
 **Exportar Estado:**
+
 ```typescript
-import { exportChordDiagramState, copyStateToClipboard } from 'svguitar-react';
+import { exportChordDiagramState, copyStateToClipboard } from "svguitar-react";
 
 // Exportar estado
 const state = exportChordDiagramState(props);
@@ -45,18 +94,20 @@ await copyStateToClipboard(state);
 ```
 
 **Importar Estado:**
+
 ```typescript
-import { importChordDiagramState, validateChordDiagramState } from 'svguitar-react';
+import { importChordDiagramState, validateChordDiagramState } from "svguitar-react";
 
 // Validar JSON
 const validation = validateChordDiagramState(json);
 if (validation.valid) {
-  // Importar
-  const props = importChordDiagramState(state);
+	// Importar
+	const props = importChordDiagramState(state);
 }
 ```
 
 **Exemplo de JSON Exportado:**
+
 ```json
 {
   "_version": "1.0.0",
@@ -81,32 +132,35 @@ if (validation.valid) {
 #### 📦 Novas Interfaces TypeScript
 
 **ChordDiagramState:**
+
 ```typescript
 interface ChordDiagramState {
-  _version: string;
-  _timestamp: string;
-  chord?: Chord;
-  instrument?: { strings: number; frets: number; tuning: string[]; chord: string };
-  view: ViewId;
-  // ...todas as propriedades de estilo (40+)
+	_version: string;
+	_timestamp: string;
+	chord?: Chord;
+	instrument?: { strings: number; frets: number; tuning: string[]; chord: string };
+	view: ViewId;
+	// ...todas as propriedades de estilo (40+)
 }
 ```
 
 **FretboardState:**
+
 ```typescript
 interface FretboardState {
-  frame: Omit<LayoutFrame, 'style'>;
-  engineId: ViewId;
-  style: ChordStyle;
+	frame: Omit<LayoutFrame, "style">;
+	engineId: ViewId;
+	style: ChordStyle;
 }
 ```
 
 **ValidationResult:**
+
 ```typescript
 interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
+	valid: boolean;
+	errors: string[];
+	warnings: string[];
 }
 ```
 
@@ -121,11 +175,13 @@ interface ValidationResult {
 #### 📂 Arquivos Criados
 
 **Utilitários:**
+
 - `src/components/ChordDiagram/utils/exportState.ts` - Funções de export
 - `src/components/ChordDiagram/utils/importState.ts` - Funções de import e validação
 - `src/components/ChordDiagram/utils/fretboardState.ts` - Estado determinístico do Fretboard
 
 **Especificações:**
+
 - `specs/001-guitar-svg/export-import-spec.md` - Especificação completa
 - `specs/001-guitar-svg/tasks-export-import-state.md` - Tasks de implementação
 - `specs/001-guitar-svg/implement-export-import.md` - Guia de implementação
@@ -133,10 +189,12 @@ interface ValidationResult {
 #### 🔧 Arquivos Modificados
 
 **Código:**
+
 - `src/components/ChordDiagram/types.ts` - Novas interfaces
 - `src/App.tsx` - Botões de export/import e handlers
 
 **Traduções:**
+
 - `src/locales/en/translation.json` - Labels EN
 - `src/locales/pt/translation.json` - Labels PT
 
