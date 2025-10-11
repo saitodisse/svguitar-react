@@ -203,7 +203,7 @@ export interface ChordDiagramProps {
 	stringIndicatorOffsetY?: number;
 
 	// Barres customization
-	/** Width of barre rectangles in pixels (default: 8) */
+	/** Width/thickness of barre rectangles in pixels (default: 8). In horizontal views, controls the width; in vertical views, controls the height/thickness. */
 	barresWidth?: number;
 	/** Opacity of barre rectangles from 0 to 1 (default: 1.0) */
 	barresOpacity?: number;
@@ -323,7 +323,7 @@ export interface ChordStyle {
 	stringIndicatorOffsetY: number;
 
 	// Barres customization
-	/** Width of barre rectangles in pixels */
+	/** Width/thickness of barre rectangles in pixels. In horizontal views, controls the width; in vertical views, controls the height/thickness. */
 	barresWidth: number;
 	/** Opacity of barre rectangles from 0 to 1 */
 	barresOpacity: number;

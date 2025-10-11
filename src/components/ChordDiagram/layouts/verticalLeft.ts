@@ -48,7 +48,7 @@ export const verticalLeftEngine: LayoutEngine = {
 			x: Math.min(fromX, toX) - frame.style.barreHeight / 2,
 			y: frame.gridOriginY + (barre.fret - frame.firstFret) * frame.style.fretHeight,
 			width: Math.abs(toX - fromX) + frame.style.barreHeight,
-			height: frame.style.fretHeight,
+			height: frame.style.barresWidth, // In vertical layout, barresWidth controls the thickness (height) of the barre
 			rx: 4,
 		};
 	},

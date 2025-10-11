@@ -73,7 +73,7 @@ interface ChordDiagramProps {
 	stringIndicatorOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight (padrão: 0)
 
 	// Barres customization
-	barresWidth?: number; // Largura horizontal em pixels (padrão: 8)
+	barresWidth?: number; // Largura/grossura da barre em pixels (padrão: 8). Em views horizontais, controla a largura (width) do retângulo SVG. Em views verticais, controla a altura/grossura (height) do retângulo SVG.
 	barresOpacity?: number; // Opacidade de 0 a 1 (padrão: 1.0)
 	barresOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth (padrão: 0)
 	barresOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight (padrão: 0)

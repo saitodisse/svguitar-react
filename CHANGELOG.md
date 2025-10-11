@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.19.1 (2025-10-11)
+
+### Bug Fixes 🐛
+
+- **Vertical Layouts**: Fixed `barresWidth` property not affecting barre thickness in vertical views (`vertical-right` and `vertical-left`)
+    - In vertical layouts, barres are drawn horizontally, so `barresWidth` now correctly controls the height/thickness of the SVG rectangle
+    - In horizontal layouts, `barresWidth` continues to control the width as before
+    - Updated all specifications and documentation to reflect this behavior
+    - Fixed and updated related unit tests
+
+### Documentation 📚
+
+- Updated all specification files to clarify that `barresWidth` controls:
+    - Width (SVG rect width) in horizontal views
+    - Height/thickness (SVG rect height) in vertical views
+- Updated JSDoc comments in TypeScript types
+- Updated quickstart guide and API contracts
+
 ## 1.19.0 (2025-10-11)
 
 ### New Features ✨

@@ -791,7 +791,7 @@ export default App;
 
 **Novas funcionalidades**:
 
-- `barresWidth`: Largura horizontal das barres em pixels
+- `barresWidth`: Largura/grossura das barres em pixels. Em views horizontais, controla a largura (width); em views verticais, controla a altura/grossura (height).
 - `barresOpacity`: Opacidade das barres (0-1)
 - `barresOffsetX` e `barresOffsetY`: Deslocamento das barres
 - `fretTextOffsetX` e `fretTextOffsetY`: Deslocamento dos números dos trastes

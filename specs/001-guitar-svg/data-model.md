@@ -72,7 +72,7 @@ interface ChordDiagramProps {
 	stringIndicatorOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical dos indicadores 'O' e 'X' do nut (padrão: 0)
 
 	// Barres customization
-	barresWidth?: number; // Largura horizontal da barre em pixels (padrão: 8)
+	barresWidth?: number; // Largura/grossura da barre em pixels (padrão: 8). Em views horizontais, controla a largura (width) do retângulo SVG. Em views verticais, controla a altura/grossura (height) do retângulo SVG.
 	barresOpacity?: number; // Opacidade da barre de 0 a 1 (padrão: 1.0)
 	barresOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal (padrão: 0)
 	barresOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical (padrão: 0)
@@ -250,7 +250,7 @@ interface ChordStyle {
 	stringIndicatorOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical dos indicadores 'O' e 'X' do nut
 
 	// Barres customization
-	barresWidth: number; // Largura horizontal da barre em pixels
+	barresWidth: number; // Largura/grossura da barre em pixels. Em views horizontais, controla a largura (width) do retângulo SVG. Em views verticais, controla a altura/grossura (height) do retângulo SVG.
 	barresOpacity: number; // Opacidade da barre de 0 a 1
 	barresOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal
 	barresOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical

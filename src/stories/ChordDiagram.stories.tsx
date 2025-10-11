@@ -208,25 +208,15 @@ const meta: Meta<typeof ChordDiagram> = {
 		},
 
 		// Barres
+		barresWidth: {
+			control: { type: "range", min: 0, max: 50, step: 1 },
+			description: "Width multiplier for barre rectangles",
+			table: { category: "Barres", defaultValue: { summary: "45" } },
+		},
 		barreHeight: {
 			control: { type: "range", min: -50, max: 50 },
 			description: "Height of barre rectangles",
 			table: { category: "Barres", defaultValue: { summary: "8" } },
-		},
-		barreColor: {
-			control: "color",
-			description: "Barre color",
-			table: { category: "Barres", defaultValue: { summary: "#2196F3" } },
-		},
-		barresWidth: {
-			control: { type: "range", min: 0, max: 500, step: 1 },
-			description: "Width multiplier for barre rectangles",
-			table: { category: "Barres", defaultValue: { summary: "45" } },
-		},
-		barresOpacity: {
-			control: { type: "range", min: 0, max: 1, step: 0.01 },
-			description: "Opacity of barre rectangles",
-			table: { category: "Barres", defaultValue: { summary: "1" } },
 		},
 		barresOffsetX: {
 			control: { type: "range", min: -5, max: 5, step: 0.01 },
@@ -237,6 +227,16 @@ const meta: Meta<typeof ChordDiagram> = {
 			control: { type: "range", min: -5, max: 5, step: 0.01 },
 			description: "Vertical offset multiplier for barres",
 			table: { category: "Barres", defaultValue: { summary: "0" } },
+		},
+		barreColor: {
+			control: "color",
+			description: "Barre color",
+			table: { category: "Barres", defaultValue: { summary: "#2196F3" } },
+		},
+		barresOpacity: {
+			control: { type: "range", min: 0, max: 1, step: 0.01 },
+			description: "Opacity of barre rectangles",
+			table: { category: "Barres", defaultValue: { summary: "1" } },
 		},
 
 		// Nut (Fret Zero)
@@ -500,14 +500,15 @@ export const WithBarreVerticalRight: Story = {
 		fretWidth: 23,
 		fretHeight: 39,
 		dotSize: 18,
-		barreHeight: 10,
+		barreHeight: 11,
 		fretTextColor: "#d1d0d0",
 		fontFamily: "sans-serif",
 		dotTextSize: 15,
 		fretTextSize: 17,
 		stringWidth: 1,
-		barresWidth: 10,
+		barresWidth: 11,
 		barresOffsetX: 0.12,
+		barresOffsetY: 0.33,
 
 		chord: {
 			fingers: [
@@ -540,7 +541,6 @@ export const WithBarreVerticalRight: Story = {
 			],
 		},
 
-		barresOffsetY: 0.33,
 		tuningTextColor: "#cecbcb",
 		tuningLabelOffsetX: 0.04,
 		tuningLabelOffsetY: 0.15,
