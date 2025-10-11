@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useQueryState, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
 import { ChordDiagram } from "./components/ChordDiagram/ChordDiagram";
 import type { ChordDiagramProps } from "./components/ChordDiagram/types";
+import { DEFAULT_CHORD_STYLE } from "./components/ChordDiagram/constants";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -568,22 +569,16 @@ function App() {
 		setCanvasOffsetY(defaults.canvasOffsetY ?? 0);
 	};
 
-	// Função para carregar preset
+	// Função para carregar preset - TOTALMENTE SIMPLIFICADA
 	const loadPreset = (preset: PresetConfig) => {
-		const props = preset.props;
+		const p = preset.props;
 
-		// Extract chord notation from either chord or instrument
-		let chordNotation = "x32010"; // default
-		if (props.instrument?.chord) {
-			chordNotation = props.instrument.chord;
-		}
-
-		// Set all properties
-		setChord(chordNotation);
+		// Extract chord notation
+		setChord(p.instrument?.chord || "x32010");
 
 		// Extract barre information from chord object
-		if (props.chord?.barres && props.chord.barres.length > 0) {
-			const firstBarre = props.chord.barres[0];
+		if (p.chord?.barres && p.chord.barres.length > 0) {
+			const firstBarre = p.chord.barres[0];
 			setBarreEnabled(1);
 			setBarreFret(firstBarre.fret);
 			setBarreFromString(firstBarre.fromString);
@@ -592,73 +587,50 @@ function App() {
 			setBarreEnabled(0);
 		}
 
-		// View
-		if (props.view) {
-			setView(props.view);
-		}
-
-		// Dimensions
-		if (props.width !== undefined) setWidth(props.width);
-		if (props.height !== undefined) setHeight(props.height);
-		if (props.fretCount !== undefined) setFretCount(props.fretCount);
-		if (props.stringCount !== undefined) setStringCount(props.stringCount);
-		if (props.fretWidth !== undefined) setFretWidth(props.fretWidth);
-		if (props.fretHeight !== undefined) setFretHeight(props.fretHeight);
-		if (props.stringWidth !== undefined) setStringWidth(props.stringWidth);
-		if (props.dotSize !== undefined) setDotSize(props.dotSize);
-		if (props.barreHeight !== undefined) setBarreHeight(props.barreHeight);
-
-		// Colors
-		if (props.backgroundColor !== undefined) setBackgroundColor(props.backgroundColor);
-		if (props.fretColor !== undefined) setFretColor(props.fretColor);
-		if (props.stringColor !== undefined) setStringColor(props.stringColor);
-		if (props.dotColor !== undefined) setDotColor(props.dotColor);
-		if (props.dotTextColor !== undefined) setDotTextColor(props.dotTextColor);
-		if (props.barreColor !== undefined) setBarreColor(props.barreColor);
-		if (props.fretTextColor !== undefined) setFretTextColor(props.fretTextColor);
-		if (props.tuningTextColor !== undefined) setTuningTextColor(props.tuningTextColor);
-		if (props.openStringColor !== undefined) setOpenStringColor(props.openStringColor);
-		if (props.mutedStringColor !== undefined) setMutedStringColor(props.mutedStringColor);
-
-		// Fonts
-		if (props.fontFamily !== undefined) setFontFamily(props.fontFamily);
-		if (props.dotTextSize !== undefined) setDotTextSize(props.dotTextSize);
-		if (props.fretTextSize !== undefined) setFretTextSize(props.fretTextSize);
-		if (props.tuningTextSize !== undefined) setTuningTextSize(props.tuningTextSize);
-
-		// Tuning customization - convert from decimal to integer (multiply by 100)
-		if (props.tuningLabelOffsetX !== undefined)
-			setTuningLabelOffsetX(Math.round(props.tuningLabelOffsetX * 100));
-		if (props.tuningLabelOffsetY !== undefined)
-			setTuningLabelOffsetY(Math.round(props.tuningLabelOffsetY * 100));
-		if (props.tuningLabelFormat !== undefined) setTuningLabelFormat(props.tuningLabelFormat);
-
-		// String indicators - convert from decimal to integer (multiply by 100)
-		if (props.stringIndicatorOffsetX !== undefined)
-			setStringIndicatorOffsetX(Math.round(props.stringIndicatorOffsetX * 100));
-		if (props.stringIndicatorOffsetY !== undefined)
-			setStringIndicatorOffsetY(Math.round(props.stringIndicatorOffsetY * 100));
-
-		// Barres customization
-		if (props.barresWidth !== undefined) setBarresWidth(props.barresWidth);
-		if (props.barresOpacity !== undefined) setBarresOpacity(Math.round(props.barresOpacity * 100));
-		if (props.barresOffsetX !== undefined) setBarresOffsetX(Math.round(props.barresOffsetX * 100));
-		if (props.barresOffsetY !== undefined) setBarresOffsetY(Math.round(props.barresOffsetY * 100));
-
-		// Fret numbers - convert from decimal to integer (multiply by 100)
-		if (props.fretTextOffsetX !== undefined) setFretTextOffsetX(Math.round(props.fretTextOffsetX * 100));
-		if (props.fretTextOffsetY !== undefined) setFretTextOffsetY(Math.round(props.fretTextOffsetY * 100));
-
-		// Nut customization
-		setNutStrokeWidth(props.nutStrokeWidth !== undefined ? Math.round(props.nutStrokeWidth * 1000) : 75);
-		setNutOffsetX(props.nutOffsetX !== undefined ? Math.round(props.nutOffsetX * 100) : 0);
-		setNutOffsetY(props.nutOffsetY !== undefined ? Math.round(props.nutOffsetY * 100) : 0);
-		setNutOpacity(props.nutOpacity !== undefined ? Math.round(props.nutOpacity * 100) : 100);
-		setNutColor(props.nutColor !== undefined ? props.nutColor : "#333333");
-
-		// Canvas positioning
-		if (props.canvasOffsetX !== undefined) setCanvasOffsetX(props.canvasOffsetX);
-		if (props.canvasOffsetY !== undefined) setCanvasOffsetY(props.canvasOffsetY);
+		// IMPORTANTE: Usar valores DIRETO do preset, sem fallbacks
+		// Isso garante que o preset seja a única fonte de verdade
+		setView(p.view!);
+		setWidth(p.width!);
+		setHeight(p.height!);
+		setFretCount(p.fretCount!);
+		setStringCount(p.stringCount!);
+		setFretWidth(p.fretWidth!);
+		setFretHeight(p.fretHeight!);
+		setStringWidth(p.stringWidth!);
+		setDotSize(p.dotSize!);
+		setBarreHeight(p.barreHeight!);
+		setBackgroundColor(p.backgroundColor!);
+		setFretColor(p.fretColor!);
+		setStringColor(p.stringColor!);
+		setDotColor(p.dotColor!);
+		setDotTextColor(p.dotTextColor!);
+		setBarreColor(p.barreColor!);
+		setFretTextColor(p.fretTextColor!);
+		setTuningTextColor(p.tuningTextColor!);
+		setOpenStringColor(p.openStringColor!);
+		setMutedStringColor(p.mutedStringColor!);
+		setFontFamily(p.fontFamily!);
+		setDotTextSize(p.dotTextSize!);
+		setFretTextSize(p.fretTextSize!);
+		setTuningTextSize(p.tuningTextSize!);
+		setTuningLabelOffsetX(Math.round(p.tuningLabelOffsetX! * 100));
+		setTuningLabelOffsetY(Math.round(p.tuningLabelOffsetY! * 100));
+		setTuningLabelFormat(p.tuningLabelFormat!);
+		setStringIndicatorOffsetX(Math.round(p.stringIndicatorOffsetX! * 100));
+		setStringIndicatorOffsetY(Math.round(p.stringIndicatorOffsetY! * 100));
+		setBarresWidth(p.barresWidth!);
+		setBarresOpacity(Math.round(p.barresOpacity! * 100));
+		setBarresOffsetX(Math.round(p.barresOffsetX! * 100));
+		setBarresOffsetY(Math.round(p.barresOffsetY! * 100));
+		setFretTextOffsetX(Math.round(p.fretTextOffsetX! * 100));
+		setFretTextOffsetY(Math.round(p.fretTextOffsetY! * 100));
+		setNutStrokeWidth(Math.round(p.nutStrokeWidth! * 1000));
+		setNutOffsetX(Math.round(p.nutOffsetX! * 100));
+		setNutOffsetY(Math.round(p.nutOffsetY! * 100));
+		setNutOpacity(Math.round(p.nutOpacity! * 100));
+		setNutColor(p.nutColor!);
+		setCanvasOffsetX(p.canvasOffsetX!);
+		setCanvasOffsetY(p.canvasOffsetY!);
 	};
 
 	// Construct chord object with barre if enabled
@@ -692,6 +664,72 @@ function App() {
 		return { fingers, barres };
 	}, [chord, barreEnabled, barreFret, barreFromString, barreToString]);
 
+	// Função para copiar a configuração atual como PresetConfig JSON
+	const copyCurrentConfigAsJSON = async () => {
+		const config: PresetConfig = {
+			id: "custom-preset",
+			name: "Custom Preset",
+			description: "Current configuration",
+			props: {
+				view,
+				instrument: {
+					tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+					strings: 6,
+					frets: fretCount,
+					chord,
+				},
+				chord: chordObject,
+				width,
+				height,
+				fretCount,
+				stringCount,
+				fretWidth,
+				fretHeight,
+				stringWidth,
+				dotSize,
+				barreHeight,
+				backgroundColor,
+				fretColor,
+				stringColor,
+				dotColor,
+				dotTextColor,
+				barreColor,
+				fretTextColor,
+				tuningTextColor,
+				openStringColor,
+				mutedStringColor,
+				fontFamily,
+				dotTextSize,
+				fretTextSize,
+				tuningTextSize,
+				tuningLabelOffsetX: tuningLabelOffsetX / 100,
+				tuningLabelOffsetY: tuningLabelOffsetY / 100,
+				tuningLabelFormat,
+				stringIndicatorOffsetX: stringIndicatorOffsetX / 100,
+				stringIndicatorOffsetY: stringIndicatorOffsetY / 100,
+				barresWidth,
+				barresOpacity: barresOpacity / 100,
+				barresOffsetX: barresOffsetX / 100,
+				barresOffsetY: barresOffsetY / 100,
+				fretTextOffsetX: fretTextOffsetX / 100,
+				fretTextOffsetY: fretTextOffsetY / 100,
+				nutStrokeWidth: nutStrokeWidth / 1000,
+				nutOffsetX: nutOffsetX / 100,
+				nutOffsetY: nutOffsetY / 100,
+				nutOpacity: nutOpacity / 100,
+				nutColor,
+				canvasOffsetX,
+				canvasOffsetY,
+			},
+		};
+
+		const json = JSON.stringify(config, null, 2);
+		await navigator.clipboard.writeText(json);
+
+		// Show feedback
+		alert("Configuration copied to clipboard!");
+	};
+
 	return (
 		<div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-8 px-4 py-10 text-white">
 			<header className="flex flex-col items-center gap-3 text-center">
@@ -713,6 +751,14 @@ function App() {
 					>
 						npm
 					</a>
+					<Button
+						onClick={copyCurrentConfigAsJSON}
+						variant="outline"
+						size="sm"
+						className="text-xs text-sky-300 hover:text-sky-200"
+					>
+						📋 Copy Config JSON
+					</Button>
 				</nav>
 			</header>
 
