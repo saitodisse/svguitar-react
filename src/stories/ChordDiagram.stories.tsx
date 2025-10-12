@@ -686,7 +686,17 @@ export const DropDTuning: Story = {
 			tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
 			chord: "000232",
 		},
+
 		...BASE_STORY_CONFIG,
+		dotSize: 15,
+		fretColor: "#989393",
+		fretTextColor: "#cac6c6",
+		tuningTextColor: "#9f9e9e",
+		tuningLabelOffsetX: 0.88,
+		tuningLabelOffsetY: 0.05,
+		stringIndicatorOffsetX: 0.23,
+		fretTextOffsetX: 0.02,
+		fretTextOffsetY: 0.31,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
