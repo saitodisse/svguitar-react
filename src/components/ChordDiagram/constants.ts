@@ -77,6 +77,8 @@ export const DEFAULT_VIEW: ViewId = "horizontal-right";
 
 /**
  * Default instrument configuration for standard guitar
+ * Note: tuning array is in ascending pitch order (low to high frequency).
+ * Index 0 = string 6 (low E2), index 5 = string 1 (high E4)
  */
 export const DEFAULT_INSTRUMENT: Instrument = {
 	strings: 6,
@@ -87,6 +89,8 @@ export const DEFAULT_INSTRUMENT: Instrument = {
 
 /**
  * Standard guitar tunings in scientific notation
+ * All arrays are in ascending pitch order (low to high frequency)
+ * Index 0 = string 6 (lowest), index 5 = string 1 (highest)
  */
 export const STANDARD_TUNINGS = {
 	STANDARD: ["E2", "A2", "D3", "G3", "B3", "E4"],

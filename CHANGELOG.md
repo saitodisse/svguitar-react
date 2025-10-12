@@ -1,5 +1,69 @@
 # Changelog
 
+## 2.0.0 (2025-10-12)
+
+### ⚠️ BREAKING CHANGES
+
+This release inverts the string numbering convention to align with standard guitar nomenclature used by musicians worldwide.
+
+**Old Convention (v1.x):**
+
+- String 1 = E2 (low E, 6th string on standard guitar)
+- String 6 = E4 (high E, 1st string on standard guitar)
+
+**New Convention (v2.x):**
+
+- String 1 = E4 (high E, 1st string on standard guitar) ✅
+- String 6 = E2 (low E, 6th string on standard guitar) ✅
+
+### What Changed 🔄
+
+#### API Changes
+
+- **String numbering**: String 1 now refers to the highest/thinnest string (high E)
+- **Tuning array**: Maintained in ascending pitch order (low to high), but index mapping changed
+    - Index 0 now maps to string 6 (was string 1)
+    - Index 5 now maps to string 1 (was string 6)
+- **Fret notation**: Still reads left-to-right as low to high, but now represents strings 6→1
+
+#### Migration Guide
+
+If you're using the `chord` prop with explicit string numbers:
+
+```typescript
+// v1.x (OLD)
+{ fret: 3, string: 2 } // A string
+
+// v2.0 (NEW)
+{ fret: 3, string: 5 } // A string
+```
+
+**Conversion formula**: `newString = 7 - oldString`
+
+If you're using `instrument.chord` with fret notation, **no changes needed** - the parser handles the conversion automatically.
+
+### Why This Change? 🎯
+
+- **Industry Standard**: Aligns with how guitarists universally refer to strings
+- **Better UX**: Musicians expect string 1 to be the high E string
+- **Consistency**: Matches guitar tablature and chord diagram conventions
+- **Visual Clarity**: String numbers now match physical guitar string positions
+
+### Technical Details 🔧
+
+- Updated all layout engines (horizontal and vertical)
+- Modified `TuningLabels` component for correct index→string mapping
+- Enhanced `parseFretNotation` to handle new convention
+- Updated all 150+ unit tests and 18 Storybook tests
+- **Visual rendering remains identical** - only the API semantics changed
+
+### Documentation 📚
+
+- Updated all specifications in `specs/001-guitar-svg/`
+- Refreshed API contracts and validation rules
+- Updated quickstart guide with new examples
+- Added migration notes to README
+
 ## 1.21.0 (2025-10-11)
 
 ### Improvements 🎨

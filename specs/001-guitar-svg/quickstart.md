@@ -23,11 +23,11 @@ import { ChordDiagram } from "@svguitar/react";
 const App = () => {
 	const cMajor = {
 		fingers: [
-			// Fret notation: x32010
-			{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
-			{ fret: 2, string: 3, is_muted: false, text: "2" }, // String 3 (D)
-			{ fret: 1, string: 5, is_muted: false, text: "1" }, // String 5 (B)
-			// String 1 (E) is muted, String 4 (G) is open, String 6 (E) is open
+			// Fret notation: x32010 (ordem: corda 6→1, grave→aguda)
+			{ fret: 3, string: 5, is_muted: false, text: "3" }, // String 5 (A2)
+			{ fret: 2, string: 4, is_muted: false, text: "2" }, // String 4 (D3)
+			{ fret: 1, string: 2, is_muted: false, text: "1" }, // String 2 (B3)
+			// String 6 (E2) is muted, String 3 (G3) is open, String 1 (E4) is open
 		],
 		barres: [],
 	};

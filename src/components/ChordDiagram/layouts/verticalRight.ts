@@ -2,12 +2,13 @@ import type { LayoutEngine, LayoutFrame, LayoutArgs, Finger, Barre } from "../ty
 
 /**
  * Vertical-right layout engine
- * Rotated view with strings on X-axis and frets on Y-axis
+ * Rotated view with strings on X-axis (string 1/high E on left) and frets on Y-axis
  */
 export const verticalRightEngine: LayoutEngine = {
 	id: "vertical-right",
 
 	mapStringAxis: (stringNumber: number, frame: LayoutFrame): number => {
+		// String 1 (high E) on left (x = 0), string 6 (low E) on right
 		const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
 		return frame.gridOriginX + (stringNumber - 1) * spacing;
 	},

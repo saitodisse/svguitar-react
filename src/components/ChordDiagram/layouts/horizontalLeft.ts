@@ -2,16 +2,14 @@ import type { LayoutEngine, LayoutFrame, LayoutArgs, Finger, Barre } from "../ty
 
 /**
  * Horizontal-left layout engine
- * Mirrored horizontal view with low E string at top
+ * Mirrored horizontal view with string 1 (high E) at top, string 6 (low E) at bottom
  */
 export const horizontalLeftEngine: LayoutEngine = {
 	id: "horizontal-left",
 
 	mapStringAxis: (stringNumber: number, frame: LayoutFrame): number => {
-		return (
-			frame.gridOriginY +
-			(frame.stringCount - stringNumber) * (frame.gridHeight / (frame.stringCount - 1))
-		);
+		// String 1 (high E) at top (y = 0), string 6 (low E) at bottom
+		return frame.gridOriginY + (stringNumber - 1) * (frame.gridHeight / (frame.stringCount - 1));
 	},
 
 	mapFretAxis: (fret: number, frame: LayoutFrame): number => {
@@ -25,9 +23,7 @@ export const horizontalLeftEngine: LayoutEngine = {
 				frame.gridOriginX +
 				frame.gridWidth -
 				(finger.fret - frame.firstFret + 0.5) * frame.style.fretWidth,
-			cy:
-				frame.gridOriginY +
-				(frame.stringCount - finger.string) * (frame.gridHeight / (frame.stringCount - 1)),
+			cy: frame.gridOriginY + (finger.string - 1) * (frame.gridHeight / (frame.stringCount - 1)),
 			r: frame.style.dotSize / 2,
 		};
 	},
@@ -38,8 +34,8 @@ export const horizontalLeftEngine: LayoutEngine = {
 	): { x: number; y: number; width: number; height: number; rx?: number } => {
 		const { frame } = args;
 		const stringSpacing = frame.gridHeight / (frame.stringCount - 1);
-		const fromY = frame.gridOriginY + (frame.stringCount - barre.fromString) * stringSpacing;
-		const toY = frame.gridOriginY + (frame.stringCount - barre.toString) * stringSpacing;
+		const fromY = frame.gridOriginY + (barre.fromString - 1) * stringSpacing;
+		const toY = frame.gridOriginY + (barre.toString - 1) * stringSpacing;
 
 		return {
 			x:
@@ -64,9 +60,7 @@ export const horizontalLeftEngine: LayoutEngine = {
 				frame.gridOriginX +
 				frame.gridWidth +
 				frame.style.fretWidth * frame.style.stringIndicatorOffsetX,
-			y:
-				frame.gridOriginY +
-				(frame.stringCount - stringNumber) * (frame.gridHeight / (frame.stringCount - 1)),
+			y: frame.gridOriginY + (stringNumber - 1) * (frame.gridHeight / (frame.stringCount - 1)),
 		};
 	},
 };

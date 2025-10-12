@@ -12,11 +12,14 @@ import { resolveViewId, validateView } from "./layout";
 
 /**
  * Parses a fret notation string into a Chord object
+ * Note: fret notation is read left-to-right as low to high pitch (string 6→1)
+ * Example: "x32010" = [string 6 (E2), string 5 (A2), string 4 (D3), string 3 (G3), string 2 (B3), string 1 (E4)]
  * @param fretNotation - The fret notation string (e.g., "x32010" or "(10)(12)(10)(10)(10)(10)")
+ * @param stringCount - Total number of strings on the instrument (default: 6)
  * @returns Parsed Chord object with fingers and barres
  * @throws {ChordDiagramError} If the fret notation is invalid
  */
-export function parseFretNotation(fretNotation: string): Chord {
+export function parseFretNotation(fretNotation: string, stringCount: number = 6): Chord {
 	if (!VALID_FRET_CHARS.test(fretNotation)) {
 		throw new ChordDiagramError(
 			`Invalid fret notation: "${fretNotation}". Only digits, 'x', 'o', '(', and ')' are allowed.`,
@@ -26,10 +29,10 @@ export function parseFretNotation(fretNotation: string): Chord {
 
 	const fingers: Finger[] = [];
 	const barres: Barre[] = [];
-	let stringNumber = 1;
+	let stringIndex = 0; // Tracks position in notation (0 = leftmost char = string 6, 5 = rightmost = string 1)
 	let i = 0;
 
-	while (i < fretNotation.length && stringNumber <= 6) {
+	while (i < fretNotation.length && stringIndex < stringCount) {
 		let fret: number | "x" | "o" | null = null;
 		const char = fretNotation[i];
 
@@ -60,9 +63,14 @@ export function parseFretNotation(fretNotation: string): Chord {
 		} else {
 			// Skip invalid characters and move to next string
 			i++;
-			stringNumber++;
+			stringIndex++;
 			continue;
 		}
+
+		// Convert stringIndex (0-based, left-to-right) to stringNumber (1-based, high-to-low)
+		// stringIndex 0 (leftmost) = string 6 (lowest)
+		// stringIndex 5 (rightmost) = string 1 (highest)
+		const stringNumber = stringCount - stringIndex;
 
 		if (typeof fret === "number" && fret >= 0) {
 			fingers.push({
@@ -84,7 +92,7 @@ export function parseFretNotation(fretNotation: string): Chord {
 			});
 		}
 
-		stringNumber++;
+		stringIndex++;
 	}
 
 	return { fingers, barres };
@@ -389,7 +397,7 @@ export function processChordData(props: { instrument?: Partial<Instrument>; chor
 		const instrument = mergeInstrument(props.instrument);
 		validateInstrument(instrument);
 
-		const chord = parseFretNotation(instrument.chord);
+		const chord = parseFretNotation(instrument.chord, instrument.strings);
 		return chord;
 	}
 

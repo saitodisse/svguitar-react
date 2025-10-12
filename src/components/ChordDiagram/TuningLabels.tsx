@@ -16,6 +16,8 @@ interface TuningLabelsProps {
 
 /**
  * Renders tuning labels for each string
+ * Note: tuning array is in ascending pitch order (low to high).
+ * Index 0 = string 6 (low E2), index 5 = string 1 (high E4)
  */
 export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, frame, tuning }) => {
 	const isVertical = engine.id.startsWith("vertical");
@@ -25,7 +27,8 @@ export const TuningLabels: React.FC<TuningLabelsProps> = React.memo(({ engine, f
 	return (
 		<g>
 			{tuning.map((note, index) => {
-				const stringNumber = index + 1;
+				// Map tuning array index to string number: index 0 = string 6, index 5 = string 1
+				const stringNumber = frame.stringCount - index;
 				const formattedNote = formatTuningLabel(note, tuningLabelFormat);
 
 				if (isVertical) {

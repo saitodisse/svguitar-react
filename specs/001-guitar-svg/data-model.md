@@ -4,12 +4,12 @@ Este documento define as interfaces TypeScript para as props do componente `Chor
 
 ## Convenção de Numeração e Renderização
 
-Para garantir clareza, o componente `ChordDiagram` adota a seguinte convenção:
+Para garantir clareza, o componente `ChordDiagram` adota a seguinte convenção, alinhada com a nomenclatura padrão de guitarristas:
 
-- **Numeração das Cordas**: A contagem de cordas começa em `1` para a corda mais **grave** (low E, a 6ª corda de um violão padrão) e vai até `6` (ou o número total de cordas) para a mais **aguda** (high E, a 1ª corda).
-- **Ordem de Renderização**: Visualmente, o diagrama é renderizado com a corda de número mais alto (aguda) no topo e a de número mais baixo (grave) na base.
-- **Arrays de Afinação (`tuning`)**: Seguem a ordem da numeração, da mais grave para a mais aguda (ex: `["E2", "A2", ..., "E4"]`). O índice `0` corresponde à corda `1`.
-- **Notação de Trastes (`Fret Notation`)**: Segue a ordem da numeração, da corda mais grave para a mais aguda (ex: `"x32010"`).
+- **Numeração das Cordas**: A contagem de cordas começa em `1` para a corda mais **aguda** (high E, a 1ª corda de um violão padrão) e vai até `6` (ou o número total de cordas) para a mais **grave** (low E, a 6ª corda). Esta é a convenção padrão dos músicos.
+- **Ordem de Renderização**: Visualmente, o diagrama é renderizado com a corda de número mais baixo (aguda) no topo e a de número mais alto (grave) na base.
+- **Arrays de Afinação (`tuning`)**: Seguem a ordem crescente de frequência/pitch, da mais grave para a mais aguda (ex: `["E2", "A2", "D3", "G3", "B3", "E4"]`). O índice `0` corresponde à corda `6` (mais grave), e o índice `5` corresponde à corda `1` (mais aguda). O array mantém a notação científica em ordem crescente para facilitar a leitura e validação.
+- **Notação de Trastes (`Fret Notation`)**: Segue a ordem crescente de frequência, da corda mais grave para a mais aguda (ex: `"x32010"` representa as cordas 6, 5, 4, 3, 2, 1 respectivamente).
 
 ## 1. Entidades Principais
 
@@ -166,8 +166,8 @@ Define o instrumento, usado principalmente para interpretar a string de tablatur
 interface Instrument {
 	strings: number; // Número de cordas
 	frets: number; // Número de trastes a serem mostrados no diagrama
-	tuning: string[]; // Afinação das cordas, da mais grave (corda 1) para a mais aguda (corda 6)
-	chord: string; // A Fret Notation, ex: "x32010" ou "(10)x(12)..."
+	tuning: string[]; // Afinação das cordas em notação científica, da mais grave para a mais aguda (ex: ["E2", "A2", "D3", "G3", "B3", "E4"]). Índice 0 = corda 6 (grave), índice 5 = corda 1 (aguda)
+	chord: string; // A Fret Notation, ex: "x32010" ou "(10)x(12)..." (ordem: corda 6→1, grave→aguda)
 }
 ```
 
@@ -182,7 +182,7 @@ Representa um dedo posicionado no braço.
 ```typescript
 interface Finger {
 	fret: number;
-	string: number; // Número da corda (1 = mais grave, ex: E2)
+	string: number; // Número da corda (1 = mais aguda/high E, 6 = mais grave/low E)
 	is_muted: boolean;
 	text?: string; // Texto opcional dentro do círculo (ex: "1", "A")
 }
@@ -192,13 +192,13 @@ interface Finger {
 
 Representa uma pestana.
 
-- **Regra de Validação**: `fromString` deve ser menor ou igual a `toString`. Ambas devem se referir a cordas válidas (1 = mais grave).
+- **Regra de Validação**: `fromString` deve ser menor ou igual a `toString`. Ambas devem se referir a cordas válidas. Como corda 1 = aguda e corda 6 = grave, uma barre típica vai de um número menor (aguda) para um número maior (grave).
 
 ```typescript
 interface Barre {
 	fret: number;
-	fromString: number; // Corda inicial (1 = mais grave)
-	toString: number; // Corda final (ex: 6 = mais aguda)
+	fromString: number; // Corda inicial (1 = mais aguda/high E)
+	toString: number; // Corda final (6 = mais grave/low E)
 	text?: string;
 }
 ```

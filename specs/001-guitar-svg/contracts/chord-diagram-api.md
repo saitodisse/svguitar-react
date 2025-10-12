@@ -146,9 +146,9 @@ interface Instrument {
 - `strings` deve ser > 0
 - `frets` deve ser > 0
 - `tuning.length` deve igualar `strings`
-- `tuning` deve conter notas válidas em notação científica (ex: "E2", "A2"), da corda mais grave para a mais aguda.
+- `tuning` deve conter notas válidas em notação científica (ex: "E2", "A2"), em ordem crescente de frequência (mais grave para mais aguda). Índice 0 = corda 6 (grave), índice 5 = corda 1 (aguda).
 - A contagem de cordas na Fret Notation `chord` deve igualar `strings`
-- `chord` deve conter apenas caracteres válidos: '0'-'9', 'x', 'o', '(', ')'
+- `chord` deve conter apenas caracteres válidos: '0'-'9', 'x', 'o', '(', ')'. A ordem é corda 6→1 (grave→aguda).
 
 ### Finger
 
@@ -164,7 +164,7 @@ interface Finger {
 **Regras de Validação**:
 
 - `fret` deve ser >= 0 (0 para cordas soltas)
-- `string` deve estar no intervalo [1, strings], onde 1 é a corda mais grave.
+- `string` deve estar no intervalo [1, strings], onde 1 é a corda mais aguda (high E) e strings é a mais grave (low E).
 - `is_muted` deve ser boolean (true para cordas mutadas)
 - `text` é opcional e será renderizado dentro do círculo
 
@@ -182,9 +182,9 @@ interface Barre {
 **Regras de Validação**:
 
 - `fret` deve ser > 0
-- `fromString` deve estar no intervalo [1, strings], onde 1 é a corda mais grave.
-- `toString` deve estar no intervalo [1, strings].
-- `fromString` deve ser <= `toString`
+- `fromString` deve estar no intervalo [1, strings], onde 1 é a corda mais aguda (high E).
+- `toString` deve estar no intervalo [1, strings], onde strings é a corda mais grave (low E).
+- `fromString` deve ser <= `toString` (aguda <= grave, ex: barre da corda 1 até 5)
 
 ### ChordStyle
 

@@ -1,5 +1,139 @@
 # Release Notes
 
+## Version 2.0.0 🎸
+
+**Release Date:** October 12, 2025
+
+### ⚠️ BREAKING CHANGES - String Numbering Convention
+
+Esta é uma **major release** que inverte a convenção de numeração das cordas para alinhar com o padrão universal usado por guitarristas.
+
+#### 📊 O Que Mudou
+
+**Convenção Antiga (v1.x):**
+
+```
+String 1 = E2 (corda grave, 6ª corda física)
+String 6 = E4 (corda aguda, 1ª corda física)
+```
+
+**Nova Convenção (v2.x):**
+
+```
+String 1 = E4 (corda aguda, 1ª corda física) ✅
+String 6 = E2 (corda grave, 6ª corda física) ✅
+```
+
+#### 🎯 Por Que Essa Mudança?
+
+1. **Padrão da Indústria**: Alinha com como guitarristas mundialmente se referem às cordas
+2. **Melhor UX**: Músicos esperam que "corda 1" seja a corda E aguda
+3. **Consistência**: Combina com tablaturas e diagramas de acordes convencionais
+4. **Clareza Visual**: Números de cordas agora correspondem às posições físicas da guitarra
+
+#### 🔄 Guia de Migração
+
+**Se você usa `chord` prop com números de cordas explícitos:**
+
+```typescript
+// ❌ v1.x (ANTIGO)
+const cMajor = {
+	fingers: [
+		{ fret: 3, string: 2, is_muted: false }, // A string
+		{ fret: 2, string: 3, is_muted: false }, // D string
+		{ fret: 1, string: 5, is_muted: false }, // B string
+	],
+	barres: [],
+};
+
+// ✅ v2.0 (NOVO)
+const cMajor = {
+	fingers: [
+		{ fret: 3, string: 5, is_muted: false }, // A string
+		{ fret: 2, string: 4, is_muted: false }, // D string
+		{ fret: 1, string: 2, is_muted: false }, // B string
+	],
+	barres: [],
+};
+```
+
+**Fórmula de conversão:** `novaString = 7 - stringAntiga`
+
+**Se você usa `instrument.chord` com fret notation:**
+
+```typescript
+// ✅ Nenhuma mudança necessária!
+const chord = {
+	instrument: {
+		chord: "x32010", // Parser lida com a conversão automaticamente
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+	},
+};
+```
+
+#### 🔧 Mudanças Técnicas
+
+**Layouts Atualizados:**
+
+- ✅ `horizontalRight.ts`: Fórmula invertida para `(stringNumber - 1)`
+- ✅ `horizontalLeft.ts`: Fórmula invertida para `(stringNumber - 1)`
+- ✅ `verticalRight.ts`: Já estava correto, apenas comentários atualizados
+- ✅ `verticalLeft.ts`: Ajustado para `gridWidth - (stringNumber - 1)`
+
+**Componentes Modificados:**
+
+- ✅ `TuningLabels.tsx`: Mapeamento índice→stringNumber invertido
+- ✅ `utils.ts`: Parser de fret notation atualizado para nova convenção
+- ✅ `constants.ts`: Comentários explicativos adicionados
+
+**Array de Tuning:**
+
+- Mantido na ordem crescente de frequência: `["E2", "A2", "D3", "G3", "B3", "E4"]`
+- Índice 0 agora mapeia para string 6 (era string 1)
+- Índice 5 agora mapeia para string 1 (era string 6)
+
+#### ✅ Testes e Qualidade
+
+- ✅ 150 testes unitários passando
+- ✅ 18 testes do Storybook passando
+- ✅ Build de produção bem-sucedido
+- ✅ **Renderização visual permanece idêntica** - apenas a semântica da API mudou
+
+#### 📚 Documentação Atualizada
+
+- ✅ Todas as especificações em `specs/001-guitar-svg/`
+- ✅ Contratos de API e regras de validação
+- ✅ Guia de início rápido com novos exemplos
+- ✅ README com notas de migração
+
+#### 🎨 Exemplos Corrigidos
+
+Todos os exemplos no Storybook foram atualizados:
+
+- ✅ C Major, F Major, A minor
+- ✅ Acordes com barre
+- ✅ Cordas abertas e mutadas
+- ✅ Posições altas (high position)
+- ✅ Todas as views (horizontal-right, horizontal-left, vertical-right, vertical-left)
+
+#### 🚀 Como Atualizar
+
+```bash
+# 1. Atualize para v2.0.0
+pnpm install svguitar-react@2.0.0
+
+# 2. Se você usa chord prop, converta os números das cordas
+# Use a fórmula: novaString = 7 - stringAntiga
+
+# 3. Se você usa fret notation, nenhuma ação necessária!
+```
+
+#### ⚡ Performance
+
+Não há impacto na performance. A mudança é puramente semântica - a renderização visual e o desempenho permanecem os mesmos.
+
+---
+
 ## Version 1.21.0
 
 **Release Date:** October 11, 2025

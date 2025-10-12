@@ -2,14 +2,15 @@ import type { LayoutEngine, LayoutFrame, LayoutArgs, Finger, Barre } from "../ty
 
 /**
  * Vertical-left layout engine
- * Rotated view with strings on X-axis (inverted) and frets on Y-axis
+ * Rotated view with strings on X-axis (string 1/high E on right, inverted) and frets on Y-axis
  */
 export const verticalLeftEngine: LayoutEngine = {
 	id: "vertical-left",
 
 	mapStringAxis: (stringNumber: number, frame: LayoutFrame): number => {
+		// String 1 (high E) on right, string 6 (low E) on left (inverted from verticalRight)
 		const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
-		return frame.gridOriginX + (frame.stringCount - stringNumber) * spacing;
+		return frame.gridOriginX + frame.gridWidth - (stringNumber - 1) * spacing;
 	},
 
 	mapFretAxis: (fret: number, frame: LayoutFrame): number => {
@@ -21,7 +22,7 @@ export const verticalLeftEngine: LayoutEngine = {
 		return {
 			cx: ((stringNumber: number, frame: LayoutFrame): number => {
 				const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
-				return frame.gridOriginX + (frame.stringCount - stringNumber) * spacing;
+				return frame.gridOriginX + frame.gridWidth - (stringNumber - 1) * spacing;
 			})(finger.string, frame),
 			cy: ((fret: number, frame: LayoutFrame): number => {
 				return frame.gridOriginY + (fret - frame.firstFret + 0.5) * frame.style.fretHeight;
@@ -37,11 +38,11 @@ export const verticalLeftEngine: LayoutEngine = {
 		const { frame } = args;
 		const fromX = ((stringNumber: number, frame: LayoutFrame): number => {
 			const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
-			return frame.gridOriginX + (frame.stringCount - stringNumber) * spacing;
+			return frame.gridOriginX + frame.gridWidth - (stringNumber - 1) * spacing;
 		})(barre.fromString, frame);
 		const toX = ((stringNumber: number, frame: LayoutFrame): number => {
 			const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
-			return frame.gridOriginX + (frame.stringCount - stringNumber) * spacing;
+			return frame.gridOriginX + frame.gridWidth - (stringNumber - 1) * spacing;
 		})(barre.toString, frame);
 
 		return {
@@ -62,7 +63,7 @@ export const verticalLeftEngine: LayoutEngine = {
 		return {
 			x: ((stringNumber: number, frame: LayoutFrame): number => {
 				const spacing = frame.gridWidth / Math.max(frame.stringCount - 1, 1);
-				return frame.gridOriginX + (frame.stringCount - stringNumber) * spacing;
+				return frame.gridOriginX + frame.gridWidth - (stringNumber - 1) * spacing;
 			})(stringNumber, frame),
 			y: frame.gridOriginY - frame.style.fretHeight * frame.style.stringIndicatorOffsetX,
 		};

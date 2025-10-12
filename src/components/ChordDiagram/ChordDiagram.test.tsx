@@ -19,26 +19,26 @@ import {
 import { ChordDiagramError } from "./types";
 import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT } from "./constants";
 
-// Corrected chord data based on the new convention (string 1 = low E)
+// Corrected chord data based on the new convention (string 1 = high E)
 const cMajor = {
 	fingers: [
-		{ fret: 3, string: 2, is_muted: false, text: "3" }, // A string
-		{ fret: 2, string: 3, is_muted: false, text: "2" }, // D string
-		{ fret: 1, string: 5, is_muted: false, text: "1" }, // B string
-		{ fret: 0, string: 1, is_muted: true },
-		{ fret: 0, string: 4, is_muted: false },
-		{ fret: 0, string: 6, is_muted: false },
+		{ fret: 3, string: 5, is_muted: false, text: "3" }, // A string (string 5)
+		{ fret: 2, string: 4, is_muted: false, text: "2" }, // D string (string 4)
+		{ fret: 1, string: 2, is_muted: false, text: "1" }, // B string (string 2)
+		{ fret: 0, string: 6, is_muted: true }, // Low E (string 6) muted
+		{ fret: 0, string: 3, is_muted: false }, // G string (string 3) open
+		{ fret: 0, string: 1, is_muted: false }, // High E (string 1) open
 	],
 	barres: [],
 };
 
 const fMajor = {
 	fingers: [
-		{ fret: 3, string: 2, is_muted: false, text: "3" },
-		{ fret: 3, string: 3, is_muted: false, text: "4" },
-		{ fret: 2, string: 4, is_muted: false, text: "2" },
+		{ fret: 3, string: 5, is_muted: false, text: "3" }, // A string (string 5)
+		{ fret: 3, string: 4, is_muted: false, text: "4" }, // D string (string 4)
+		{ fret: 2, string: 3, is_muted: false, text: "2" }, // G string (string 3)
 	],
-	barres: [{ fret: 1, fromString: 1, toString: 6 }],
+	barres: [{ fret: 1, fromString: 1, toString: 6 }], // Barre from string 1 (high E) to string 6 (low E)
 };
 
 describe("ChordDiagram Component", () => {
@@ -108,25 +108,26 @@ describe("Utility Functions", () => {
 	describe("parseFretNotation", () => {
 		it("should parse 'x32010' correctly", () => {
 			const result = parseFretNotation("x32010");
+			// Fret notation order: left-to-right = string 6→1 (low E to high E)
 			expect(result.fingers).toEqual([
-				{ fret: 0, string: 1, is_muted: true },
-				{ fret: 3, string: 2, is_muted: false },
-				{ fret: 2, string: 3, is_muted: false },
-				{ fret: 0, string: 4, is_muted: false },
-				{ fret: 1, string: 5, is_muted: false },
-				{ fret: 0, string: 6, is_muted: false },
+				{ fret: 0, string: 6, is_muted: true }, // x = string 6 (low E)
+				{ fret: 3, string: 5, is_muted: false }, // 3 = string 5 (A)
+				{ fret: 2, string: 4, is_muted: false }, // 2 = string 4 (D)
+				{ fret: 0, string: 3, is_muted: false }, // 0 = string 3 (G)
+				{ fret: 1, string: 2, is_muted: false }, // 1 = string 2 (B)
+				{ fret: 0, string: 1, is_muted: false }, // 0 = string 1 (high E)
 			]);
 		});
 
 		it("should parse '(10)x(12)...' correctly", () => {
 			const result = parseFretNotation("(10)x(12)(10)(11)(10)");
 			expect(result.fingers).toEqual([
-				{ fret: 10, string: 1, is_muted: false },
-				{ fret: 0, string: 2, is_muted: true },
-				{ fret: 12, string: 3, is_muted: false },
-				{ fret: 10, string: 4, is_muted: false },
-				{ fret: 11, string: 5, is_muted: false },
-				{ fret: 10, string: 6, is_muted: false },
+				{ fret: 10, string: 6, is_muted: false }, // (10) = string 6
+				{ fret: 0, string: 5, is_muted: true }, // x = string 5
+				{ fret: 12, string: 4, is_muted: false }, // (12) = string 4
+				{ fret: 10, string: 3, is_muted: false }, // (10) = string 3
+				{ fret: 11, string: 2, is_muted: false }, // (11) = string 2
+				{ fret: 10, string: 1, is_muted: false }, // (10) = string 1
 			]);
 		});
 
