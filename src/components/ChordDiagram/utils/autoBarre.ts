@@ -135,18 +135,20 @@ export function removeFingersCoveredByBarre(fingers: Finger[], barre: Barre): Fi
  * @example
  * ```typescript
  * // Auto barre enabled (default)
- * shouldApplyAutoBarre({ chord: { fingers: [], barres: [] } }); // true
+ * shouldApplyAutoBarre({ fingers: [], barres: [] }); // true
  *
  * // Auto barre disabled
  * shouldApplyAutoBarre({
  *   autoBarreEnabled: false,
- *   chord: { fingers: [], barres: [] }
+ *   fingers: [],
+ *   barres: []
  * }); // false
  *
  * // Manual barre present (auto barre disabled regardless of flag)
  * shouldApplyAutoBarre({
  *   autoBarreEnabled: true,
- *   chord: { fingers: [], barres: [{ fret: 1, fromString: 1, toString: 6 }] }
+ *   fingers: [],
+ *   barres: [{ fret: 1, fromString: 1, toString: 6 }]
  * }); // false
  * ```
  */
@@ -157,7 +159,7 @@ export function shouldApplyAutoBarre(props: ChordDiagramProps): boolean {
 	}
 
 	// Check if there are manual barres (manual barres have precedence)
-	const hasManualBarres = props.chord && props.chord.barres && props.chord.barres.length > 0;
+	const hasManualBarres = props.barres && props.barres.length > 0;
 	if (hasManualBarres) {
 		return false;
 	}

@@ -11,10 +11,8 @@ import type { ChordDiagramProps } from "../types";
 
 describe("Nut Customization", () => {
 	const baseProps: ChordDiagramProps = {
-		chord: {
-			fingers: [{ fret: 1, string: 2, is_muted: false }],
-			barres: [],
-		},
+		fingers: [{ fret: 1, string: 2, is_muted: false }],
+		barres: [],
 	};
 
 	describe("nutStrokeWidth", () => {

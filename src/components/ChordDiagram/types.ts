@@ -125,10 +125,25 @@ export interface LayoutEngine {
  * Main props interface for the ChordDiagram component
  */
 export interface ChordDiagramProps {
-	/** Instrument configuration (for fret notation input) */
-	instrument?: Partial<Instrument>;
-	/** Chord data (structured input) */
-	chord?: Chord;
+	// Instrument configuration (inline) - for fret notation input
+	/** Number of strings (default: 6) */
+	strings?: number;
+	/** Number of frets to display (default: 4) */
+	frets?: number;
+	/** Scientific notation of open string notes, from lowest to highest pitch (e.g., ["E2", "A2", "D3", "G3", "B3", "E4"]) */
+	tuning?: string[];
+	/** Fret notation string (e.g., "x32010" or "(10)(12)(10)(10)(10)(10)") - replaces old instrument.chord */
+	fretNotation?: string;
+
+	// Chord data (inline) - structured input
+	/** Array of finger positions */
+	fingers?: Finger[];
+	/** Array of barre positions */
+	barres?: Barre[];
+	/** First fret to display (for high position chords) */
+	firstFret?: number;
+	/** Last fret to display */
+	lastFret?: number;
 
 	// Layout (mapping-per-view)
 	/** Predefined view for layout */
@@ -409,14 +424,17 @@ export interface ChordDiagramState {
 	_version: string;
 	_timestamp: string;
 
-	// Chord data
-	chord?: Chord;
-	instrument?: {
-		strings: number;
-		frets: number;
-		tuning: string[];
-		chord: string;
-	};
+	// Instrument configuration (inline)
+	strings: number;
+	frets: number;
+	tuning: string[];
+	fretNotation?: string;
+
+	// Chord data (inline)
+	fingers?: Finger[];
+	barres?: Barre[];
+	firstFret?: number;
+	lastFret?: number;
 
 	// Layout
 	view: ViewId;

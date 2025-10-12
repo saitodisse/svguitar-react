@@ -43,7 +43,7 @@ const fMajor = {
 
 describe("ChordDiagram Component", () => {
 	it("should render C Major chord correctly", () => {
-		render(<ChordDiagram chord={cMajor} />);
+		render(<ChordDiagram {...cMajor} />);
 		const svg = screen.getByTestId("chord-diagram").querySelector("svg");
 		expect(svg).toBeInTheDocument();
 		// Expect 3 finger dots, 2 open string circles, 1 muted string X
@@ -52,32 +52,29 @@ describe("ChordDiagram Component", () => {
 	});
 
 	it("should render F Major barre chord correctly", () => {
-		render(<ChordDiagram chord={fMajor} />);
+		render(<ChordDiagram {...fMajor} />);
 		const svg = screen.getByTestId("chord-diagram").querySelector("svg");
 		expect(svg).toBeInTheDocument();
 		expect(svg?.querySelectorAll("circle").length).toBe(3);
 		expect(svg?.querySelectorAll("rect").length).toBe(2); // 1 background + 1 barre
 	});
 
-	it("should render from instrument fret notation", () => {
-		const instrument = {
-			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-			chord: "x32010", // C Major
-		};
-		render(<ChordDiagram instrument={instrument} />);
+	it("should render from fret notation", () => {
+		render(<ChordDiagram tuning={["E2", "A2", "D3", "G3", "B3", "E4"]} fretNotation="320003" />);
 		const svg = screen.getByTestId("chord-diagram").querySelector("svg");
 		expect(svg).toBeInTheDocument();
-		expect(svg?.querySelectorAll("circle").length).toBe(5);
+		// G Major "320003" has 3 pressed fingers + 3 open strings = 6 circles total
+		expect(svg?.querySelectorAll("circle").length).toBe(6);
 	});
 
 	it("renders horizontal-left view with tuning labels on the right and mirrored fret numbers", () => {
-		const instrument = {
-			strings: 6,
-			frets: 4,
-			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-			chord: "x32010",
-		};
-		render(<ChordDiagram instrument={instrument} view="horizontal-left" />);
+		render(
+			<ChordDiagram
+				tuning={["E2", "A2", "D3", "G3", "B3", "E4"]}
+				fretNotation="x32010"
+				view="horizontal-left"
+			/>
+		);
 		const svg = screen.getByTestId("chord-diagram").querySelector("svg");
 		expect(svg).toBeInTheDocument();
 		const textNodes = Array.from(svg!.querySelectorAll("text"));
@@ -207,7 +204,7 @@ describe("Utility Functions", () => {
 	describe("Vertical Layouts - TuningLabels Positioning (FR-026)", () => {
 		it("should render tuning labels to the right of each fret in vertical-right view", () => {
 			const { container } = render(
-				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-right" width={200} height={250} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -230,7 +227,7 @@ describe("Utility Functions", () => {
 
 		it("should render tuning labels to the right of each fret in vertical-left view", () => {
 			const { container } = render(
-				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-left" width={200} height={250} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -256,7 +253,7 @@ describe("Utility Functions", () => {
 
 			views.forEach(view => {
 				const { container } = render(
-					<ChordDiagram chord={cMajor} view={view} width={200} height={250} />
+					<ChordDiagram {...cMajor} view={view} width={200} height={250} />
 				);
 
 				const svg = container.querySelector("svg");
@@ -273,11 +270,11 @@ describe("Utility Functions", () => {
 
 		it("should position labels consistently between vertical-right and vertical-left", () => {
 			const { container: rightContainer } = render(
-				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-right" width={200} height={250} />
 			);
 
 			const { container: leftContainer } = render(
-				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-left" width={200} height={250} />
 			);
 
 			const rightSvg = rightContainer.querySelector("svg");
@@ -302,15 +299,13 @@ describe("Utility Functions", () => {
 		});
 
 		it("should handle instrument-based rendering with vertical layouts", () => {
-			const instrument = {
-				strings: 6,
-				frets: 4,
+			const props = {
 				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-				chord: "023100",
+				fretNotation: "023100",
 			};
 
 			const { container } = render(
-				<ChordDiagram instrument={instrument} view="vertical-right" width={200} height={250} />
+				<ChordDiagram {...props} view="vertical-right" width={200} height={250} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -325,7 +320,7 @@ describe("Utility Functions", () => {
 	describe("Vertical Layouts - FretNumbers Positioning (FR-026)", () => {
 		it("should render fret numbers to the right of the fretboard in vertical-right view", () => {
 			const { container } = render(
-				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-right" width={200} height={250} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -347,7 +342,7 @@ describe("Utility Functions", () => {
 
 		it("should render fret numbers to the right of the fretboard in vertical-left view", () => {
 			const { container } = render(
-				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-left" width={200} height={250} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -372,7 +367,7 @@ describe("Utility Functions", () => {
 
 			views.forEach(view => {
 				const { container } = render(
-					<ChordDiagram chord={cMajor} view={view} width={200} height={250} />
+					<ChordDiagram {...cMajor} view={view} width={200} height={250} />
 				);
 
 				const svg = container.querySelector("svg");
@@ -389,11 +384,11 @@ describe("Utility Functions", () => {
 
 		it("should position labels consistently between vertical-right and vertical-left", () => {
 			const { container: rightContainer } = render(
-				<ChordDiagram chord={cMajor} view="vertical-right" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-right" width={200} height={250} />
 			);
 
 			const { container: leftContainer } = render(
-				<ChordDiagram chord={cMajor} view="vertical-left" width={200} height={250} />
+				<ChordDiagram {...cMajor} view="vertical-left" width={200} height={250} />
 			);
 
 			const rightSvg = rightContainer.querySelector("svg");
@@ -414,15 +409,13 @@ describe("Utility Functions", () => {
 		});
 
 		it("should handle instrument-based rendering with vertical layouts for fret numbers", () => {
-			const instrument = {
-				strings: 6,
-				frets: 4,
+			const props = {
 				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-				chord: "000000", // Simple chord that should always render fret numbers
+				fretNotation: "000000", // Simple chord that should always render fret numbers
 			};
 
 			const { container } = render(
-				<ChordDiagram instrument={instrument} view="vertical-right" width={200} height={250} />
+				<ChordDiagram {...props} view="vertical-right" width={200} height={250} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -436,7 +429,12 @@ describe("Utility Functions", () => {
 	describe("TuningLabel customization", () => {
 		it("should respect tuningLabelOffset prop", () => {
 			const { container } = render(
-				<ChordDiagram chord={cMajor} tuningLabelOffset={0.8} view="horizontal-right" />
+				<ChordDiagram
+					{...cMajor}
+					tuningLabelOffsetX={0.8}
+					tuningLabelOffsetY={0}
+					view="horizontal-right"
+				/>
 			);
 
 			const svg = container.querySelector("svg");
@@ -448,16 +446,12 @@ describe("Utility Functions", () => {
 		});
 
 		it('should render note-only format when tuningLabelFormat is "note-only"', () => {
-			const instrument = {
-				strings: 6,
-				frets: 4,
+			const props = {
 				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-				chord: "x32010",
+				fretNotation: "x32010",
 			};
 
-			const { container } = render(
-				<ChordDiagram instrument={instrument} tuningLabelFormat="note-only" />
-			);
+			const { container } = render(<ChordDiagram {...props} tuningLabelFormat="note-only" />);
 
 			const svg = container.querySelector("svg");
 			const allTextElements = svg?.querySelectorAll("text");
@@ -474,16 +468,12 @@ describe("Utility Functions", () => {
 		});
 
 		it('should render scientific notation when tuningLabelFormat is "scientific"', () => {
-			const instrument = {
-				strings: 6,
-				frets: 4,
+			const props = {
 				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-				chord: "x32010",
+				fretNotation: "x32010",
 			};
 
-			const { container } = render(
-				<ChordDiagram instrument={instrument} tuningLabelFormat="scientific" />
-			);
+			const { container } = render(<ChordDiagram {...props} tuningLabelFormat="scientific" />);
 
 			const svg = container.querySelector("svg");
 			const allTextElements = svg?.querySelectorAll("text");
@@ -501,14 +491,12 @@ describe("Utility Functions", () => {
 		});
 
 		it("should use scientific notation by default", () => {
-			const instrument = {
-				strings: 6,
-				frets: 4,
+			const props = {
 				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-				chord: "x32010",
+				fretNotation: "x32010",
 			};
 
-			const { container } = render(<ChordDiagram instrument={instrument} />);
+			const { container } = render(<ChordDiagram {...props} />);
 
 			const svg = container.querySelector("svg");
 			const allTextElements = svg?.querySelectorAll("text");
@@ -521,7 +509,7 @@ describe("Utility Functions", () => {
 
 	describe("StringIndicator customization", () => {
 		it("should respect stringIndicatorOffset prop for open strings", () => {
-			const chordWithOpenStrings = {
+			const props = {
 				fingers: [
 					{ fret: 0, string: 1, is_muted: false }, // Open string
 					{ fret: 1, string: 2, is_muted: false },
@@ -530,7 +518,7 @@ describe("Utility Functions", () => {
 			};
 
 			const { container } = render(
-				<ChordDiagram chord={chordWithOpenStrings} stringIndicatorOffset={0.3} />
+				<ChordDiagram {...props} stringIndicatorOffsetX={0.3} stringIndicatorOffsetY={0} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -540,7 +528,7 @@ describe("Utility Functions", () => {
 		});
 
 		it("should respect stringIndicatorOffset prop for muted strings", () => {
-			const chordWithMutedStrings = {
+			const props = {
 				fingers: [
 					{ fret: 0, string: 1, is_muted: true }, // Muted string
 					{ fret: 1, string: 2, is_muted: false },
@@ -549,7 +537,7 @@ describe("Utility Functions", () => {
 			};
 
 			const { container } = render(
-				<ChordDiagram chord={chordWithMutedStrings} stringIndicatorOffset={0.7} />
+				<ChordDiagram {...props} stringIndicatorOffsetX={0.7} stringIndicatorOffsetY={0} />
 			);
 
 			const svg = container.querySelector("svg");
@@ -562,7 +550,7 @@ describe("Utility Functions", () => {
 		});
 
 		it("should render indicators in all views with custom offset", () => {
-			const chordWithIndicators = {
+			const props = {
 				fingers: [
 					{ fret: 0, string: 1, is_muted: true }, // Muted
 					{ fret: 0, string: 6, is_muted: false }, // Open
@@ -575,7 +563,12 @@ describe("Utility Functions", () => {
 
 			views.forEach(view => {
 				const { container } = render(
-					<ChordDiagram chord={chordWithIndicators} stringIndicatorOffset={0.4} view={view} />
+					<ChordDiagram
+						{...props}
+						stringIndicatorOffsetX={0.4}
+						stringIndicatorOffsetY={0}
+						view={view}
+					/>
 				);
 
 				const svg = container.querySelector("svg");
@@ -591,7 +584,7 @@ describe("Utility Functions", () => {
 
 	describe("Barre with text", () => {
 		it("should render text on barre when provided", () => {
-			const chordWithBarreText = {
+			const props = {
 				fingers: [],
 				barres: [
 					{
@@ -603,7 +596,7 @@ describe("Utility Functions", () => {
 				],
 			};
 
-			const { container } = render(<ChordDiagram chord={chordWithBarreText} />);
+			const { container } = render(<ChordDiagram {...props} />);
 
 			const svg = container.querySelector("svg");
 			const textElements = svg?.querySelectorAll("text");
@@ -614,7 +607,7 @@ describe("Utility Functions", () => {
 		});
 
 		it("should render barre without text when not provided", () => {
-			const chordWithoutBarreText = {
+			const props = {
 				fingers: [],
 				barres: [
 					{
@@ -625,7 +618,7 @@ describe("Utility Functions", () => {
 				],
 			};
 
-			const { container } = render(<ChordDiagram chord={chordWithoutBarreText} />);
+			const { container } = render(<ChordDiagram {...props} />);
 
 			const svg = container.querySelector("svg");
 			const rects = svg?.querySelectorAll("rect");

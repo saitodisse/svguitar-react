@@ -14,25 +14,25 @@ Importe o componente `ChordDiagram` e passe os dados do acorde que deseja render
 
 ### Exemplo 1: Acorde Simples (C Major)
 
-Você pode definir um acorde passando um objeto com as posições dos dedos e pestanas.
+Você pode definir um acorde passando as props `fingers` e `barres` diretamente (API inline).
 
 ```jsx
 import React from "react";
 import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
-	const cMajor = {
-		fingers: [
-			// Fret notation: x32010
-			{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
-			{ fret: 2, string: 3, is_muted: false, text: "2" }, // String 3 (D)
-			{ fret: 1, string: 5, is_muted: false, text: "1" }, // String 5 (B)
-			// String 1 (E) is muted, String 4 (G) is open, String 6 (E) is open
-		],
-		barres: [],
-	};
-
-	return <ChordDiagram chord={cMajor} />;
+	return (
+		<ChordDiagram
+			fingers={[
+				// Fret notation: x32010
+				{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
+				{ fret: 2, string: 3, is_muted: false, text: "2" }, // String 3 (D)
+				{ fret: 1, string: 5, is_muted: false, text: "1" }, // String 5 (B)
+				// String 1 (E) is muted, String 4 (G) is open, String 6 (E) is open
+			]}
+			barres={[]}
+		/>
+	);
 };
 
 export default App;
@@ -40,24 +40,24 @@ export default App;
 
 ### Exemplo 2: Acorde com Pestana (F Major)
 
-Para acordes com pestana, adicione um objeto `barre`.
+Para acordes com pestana, adicione barres na prop `barres`.
 
 ```jsx
 import React from "react";
 import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
-	const fMajor = {
-		fingers: [
-			// Fret notation: 133211
-			{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
-			{ fret: 3, string: 3, is_muted: false, text: "4" }, // String 3 (D)
-			{ fret: 2, string: 4, is_muted: false, text: "2" }, // String 4 (G)
-		],
-		barres: [{ fret: 1, fromString: 1, toString: 6 }],
-	};
-
-	return <ChordDiagram chord={fMajor} />;
+	return (
+		<ChordDiagram
+			fingers={[
+				// Fret notation: 133211
+				{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
+				{ fret: 3, string: 3, is_muted: false, text: "4" }, // String 3 (D)
+				{ fret: 2, string: 4, is_muted: false, text: "2" }, // String 4 (G)
+			]}
+			barres={[{ fret: 1, fromString: 1, toString: 6 }]}
+		/>
+	);
 };
 
 export default App;
@@ -65,20 +65,13 @@ export default App;
 
 ### Exemplo 3: Usando Fret Notation (G Major)
 
-Alternativamente, você pode passar uma Fret Notation e a afinação. O componente irá interpretar a string para renderizar o acorde.
+Alternativamente, você pode passar uma Fret Notation usando a prop `fretNotation`. O componente irá interpretar a string para renderizar o acorde.
 
 ```jsx
 import React from "react";
 import { ChordDiagram } from "@svguitar/react";
 
 const App = () => {
-	const gMajorInstrument = {
-		strings: 6,
-		frets: 5,
-		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-		chord: "320003", // G Major
-	};
-
 	return <ChordDiagram instrument={gMajorInstrument} />;
 };
 

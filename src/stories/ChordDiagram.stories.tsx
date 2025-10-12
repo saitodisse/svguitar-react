@@ -297,34 +297,28 @@ const BASE_STORY_CONFIG = {
 
 // Basic chord examples
 const cMajor: ChordDiagramProps = {
-	chord: {
-		// Fret notation: x32010
-		fingers: [
-			{ fret: 3, string: 2, is_muted: false, text: "3" },
-			{ fret: 2, string: 3, is_muted: false, text: "2" },
-			{ fret: 1, string: 5, is_muted: false, text: "1" },
-		],
-		barres: [],
-	},
+	// Fret notation: x32010
+	fingers: [
+		{ fret: 3, string: 2, is_muted: false, text: "3" },
+		{ fret: 2, string: 3, is_muted: false, text: "2" },
+		{ fret: 1, string: 5, is_muted: false, text: "1" },
+	],
+	barres: [],
 };
 
 const fMajor: ChordDiagramProps = {
-	chord: {
-		// Fret notation: 133211
-		fingers: [
-			{ fret: 3, string: 2, is_muted: false, text: "3" },
-			{ fret: 3, string: 3, is_muted: false, text: "4" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-		],
-		barres: [{ fret: 1, fromString: 1, toString: 6 }],
-	},
+	// Fret notation: 133211
+	fingers: [
+		{ fret: 3, string: 2, is_muted: false, text: "3" },
+		{ fret: 3, string: 3, is_muted: false, text: "4" },
+		{ fret: 2, string: 4, is_muted: false, text: "2" },
+	],
+	barres: [{ fret: 1, fromString: 1, toString: 6 }],
 };
 
 const gMajorInstrument: ChordDiagramProps = {
-	instrument: {
-		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-		chord: "320003",
-	},
+	tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+	fretNotation: "320003",
 };
 
 const customStyleChord = {
@@ -347,39 +341,65 @@ const customStyleProps = {
 };
 
 /**
- * Default chord diagram with C Major chord
+ * Chord diagram with barre (F Major) Vertical
  */
-export const Default: Story = {
+export const WithBarreVerticalRight: Story = {
 	args: {
-		...cMajor,
+		...fMajor,
 		...BASE_STORY_CONFIG,
 		view: "vertical-right",
-		width: 128,
-		height: 219,
-		canvasOffsetX: -39,
-		canvasOffsetY: -19,
+		width: 192,
+		height: 261,
 		fretCount: 5,
-		fretWidth: 19,
+		fretWidth: 23,
+		fretHeight: 39,
+		dotSize: 18,
+		barreHeight: 11,
+		fretTextColor: "#d1d0d0",
+		fontFamily: "sans-serif",
+		dotTextSize: 15,
+		fretTextSize: 17,
 		stringWidth: 1,
-		dotSize: 17,
-		barreHeight: 9,
-		fretTextColor: "#c6c6c6",
-		fontFamily: "monospace",
-		dotTextSize: 11,
-		fretTextSize: 11,
-		tuningTextSize: 16,
-		fretHeight: 35,
-		tuningTextColor: "#e0e0e0",
+		barresWidth: 11,
+		barresOffsetX: 0.12,
+		barresOffsetY: 0.33,
+
+		fingers: [
+			{
+				fret: 3,
+				string: 2,
+				is_muted: false,
+				text: "3",
+			},
+			{
+				fret: 3,
+				string: 3,
+				is_muted: false,
+				text: "4",
+			},
+			{
+				fret: 2,
+				string: 4,
+				is_muted: false,
+				text: "2",
+			},
+		],
+
+		barres: [
+			{
+				fret: 1,
+				fromString: 1,
+				toString: 6,
+			},
+		],
+
+		tuningTextColor: "#cecbcb",
+		tuningLabelOffsetX: 0.04,
+		tuningLabelOffsetY: 0.15,
 		tuningLabelFormat: "note-only",
-		validation: "strict",
-		invalidBehavior: "render-fallback",
-		tuningLabelOffsetX: 0.01,
-		tuningLabelOffsetY: 0.27,
-		barresOffsetY: -0.11,
-		stringIndicatorOffsetX: 0.58,
-		stringIndicatorOffsetY: 0.63,
-		fretTextOffsetX: -0.13,
-		fretTextOffsetY: 0.11,
+		stringIndicatorOffsetX: 0.35,
+		fretTextOffsetX: -6.32,
+		fretTextOffsetY: 0.16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -391,12 +411,10 @@ export const Default: Story = {
 		// Verify SVG element is present
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
-		expect(svg?.tagName).toBe("svg");
 
-		// Verify SVG has proper attributes
-		expect(svg).toHaveAttribute("width");
-		expect(svg).toHaveAttribute("height");
-		expect(svg).toHaveAttribute("viewBox");
+		// Verify finger elements are present
+		const fingerElements = svg?.querySelectorAll("circle");
+		expect(fingerElements?.length).toBeGreaterThan(0);
 	},
 };
 
@@ -426,36 +444,34 @@ export const WithBarreHorizontalRight: Story = {
 		barresWidth: 12,
 		barresOffsetX: 0.37,
 
-		chord: {
-			fingers: [
-				{
-					fret: 3,
-					string: 2,
-					is_muted: false,
-					text: "3",
-				},
-				{
-					fret: 3,
-					string: 3,
-					is_muted: false,
-					text: "4",
-				},
-				{
-					fret: 2,
-					string: 4,
-					is_muted: false,
-					text: "2",
-				},
-			],
+		fingers: [
+			{
+				fret: 3,
+				string: 2,
+				is_muted: false,
+				text: "3",
+			},
+			{
+				fret: 3,
+				string: 3,
+				is_muted: false,
+				text: "4",
+			},
+			{
+				fret: 2,
+				string: 4,
+				is_muted: false,
+				text: "2",
+			},
+		],
 
-			barres: [
-				{
-					fret: 1,
-					fromString: 1,
-					toString: 6,
-				},
-			],
-		},
+		barres: [
+			{
+				fret: 1,
+				fromString: 1,
+				toString: 6,
+			},
+		],
 
 		barresOffsetY: -0.14,
 		tuningTextColor: "#9e9a9a",
@@ -468,86 +484,6 @@ export const WithBarreHorizontalRight: Story = {
 		fretTextOffsetY: 0,
 		nutStrokeWidth: 0.075,
 		nutColor: "#333333",
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-
-		// Verify the chord diagram container is rendered
-		const chordDiagram = canvas.getByTestId("chord-diagram");
-		expect(chordDiagram).toBeInTheDocument();
-
-		// Verify SVG element is present
-		const svg = chordDiagram.querySelector("svg");
-		expect(svg).toBeInTheDocument();
-
-		// Verify finger elements are present
-		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBeGreaterThan(0);
-	},
-};
-
-/**
- * Chord diagram with barre (F Major) Vertical
- */
-export const WithBarreVerticalRight: Story = {
-	args: {
-		...fMajor,
-		...BASE_STORY_CONFIG,
-		view: "vertical-right",
-		width: 192,
-		height: 261,
-		fretCount: 5,
-		fretWidth: 23,
-		fretHeight: 39,
-		dotSize: 18,
-		barreHeight: 11,
-		fretTextColor: "#d1d0d0",
-		fontFamily: "sans-serif",
-		dotTextSize: 15,
-		fretTextSize: 17,
-		stringWidth: 1,
-		barresWidth: 11,
-		barresOffsetX: 0.12,
-		barresOffsetY: 0.33,
-
-		chord: {
-			fingers: [
-				{
-					fret: 3,
-					string: 2,
-					is_muted: false,
-					text: "3",
-				},
-				{
-					fret: 3,
-					string: 3,
-					is_muted: false,
-					text: "4",
-				},
-				{
-					fret: 2,
-					string: 4,
-					is_muted: false,
-					text: "2",
-				},
-			],
-
-			barres: [
-				{
-					fret: 1,
-					fromString: 1,
-					toString: 6,
-				},
-			],
-		},
-
-		tuningTextColor: "#cecbcb",
-		tuningLabelOffsetX: 0.04,
-		tuningLabelOffsetY: 0.15,
-		tuningLabelFormat: "note-only",
-		stringIndicatorOffsetX: 0.35,
-		fretTextOffsetX: -6.32,
-		fretTextOffsetY: 0.16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -609,7 +545,7 @@ export const CustomStyle: Story = {
 	args: {
 		...BASE_STORY_CONFIG,
 		...customStyleProps,
-		chord: customStyleChord,
+		...customStyleChord,
 		width: 228,
 		height: 228,
 		fretColor: "#b7b2b2",
@@ -650,17 +586,15 @@ export const CustomStyle: Story = {
 export const HighPosition: Story = {
 	args: {
 		...BASE_STORY_CONFIG,
-		chord: {
-			// D barre chord at 5th fret: x5777x
-			fingers: [
-				{ fret: 5, string: 2, is_muted: false },
-				{ fret: 7, string: 3, is_muted: false, text: "2" },
-				{ fret: 7, string: 4, is_muted: false, text: "3" },
-				{ fret: 7, string: 5, is_muted: false, text: "4" },
-			],
-			barres: [],
-			firstFret: 5,
-		},
+		// D barre chord at 5th fret: x5777x
+		fingers: [
+			{ fret: 5, string: 2, is_muted: false },
+			{ fret: 7, string: 3, is_muted: false, text: "2" },
+			{ fret: 7, string: 4, is_muted: false, text: "3" },
+			{ fret: 7, string: 5, is_muted: false, text: "4" },
+		],
+		barres: [],
+		firstFret: 5,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -684,12 +618,9 @@ export const HighPosition: Story = {
  */
 export const DropDTuning: Story = {
 	args: {
-		instrument: {
-			tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
-			chord: "000232",
-		},
-
 		...BASE_STORY_CONFIG,
+		tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
+		fretNotation: "000232",
 		dotSize: 15,
 		fretColor: "#989393",
 		fretTextColor: "#cac6c6",
@@ -722,11 +653,17 @@ export const DropDTuning: Story = {
  */
 export const OpenStrings: Story = {
 	args: {
-		instrument: {
-			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-			chord: "022000",
-		},
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		fretNotation: "022000",
+
 		...BASE_STORY_CONFIG,
+		fretColor: "#545353",
+		fretTextColor: "#b4b0b0",
+		tuningTextColor: "#b2b2b2",
+		tuningLabelOffsetX: 0.63,
+		tuningLabelOffsetY: -0.02,
+		stringIndicatorOffsetX: -0.02,
+		fretTextOffsetY: 0.22,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -750,19 +687,27 @@ export const OpenStrings: Story = {
  */
 export const OpenAndMutedStrings: Story = {
 	args: {
-		chord: {
-			// C Major with muted 1st and open 3rd string: x32010
-			fingers: [
-				{ fret: 0, string: 1, is_muted: true },
-				{ fret: 3, string: 2, is_muted: false, text: "3" },
-				{ fret: 2, string: 3, is_muted: false, text: "2" },
-				{ fret: 0, string: 4, is_muted: false },
-				{ fret: 1, string: 5, is_muted: false, text: "1" },
-				{ fret: 0, string: 6, is_muted: false },
-			],
-			barres: [],
-		},
+		// C Major with muted 1st and open 3rd string: x32010
+		fingers: [
+			{ fret: 0, string: 1, is_muted: true },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 2, string: 3, is_muted: false, text: "2" },
+			{ fret: 0, string: 4, is_muted: false },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+			{ fret: 0, string: 6, is_muted: false },
+		],
+
+		barres: [],
 		...BASE_STORY_CONFIG,
+		width: 256,
+		stringWidth: 1.42,
+		dotSize: 15,
+		fretTextColor: "#c1c0c0",
+		tuningTextColor: "#b2b2b2",
+		tuningLabelOffsetX: -4.36,
+		tuningLabelOffsetY: 0.03,
+		stringIndicatorOffsetX: 0.17,
+		fretTextOffsetY: 0.23,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -788,14 +733,12 @@ export const OpenAndMutedStrings: Story = {
  */
 export const CustomOpenMutedStyle: Story = {
 	args: {
-		chord: {
-			fingers: [
-				{ fret: 0, string: 1, is_muted: false }, // Open string
-				{ fret: 0, string: 2, is_muted: true }, // Muted string
-				{ fret: 1, string: 3, is_muted: false },
-			],
-			barres: [],
-		},
+		fingers: [
+			{ fret: 0, string: 1, is_muted: false }, // Open string
+			{ fret: 0, string: 2, is_muted: true }, // Muted string
+			{ fret: 1, string: 3, is_muted: false },
+		],
+		barres: [],
 
 		...BASE_STORY_CONFIG,
 
@@ -847,15 +790,18 @@ export const CustomOpenMutedStyle: Story = {
 export const HighFretNotation: Story = {
 	args: {
 		...BASE_STORY_CONFIG,
-
-		instrument: {
-			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-			chord: "(10)(12)(12)(11)(10)(10)",
-		},
-
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		fretNotation: "(10)(12)(12)(11)(10)(10)",
 		width: 620,
 		fretCount: 14,
-		autoBarreEnabled: false, // Disable auto barre to show all 6 fingers
+
+		// Disable auto barre to show all 6 fingers
+		autoBarreEnabled: false,
+
+		fretWidth: 38,
+		stringWidth: 1.17,
+		nutStrokeWidth: 0.143,
+		nutColor: "#6e6e6e",
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -882,6 +828,8 @@ export const HorizontalRight: Story = {
 		...cMajor,
 		...BASE_STORY_CONFIG,
 		view: "horizontal-right",
+		tuningTextColor: "#bab6b6",
+		tuningLabelOffsetY: -0.06,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -908,6 +856,12 @@ export const HorizontalLeft: Story = {
 		...cMajor,
 		...BASE_STORY_CONFIG,
 		view: "horizontal-left",
+		width: 270,
+		fretTextColor: "#a09f9f",
+		tuningTextColor: "#c6c1c1",
+		tuningLabelOffsetY: -0.08,
+		fretTextOffsetX: -0.14,
+		fretTextOffsetY: 0.32,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -947,9 +901,9 @@ export const VerticalRight: Story = {
 		dotTextSize: 12,
 		fretTextSize: 12,
 		tuningTextSize: 11,
-		tuningTextColor: "#949393",
+		tuningTextColor: "#b0b0b0",
 		tuningLabelOffsetX: 0.12,
-		tuningLabelFormat: "scientific",
+		tuningLabelFormat: "note-only",
 		tuningLabelOffsetY: 0.39,
 	},
 	parameters: {
@@ -1018,13 +972,14 @@ export const VerticalLeft: Story = {
 		stringWidth: 1,
 		dotSize: 14,
 		fretTextSize: 12,
-		tuningTextSize: 12,
+		tuningTextSize: 11,
 		fretColor: "#aa3b3b",
 		fretTextColor: "#c2bebe",
-		tuningTextColor: "#b2aeae",
+		tuningTextColor: "#bdbdbd",
 		tuningLabelOffsetX: 0.02,
-		tuningLabelOffsetY: 0.19,
+		tuningLabelOffsetY: 0.34,
 		fretTextOffsetY: 0.09,
+		tuningLabelFormat: "note-only",
 	},
 	parameters: {
 		docs: {
@@ -1049,7 +1004,7 @@ export const VerticalLeft: Story = {
 		expect(fingerElements?.length).toBeGreaterThan(0);
 
 		// Verify tuning labels are positioned correctly (above the vertical strings)
-		const tuningLabels = svg?.querySelectorAll('text[fill*="b2aeae"]'); // tuningTextColor (#b2aeae)
+		const tuningLabels = svg?.querySelectorAll('text[fill*="bdbdbd"]'); // tuningTextColor (#bdbdbd)
 		expect(tuningLabels?.length).toBeGreaterThan(0);
 
 		// Verify tuning labels are positioned above the fretboard
@@ -1212,17 +1167,15 @@ export const CanvasPositioning: Story = {
  */
 export const CombinedAdvancedCustomization: Story = {
 	args: {
-		chord: {
-			fingers: [
-				{ fret: 1, string: 1, is_muted: false, text: "1" },
-				{ fret: 3, string: 2, is_muted: false, text: "3" },
-				{ fret: 3, string: 3, is_muted: false, text: "4" },
-				{ fret: 3, string: 4, is_muted: false, text: "5" },
-				{ fret: 1, string: 5, is_muted: false, text: "1" },
-				{ fret: 1, string: 6, is_muted: false, text: "1" },
-			],
-			barres: [{ fret: 1, fromString: 1, toString: 6 }],
-		},
+		fingers: [
+			{ fret: 1, string: 1, is_muted: false, text: "1" },
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 3, string: 3, is_muted: false, text: "4" },
+			{ fret: 3, string: 4, is_muted: false, text: "5" },
+			{ fret: 1, string: 5, is_muted: false, text: "1" },
+			{ fret: 1, string: 6, is_muted: false, text: "1" },
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }],
 
 		...BASE_STORY_CONFIG,
 		nutStrokeWidth: 0.15,
@@ -1266,17 +1219,15 @@ export const CombinedAdvancedCustomization: Story = {
  */
 export const AutoBarreEnabled: Story = {
 	args: {
-		chord: {
-			fingers: [
-				{ fret: 3, string: 1, is_muted: false },
-				{ fret: 3, string: 2, is_muted: false },
-				{ fret: 3, string: 3, is_muted: false },
-				{ fret: 3, string: 4, is_muted: false },
-				{ fret: 3, string: 5, is_muted: false },
-				{ fret: 5, string: 6, is_muted: false, text: "3" },
-			],
-			barres: [],
-		},
+		fingers: [
+			{ fret: 3, string: 1, is_muted: false },
+			{ fret: 3, string: 2, is_muted: false },
+			{ fret: 3, string: 3, is_muted: false },
+			{ fret: 3, string: 4, is_muted: false },
+			{ fret: 3, string: 5, is_muted: false },
+			{ fret: 5, string: 6, is_muted: false, text: "3" },
+		],
+		barres: [],
 
 		...BASE_STORY_CONFIG,
 
@@ -1315,17 +1266,15 @@ export const AutoBarreEnabled: Story = {
  */
 export const AutoBarreDisabled: Story = {
 	args: {
-		chord: {
-			fingers: [
-				{ fret: 3, string: 1, is_muted: false, text: "1" },
-				{ fret: 3, string: 2, is_muted: false, text: "1" },
-				{ fret: 3, string: 3, is_muted: false, text: "1" },
-				{ fret: 3, string: 4, is_muted: false, text: "1" },
-				{ fret: 3, string: 5, is_muted: false, text: "1" },
-				{ fret: 5, string: 6, is_muted: false, text: "3" },
-			],
-			barres: [],
-		},
+		fingers: [
+			{ fret: 3, string: 1, is_muted: false, text: "1" },
+			{ fret: 3, string: 2, is_muted: false, text: "1" },
+			{ fret: 3, string: 3, is_muted: false, text: "1" },
+			{ fret: 3, string: 4, is_muted: false, text: "1" },
+			{ fret: 3, string: 5, is_muted: false, text: "1" },
+			{ fret: 5, string: 6, is_muted: false, text: "3" },
+		],
+		barres: [],
 		...BASE_STORY_CONFIG,
 		autoBarreEnabled: false, // explicitly disabled
 		width: 220,
@@ -1359,17 +1308,15 @@ export const AutoBarreDisabled: Story = {
  */
 export const AutoBarreTiebreaker: Story = {
 	args: {
-		chord: {
-			fingers: [
-				{ fret: 3, string: 1, is_muted: false },
-				{ fret: 3, string: 2, is_muted: false },
-				{ fret: 3, string: 3, is_muted: false },
-				{ fret: 5, string: 4, is_muted: false, text: "2" },
-				{ fret: 5, string: 5, is_muted: false, text: "3" },
-				{ fret: 5, string: 6, is_muted: false, text: "4" },
-			],
-			barres: [],
-		},
+		fingers: [
+			{ fret: 3, string: 1, is_muted: false },
+			{ fret: 3, string: 2, is_muted: false },
+			{ fret: 3, string: 3, is_muted: false },
+			{ fret: 5, string: 4, is_muted: false, text: "2" },
+			{ fret: 5, string: 5, is_muted: false, text: "3" },
+			{ fret: 5, string: 6, is_muted: false, text: "4" },
+		],
+		barres: [],
 
 		...BASE_STORY_CONFIG,
 		width: 220,
@@ -1404,20 +1351,18 @@ export const AutoBarreTiebreaker: Story = {
  */
 export const ManualBarrePrecedence: Story = {
 	args: {
-		chord: {
-			fingers: [
-				{ fret: 1, string: 1, is_muted: false },
-				{ fret: 1, string: 2, is_muted: false },
-				{ fret: 1, string: 3, is_muted: false },
-				{ fret: 1, string: 4, is_muted: false },
-				{ fret: 1, string: 5, is_muted: false },
-				{ fret: 1, string: 6, is_muted: false },
-				{ fret: 3, string: 2, is_muted: false, text: "2" },
-				{ fret: 3, string: 3, is_muted: false, text: "3" },
-				{ fret: 3, string: 4, is_muted: false, text: "4" },
-			],
-			barres: [{ fret: 1, fromString: 1, toString: 6 }], // manual barre
-		},
+		fingers: [
+			{ fret: 1, string: 1, is_muted: false },
+			{ fret: 1, string: 2, is_muted: false },
+			{ fret: 1, string: 3, is_muted: false },
+			{ fret: 1, string: 4, is_muted: false },
+			{ fret: 1, string: 5, is_muted: false },
+			{ fret: 1, string: 6, is_muted: false },
+			{ fret: 3, string: 2, is_muted: false, text: "2" },
+			{ fret: 3, string: 3, is_muted: false, text: "3" },
+			{ fret: 3, string: 4, is_muted: false, text: "4" },
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }], // manual barre
 
 		...BASE_STORY_CONFIG,
 

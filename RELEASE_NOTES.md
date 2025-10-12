@@ -1,5 +1,72 @@
 # Release Notes
 
+## Version 2.0.0
+
+**Release Date:** October 12, 2025
+
+### 💥 BREAKING CHANGES: API Inline
+
+Esta versão marca uma mudança significativa na API do componente `ChordDiagram`, simplificando drasticamente o uso através de **props inline**.
+
+#### 🎯 O Que Mudou
+
+**API Antiga (v1.x) - Objetos Aninhados:**
+
+```tsx
+<ChordDiagram
+    instrument={{
+        strings: 6,
+        chord: "x32010"
+    }}
+    chord={{
+        fingers: [...],
+        barres: [...]
+    }}
+/>
+```
+
+**Nova API (v2.0) - Props Inline:**
+
+```tsx
+<ChordDiagram
+    strings={6}
+    fretNotation="x32010"
+    fingers={[...]}
+    barres={[...]}
+/>
+```
+
+#### ✨ Benefícios
+
+- ✅ **API mais limpa** - Sem objetos aninhados desnecessários
+- ✅ **Melhor autocomplete** - IDEs sugerem todas as props no nível superior
+- ✅ **Menos verboso** - Redução de ~30% no código
+- ✅ **Mais intuitivo** - Segue padrões React modernos
+- ✅ **Inferência automática** - `strings` inferido de `tuning.length`
+
+#### 📋 Guia de Migração Rápida
+
+| Propriedade Antiga   | Nova Propriedade |
+| -------------------- | ---------------- |
+| `instrument.chord`   | `fretNotation`   |
+| `instrument.strings` | `strings`        |
+| `instrument.frets`   | `frets`          |
+| `instrument.tuning`  | `tuning`         |
+| `chord.fingers`      | `fingers`        |
+| `chord.barres`       | `barres`         |
+| `chord.firstFret`    | `firstFret`      |
+| `chord.lastFret`     | `lastFret`       |
+
+#### 🔧 Melhorias Internas
+
+- Todos os testes atualizados (173 passing)
+- Stories do Storybook refatorados
+- Export/import de estado atualizado
+- Documentação completamente revisada
+- Validações aprimoradas com fallbacks adequados
+
+---
+
 ## Version 1.22.0
 
 **Release Date:** October 12, 2025

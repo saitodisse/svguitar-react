@@ -219,10 +219,8 @@ describe("shouldApplyAutoBarre", () => {
 	it("should return true when autoBarreEnabled is not false and no manual barres", () => {
 		const props: Partial<ChordDiagramProps> = {
 			autoBarreEnabled: true,
-			chord: {
-				fingers: [],
-				barres: [],
-			},
+			fingers: [],
+			barres: [],
 		};
 
 		const result = shouldApplyAutoBarre(props as ChordDiagramProps);
@@ -231,10 +229,8 @@ describe("shouldApplyAutoBarre", () => {
 
 	it("should return true when autoBarreEnabled is undefined (default) and no manual barres", () => {
 		const props: Partial<ChordDiagramProps> = {
-			chord: {
-				fingers: [],
-				barres: [],
-			},
+			fingers: [],
+			barres: [],
 		};
 
 		const result = shouldApplyAutoBarre(props as ChordDiagramProps);
@@ -244,10 +240,8 @@ describe("shouldApplyAutoBarre", () => {
 	it("should return false when autoBarreEnabled is explicitly false", () => {
 		const props: Partial<ChordDiagramProps> = {
 			autoBarreEnabled: false,
-			chord: {
-				fingers: [],
-				barres: [],
-			},
+			fingers: [],
+			barres: [],
 		};
 
 		const result = shouldApplyAutoBarre(props as ChordDiagramProps);
@@ -257,10 +251,8 @@ describe("shouldApplyAutoBarre", () => {
 	it("should return false when manual barres are defined", () => {
 		const props: Partial<ChordDiagramProps> = {
 			autoBarreEnabled: true,
-			chord: {
-				fingers: [],
-				barres: [{ fret: 1, fromString: 1, toString: 6 }],
-			},
+			fingers: [],
+			barres: [{ fret: 1, fromString: 1, toString: 6 }],
 		};
 
 		const result = shouldApplyAutoBarre(props as ChordDiagramProps);
@@ -270,17 +262,15 @@ describe("shouldApplyAutoBarre", () => {
 	it("should return false when both autoBarreEnabled is false AND manual barres exist", () => {
 		const props: Partial<ChordDiagramProps> = {
 			autoBarreEnabled: false,
-			chord: {
-				fingers: [],
-				barres: [{ fret: 1, fromString: 1, toString: 6 }],
-			},
+			fingers: [],
+			barres: [{ fret: 1, fromString: 1, toString: 6 }],
 		};
 
 		const result = shouldApplyAutoBarre(props as ChordDiagramProps);
 		expect(result).toBe(false);
 	});
 
-	it("should handle missing chord prop gracefully", () => {
+	it("should handle missing barres prop gracefully", () => {
 		const props: Partial<ChordDiagramProps> = {
 			autoBarreEnabled: true,
 		};

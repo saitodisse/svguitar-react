@@ -1,5 +1,49 @@
 # Changelog
 
+## 2.0.0 (2025-10-12)
+
+### 💥 BREAKING CHANGES
+
+#### API Refatorada: Props Inline
+
+A API do componente `ChordDiagram` foi refatorada para usar props inline ao invés de objetos aninhados.
+
+**Antes (v1.x):**
+
+```tsx
+<ChordDiagram
+    instrument={{ chord: "x32010" }}
+    chord={{ fingers: [...], barres: [...] }}
+/>
+```
+
+**Agora (v2.0):**
+
+```tsx
+<ChordDiagram
+    fretNotation="x32010"
+    fingers={[...]}
+    barres={[...]}
+/>
+```
+
+### Changed
+
+- **BREAKING**: Removidas props `instrument` e `chord`
+- **BREAKING**: Renomeado `instrument.chord` → `fretNotation`
+- Propriedades agora inline: `strings`, `frets`, `tuning`, `fretNotation`, `fingers`, `barres`, `firstFret`, `lastFret`
+- Inferência automática de `strings` a partir de `tuning.length`
+- Atualizado `ChordDiagramState`, `exportChordDiagramState`, `importChordDiagramState`
+
+### Migration Guide
+
+| v1.x                 | v2.0           |
+| -------------------- | -------------- |
+| `instrument.chord`   | `fretNotation` |
+| `instrument.strings` | `strings`      |
+| `chord.fingers`      | `fingers`      |
+| `chord.barres`       | `barres`       |
+
 ## 1.22.0 (2025-10-12)
 
 ### New Features ✨

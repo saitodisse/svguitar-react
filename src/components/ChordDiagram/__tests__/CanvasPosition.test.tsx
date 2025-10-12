@@ -11,13 +11,11 @@ import type { ChordDiagramProps } from "../types";
 
 describe("Canvas Positioning", () => {
 	const baseProps: ChordDiagramProps = {
-		chord: {
-			fingers: [
-				{ fret: 1, string: 2, is_muted: false },
-				{ fret: 2, string: 3, is_muted: false },
-			],
-			barres: [],
-		},
+		fingers: [
+			{ fret: 1, string: 2, is_muted: false },
+			{ fret: 2, string: 3, is_muted: false },
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 2 }],
 	};
 
 	describe("Default canvas position", () => {

@@ -14,21 +14,29 @@ import { mergeStyles, mergeInstrument } from "../utils";
  */
 export function exportChordDiagramState(props: ChordDiagramProps): ChordDiagramState {
 	const style = mergeStyles(props);
-	const instrument = mergeInstrument(props.instrument);
+	const instrument = mergeInstrument({
+		strings: props.strings,
+		frets: props.frets,
+		tuning: props.tuning,
+		chord: props.fretNotation,
+	});
 
 	const state: ChordDiagramState = {
 		// Metadata
 		_version: "1.0.0",
 		_timestamp: new Date().toISOString(),
 
-		// Chord data
-		chord: props.chord,
-		instrument: {
-			strings: instrument.strings,
-			frets: instrument.frets,
-			tuning: instrument.tuning,
-			chord: instrument.chord,
-		},
+		// Instrument configuration (inline)
+		strings: instrument.strings,
+		frets: instrument.frets,
+		tuning: instrument.tuning,
+		fretNotation: props.fretNotation,
+
+		// Chord data (inline)
+		fingers: props.fingers,
+		barres: props.barres,
+		firstFret: props.firstFret,
+		lastFret: props.lastFret,
 
 		// Layout
 		view: props.view || "horizontal-right",

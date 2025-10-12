@@ -254,10 +254,23 @@ export function mergeStyles(customStyle?: Partial<typeof DEFAULT_CHORD_STYLE>): 
  * @returns Merged instrument object
  */
 export function mergeInstrument(customInstrument?: Partial<Instrument>): Instrument {
-	return {
+	// Handle both legacy object format and inline props
+	const merged = {
 		...DEFAULT_INSTRUMENT,
 		...customInstrument,
 	};
+
+	// Ensure tuning always has a value
+	if (!merged.tuning || merged.tuning.length === 0) {
+		merged.tuning = DEFAULT_INSTRUMENT.tuning;
+	}
+
+	// Infer strings count from tuning length if not explicitly provided
+	if (customInstrument?.tuning && !customInstrument?.strings) {
+		merged.strings = customInstrument.tuning.length;
+	}
+
+	return merged;
 }
 
 /**
