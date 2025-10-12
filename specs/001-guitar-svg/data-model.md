@@ -91,6 +91,9 @@ interface ChordDiagramProps {
 	// Canvas positioning (global diagram offset)
 	canvasOffsetX?: number; // Deslocamento horizontal em pixels de todo o diagrama (padrão: 0)
 	canvasOffsetY?: number; // Deslocamento vertical em pixels de todo o diagrama (padrão: 0)
+
+	// Auto barre detection
+	autoBarreEnabled?: boolean; // Habilita/desabilita detecção automática de barres (padrão: true)
 }
 ```
 
@@ -456,7 +459,151 @@ const DEFAULT_INSTRUMENT: Instrument = {
 };
 ```
 
-## 7. Tipos de Erro
+## 7. Detecção Automática de Barres
+
+### Algoritmo de Auto Barre
+
+O sistema detecta automaticamente quando uma barre (pestana) deve ser adicionada ao diagrama com base no número e distribuição de dedos pressionados.
+
+#### Condições de Ativação
+
+A detecção automática é acionada quando:
+
+1. `autoBarreEnabled` é `true` (padrão)
+2. **E** não há barres manuais definidas (`barres.length === 0`)
+3. **E** há mais de 4 dedos com `fret > 0` (ignorando cordas soltas `fret === 0` e mutadas `is_muted === true`)
+
+#### Algoritmo de Detecção
+
+```typescript
+function detectAutoBarre(fingers: Finger[]): Barre | null {
+	// 1. Filtrar apenas dedos pressionados (fret > 0, não mutados)
+	const pressedFingers = fingers.filter(f => f.fret > 0 && !f.is_muted);
+
+	// 2. Verificar threshold (mais de 4 dedos)
+	if (pressedFingers.length <= 4) {
+		return null;
+	}
+
+	// 3. Agrupar dedos por traste
+	const fingersByFret = new Map<number, Finger[]>();
+	pressedFingers.forEach(finger => {
+		if (!fingersByFret.has(finger.fret)) {
+			fingersByFret.set(finger.fret, []);
+		}
+		fingersByFret.get(finger.fret)!.push(finger);
+	});
+
+	// 4. Encontrar traste com mais dedos
+	let maxFret = 0;
+	let maxCount = 0;
+	fingersByFret.forEach((fingers, fret) => {
+		if (fingers.length > maxCount || (fingers.length === maxCount && fret < maxFret)) {
+			// Em caso de empate, escolher traste mais baixo
+			maxFret = fret;
+			maxCount = fingers.length;
+		}
+	});
+
+	// 5. Determinar cordas inicial e final (primeira e última corda com dedo naquele traste)
+	const fingersAtFret = fingersByFret.get(maxFret)!;
+	const strings = fingersAtFret.map(f => f.string).sort((a, b) => a - b);
+	const fromString = strings[0];
+	const toString = strings[strings.length - 1];
+
+	return {
+		fret: maxFret,
+		fromString,
+		toString,
+	};
+}
+```
+
+#### Remoção de Dedos Cobertos
+
+Após adicionar a barre automática, os dedos cobertos pela barre devem ser removidos da renderização:
+
+```typescript
+function removeFingersCoveredByBarre(fingers: Finger[], barre: Barre): Finger[] {
+	return fingers.filter(
+		finger =>
+			!(
+				finger.fret === barre.fret &&
+				finger.string >= barre.fromString &&
+				finger.string <= barre.toString
+			)
+	);
+}
+```
+
+#### Precedência de Barres Manuais
+
+Barres manuais têm precedência total sobre barres automáticas:
+
+```typescript
+function shouldApplyAutoBarre(props: ChordDiagramProps): boolean {
+	return (
+		props.autoBarreEnabled !== false && // padrão true
+		(!props.chord?.barres || props.chord.barres.length === 0) // sem barres manuais
+	);
+}
+```
+
+### Exemplos
+
+#### Exemplo 1: Auto Barre Ativado
+
+```typescript
+// Input: 6 dedos no traste 3
+const chord = {
+	fingers: [
+		{ fret: 3, string: 1, is_muted: false },
+		{ fret: 3, string: 2, is_muted: false },
+		{ fret: 3, string: 3, is_muted: false },
+		{ fret: 3, string: 4, is_muted: false },
+		{ fret: 3, string: 5, is_muted: false },
+		{ fret: 5, string: 6, is_muted: false },
+	],
+	barres: [],
+};
+
+// Output: Barre automática no traste 3
+// Dedos do traste 3 removidos, apenas dedo no traste 5 permanece
+```
+
+#### Exemplo 2: Empate Resolvido
+
+```typescript
+// Input: 3 dedos no traste 3, 3 dedos no traste 5
+const chord = {
+	fingers: [
+		{ fret: 3, string: 1, is_muted: false },
+		{ fret: 3, string: 2, is_muted: false },
+		{ fret: 3, string: 3, is_muted: false },
+		{ fret: 5, string: 4, is_muted: false },
+		{ fret: 5, string: 5, is_muted: false },
+		{ fret: 5, string: 6, is_muted: false },
+	],
+	barres: [],
+};
+
+// Output: Barre automática no traste 3 (mais baixo)
+// fromString: 1, toString: 3
+```
+
+#### Exemplo 3: Auto Barre Desabilitado por Barre Manual
+
+```typescript
+const chord = {
+	fingers: [
+		/* 6 dedos */
+	],
+	barres: [{ fret: 1, fromString: 1, toString: 6 }], // barre manual
+};
+// Output: Nenhuma barre automática (barre manual tem precedência)
+```
+
+## 8. Tipos de Erro
 
 ```typescript
 class ChordDiagramError extends Error {

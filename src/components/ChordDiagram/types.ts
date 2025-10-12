@@ -236,6 +236,22 @@ export interface ChordDiagramProps {
 	/** Vertical offset in pixels for entire diagram (default: 0) - useful for padding/margin and future zoom */
 	canvasOffsetY?: number;
 
+	// Auto barre detection
+	/**
+	 * Enables/disables automatic barre detection (default: true)
+	 *
+	 * When enabled and there are more than 4 pressed fingers (fret > 0), the system automatically
+	 * adds a barre on the fret with the most fingers, covering from the first to the last string
+	 * with a finger on that fret. Fingers covered by the barre are removed from visualization.
+	 *
+	 * Auto barre is disabled if:
+	 * - autoBarreEnabled is set to false
+	 * - OR there are manual barres defined (manual barres have precedence)
+	 *
+	 * @default true
+	 */
+	autoBarreEnabled?: boolean;
+
 	// Validation & error handling
 	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
 	validation?: "strict" | "lenient";

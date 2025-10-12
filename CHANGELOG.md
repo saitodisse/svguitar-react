@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.22.0 (2025-10-12)
+
+### New Features ✨
+
+- **Auto Barre Detection**: Intelligent automatic barre (bar chord) detection and rendering
+    - Automatically detects when a barre should be added based on finger distribution
+    - Activates when there are more than 4 pressed fingers (fret > 0)
+    - Places barre on the fret with the most fingers
+    - Tie-breaker rule: chooses lowest fret number when multiple frets have same finger count
+    - Barre covers from first to last string with finger on that fret
+    - Automatically removes covered fingers from visualization for clean diagrams
+    - New prop `autoBarreEnabled` (boolean, default: `true`) to enable/disable feature
+    - Manual barres always take precedence over automatic detection
+    - Fully tested with 19 new unit tests
+    - 4 new Storybook examples demonstrating all use cases
+
+### Documentation 📚
+
+- Added comprehensive Auto Barre Detection section to quickstart guide
+- Includes examples for enabled/disabled states, manual precedence, and tie-breaker rules
+- Documented edge cases and special behaviors
+- Updated specifications with FR-034, FR-035, FR-036
+
+### Technical Improvements 🔧
+
+- New utility module `src/components/ChordDiagram/utils/autoBarre.ts` with:
+    - `detectAutoBarre()`: Core detection algorithm
+    - `removeFingersCoveredByBarre()`: Visual cleanup function
+    - `shouldApplyAutoBarre()`: Precedence logic
+- Full TypeScript type safety with JSDoc documentation
+- Follows TDD approach (Red-Green-Refactor)
+- Zero breaking changes - fully backward compatible
+
 ## 1.21.0 (2025-10-11)
 
 ### Improvements 🎨

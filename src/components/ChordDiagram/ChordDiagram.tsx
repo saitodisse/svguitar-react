@@ -22,6 +22,7 @@ import {
 	getStartX,
 	getStartY,
 } from "./utils";
+import { detectAutoBarre, removeFingersCoveredByBarre, shouldApplyAutoBarre } from "./utils/autoBarre";
 import { getLayoutEngine } from "./layout";
 import { Fretboard } from "./Fretboard";
 import { Finger } from "./Finger";
@@ -132,6 +133,20 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		}
 	}
 
+	// Apply auto barre detection if enabled
+	let effectiveChord = chordData;
+	if (shouldApplyAutoBarre(props)) {
+		const autoBarre = detectAutoBarre(chordData.fingers);
+		if (autoBarre) {
+			// Add auto barre and remove covered fingers
+			effectiveChord = {
+				...chordData,
+				barres: [...chordData.barres, autoBarre],
+				fingers: removeFingersCoveredByBarre(chordData.fingers, autoBarre),
+			};
+		}
+	}
+
 	// Merge custom styles with defaults
 	const style = React.useMemo(() => mergeStyles(styleProps), [styleProps]);
 
@@ -211,7 +226,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 					/>
 
 					{/* Fingers */}
-					{chordData.fingers.map((finger, index) => (
+					{effectiveChord.fingers.map((finger, index) => (
 						<Finger
 							key={`finger-${index}`}
 							engine={resolvedLayoutEngine!}
@@ -228,7 +243,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 					))}
 
 					{/* Barres */}
-					{chordData.barres.map((barre, index) => (
+					{effectiveChord.barres.map((barre, index) => (
 						<Barre
 							key={`barre-${index}`}
 							engine={resolvedLayoutEngine!}

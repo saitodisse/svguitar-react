@@ -1,5 +1,123 @@
 # Release Notes
 
+## Version 1.22.0
+
+**Release Date:** October 12, 2025
+
+### 🚀 New Feature: Automatic Barre Detection
+
+Esta versão introduz **detecção automática de barres (pestanas)**, uma funcionalidade inteligente que simplifica dramaticamente a criação de diagramas de acordes complexos. O sistema agora detecta automaticamente quando uma barre deve ser adicionada com base na distribuição de dedos no braço.
+
+#### ✨ Funcionalidades Principais
+
+**Detecção Inteligente:**
+
+- 🎯 Ativa automaticamente quando há mais de 4 dedos pressionados (fret > 0)
+- 🧠 Identifica o traste com o maior número de dedos para posicionar a barre
+- ⚖️ Regra de desempate: escolhe o traste mais baixo quando múltiplos trastes têm a mesma quantidade de dedos
+- 📏 A barre cobre da primeira à última corda com dedo naquele traste
+- 🧹 Remove automaticamente dedos cobertos pela barre para visualização limpa
+
+**Controle Total:**
+
+- 🎛️ Nova prop `autoBarreEnabled` (boolean, padrão: `true`) permite ativar/desativar
+- 👑 Barres manuais sempre têm precedência sobre detecção automática
+- 🔄 Totalmente retrocompatível - zero breaking changes
+
+**Qualidade Garantida:**
+
+- ✅ 19 novos testes unitários cobrindo todos os cenários
+- 📖 4 novas stories no Storybook demonstrando casos de uso
+- 📚 Documentação completa no guia quickstart
+
+#### 💡 Exemplos de Uso
+
+**Exemplo 1: Auto Barre Habilitado (Padrão)**
+
+```jsx
+const complexChord = {
+	fingers: [
+		{ fret: 3, string: 1, is_muted: false },
+		{ fret: 3, string: 2, is_muted: false },
+		{ fret: 3, string: 3, is_muted: false },
+		{ fret: 3, string: 4, is_muted: false },
+		{ fret: 3, string: 5, is_muted: false },
+		{ fret: 5, string: 6, is_muted: false, text: "3" },
+	],
+	barres: [],
+};
+
+// Barre será automaticamente adicionado no traste 3
+<ChordDiagram chord={complexChord} />;
+```
+
+**Exemplo 2: Desabilitando Auto Barre**
+
+```jsx
+// Mostre todos os dedos individualmente
+<ChordDiagram chord={complexChord} autoBarreEnabled={false} />
+```
+
+**Exemplo 3: Precedência de Barres Manuais**
+
+```jsx
+const fMajor = {
+	fingers: [
+		/* ... */
+	],
+	barres: [{ fret: 1, fromString: 1, toString: 6 }],
+};
+
+// Auto barre é desabilitado automaticamente (barre manual tem precedência)
+<ChordDiagram chord={fMajor} />;
+```
+
+#### 🎯 Casos Especiais
+
+- **Exatamente 4 dedos**: Auto barre NÃO é acionado (apenas > 4)
+- **Cordas soltas/mutadas**: Ignoradas na contagem (fret = 0 ou is_muted = true)
+- **Dedos espalhados**: Se nenhum traste tem múltiplos dedos, auto barre não aplica
+
+#### 🔧 Detalhes Técnicos
+
+**Arquivos Criados:**
+
+- `src/components/ChordDiagram/utils/autoBarre.ts`: Módulo utilitário com:
+    - `detectAutoBarre()`: Algoritmo de detecção
+    - `removeFingersCoveredByBarre()`: Limpeza visual
+    - `shouldApplyAutoBarre()`: Lógica de precedência
+
+**Especificações Atualizadas:**
+
+- FR-034: Detecção automática com threshold > 4 dedos
+- FR-035: Prop `autoBarreEnabled` (padrão: true)
+- FR-036: Precedência de barres manuais
+
+#### 📊 Estatísticas
+
+- **Testes**: 19 novos testes unitários (100% cobertura)
+- **Stories**: 4 novas demonstrações no Storybook
+- **Linhas de Código**: ~450 linhas (implementação + testes)
+- **Abordagem**: TDD (Red-Green-Refactor)
+
+#### 💡 Impacto para Desenvolvedores
+
+- **Mais Simples**: Não precisa mais especificar barres manualmente para acordes complexos
+- **Mais Inteligente**: Sistema detecta automaticamente onde barres são necessárias
+- **Mais Flexível**: Controle total via `autoBarreEnabled` quando necessário
+- **Mais Limpo**: Visualização automática sem redundância de dedos cobertos
+- **100% Retrocompatível**: Código existente continua funcionando sem mudanças
+
+#### 🚀 Como Atualizar
+
+```bash
+pnpm install svguitar-react@1.22.0
+```
+
+Nenhuma mudança necessária no seu código - a feature está habilitada por padrão e funciona automaticamente!
+
+---
+
 ## Version 1.21.0
 
 **Release Date:** October 11, 2025

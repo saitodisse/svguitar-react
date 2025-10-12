@@ -624,6 +624,8 @@ export const CustomStyle: Story = {
 		stringWidth: 2.57,
 		dotSize: 17,
 		fretTextOffsetY: 0.33,
+		nutStrokeWidth: 0.171,
+		nutColor: "#bcadad",
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -853,6 +855,7 @@ export const HighFretNotation: Story = {
 
 		width: 620,
 		fretCount: 14,
+		autoBarreEnabled: false, // Disable auto barre to show all 6 fingers
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -943,10 +946,11 @@ export const VerticalRight: Story = {
 		dotSize: 14,
 		dotTextSize: 12,
 		fretTextSize: 12,
-		tuningTextSize: 15,
+		tuningTextSize: 11,
 		tuningTextColor: "#949393",
-		tuningLabelOffsetX: 0.2,
-		tuningLabelFormat: "note-only",
+		tuningLabelOffsetX: 0.12,
+		tuningLabelFormat: "scientific",
+		tuningLabelOffsetY: 0.39,
 	},
 	parameters: {
 		docs: {
@@ -1013,8 +1017,14 @@ export const VerticalLeft: Story = {
 		fretHeight: 39,
 		stringWidth: 1,
 		dotSize: 14,
-		fretTextSize: 25,
+		fretTextSize: 12,
 		tuningTextSize: 12,
+		fretColor: "#aa3b3b",
+		fretTextColor: "#c2bebe",
+		tuningTextColor: "#b2aeae",
+		tuningLabelOffsetX: 0.02,
+		tuningLabelOffsetY: 0.19,
+		fretTextOffsetY: 0.09,
 	},
 	parameters: {
 		docs: {
@@ -1039,7 +1049,7 @@ export const VerticalLeft: Story = {
 		expect(fingerElements?.length).toBeGreaterThan(0);
 
 		// Verify tuning labels are positioned correctly (above the vertical strings)
-		const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+		const tuningLabels = svg?.querySelectorAll('text[fill*="b2aeae"]'); // tuningTextColor (#b2aeae)
 		expect(tuningLabels?.length).toBeGreaterThan(0);
 
 		// Verify tuning labels are positioned above the fretboard
@@ -1053,7 +1063,7 @@ export const VerticalLeft: Story = {
 		}
 
 		// Verify fret numbers are positioned to the right of the fretboard (FR-026)
-		const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+		const fretNumbers = svg?.querySelectorAll('text[fill*="c2bebe"]'); // fretTextColor (#c2bebe)
 		expect(fretNumbers?.length).toBeGreaterThan(0);
 
 		// Verify fret numbers are positioned to the right of the fretboard
@@ -1152,159 +1162,6 @@ export const PerformanceTest: Story = {
 };
 
 /**
- * Tuning Label Offset Demonstration
- * Shows how tuningLabelOffset affects label positioning
- */
-export const TuningLabelOffsetDemo: Story = {
-	args: {
-		...cMajor,
-		...BASE_STORY_CONFIG,
-		view: "horizontal-right",
-		tuningLabelOffsetX: 0.8,
-		width: 300,
-		height: 200,
-	},
-	parameters: {
-		docs: {
-			description: {
-				story: "Demonstrates tuningLabelOffset prop. Higher values (0.8) move labels further from the nut. Default is 0.5.",
-			},
-		},
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const chordDiagram = canvas.getByTestId("chord-diagram");
-		expect(chordDiagram).toBeInTheDocument();
-
-		const svg = chordDiagram.querySelector("svg");
-		const tuningLabels = svg?.querySelectorAll('text[font-weight="bold"]');
-		expect(tuningLabels?.length).toBeGreaterThan(0);
-	},
-};
-
-/**
- * Tuning Label Format Demonstration
- * Shows scientific notation vs note-only format
- */
-export const TuningLabelFormatDemo: Story = {
-	args: {
-		...cMajor,
-		...BASE_STORY_CONFIG,
-		view: "vertical-right",
-		tuningLabelFormat: "note-only",
-		width: 200,
-		height: 300,
-	},
-	parameters: {
-		docs: {
-			description: {
-				story: "Demonstrates tuningLabelFormat prop with 'note-only' format. Shows 'E A D G B E' instead of 'E2 A2 D3 G3 B3 E4', saving space.",
-			},
-		},
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const chordDiagram = canvas.getByTestId("chord-diagram");
-		expect(chordDiagram).toBeInTheDocument();
-
-		const svg = chordDiagram.querySelector("svg");
-		const allTextElements = svg?.querySelectorAll("text");
-		const textContent = Array.from(allTextElements || []).map(label => label.textContent);
-
-		// Verify note-only format (should contain "E" not "E2")
-		expect(textContent).toContain("E");
-		expect(textContent).toContain("A");
-		expect(textContent).toContain("D");
-	},
-};
-
-/**
- * String Indicator Offset Demonstration
- * Shows how stringIndicatorOffset affects O/X positioning
- */
-export const StringIndicatorOffsetDemo: Story = {
-	args: {
-		chord: {
-			fingers: [
-				{ fret: 0, string: 1, is_muted: true }, // X
-				{ fret: 3, string: 2, is_muted: false, text: "3" },
-				{ fret: 2, string: 3, is_muted: false, text: "2" },
-				{ fret: 0, string: 4, is_muted: false }, // O
-				{ fret: 1, string: 5, is_muted: false, text: "1" },
-				{ fret: 0, string: 6, is_muted: false }, // O
-			],
-			barres: [],
-		},
-		...BASE_STORY_CONFIG,
-		view: "horizontal-right",
-		stringIndicatorOffsetX: 0.3,
-		width: 300,
-		height: 200,
-	},
-	parameters: {
-		docs: {
-			description: {
-				story: "Demonstrates stringIndicatorOffset prop. Lower values (0.3) position O/X indicators closer to the nut. Default is 0.5.",
-			},
-		},
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const chordDiagram = canvas.getByTestId("chord-diagram");
-		expect(chordDiagram).toBeInTheDocument();
-
-		const svg = chordDiagram.querySelector("svg");
-		// Should have 2 regular fingers + 2 open circles + X marks
-		const circles = svg?.querySelectorAll("circle");
-		expect(circles?.length).toBeGreaterThan(2);
-	},
-};
-
-/**
- * Combined Customizations Demonstration
- * Shows all 3 new props working together
- */
-export const CombinedCustomizations: Story = {
-	args: {
-		instrument: {
-			tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-			chord: "x32010",
-		},
-		...BASE_STORY_CONFIG,
-		view: "vertical-right",
-		tuningLabelOffsetX: 0.3,
-		tuningLabelFormat: "note-only",
-		stringIndicatorOffsetX: 0.7,
-		width: 220,
-		height: 320,
-		dotSize: 16,
-		tuningTextSize: 16,
-	},
-	parameters: {
-		docs: {
-			description: {
-				story: "Demonstrates all 3 new customization props working together: tuningLabelOffset (0.3 - closer), tuningLabelFormat (note-only), and stringIndicatorOffset (0.7 - further).",
-			},
-		},
-	},
-	play: async ({ canvasElement }) => {
-		const canvas = within(canvasElement);
-		const chordDiagram = canvas.getByTestId("chord-diagram");
-		expect(chordDiagram).toBeInTheDocument();
-
-		const svg = chordDiagram.querySelector("svg");
-		expect(svg).toBeInTheDocument();
-
-		// Verify tuning labels use note-only format
-		const allTextElements = svg?.querySelectorAll("text");
-		const textContent = Array.from(allTextElements || []).map(label => label.textContent);
-		expect(textContent).toContain("E");
-		expect(textContent).toContain("A");
-		expect(textContent).toContain("D");
-	},
-};
-
-/**
  * Nut Customization Demonstration
  * Shows how nut properties affect the fret zero appearance
  */
@@ -1373,20 +1230,218 @@ export const CombinedAdvancedCustomization: Story = {
 		nutOpacity: 0.9,
 		canvasOffsetX: -12,
 		canvasOffsetY: -9,
-		barresOpacity: 0.7,
+		barresOpacity: 0.76,
 		dotColor: "#00AA66",
 		barreColor: "#00AA66",
 		width: 217,
 		height: 226,
-		tuningLabelOffsetX: 0.35,
+		tuningLabelOffsetX: 0.3,
 		tuningLabelOffsetY: -0.11,
 		tuningLabelFormat: "note-only",
 		nutOffsetX: 0.08,
+		barresOffsetX: 0.41,
+		autoBarreEnabled: false,
 	},
 	parameters: {
 		docs: {
 			description: {
 				story: "All advanced customizations together: nut, canvas, barres, and colors.",
+			},
+		},
+	},
+};
+
+// ============================================================================
+// AUTO BARRE DETECTION
+// ============================================================================
+
+/**
+ * Auto Barre Enabled (Default)
+ *
+ * When there are more than 4 pressed fingers (fret > 0), the system automatically
+ * adds a barre on the fret with the most fingers. In this example, fret 3 has 5 fingers,
+ * so a barre is automatically added covering strings 1-5.
+ *
+ * The fingers covered by the barre are removed from visualization to avoid redundancy.
+ */
+export const AutoBarreEnabled: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 3, string: 1, is_muted: false },
+				{ fret: 3, string: 2, is_muted: false },
+				{ fret: 3, string: 3, is_muted: false },
+				{ fret: 3, string: 4, is_muted: false },
+				{ fret: 3, string: 5, is_muted: false },
+				{ fret: 5, string: 6, is_muted: false, text: "3" },
+			],
+			barres: [],
+		},
+
+		...BASE_STORY_CONFIG,
+
+		// default, shown explicitly
+		autoBarreEnabled: true,
+
+		width: 220,
+		height: 260,
+		barresOffsetX: 0.41,
+		barreHeight: 23,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto Barre Enabled (Default)**\n\n" +
+					"When `autoBarreEnabled` is `true` (default) and there are more than 4 pressed fingers, " +
+					"the system automatically detects where a barre should be placed.\n\n" +
+					"In this example:\n" +
+					"- 6 fingers total (more than 4 threshold)\n" +
+					"- Fret 3 has 5 fingers (strings 1-5)\n" +
+					"- Fret 5 has 1 finger (string 6)\n" +
+					"- **Result**: Barre automatically added on fret 3\n" +
+					"- **Visualization**: Only the finger on fret 5 is shown as a dot; the 5 fingers on fret 3 are represented by the barre",
+			},
+		},
+	},
+};
+
+/**
+ * Auto Barre Disabled
+ *
+ * When autoBarreEnabled is set to false, no automatic barre is added,
+ * even if there are more than 4 pressed fingers.
+ * All fingers are shown as individual dots.
+ */
+export const AutoBarreDisabled: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 3, string: 1, is_muted: false, text: "1" },
+				{ fret: 3, string: 2, is_muted: false, text: "1" },
+				{ fret: 3, string: 3, is_muted: false, text: "1" },
+				{ fret: 3, string: 4, is_muted: false, text: "1" },
+				{ fret: 3, string: 5, is_muted: false, text: "1" },
+				{ fret: 5, string: 6, is_muted: false, text: "3" },
+			],
+			barres: [],
+		},
+		...BASE_STORY_CONFIG,
+		autoBarreEnabled: false, // explicitly disabled
+		width: 220,
+		height: 260,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto Barre Disabled**\n\n" +
+					"When `autoBarreEnabled` is `false`, no automatic barre is added, " +
+					"regardless of the number of pressed fingers.\n\n" +
+					"In this example:\n" +
+					"- Same 6 fingers as the previous story\n" +
+					"- Auto barre is disabled\n" +
+					"- **Result**: All 6 fingers are shown as individual dots\n" +
+					"- **Use case**: When you want full control over visualization or teaching individual finger positions",
+			},
+		},
+	},
+};
+
+/**
+ * Auto Barre Tiebreaker
+ *
+ * When multiple frets have the same number of fingers (a tie),
+ * the system chooses the lowest fret number.
+ *
+ * In this example, fret 3 and fret 5 both have 3 fingers each,
+ * so the barre is placed on fret 3 (the lower fret).
+ */
+export const AutoBarreTiebreaker: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 3, string: 1, is_muted: false },
+				{ fret: 3, string: 2, is_muted: false },
+				{ fret: 3, string: 3, is_muted: false },
+				{ fret: 5, string: 4, is_muted: false, text: "2" },
+				{ fret: 5, string: 5, is_muted: false, text: "3" },
+				{ fret: 5, string: 6, is_muted: false, text: "4" },
+			],
+			barres: [],
+		},
+
+		...BASE_STORY_CONFIG,
+		width: 220,
+		height: 260,
+		barreHeight: 21,
+		barresOffsetX: 0.42,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto Barre Tiebreaker**\n\n" +
+					"When multiple frets have the same number of fingers, the system uses a tiebreaker rule:\n\n" +
+					"**Rule**: Choose the **lowest fret number**\n\n" +
+					"In this example:\n" +
+					"- Fret 3: 3 fingers (strings 1-3)\n" +
+					"- Fret 5: 3 fingers (strings 4-6)\n" +
+					"- **Tie!** Both have 3 fingers\n" +
+					"- **Result**: Barre is placed on fret 3 (lower fret wins)\n" +
+					"- **Visualization**: Barre on fret 3, three individual dots on fret 5",
+			},
+		},
+	},
+};
+
+/**
+ * Manual Barre Precedence
+ *
+ * Manual barres always take precedence over automatic detection.
+ * Even if autoBarreEnabled is true (default), if there are manual barres defined,
+ * the automatic detection is completely disabled.
+ */
+export const ManualBarrePrecedence: Story = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 1, string: 1, is_muted: false },
+				{ fret: 1, string: 2, is_muted: false },
+				{ fret: 1, string: 3, is_muted: false },
+				{ fret: 1, string: 4, is_muted: false },
+				{ fret: 1, string: 5, is_muted: false },
+				{ fret: 1, string: 6, is_muted: false },
+				{ fret: 3, string: 2, is_muted: false, text: "2" },
+				{ fret: 3, string: 3, is_muted: false, text: "3" },
+				{ fret: 3, string: 4, is_muted: false, text: "4" },
+			],
+			barres: [{ fret: 1, fromString: 1, toString: 6 }], // manual barre
+		},
+
+		...BASE_STORY_CONFIG,
+
+		// auto barre is enabled but won't apply
+		autoBarreEnabled: true,
+
+		width: 220,
+		height: 260,
+		barresOffsetX: 0.17,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Manual Barre Precedence**\n\n" +
+					"Manual barres **always** take precedence over automatic detection. " +
+					"When any manual barre is defined via the `barres` prop, automatic detection is " +
+					"completely disabled, even if `autoBarreEnabled` is `true`.\n\n" +
+					"In this example:\n" +
+					"- 9 total fingers (would normally trigger auto barre)\n" +
+					"- Manual barre defined on fret 1 (covering all 6 strings)\n" +
+					"- `autoBarreEnabled` is `true`\n" +
+					"- **Result**: Auto barre is disabled; only the manual barre is used\n" +
+					"- **Use case**: Full manual control when you need to specify exact barre placement",
 			},
 		},
 	},

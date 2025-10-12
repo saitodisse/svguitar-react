@@ -272,6 +272,136 @@ const App = () => {
 export default App;
 ```
 
+### Auto Barre Detection (Detecção Automática de Barres)
+
+O componente `ChordDiagram` possui um recurso inteligente que detecta automaticamente quando uma barre (pestana) deve ser adicionada ao diagrama, simplificando a definição de acordes complexos.
+
+#### Como Funciona
+
+Quando você especifica um acorde com **mais de 4 dedos pressionados** (fret > 0), o sistema:
+
+1. Conta quantos dedos há em cada traste
+2. Identifica o traste com o maior número de dedos
+3. Adiciona automaticamente uma barre nesse traste
+4. Remove os dedos cobertos pela barre da visualização para evitar redundância
+
+#### Exemplo: Auto Barre Habilitado (Padrão)
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	// Acorde com 6 dedos: 5 no traste 3, 1 no traste 5
+	const complexChord = {
+		fingers: [
+			{ fret: 3, string: 1, is_muted: false },
+			{ fret: 3, string: 2, is_muted: false },
+			{ fret: 3, string: 3, is_muted: false },
+			{ fret: 3, string: 4, is_muted: false },
+			{ fret: 3, string: 5, is_muted: false },
+			{ fret: 5, string: 6, is_muted: false, text: "3" },
+		],
+		barres: [], // Nenhuma barre manual
+	};
+
+	// Auto barre será adicionado no traste 3 (tem mais dedos)
+	// Apenas o dedo no traste 5 será mostrado como círculo
+	return <ChordDiagram chord={complexChord} />;
+};
+
+export default App;
+```
+
+#### Desabilitando Auto Barre
+
+Se você quiser desabilitar a detecção automática e mostrar todos os dedos individualmente:
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	const complexChord = {
+		fingers: [
+			{ fret: 3, string: 1, is_muted: false, text: "1" },
+			{ fret: 3, string: 2, is_muted: false, text: "1" },
+			{ fret: 3, string: 3, is_muted: false, text: "1" },
+			{ fret: 3, string: 4, is_muted: false, text: "1" },
+			{ fret: 3, string: 5, is_muted: false, text: "1" },
+			{ fret: 5, string: 6, is_muted: false, text: "3" },
+		],
+		barres: [],
+	};
+
+	// Desabilitar auto barre para mostrar todos os 6 dedos
+	return <ChordDiagram chord={complexChord} autoBarreEnabled={false} />;
+};
+
+export default App;
+```
+
+#### Precedência de Barres Manuais
+
+**Importante**: Barres manuais sempre têm precedência sobre a detecção automática. Se você especificar manualmente uma barre via `barres`, o auto barre será completamente desabilitado, mesmo que `autoBarreEnabled` seja `true`.
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	// F Major: barre manual no traste 1
+	const fMajor = {
+		fingers: [
+			{ fret: 3, string: 2, is_muted: false, text: "3" },
+			{ fret: 3, string: 3, is_muted: false, text: "4" },
+			{ fret: 2, string: 4, is_muted: false, text: "2" },
+		],
+		barres: [{ fret: 1, fromString: 1, toString: 6 }], // Barre manual
+	};
+
+	// Auto barre não será aplicado porque há barre manual
+	return <ChordDiagram chord={fMajor} />;
+};
+
+export default App;
+```
+
+#### Regras de Desempate
+
+Se múltiplos trastes tiverem o mesmo número de dedos (empate), o sistema escolhe o **traste mais baixo** (menor número).
+
+```jsx
+import React from "react";
+import { ChordDiagram } from "@svguitar/react";
+
+const App = () => {
+	// Empate: traste 3 tem 3 dedos, traste 5 também tem 3 dedos
+	const tieChord = {
+		fingers: [
+			{ fret: 3, string: 1, is_muted: false },
+			{ fret: 3, string: 2, is_muted: false },
+			{ fret: 3, string: 3, is_muted: false },
+			{ fret: 5, string: 4, is_muted: false, text: "2" },
+			{ fret: 5, string: 5, is_muted: false, text: "3" },
+			{ fret: 5, string: 6, is_muted: false, text: "4" },
+		],
+		barres: [],
+	};
+
+	// Barre será adicionado no traste 3 (mais baixo)
+	return <ChordDiagram chord={tieChord} />;
+};
+
+export default App;
+```
+
+#### Casos Especiais
+
+- **Exatamente 4 dedos**: Auto barre **NÃO** é acionado. Apenas quando há **mais de 4** dedos.
+- **Cordas soltas/mutadas**: São ignoradas na contagem (fret = 0 ou is_muted = true).
+- **Todos dedos em trastes diferentes**: Auto barre não é aplicado (nenhum traste tem múltiplos dedos).
+
 ### Modo Canhoto
 
 Selecione `horizontal-left` ou `vertical-left` via `view`.
