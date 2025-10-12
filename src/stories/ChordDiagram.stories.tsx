@@ -241,6 +241,12 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Opacity of barre rectangles",
 			table: { category: "Barres", defaultValue: { summary: "1" } },
 		},
+		autoBarreEnabled: {
+			control: { type: "boolean" },
+			description:
+				"Enable automatic barre detection when there are more than 4 fingers with fret > 0. Automatically disabled if manual barres are defined.",
+			table: { category: "Barres", defaultValue: { summary: "true" } },
+		},
 
 		// Nut (Fret Zero)
 		nutStrokeWidth: {
@@ -1306,5 +1312,136 @@ export const CombinedAdvancedCustomization: Story = {
 				story: "All advanced customizations together: nut, canvas, barres, and colors.",
 			},
 		},
+	},
+};
+
+// ============================================================
+// Auto Barre Stories
+// ============================================================
+
+/**
+ * Auto Barre - Enabled (Default)
+ * Demonstrates automatic barre detection when there are more than 4 fingers
+ */
+export const AutoBarreEnabled: StoryObj<ChordDiagramProps> = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 3, string: 6, is_muted: false, text: "1" }, // E string (low)
+				{ fret: 3, string: 5, is_muted: false, text: "1" }, // A string
+				{ fret: 3, string: 4, is_muted: false, text: "1" }, // D string
+				{ fret: 4, string: 3, is_muted: false, text: "2" }, // G string
+				{ fret: 5, string: 2, is_muted: false, text: "3" }, // B string
+			],
+			barres: [], // No manual barres - auto barre will be detected
+		},
+		autoBarreEnabled: true, // Default
+		dotColor: "#9333EA",
+		barreColor: "#9333EA",
+		backgroundColor: "#FAF5FF",
+		width: 200,
+		height: 250,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "With more than 4 fingers pressed (fret > 0), a barre is automatically detected and rendered on fret 3 (the fret with most fingers). This is the default behavior.",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		// Wait for component to render
+		await new Promise(resolve => setTimeout(resolve, 100));
+
+		// Verify auto barre was added
+		const svg = canvasElement.querySelector("svg");
+		expect(svg).toBeTruthy();
+
+		const barres = svg?.querySelectorAll('[data-testid="barre"]');
+		expect(barres?.length).toBe(1); // Should have 1 auto-detected barre
+	},
+};
+
+/**
+ * Auto Barre - Disabled
+ * Shows that auto barre can be disabled via prop
+ */
+export const AutoBarreDisabled: StoryObj<ChordDiagramProps> = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 3, string: 6, is_muted: false, text: "1" }, // E string (low)
+				{ fret: 3, string: 5, is_muted: false, text: "1" }, // A string
+				{ fret: 3, string: 4, is_muted: false, text: "1" }, // D string
+				{ fret: 4, string: 3, is_muted: false, text: "2" }, // G string
+				{ fret: 5, string: 2, is_muted: false, text: "3" }, // B string
+			],
+			barres: [], // No barres
+		},
+		autoBarreEnabled: false, // Explicitly disabled
+		dotColor: "#EF4444",
+		backgroundColor: "#FEF2F2",
+		width: 200,
+		height: 250,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Same chord as above, but with `autoBarreEnabled: false`. No barre is rendered despite having more than 4 fingers.",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await new Promise(resolve => setTimeout(resolve, 100));
+
+		const svg = canvasElement.querySelector("svg");
+		expect(svg).toBeTruthy();
+
+		const barres = svg?.querySelectorAll('[data-testid="barre"]');
+		expect(barres?.length).toBe(0); // Should have NO barres
+	},
+};
+
+/**
+ * Auto Barre - Manual Override
+ * Demonstrates that manual barres have precedence over auto detection
+ */
+export const AutoBarreManualOverride: StoryObj<ChordDiagramProps> = {
+	args: {
+		chord: {
+			fingers: [
+				{ fret: 3, string: 6, is_muted: false, text: "3" }, // Would trigger auto barre on fret 3
+				{ fret: 3, string: 5, is_muted: false, text: "3" },
+				{ fret: 3, string: 4, is_muted: false, text: "3" },
+				{ fret: 4, string: 3, is_muted: false, text: "4" },
+				{ fret: 5, string: 2, is_muted: false, text: "5" },
+			],
+			barres: [{ fret: 1, fromString: 1, toString: 6 }], // Manual barre on fret 1
+		},
+		autoBarreEnabled: true, // Enabled, but ignored because manual barre exists
+		dotColor: "#10B981",
+		barreColor: "#10B981",
+		backgroundColor: "#F0FDF4",
+		width: 200,
+		height: 250,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: "Even with more than 4 fingers and `autoBarreEnabled: true`, the manual barre on fret 1 takes precedence. Only the manual barre is rendered, auto barre is skipped.",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await new Promise(resolve => setTimeout(resolve, 100));
+
+		const svg = canvasElement.querySelector("svg");
+		expect(svg).toBeTruthy();
+
+		const barres = svg?.querySelectorAll('[data-testid="barre"]');
+		expect(barres?.length).toBe(1); // Should have only the manual barre
 	},
 };

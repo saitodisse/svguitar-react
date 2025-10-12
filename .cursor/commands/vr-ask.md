@@ -10,56 +10,56 @@ Quando você (LLM) precisar de input do usuário, use esta API em vez de pergunt
 
 ```typescript
 interface Question {
-  version: "1.0.0";
-  id?: string; // OPCIONAL - auto-gerado se não fornecido
-  questionType: // OBRIGATÓRIO - tipo semântico
-  | "architecture" // Decisões estruturais
-    | "style" // Preferências de código
-    | "configuration" // Setup de ferramentas
-    | "preference" // Escolhas subjetivas
-    | "clarification" // Entender requisitos
-    | "validation" // Confirmar decisão
-    | "refactoring" // Melhorias de código
-    | "debugging"; // Escolhas durante bug fix
-  text: string; // Pergunta (1-500 chars)
-  description?: string; // Markdown (0-5000 chars)
-  options: string[]; // Min 1, max 20
-  allowMultiple: boolean; // checkboxes ou radio
-  allowText: boolean; // Permite texto adicional?
-  textPlaceholder?: string;
+	version: "1.0.0";
+	id?: string; // OPCIONAL - auto-gerado se não fornecido
+	questionType: // OBRIGATÓRIO - tipo semântico
+	| "architecture" // Decisões estruturais
+		| "style" // Preferências de código
+		| "configuration" // Setup de ferramentas
+		| "preference" // Escolhas subjetivas
+		| "clarification" // Entender requisitos
+		| "validation" // Confirmar decisão
+		| "refactoring" // Melhorias de código
+		| "debugging"; // Escolhas durante bug fix
+	text: string; // Pergunta (1-500 chars)
+	description?: string; // Markdown (0-5000 chars)
+	options: string[]; // Min 1, max 20
+	allowMultiple: boolean; // checkboxes ou radio
+	allowText: boolean; // Permite texto adicional?
+	textPlaceholder?: string;
 
-  // NOVOS CAMPOS SEMÂNTICOS:
-  optionsMetadata?: {
-    [optionText: string]: {
-      pros?: string[]; // Vantagens
-      cons?: string[]; // Desvantagens
-      impact?: string; // Impacto (max 200 chars)
-      tradeoffs?: string; // Tradeoffs (max 300 chars)
-      whenToUse?: string; // Quando usar (max 200 chars)
-    };
-  };
+	// NOVOS CAMPOS SEMÂNTICOS:
+	optionsMetadata?: {
+		[optionText: string]: {
+			pros?: string[]; // Vantagens
+			cons?: string[]; // Desvantagens
+			impact?: string; // Impacto (max 200 chars)
+			tradeoffs?: string; // Tradeoffs (max 300 chars)
+			whenToUse?: string; // Quando usar (max 200 chars)
+		};
+	};
 
-  codeContext?: Array<{
-    filePath: string;
-    lineRange?: [number, number]; // [início, fim]
-    explanation?: string; // max 200 chars
-  }>; // Max 5 referências
+	codeContext?: Array<{
+		filePath: string;
+		lineRange?: [number, number]; // [início, fim]
+		explanation?: string; // max 200 chars
+	}>; // Max 5 referências
 
-  metadata?: {
-    timestamp: string; // ISO 8601
-    source?: string;
-    priority?: number; // 1-5
-    tags?: string[];
-    // NOVOS CAMPOS SEMÂNTICOS:
-    rationale?: string; // Por quê está perguntando (max 500 chars)
-    confidence?: number; // 0-100
-    impact?: "low" | "medium" | "high" | "critical";
-    category?: "architecture" | "styling" | "configuration" | "preference";
-    recommendedOption?: {
-      option: string; // Deve existir em options
-      reason: string; // max 300 chars
-    };
-  };
+	metadata?: {
+		timestamp: string; // ISO 8601
+		source?: string;
+		priority?: number; // 1-5
+		tags?: string[];
+		// NOVOS CAMPOS SEMÂNTICOS:
+		rationale?: string; // Por quê está perguntando (max 500 chars)
+		confidence?: number; // 0-100
+		impact?: "low" | "medium" | "high" | "critical";
+		category?: "architecture" | "styling" | "configuration" | "preference"; // ATENÇÃO: "styling" (não "style") - diferente de questionType
+		recommendedOption?: {
+			option: string; // Deve existir em options
+			reason: string; // max 300 chars
+		};
+	};
 }
 ```
 
@@ -83,6 +83,32 @@ curl -X POST http://localhost:9876/api/questions \
 ```
 
 **Nota**: O campo `id` é opcional. Se não fornecido, o backend gera automaticamente.
+
+## ⚠️ IMPORTANTE: Diferenças Entre Campos
+
+### `questionType` vs `metadata.category`
+
+Estes dois campos têm valores **diferentes** e **não são intercambiáveis**:
+
+**`questionType`** (obrigatório):
+
+- `"architecture"` ✅
+- `"style"` ✅ (não "styling")
+- `"configuration"` ✅
+- `"preference"` ✅
+- `"clarification"` ✅
+- `"validation"` ✅
+- `"refactoring"` ✅
+- `"debugging"` ✅
+
+**`metadata.category`** (opcional):
+
+- `"architecture"` ✅
+- `"styling"` ✅ (não "style" - note a diferença!)
+- `"configuration"` ✅
+- `"preference"` ✅
+
+**Erro Comum**: Usar `"style"` em `metadata.category` ou `"styling"` em `questionType`. Isso causará erro de validação!
 
 ## Exemplo Completo: Pergunta Semântica Rica
 
@@ -143,7 +169,8 @@ curl -X POST http://localhost:9876/api/questions \
 
 ## Como os Campos Semânticos São Renderizados na UI
 
-- **questionType**: Ícone visual (🏗️ architecture, 🎨 style, ⚙️ config, etc.)
+- **questionType**: Ícone visual (🏗️ architecture, 🎨 style, ⚙️ configuration, 💭 preference, etc.)
+- **metadata.category**: Categorização secundária (valores: "architecture" | "styling" | "configuration" | "preference")
 - **metadata.impact**: Badge colorido (verde/amarelo/laranja/vermelho)
 - **metadata.rationale**: Caixa destacada "Por quê: ..."
 - **metadata.recommendedOption**: Box azul com 💡 "Recomendação: ..."
@@ -205,19 +232,19 @@ Ambas as perguntas serão exibidas na UI e o usuário responde todas de uma vez.
 
 ```typescript
 interface Answer {
-  version: "1.0.0";
-  questionId: string;
-  selectedOptions: string[];
-  additionalText?: string;
-  metadata: {
-    timestamp: string; // ISO 8601
-    responseTimeMs?: number;
-  };
+	version: "1.0.0";
+	questionId: string;
+	selectedOptions: string[];
+	additionalText?: string;
+	metadata: {
+		timestamp: string; // ISO 8601
+		responseTimeMs?: number;
+	};
 }
 
 interface APIResponse {
-  success: boolean;
-  answers: Answer[];
+	success: boolean;
+	answers: Answer[];
 }
 ```
 

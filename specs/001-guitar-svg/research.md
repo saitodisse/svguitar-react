@@ -40,6 +40,17 @@
 - **Alternativas consideradas**:
     - **Implementar a lógica manualmente**: Criar funções para validar e manipular notas. Rejeitado por ser uma reinvenção da roda, com alto risco de bugs e grande esforço de desenvolvimento para um problema já resolvido de forma eficaz por bibliotecas especializadas.
 
+### Decisão: Detecção Automática de Barres (Auto Barre)
+
+- **Decisão**: Implementar detecção automática de barres (pestanas) quando o acorde possui mais de 4 dedos pressionados, usando a heurística simples de selecionar o traste com maior número de dedos.
+- **Justificativa**: Guitarristas têm apenas 4 dedos disponíveis para pressionar cordas (excluindo o polegar). Quando um acorde requer mais de 4 dedos, é fisicamente impossível tocá-lo sem uma pestana. A detecção automática melhora a experiência do usuário ao representar visualmente como o acorde deve ser executado na prática, sem exigir que o desenvolvedor calcule manualmente onde colocar a barre. A heurística de "maior número de dedos" é simples de implementar e entender, tornando o comportamento previsível.
+- **Configuração**: Habilitado por padrão via `autoBarreEnabled: true`, mas pode ser desabilitado. Barres manuais têm precedência sobre barres automáticas para respeitar a intenção explícita do usuário.
+- **Lógica**: Selecionar o traste que possui o maior número de dedos, e criar uma barre cobrindo da primeira à última corda com dedos naquele traste. Em caso de empate, selecionar o traste de menor número (mais próximo do nut).
+- **Alternativas consideradas**:
+    - **Barres consecutivas apenas**: Exigir que os dedos estejam em cordas consecutivas para criar a barre. Rejeitado por ser muito restritivo e não cobrir muitos casos reais de acordes.
+    - **Múltiplas barres automáticas**: Criar várias barres se houver múltiplos trastes com muitos dedos. Rejeitado por adicionar complexidade desnecessária e poder gerar diagramas confusos. Na prática, acordes com múltiplas pestanas são raros e melhor representados com barres manuais.
+    - **Sempre ativar com 2+ dedos consecutivos**: Criar barre sempre que houver 2 ou mais dedos consecutivos no mesmo traste, independentemente do número total de dedos. Rejeitado porque muitos acordes têm 2-3 dedos no mesmo traste mas são executáveis sem pestana (ex: C Major tem 3 dedos mas não usa pestana).
+
 ### Decisão: Views como Strategies (Mapping-per-view, sem transforms)
 
 - **Decisão**: Desacoplar o layout via Strategy + Registry (`LayoutEngine` por `ViewId`). Cada strategy mapeia domínio → coordenadas absolutas SVG (cordas, trastes, dedos, pestanas, indicadores) e mantém a legibilidade horizontal dos textos. Não usar `transform` global (sem `rotate/scale`).

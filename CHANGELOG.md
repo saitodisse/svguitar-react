@@ -1,5 +1,52 @@
 # Changelog
 
+## 2.1.0 (2025-10-12)
+
+### ✨ Features
+
+#### Auto Barre Detection
+
+Automatic detection of barre chords (pestanas) when a chord requires more than 4 fingers pressed. This makes chord diagrams more realistic and useful for musicians.
+
+**Key Features:**
+
+- ✅ **Automatic Detection**: Activates when there are more than 4 fingers with `fret > 0`
+- ✅ **Smart Algorithm**: Selects the fret with the most fingers to place the barre
+- ✅ **Manual Override**: Manual barres take precedence over auto-detection
+- ✅ **Easy Control**: Can be disabled via `autoBarreEnabled: false` prop
+- ✅ **Enabled by Default**: Works out-of-the-box with `autoBarreEnabled: true`
+
+**Usage:**
+
+```typescript
+// Auto barre will be detected automatically
+<ChordDiagram
+	chord={{
+		fingers: [
+			{ fret: 3, string: 6, is_muted: false },
+			{ fret: 3, string: 5, is_muted: false },
+			{ fret: 3, string: 4, is_muted: false },
+			{ fret: 4, string: 3, is_muted: false },
+			{ fret: 5, string: 2, is_muted: false }, // 5 fingers!
+		],
+		barres: [], // Auto barre will be added on fret 3
+	}}
+/>
+
+// Disable if needed
+<ChordDiagram chord={chord} autoBarreEnabled={false} />
+```
+
+**Technical Details:**
+
+- FR-034: Auto detection when `fingers with fret > 0 > 4`
+- FR-035: Configurable via `autoBarreEnabled` prop
+- FR-036: Manual barres have precedence
+
+**Related PRs:** See `specs/001-guitar-svg/CHANGELOG-auto-barre.md` for full implementation details.
+
+---
+
 ## 2.0.0 (2025-10-12)
 
 ### ⚠️ BREAKING CHANGES

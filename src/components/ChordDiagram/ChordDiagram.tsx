@@ -28,6 +28,7 @@ import { Finger } from "./Finger";
 import { Barre } from "./Barre";
 import { TuningLabels } from "./TuningLabels";
 import { FretNumbers } from "./FretNumbers";
+import { detectAutoBarre } from "./utils/autoBarreDetection";
 
 /**
  * ChordDiagram component for rendering guitar chord diagrams in SVG format
@@ -56,6 +57,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		fallbackChord = "000000",
 		onError,
 		errorFallback,
+		autoBarreEnabled = true,
 		...styleProps
 	} = props;
 
@@ -129,6 +131,17 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		} else {
 			// suppress: render empty chord (no fingers/barres)
 			chordData = { fingers: [], barres: [] } as Chord;
+		}
+	}
+
+	// Apply auto barre detection if enabled and no manual barres exist
+	if (autoBarreEnabled && chordData.barres.length === 0) {
+		const autoBarre = detectAutoBarre(chordData.fingers);
+		if (autoBarre) {
+			chordData = {
+				...chordData,
+				barres: [autoBarre],
+			};
 		}
 	}
 

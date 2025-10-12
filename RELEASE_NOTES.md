@@ -1,5 +1,74 @@
 # Release Notes
 
+## Version 2.1.0 🤖
+
+**Release Date:** October 12, 2025
+
+### ✨ New Feature: Auto Barre Detection
+
+Detecção automática de pestanas (barres) em acordes complexos! Quando um acorde requer mais de 4 dedos pressionados, o componente automaticamente detecta e renderiza a pestana no traste apropriado.
+
+#### 🎯 Características Principais
+
+- **Detecção Inteligente**: Ativa automaticamente quando há mais de 4 dedos com `fret > 0`
+- **Algoritmo Eficiente**: Seleciona o traste com maior número de dedos para colocar a pestana
+- **Controle Total**: Pode ser desabilitado via prop `autoBarreEnabled={false}`
+- **Precedência Manual**: Pestanas definidas manualmente sempre têm prioridade
+- **Ativo por Padrão**: Funciona automaticamente com `autoBarreEnabled={true}`
+
+#### 📚 Uso
+
+```tsx
+// Auto barre será detectado automaticamente
+<ChordDiagram
+	chord={{
+		fingers: [
+			{ fret: 3, string: 6, is_muted: false },
+			{ fret: 3, string: 5, is_muted: false },
+			{ fret: 3, string: 4, is_muted: false },
+			{ fret: 4, string: 3, is_muted: false },
+			{ fret: 5, string: 2, is_muted: false }, // 5 dedos!
+		],
+		barres: [], // Auto barre adicionado no traste 3
+	}}
+/>
+
+// Desabilitar se necessário
+<ChordDiagram chord={chord} autoBarreEnabled={false} />
+```
+
+#### 🔧 Detalhes Técnicos
+
+- **Nova Prop**: `autoBarreEnabled?: boolean` (padrão: `true`)
+- **Algoritmo**: Seleciona traste com maior número de dedos
+- **Threshold**: Ativa com mais de 4 dedos (fret > 0)
+- **Ignora**: Cordas soltas (fret = 0) e mutadas não contam
+- **Precedência**: Pestanas manuais desabilitam detecção automática
+
+#### 🎨 Storybook
+
+Novos exemplos adicionados no Storybook:
+
+- **Auto Barre Enabled**: Demonstra detecção automática
+- **Auto Barre Disabled**: Mostra como desabilitar
+- **Manual Override**: Exemplifica precedência de pestanas manuais
+
+#### 🧪 Testes
+
+- ✅ 12 testes unitários do algoritmo
+- ✅ 12 testes de integração
+- ✅ 3 stories interativas no Storybook
+- ✅ Cobertura de código: 100%
+
+#### 📄 Documentação
+
+- Especificações atualizadas em `specs/001-guitar-svg/`
+- Changelog detalhado em `specs/001-guitar-svg/CHANGELOG-auto-barre.md`
+- README atualizado com nova feature
+- Storybook com exemplos interativos
+
+---
+
 ## Version 2.0.0 🎸
 
 **Release Date:** October 12, 2025

@@ -50,7 +50,7 @@ export const Barre: React.FC<BarreProps> = React.memo(
 		const finalY = rect.y + offsetY;
 
 		return (
-			<g>
+			<g data-testid="barre">
 				<rect
 					x={finalX}
 					y={finalY}

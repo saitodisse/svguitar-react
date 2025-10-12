@@ -236,6 +236,10 @@ export interface ChordDiagramProps {
 	/** Vertical offset in pixels for entire diagram (default: 0) - useful for padding/margin and future zoom */
 	canvasOffsetY?: number;
 
+	// Auto barre detection
+	/** Enable automatic barre detection when there are more than 4 fingers with fret > 0 (default: true). Automatically disabled if manual barres are defined. */
+	autoBarreEnabled?: boolean;
+
 	// Validation & error handling
 	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
 	validation?: "strict" | "lenient";

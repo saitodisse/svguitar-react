@@ -26,6 +26,7 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 7.  **Dado** que eu especifique cordas soltas e mutadas, **Então** o componente renderiza o diagrama com as cordas soltas e mutadas corretas, colocando um "X" vermelho (#DC143C) espesso no traste zero (primeira linha vertical à esquerda) para cordas mutadas e um "O" (círculo com preenchimento branco e borda na cor padrão dos dedos) no traste zero para cordas soltas, ambos posicionados acima do traste mais grosso, próximos às notas de afinação. Se houver dedos na mesma corda, eles não serão mostrados (cordas mutadas têm precedência).
 8.  **Dado** que quero exibir o diagrama na vertical para um músico destro, **Quando** seleciono a view `vertical-right`, **Então** o componente desenha o braço com a corda mais grave (E2) à **esquerda** e renderiza as cordas, da esquerda para a direita, na ordem `["E2", "A2", "D3", "G3", "B3", "E4"]`, mantendo a legibilidade horizontal de labels e números. Os rótulos de afinação são posicionados acima das cordas verticais, da esquerda para a direita. Os números das posições dos trastes são posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números ao lado direito do diagrama. O nut (traste 0) não possui número associado.
 9.  **Dado** que quero exibir o diagrama para um músico canhoto, **Quando** seleciono a view `horizontal-left` ou `vertical-left`, **Então** o componente desenha o braço conforme a view escolhida, mantendo centralização dos dots e legibilidade horizontal; no caso de `horizontal-left`, os rótulos de afinação aparecem à direita do braço e a numeração dos trastes é apresentada em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 (nut) imediatamente antes dos rótulos de afinação; no caso de `vertical-left`, as cordas são renderizadas, da esquerda para a direita, na ordem `["E4", "B3", "G3", "D3", "A2", "E2"]`, com rótulos de afinação posicionados acima das cordas verticais, da esquerda para a direita, e os números das posições dos trastes posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números ao lado direito do diagrama. O nut (traste 0) não possui número associado.
+10. **Dado** que especifico um acorde com mais de 4 dedos pressionados (fret > 0) e `autoBarreEnabled` está ativo (padrão), **Quando** não há barres manuais definidas, **Então** o componente detecta automaticamente o traste com maior número de dedos e adiciona uma barre nesse traste, cobrindo todas as cordas do primeiro ao último dedo naquele traste.
 
 ### Casos Limite
 
@@ -34,6 +35,9 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - O que acontece quando a pestana se sobrepõe incorretamente aos dedos? (A pestana tem prioridade, e os dedos na mesma casa ou anterior são removidos da representação).
 - Como o componente lida com definições de afinação inválidas ou incompletas? (Deve lançar um erro).
 - O que acontece quando a Fret Notation (string) for inválida? (Deve manter o último acorde válido; se não houver anterior, renderizar o acorde "000000". A querystring pode permanecer com o valor inválido para persistência/compartilhamento.)
+- O que acontece com auto barre quando há exatamente 4 dedos pressionados? (Auto barre não é acionado; apenas quando há mais de 4 dedos com fret > 0).
+- Como o auto barre interage com barres manuais? (Se houver qualquer barre manual definida, o auto barre é desabilitado completamente, mesmo que `autoBarreEnabled` seja true).
+- O que acontece se `autoBarreEnabled` for false? (Nenhuma barre automática é adicionada, independentemente do número de dedos).
 
 ## Requisitos _(obrigatório)_
 
@@ -72,6 +76,9 @@ Como um desenvolvedor, eu quero passar dados de um acorde de guitarra para um co
 - **FR-031**: O sistema DEVE permitir customização da opacidade das barres através da prop `barresOpacity` (valor entre 0 e 1, padrão: 1.0).
 - **FR-032**: O sistema DEVE permitir customização do deslocamento horizontal e vertical das barres através das props `barresOffsetX` e `barresOffsetY` (multiplicadores de -5 a 5 aplicados a fretWidth/fretHeight, padrão: 0 para ambos).
 - **FR-033**: O sistema DEVE permitir customização do deslocamento horizontal e vertical dos números dos trastes através das props `fretTextOffsetX` e `fretTextOffsetY` (multiplicadores de -5 a 5 aplicados a fretWidth/fretHeight, padrão: 0 para ambos).
+- **FR-034**: O sistema DEVE detectar automaticamente a necessidade de uma barre (pestana) quando houver mais de 4 dedos com fret > 0, posicionando a barre no traste que possui o maior número de dedos.
+- **FR-035**: O sistema DEVE permitir ativar/desativar a detecção automática de barres através da prop `autoBarreEnabled` (boolean, padrão: true).
+- **FR-036**: O sistema DEVE desabilitar a detecção automática de barres se houver qualquer barre definida manualmente via prop `barres` (barres manuais têm precedência sobre barres automáticas).
 
 ### Política de Validação e Tratamento de Erros
 

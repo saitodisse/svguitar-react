@@ -13,6 +13,7 @@ A React component for rendering guitar chord diagrams in SVG format with high pe
 - 🎨 **Fully Customizable**: Complete control over colors, sizes, fonts, spacing and layout strategies
 - 🧭 **Multiple Views**: Horizontal/vertical, right/left-handed presets with consistent label orientation
 - 🧩 **Pluggable Layout Engines**: Swap or inject custom layout logic (Strategy pattern) without touching rendering code
+- 🤖 **Auto Barre Detection**: Automatically detects and renders barre chords when more than 4 fingers are pressed (NEW in v2.1!)
 - 📱 **Responsive**: SVG-based rendering that scales perfectly
 - 🔧 **TypeScript**: Full TypeScript support with comprehensive type definitions
 - 🧪 **Well Tested**: Comprehensive test suite with Vitest

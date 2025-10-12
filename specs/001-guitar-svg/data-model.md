@@ -91,6 +91,9 @@ interface ChordDiagramProps {
 	// Canvas positioning (global diagram offset)
 	canvasOffsetX?: number; // Deslocamento horizontal em pixels de todo o diagrama (padrão: 0)
 	canvasOffsetY?: number; // Deslocamento vertical em pixels de todo o diagrama (padrão: 0)
+
+	// Auto barre detection
+	autoBarreEnabled?: boolean; // Habilita detecção automática de barres quando há mais de 4 dedos com fret > 0 (padrão: true). Desabilitado automaticamente se houver barres manuais definidas.
 }
 ```
 
@@ -292,7 +295,63 @@ Onde:
 
 Esta fórmula garante que os dots sempre apareçam centralizados, mesmo quando o `fretWidth` é alterado. Nas demais views, o `LayoutEngine` deve respeitar a mesma regra de centralização, mapeando eixos apropriadamente (mapping-per-view) e preservando a legibilidade horizontal dos textos.
 
-## 5. Regras de Validação
+## 5. Algoritmo de Detecção Automática de Barres
+
+### Condições de Ativação
+
+O auto barre é acionado quando **todas** as seguintes condições são verdadeiras:
+
+1. `autoBarreEnabled` é `true` (ou não especificado, pois o padrão é `true`)
+2. Não há barres manuais definidas em `chord.barres` (barres manuais têm precedência)
+3. O número de dedos com `fret > 0` é **maior que 4**
+
+### Lógica de Detecção
+
+Quando as condições de ativação são atendidas:
+
+1. **Filtrar dedos válidos**: Considerar apenas dedos com `fret > 0` (ignorar cordas soltas e mutadas)
+2. **Agrupar por traste**: Agrupar os dedos por número de traste
+3. **Identificar traste candidato**: Selecionar o traste que possui o **maior número de dedos**
+4. **Determinar alcance da barre**:
+    - `fromString`: número da corda do primeiro dedo no traste (menor número de corda)
+    - `toString`: número da corda do último dedo no traste (maior número de corda)
+5. **Criar barre automática**: Gerar um objeto `Barre` com os valores calculados
+
+### Exemplo
+
+```typescript
+// Input: Acorde com 5 dedos
+const fingers = [
+	{ fret: 3, string: 6 }, // E grave
+	{ fret: 3, string: 5 }, // A
+	{ fret: 3, string: 4 }, // D
+	{ fret: 4, string: 3 }, // G
+	{ fret: 5, string: 2 }, // B
+];
+
+// Análise:
+// - Dedos com fret > 0: 5 (todos) ✓ Condição atendida
+// - Agrupamento por traste:
+//   - Traste 3: 3 dedos (strings 6, 5, 4)
+//   - Traste 4: 1 dedo (string 3)
+//   - Traste 5: 1 dedo (string 2)
+// - Traste com mais dedos: 3 (com 3 dedos)
+
+// Output: Barre automática gerada
+const autoBarre = {
+	fret: 3,
+	fromString: 4, // primeira corda (menor número)
+	toString: 6, // última corda (maior número)
+};
+```
+
+### Casos Especiais
+
+- **Empate**: Se dois trastes tiverem o mesmo número de dedos (maior), selecionar o traste de **menor número** (mais próximo do nut)
+- **Dedos consecutivos**: O algoritmo **não** requer que os dedos sejam em cordas consecutivas; a barre cobrirá todas as cordas entre `fromString` e `toString`, mesmo que algumas cordas intermediárias não tenham dedos
+- **Interação com validação**: Se um dedo estiver em posição inválida, ele é ignorado para o cálculo de auto barre (assim como seria ignorado na renderização)
+
+## 6. Regras de Validação
 
 ### Validação de Fingers
 
@@ -334,7 +393,7 @@ function validateInstrument(instrument: Instrument): boolean {
 }
 ```
 
-## 5. Conversão de Fret Notation
+## 7. Conversão de Fret Notation
 
 ### Função de Parsing
 
@@ -402,7 +461,7 @@ function parseFretNotation(fretNotation: string, tuning: string[]): Chord {
 }
 ```
 
-## 6. Valores Padrão
+## 8. Valores Padrão
 
 ### ChordStyle Defaults
 
@@ -456,7 +515,19 @@ const DEFAULT_INSTRUMENT: Instrument = {
 };
 ```
 
-## 7. Tipos de Erro
+### ChordDiagramProps Defaults
+
+```typescript
+const DEFAULT_PROPS: Partial<ChordDiagramProps> = {
+	autoBarreEnabled: true, // Auto barre detection habilitado por padrão
+	validation: "strict",
+	invalidBehavior: "keep-previous",
+	fallbackChord: "000000",
+	view: "horizontal-right",
+};
+```
+
+## 9. Tipos de Erro
 
 ```typescript
 class ChordDiagramError extends Error {
