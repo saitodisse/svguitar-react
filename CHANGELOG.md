@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.1 (2025-10-12)
+
+### Fixed
+
+- Correções finais de formatação e documentação
+- Ajustes nos testes para nova API inline
+
 ## 2.0.0 (2025-10-12)
 
 ### 💥 BREAKING CHANGES

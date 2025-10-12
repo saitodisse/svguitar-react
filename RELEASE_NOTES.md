@@ -1,5 +1,15 @@
 # Release Notes
 
+## Version 2.0.1
+
+**Release Date:** October 12, 2025
+
+### Patch Release
+
+Correções finais de formatação e ajustes nos testes para a nova API inline da v2.0.0.
+
+---
+
 ## Version 2.0.0
 
 **Release Date:** October 12, 2025
