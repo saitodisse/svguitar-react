@@ -280,7 +280,7 @@ pnpm test:ui
 
 ```bash
 # Clone the repository
-git clone https://github.com/svguitar/svguitar-react.git
+git clone https://github.com/saitodisse/svguitar-react.git
 cd svguitar-react
 
 # Install dependencies
