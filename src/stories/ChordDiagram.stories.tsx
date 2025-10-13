@@ -1649,6 +1649,113 @@ export const AutoFirstFretEdgeCase: Story = {
 };
 
 /**
+ * **Bug Fix Test: 005500 - Open Strings Preserved**
+ *
+ * Testing the chord "005500" which should render frets 1-5 with open strings visible.
+ *
+ * Expected behavior:
+ * - Fret numbers displayed: 1, 2, 3, 4, 5
+ * - Open strings (fret 0) are visible above the fretboard
+ * - firstFret stays at 1 because maxFret (5) <= fretCount (5) AND has open strings
+ */
+export const BugFix005500: Story = {
+	args: {
+		...BASE_STORY_CONFIG,
+		strings: 6,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		fretNotation: "005500",
+		autoFirstFret: true,
+		fretCount: 5,
+		width: 220,
+		height: 300,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Bug Fix Test: 005500**\n\n" +
+					"Testing chord with open strings that should preserve firstFret=1.\n\n" +
+					"**Expected:**\n" +
+					"- Frets: 1, 2, 3, 4, 5\n" +
+					"- Open strings visible\n" +
+					"- firstFret = 1 (not adjusted)\n\n" +
+					"**Hybrid Rule:**\n" +
+					"- maxFret (5) <= fretCount (5) ✅\n" +
+					"- Has open strings ✅\n" +
+					"- → Keep firstFret=1",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const svg = canvas.getByTestId("chord-diagram").querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		const textElements = svg?.querySelectorAll("text");
+		const fretNumbers = Array.from(textElements || [])
+			.map(el => el.textContent)
+			.filter(text => text && /^\d+$/.test(text))
+			.map(Number)
+			.sort((a, b) => a - b);
+
+		expect(fretNumbers).toContain(1);
+		expect(fretNumbers).toContain(5);
+	},
+};
+
+/**
+ * **Bug Fix Test: 006600 - Adjust When Needed**
+ *
+ * Testing the chord "006600" which should adjust firstFret because maxFret > fretCount.
+ *
+ * Expected behavior:
+ * - With fretCount=4: maxFret (6) > fretCount (4) → adjust to firstFret=6
+ * - Fret numbers displayed: 6, 7, 8, 9
+ */
+export const BugFix006600: Story = {
+	args: {
+		...BASE_STORY_CONFIG,
+		strings: 6,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		fretNotation: "006600",
+		autoFirstFret: true,
+		fretCount: 4,
+		width: 220,
+		height: 300,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Bug Fix Test: 006600**\n\n" +
+					"Testing chord that should adjust firstFret when maxFret > fretCount.\n\n" +
+					"**Expected:**\n" +
+					"- Frets: 6, 7, 8, 9\n" +
+					"- firstFret = 6 (adjusted)\n\n" +
+					"**Hybrid Rule:**\n" +
+					"- maxFret (6) > fretCount (4) ✅\n" +
+					"- → Adjust to firstFret=6",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const svg = canvas.getByTestId("chord-diagram").querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		const textElements = svg?.querySelectorAll("text");
+		const fretNumbers = Array.from(textElements || [])
+			.map(el => el.textContent)
+			.filter(text => text && /^\d+$/.test(text))
+			.map(Number)
+			.sort((a, b) => a - b);
+
+		expect(fretNumbers).toContain(6);
+		expect(fretNumbers).toContain(9);
+	},
+};
+
+/**
  * **Bug Fix Test: x54232 Chord**
  *
  * Testing the chord "x54232" which should render frets 2-6 with auto barre on fret 2.

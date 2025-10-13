@@ -178,32 +178,144 @@ curl -X POST http://localhost:9876/api/questions \
 - **optionsMetadata.pros/cons**: Listagem ✓/✗ abaixo de cada opção
 - **codeContext**: Links 📄 com filePath e line range
 
-## Exemplo: Múltiplas Perguntas no Mesmo POST
+## Exemplo: Múltiplas Perguntas no Mesmo POST (Uso Real)
 
-```bash
+Este exemplo mostra um caso real com 3 perguntas relacionadas, cada uma com diferentes níveis de metadados:
+
+````bash
 curl -X POST http://localhost:9876/api/questions \
   -H "Content-Type: application/json" \
   -d '{
     "questions": [
       {
-        "questionType": "architecture",
-        "text": "Qual método de autenticação?",
-        "options": ["JWT", "Session-based", "OAuth2"],
+        "questionType": "clarification",
+        "text": "Qual deve ser a regra para autoFirstFret quando há cordas soltas (fret 0)?",
+        "description": "## Problema Atual\n\nO chord **\"005500\"** está renderizando frets **5-9** ao invés de **1-5**.\n\n### Análise do Chord \"005500\"\n```\nString 1: 0 (open)\nString 2: 0 (open)\nString 3: 5 (pressed)\nString 4: 5 (pressed)\nString 5: 0 (open)\nString 6: 0 (open)\n```\n\n**Situação Atual:**\n- Dedos pressionados: fret 5 (strings 3 e 4)\n- `minFret = 5` → `firstFret = 5`\n- Renderiza frets 5-9 ❌\n\n**Expectativa:**\n- Renderizar frets 1-5 ✅\n- Manter `firstFret = 1` (padrão)",
+        "options": [
+          "Só ajustar firstFret se dedos NÃO cabem no range 1-fretCount",
+          "Sempre mostrar cordas soltas quando existirem (firstFret=1)",
+          "Regra híbrida: ajustar só se maxFret > fretCount"
+        ],
         "allowMultiple": false,
-        "allowText": false
+        "allowText": true,
+        "textPlaceholder": "Explique a regra desejada em detalhes...",
+        "optionsMetadata": {
+          "Só ajustar firstFret se dedos NÃO cabem no range 1-fretCount": {
+            "pros": ["Sempre mostra cordas soltas quando possível", "Mantém visualização familiar (frets 1-5)", "Economiza espaço vertical"],
+            "cons": ["Pode não funcionar bem com fretCount pequeno", "Regra mais complexa de implementar"],
+            "whenToUse": "Quando você quer priorizar visualização de cordas soltas"
+          },
+          "Sempre mostrar cordas soltas quando existirem (firstFret=1)": {
+            "pros": ["Regra simples", "Cordas soltas sempre visíveis", "Comportamento previsível"],
+            "cons": ["Pode gerar diagramas muito longos", "Desperdício de espaço se dedos estão no fret 12+"],
+            "whenToUse": "Quando cordas soltas são críticas para a visualização"
+          },
+          "Regra híbrida: ajustar só se maxFret > fretCount": {
+            "pros": ["Balance entre espaço e funcionalidade", "Mantém firstFret=1 quando possível"],
+            "cons": ["Regra um pouco mais complexa"],
+            "whenToUse": "Melhor dos dois mundos"
+          }
+        },
+        "codeContext": [
+          {
+            "filePath": "src/components/ChordDiagram/utils/autoFirstFret.ts",
+            "lineRange": [93, 136],
+            "explanation": "Algoritmo atual de calculateAutoFirstFret"
+          }
+        ],
+        "metadata": {
+          "timestamp": "2025-10-13T00:00:00.000Z",
+          "rationale": "Precisamos entender a regra exata para quando ajustar ou não o firstFret quando há cordas soltas.",
+          "confidence": 60,
+          "impact": "high",
+          "category": "architecture",
+          "recommendedOption": {
+            "option": "Regra híbrida: ajustar só se maxFret > fretCount",
+            "reason": "Balance ideal: mantém firstFret=1 quando dedos cabem no range padrão, mas ajusta quando necessário."
+          }
+        }
       },
       {
-        "questionType": "configuration",
-        "text": "Habilitar ESLint strict mode?",
-        "options": ["Sim", "Não"],
+        "questionType": "validation",
+        "text": "Confirme: com fretCount=5, \"005500\" deve renderizar frets 1-5?",
+        "description": "## Validação de Comportamento\n\nPara o chord **\"005500\"** com `fretCount=5`:\n\n### Opção A: Renderizar frets 1-5\n```\nfirstFret = 1\nlastFret = 5\nFrets visíveis: 1, 2, 3, 4, 5\n```\n✅ Dedos no fret 5 são visíveis\n✅ Cordas soltas (fret 0) são visíveis acima do fret 1\n\n### Opção B: Renderizar frets 5-9 (atual)\n```\nfirstFret = 5\nlastFret = 9\nFrets visíveis: 5, 6, 7, 8, 9\n```\n❌ Cordas soltas não aparecem no diagrama\n❌ Frets 6-9 estão vazios (desperdício de espaço)",
+        "options": [
+          "Opção A: frets 1-5 (com cordas soltas visíveis)",
+          "Opção B: frets 5-9 (comportamento atual)",
+          "Outro comportamento (especificar no texto)"
+        ],
         "allowMultiple": false,
-        "allowText": true
+        "allowText": true,
+        "textPlaceholder": "Descreva o comportamento esperado...",
+        "metadata": {
+          "timestamp": "2025-10-13T00:00:00.000Z",
+          "rationale": "Confirmar o comportamento esperado antes de implementar a correção.",
+          "confidence": 85,
+          "impact": "high",
+          "category": "configuration",
+          "recommendedOption": {
+            "option": "Opção A: frets 1-5 (com cordas soltas visíveis)",
+            "reason": "Faz sentido mostrar cordas soltas quando os dedos cabem no range padrão."
+          }
+        }
+      },
+      {
+        "questionType": "clarification",
+        "text": "Para \"006600\", qual fretCount você usa e qual o comportamento esperado?",
+        "description": "## Caso \"006600\"\n\n### Análise\n```\nString 1: 0 (open)\nString 2: 0 (open)\nString 3: 6 (pressed)\nString 4: 6 (pressed)\nString 5: 0 (open)\nString 6: 0 (open)\n```\n\n### Cenários Possíveis\n\n**Cenário 1: fretCount=4**\n- Dedos no fret 6 NÃO cabem em 1-4\n- Ajusta para firstFret=6, renderiza 6-9\n\n**Cenário 2: fretCount=5**\n- Dedos no fret 6 NÃO cabem em 1-5\n- Ajusta para firstFret=6, renderiza 6-10\n\n**Cenário 3: fretCount=6**\n- Dedos no fret 6 cabem em 1-6\n- Mantém firstFret=1, renderiza 1-6",
+        "options": [
+          "Ajustar firstFret sempre que maxFret > fretCount",
+          "Ajustar firstFret sempre que minFret > 1",
+          "Depende: se há muitas cordas soltas, manter firstFret=1",
+          "Outro critério (especificar)"
+        ],
+        "allowMultiple": false,
+        "allowText": true,
+        "textPlaceholder": "Explique o critério exato...",
+        "optionsMetadata": {
+          "Ajustar firstFret sempre que maxFret > fretCount": {
+            "pros": ["Regra clara e objetiva", "Fácil de implementar", "Economiza espaço quando possível"],
+            "cons": ["Pode perder visualização de cordas soltas"],
+            "whenToUse": "Quando você quer otimizar espaço vertical do diagrama"
+          },
+          "Ajustar firstFret sempre que minFret > 1": {
+            "pros": ["Maximiza uso do espaço", "Foca nos dedos pressionados"],
+            "cons": ["Perde completamente as cordas soltas", "Pode ser confuso para iniciantes"],
+            "whenToUse": "Quando cordas soltas não são importantes"
+          },
+          "Depende: se há muitas cordas soltas, manter firstFret=1": {
+            "pros": ["Flexível", "Considera contexto do chord"],
+            "cons": ["Regra complexa", "Comportamento menos previsível"],
+            "whenToUse": "Quando você quer um balance contextual"
+          }
+        },
+        "metadata": {
+          "timestamp": "2025-10-13T00:00:00.000Z",
+          "rationale": "Entender quando ajustar o firstFret para casos com dedos em posições altas mas com cordas soltas.",
+          "confidence": 70,
+          "impact": "high",
+          "category": "architecture",
+          "recommendedOption": {
+            "option": "Ajustar firstFret sempre que maxFret > fretCount",
+            "reason": "Simples e objetivo: só ajusta se dedos não cabem no range padrão."
+          }
+        }
       }
     ]
   }'
-```
+````
 
-Ambas as perguntas serão exibidas na UI e o usuário responde todas de uma vez.
+**Notas sobre este exemplo:**
+
+- **3 perguntas relacionadas**: Demonstra um fluxo de clarificação progressiva
+- **Diferentes níveis de metadados**:
+    - Perguntas 1 e 3: `optionsMetadata` completo com pros/cons
+    - Pergunta 2: Sem `optionsMetadata` nem `codeContext` (mais simples)
+- **Tipos variados**: `clarification` → `validation` → `clarification`
+- **Contexto rico**: Markdown com exemplos de código, comparações visuais
+- **Recomendações**: Todas têm `recommendedOption` com justificativa
+
+Todas as perguntas serão exibidas na UI e o usuário responde todas de uma vez.
 
 ## Quando Usar
 

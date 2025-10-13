@@ -59,34 +59,52 @@ export function shouldActivateAutoFirstFret(fingers: Finger[], currentFretCount:
 
 /**
  * Calculates automatic firstFret and fretCount based on finger positions
+ *
+ * RULE: Only adjust firstFret if maxFret > currentFretCount
+ * - If fingers fit in range 1-fretCount: keep firstFret=1 (show open strings)
+ * - If fingers don't fit: adjust firstFret=minFret
+ *
  * @param fingers - Array of finger positions
  * @param currentFretCount - Current fretCount from props
  * @returns Object containing calculated firstFret, fretCount, and whether adjustment was made
  * @example
  * ```typescript
- * // Example 1: Fingers fit within fretCount
+ * // Example 1: Fingers fit within fretCount (keep firstFret=1)
  * const fingers1 = [
- *   { fret: 5, string: 1, is_muted: false },
- *   { fret: 7, string: 2, is_muted: false },
- *   { fret: 8, string: 3, is_muted: false }
+ *   { fret: 0, string: 1, is_muted: false }, // open
+ *   { fret: 0, string: 2, is_muted: false }, // open
+ *   { fret: 5, string: 3, is_muted: false }, // pressed
+ *   { fret: 5, string: 4, is_muted: false }, // pressed
  * ];
- * calculateAutoFirstFret(fingers1, 4);
- * // Returns: { firstFret: 5, fretCount: 4, wasAdjusted: false }
+ * calculateAutoFirstFret(fingers1, 5);
+ * // maxFret=5 <= fretCount=5 → keep firstFret=1
+ * // Returns: { firstFret: 1, fretCount: 5, wasAdjusted: false }
  *
- * // Example 2: Fingers require fretCount adjustment
+ * // Example 2: Fingers don't fit (adjust firstFret)
  * const fingers2 = [
+ *   { fret: 0, string: 1, is_muted: false }, // open
+ *   { fret: 6, string: 3, is_muted: false }, // pressed
+ *   { fret: 6, string: 4, is_muted: false }, // pressed
+ * ];
+ * calculateAutoFirstFret(fingers2, 4);
+ * // maxFret=6 > fretCount=4 → adjust to firstFret=6
+ * // Returns: { firstFret: 6, fretCount: 4, wasAdjusted: false }
+ *
+ * // Example 3: Fingers require fretCount adjustment
+ * const fingers3 = [
  *   { fret: 5, string: 1, is_muted: false },
  *   { fret: 10, string: 2, is_muted: false }
  * ];
- * calculateAutoFirstFret(fingers2, 4);
+ * calculateAutoFirstFret(fingers3, 4);
+ * // maxFret=10 > fretCount=4 → adjust firstFret=5, increase fretCount=6
  * // Returns: { firstFret: 5, fretCount: 6, wasAdjusted: true }
  *
- * // Example 3: No pressed fingers (edge case)
- * const fingers3 = [
+ * // Example 4: No pressed fingers (edge case)
+ * const fingers4 = [
  *   { fret: 0, string: 1, is_muted: false },
  *   { fret: 0, string: 2, is_muted: false }
  * ];
- * calculateAutoFirstFret(fingers3, 4);
+ * calculateAutoFirstFret(fingers4, 4);
  * // Returns: { firstFret: 1, fretCount: 4, wasAdjusted: false }
  * ```
  */
@@ -113,12 +131,32 @@ export function calculateAutoFirstFret(
 	const fretNumbers = pressedFingers.map(finger => finger.fret);
 	const minFret = Math.min(...fretNumbers);
 	const maxFret = Math.max(...fretNumbers);
+
+	// Check if there are open strings (fret 0, not muted)
+	const hasOpenStrings = fingers.some(f => f.fret === 0 && !f.is_muted);
+
+	// HYBRID RULE: Only adjust firstFret if maxFret > fretCount
+	// BUT: If there are open strings, preserve them by keeping firstFret=1
+	if (maxFret <= currentFretCount) {
+		// Fingers fit in range 1-fretCount
+		if (hasOpenStrings) {
+			// Has open strings → keep firstFret=1 to show them
+			return {
+				firstFret: 1,
+				fretCount: currentFretCount,
+				wasAdjusted: false,
+			};
+		}
+		// No open strings → can start at minFret to save space
+		return {
+			firstFret: minFret,
+			fretCount: currentFretCount,
+			wasAdjusted: false,
+		};
+	}
+
+	// Fingers don't fit in default range, need to adjust
 	const rangeRequired = maxFret - minFret + 1;
-
-	// Calculate the new firstFret (always the minimum fret position)
-	const newFirstFret = minFret;
-
-	// Calculate the new fretCount (if needed)
 	let newFretCount = currentFretCount;
 	let wasAdjusted = false;
 
@@ -129,7 +167,7 @@ export function calculateAutoFirstFret(
 	}
 
 	return {
-		firstFret: newFirstFret,
+		firstFret: minFret,
 		fretCount: newFretCount,
 		wasAdjusted,
 	};

@@ -1,5 +1,89 @@
 # Release Notes
 
+## Version 2.1.2
+
+**Release Date:** October 13, 2025
+
+### 🐛 Bug Fix: AutoFirstFret with Open Strings
+
+Fixed another critical bug in `autoFirstFret` that affected chords with open strings.
+
+#### 🔴 The Problem
+
+Chords like "005500" were rendering incorrectly:
+- **Expected:** Frets 1, 2, 3, 4, 5 (with open strings visible)
+- **Actual:** Frets 5, 6, 7, 8, 9 ❌ (open strings lost)
+
+#### 🔍 Root Cause
+
+The algorithm was always adjusting `firstFret` to the minimum pressed fret, without considering whether open strings (fret 0) should be preserved.
+
+For chord "005500":
+1. Pressed fingers: fret 5 (strings 3 and 4)
+2. Open strings: strings 1, 2, 5, 6 (fret 0)
+3. Algorithm: `minFret = 5` → `firstFret = 5` ❌
+4. Result: Open strings not visible
+
+#### ✅ The Fix: Hybrid Rule
+
+Implemented intelligent open string detection:
+
+```typescript
+if (maxFret <= fretCount) {
+  if (hasOpenStrings) {
+    // Keep firstFret=1 to show open strings
+    return { firstFret: 1, fretCount, wasAdjusted: false };
+  }
+  // No open strings → optimize space by starting at minFret
+  return { firstFret: minFret, fretCount, wasAdjusted: false };
+}
+// Fingers don't fit → adjust to minFret
+return { firstFret: minFret, ... };
+```
+
+#### 📊 Examples
+
+**Case 1: "005500" (has open strings)**
+- maxFret=5, fretCount=5
+- maxFret (5) <= fretCount (5) ✅
+- Has open strings ✅
+- → **Keep firstFret=1** (displays frets 1-5)
+
+**Case 2: "006600" (has open strings)**
+- maxFret=6, fretCount=4
+- maxFret (6) > fretCount (4) ✅
+- → **Adjust to firstFret=6** (displays frets 6-9)
+
+**Case 3: "x54232" (no open strings, only muted)**
+- maxFret=5, fretCount=5
+- maxFret (5) <= fretCount (5) ✅
+- No open strings (only muted fret 0) ✅
+- → **Optimize to firstFret=2** (displays frets 2-6)
+
+#### 📦 What's Included
+
+- **Enhanced:** AutoFirstFret algorithm with open string detection
+- **Added:** 9 new tests in `bugfix-005500.test.tsx`
+- **Added:** 2 new Storybook stories: `BugFix005500` and `BugFix006600`
+- **Verified:** All 200 unit tests + 30 Storybook tests passing ✅
+
+#### 🎯 Impact
+
+This fix ensures:
+- ✅ Open strings are preserved when possible
+- ✅ Space optimization when no open strings exist
+- ✅ Correct behavior for all chord types
+- ✅ No breaking changes
+
+#### 🔗 Testing
+
+View the fixes in action:
+- **Story 005500:** Shows open string preservation
+- **Story 006600:** Shows adjustment when needed
+- **Story x54232:** Shows space optimization without open strings
+
+---
+
 ## Version 2.1.1
 
 **Release Date:** October 13, 2025
@@ -11,6 +95,7 @@ Fixed a critical bug that affected chord rendering when using `autoFirstFret` an
 #### 🔴 The Problem
 
 Chords like "x54232" were rendering incorrectly:
+
 - **Expected:** Frets 2, 3, 4, 5, 6
 - **Actual:** Frets 3, 4, 5, 6, 7 ❌
 - Auto barre was not appearing on fret 2
@@ -27,6 +112,7 @@ const autoResult = calculateAutoFirstFret(effectiveChord.fingers, style.fretCoun
 The issue: `effectiveChord.fingers` had already been processed by `autoBarre` detection, which removes fingers that are covered by a barre. This caused the minimum fret calculation to be incorrect.
 
 For chord "x54232":
+
 1. Original fingers: frets 2, 3, 4, 5, 2
 2. AutoBarre detects barre on fret 2
 3. Removes fingers on fret 2 → leaves only frets 3, 4, 5
@@ -51,6 +137,7 @@ Now uses the **original** finger positions before autoBarre processing, ensuring
 #### 🎯 Impact
 
 This fix ensures:
+
 - ✅ Accurate fret numbering for all chords
 - ✅ Correct auto barre detection
 - ✅ Proper coordination between `autoFirstFret` and `autoBarreEnabled`
@@ -59,6 +146,7 @@ This fix ensures:
 #### 🔗 Testing
 
 View the fix in action:
+
 - **Storybook Story:** "Bug Fix X 54232"
 - **Test Suite:** `src/components/ChordDiagram/__tests__/bugfix-x54232.test.tsx`
 

@@ -1,5 +1,51 @@
 # Changelog
 
+## 2.1.2 (2025-10-13)
+
+### 🐛 Bug Fixes
+
+#### AutoFirstFret with Open Strings
+
+Fixed bug where `autoFirstFret` was incorrectly adjusting `firstFret` for chords with open strings that fit within the default range.
+
+**Problem:**
+- Chord "005500" was rendering frets 5-9 instead of 1-5
+- Open strings were not visible even when fingers fit in the default range
+
+**Root Cause:**
+- The algorithm was always adjusting `firstFret` to `minFret` of pressed fingers
+- It didn't consider whether open strings (fret 0) should be preserved
+
+**Hybrid Rule Implemented:**
+```typescript
+if (maxFret <= fretCount) {
+  if (hasOpenStrings) {
+    // Keep firstFret=1 to show open strings
+    return { firstFret: 1, ... };
+  }
+  // No open strings → start at minFret to save space
+  return { firstFret: minFret, ... };
+}
+// maxFret > fretCount → adjust to minFret
+return { firstFret: minFret, ... };
+```
+
+**Examples:**
+- `"005500"` with fretCount=5: maxFret (5) <= 5, has open strings → firstFret=1 ✅
+- `"006600"` with fretCount=4: maxFret (6) > 4 → firstFret=6 ✅
+- `"x54232"` with fretCount=5: maxFret (5) <= 5, no open strings → firstFret=2 ✅
+
+**Impact:**
+- ✅ Chords with open strings now display correctly
+- ✅ Open strings are preserved when possible
+- ✅ Chords without open strings optimize space usage
+- ✅ All 200 tests passing + 30 Storybook tests
+
+**Files Changed:**
+- `src/components/ChordDiagram/utils/autoFirstFret.ts` - Added open string detection
+- `src/components/ChordDiagram/__tests__/bugfix-005500.test.tsx` - New comprehensive test suite (9 tests)
+- `src/stories/ChordDiagram.stories.tsx` - Added BugFix005500 and BugFix006600 stories
+
 ## 2.1.1 (2025-10-13)
 
 ### 🐛 Bug Fixes
@@ -9,26 +55,31 @@
 Fixed critical bug where `autoFirstFret` was calculating incorrect fret positions when used together with `autoBarreEnabled`.
 
 **Problem:**
+
 - Chord "x54232" was rendering frets 3-7 instead of 2-6
 - Auto barre was not being detected on fret 2
 
 **Root Cause:**
+
 - In `ChordDiagram.tsx` line 193, `calculateAutoFirstFret` was using `effectiveChord.fingers` (which had fingers removed by autoBarre detection) instead of `chordData.fingers` (original fingers)
 - This caused the minimum fret calculation to be incorrect (minFret = 3 instead of 2)
 
 **Fix:**
+
 - Changed to use `chordData.fingers` for firstFret calculation
 - Added detailed comment explaining why original fingers must be used
 - Created comprehensive test suite in `bugfix-x54232.test.tsx`
 - Added Storybook story `BugFixX54232` for visual regression testing
 
 **Impact:**
+
 - ✅ All chords with autoBarre + autoFirstFret now render correctly
 - ✅ Fret numbering is accurate
 - ✅ Auto barre detection works as expected
 - ✅ 191 tests passing (100% coverage maintained)
 
 **Files Changed:**
+
 - `src/components/ChordDiagram/ChordDiagram.tsx` - Fixed calculation logic
 - `src/components/ChordDiagram/__tests__/bugfix-x54232.test.tsx` - New test suite
 - `src/stories/ChordDiagram.stories.tsx` - Added BugFixX54232 story
