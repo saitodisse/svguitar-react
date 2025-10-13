@@ -28,17 +28,66 @@ const meta: Meta<typeof ChordDiagram> = {
 		},
 	},
 	argTypes: {
-		// Layout
+		// ============================================================================
+		// CHORD DATA - Most commonly used properties
+		// ============================================================================
+		fretNotation: {
+			control: "text",
+			description: "Fret notation string (e.g., 'x32010' or '(10)(12)(10)(10)(10)(10)')",
+			table: { category: "Chord Data", defaultValue: { summary: "undefined" } },
+		},
+		fingers: {
+			control: "object",
+			description: "Array of finger positions",
+			table: { category: "Chord Data", defaultValue: { summary: "[]" } },
+		},
+		barres: {
+			control: "object",
+			description: "Array of barre positions",
+			table: { category: "Chord Data", defaultValue: { summary: "[]" } },
+		},
+
+		// ============================================================================
+		// INSTRUMENT - Instrument configuration
+		// ============================================================================
+		strings: {
+			control: { type: "range", min: 4, max: 12, step: 1 },
+			description: "Number of strings",
+			table: { category: "Instrument", defaultValue: { summary: "6" } },
+		},
+		frets: {
+			control: { type: "range", min: 1, max: 24, step: 1 },
+			description: "Number of frets to display",
+			table: { category: "Instrument", defaultValue: { summary: "4" } },
+		},
+		tuning: {
+			control: "object",
+			description:
+				"Scientific notation of open string notes (e.g., ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'])",
+			table: {
+				category: "Instrument",
+				defaultValue: { summary: "['E2', 'A2', 'D3', 'G3', 'B3', 'E4']" },
+			},
+		},
+
+		// ============================================================================
+		// LAYOUT - View and dimensions
+		// ============================================================================
 		view: {
 			control: { type: "radio" },
 			options: ["horizontal-right", "horizontal-left", "vertical-right", "vertical-left"],
 			description: "Predefined view for layout",
 			table: { category: "Layout", defaultValue: { summary: "horizontal-right" } },
 		},
+		layoutEngine: {
+			control: "object",
+			description: "Custom layout engine strategy (takes precedence over view)",
+			table: { category: "Layout", defaultValue: { summary: "undefined" } },
+		},
 		width: {
 			control: { type: "range", min: 0, max: 2000 },
 			description: "Total width of the SVG",
-			table: { category: "Layout", defaultValue: { summary: "200", detail: "px" } },
+			table: { category: "Layout", defaultValue: { summary: "200" } },
 		},
 		height: {
 			control: { type: "range", min: 0, max: 2000 },
@@ -46,7 +95,73 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Layout", defaultValue: { summary: "250" } },
 		},
 
-		// Canvas Positioning
+		// ============================================================================
+		// FRET CONTROL - Fret positioning and auto-adjustment
+		// ============================================================================
+		firstFret: {
+			control: { type: "range", min: 1, max: 24, step: 1 },
+			description: "First fret to display (for high position chords)",
+			table: { category: "Fret Control", defaultValue: { summary: "1" } },
+		},
+		lastFret: {
+			control: { type: "range", min: 1, max: 24, step: 1 },
+			description: "Last fret to display",
+			table: { category: "Fret Control", defaultValue: { summary: "undefined" } },
+		},
+		fretCount: {
+			control: { type: "range", min: 0, max: 20 },
+			description: "Number of frets to render",
+			table: { category: "Fret Control", defaultValue: { summary: "4" } },
+		},
+		autoFirstFret: {
+			control: "boolean",
+			description: "Enable automatic firstFret calculation based on finger positions",
+			table: { category: "Fret Control", defaultValue: { summary: "false" } },
+		},
+
+		// ============================================================================
+		// AUTO FEATURES - Automatic behaviors
+		// ============================================================================
+		autoBarreEnabled: {
+			control: "boolean",
+			description: "Enable automatic barre detection (default: true)",
+			table: { category: "Auto Features", defaultValue: { summary: "true" } },
+		},
+
+		// ============================================================================
+		// VALIDATION - Error handling and validation
+		// ============================================================================
+		validation: {
+			control: { type: "radio" },
+			options: ["strict", "lenient"],
+			description: "Validation policy: strict rejects invalid inputs; lenient tries to normalize",
+			table: { category: "Validation", defaultValue: { summary: "strict" } },
+		},
+		invalidBehavior: {
+			control: { type: "radio" },
+			options: ["keep-previous", "render-fallback", "suppress"],
+			description: "Behavior when input is invalid",
+			table: { category: "Validation", defaultValue: { summary: "keep-previous" } },
+		},
+		fallbackChord: {
+			control: "text",
+			description: "Fallback chord when no last valid is available",
+			table: { category: "Validation", defaultValue: { summary: "undefined" } },
+		},
+		onError: {
+			control: "object",
+			description: "Error callback to delegate UI/telemetry",
+			table: { category: "Validation", defaultValue: { summary: "undefined" } },
+		},
+		errorFallback: {
+			control: "object",
+			description: "Optional inline error UI",
+			table: { category: "Validation", defaultValue: { summary: "undefined" } },
+		},
+
+		// ============================================================================
+		// CANVAS - Global positioning
+		// ============================================================================
 		canvasOffsetX: {
 			control: { type: "range", min: -100, max: 100, step: 1 },
 			description: "Horizontal offset in pixels for entire diagram (padding/margin/zoom prep)",
@@ -58,33 +173,9 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Canvas", defaultValue: { summary: "0" } },
 		},
 
-		backgroundColor: {
-			control: "color",
-			description: "Background color",
-			table: { category: "Layout", defaultValue: { summary: "#ffffff" } },
-		},
-		fontFamily: {
-			control: "select",
-			description: "Font family",
-			table: { category: "Layout", defaultValue: { summary: "Arial, sans-serif" } },
-			options: [
-				"Arial, sans-serif",
-				"monospace",
-				"sans-serif",
-				"serif",
-				"Verdana, sans-serif",
-				"Roboto, sans-serif",
-				"Open Sans, sans-serif",
-				"Poppins, sans-serif",
-				"Montserrat, sans-serif",
-				"Lato, sans-serif",
-				"Noto Sans, sans-serif",
-				"Ubuntu, sans-serif",
-				"Inter, sans-serif",
-			],
-		},
-
-		// Strings
+		// ============================================================================
+		// STRINGS - String configuration
+		// ============================================================================
 		stringCount: {
 			control: { type: "range", min: 0, max: 12 },
 			description: "Number of strings",
@@ -121,12 +212,9 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Strings", defaultValue: { summary: "0" } },
 		},
 
-		// Frets
-		fretCount: {
-			control: { type: "range", min: 0, max: 20 },
-			description: "Number of frets to render",
-			table: { category: "Frets", defaultValue: { summary: "4" } },
-		},
+		// ============================================================================
+		// FRETS - Fret configuration
+		// ============================================================================
 		fretWidth: {
 			control: { type: "range", min: 0, max: 200 },
 			description: "Width of each fret space",
@@ -153,17 +241,19 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Frets", defaultValue: { summary: "12" } },
 		},
 		fretTextOffsetX: {
-			control: { type: "range", min: -1, max: 1, step: 0.01 },
+			control: { type: "range", min: -10, max: 10, step: 0.01 },
 			description: "Horizontal offset multiplier for fret numbers",
 			table: { category: "Frets", defaultValue: { summary: "0" } },
 		},
 		fretTextOffsetY: {
-			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			control: { type: "range", min: -10, max: 10, step: 0.01 },
 			description: "Vertical offset multiplier for fret numbers",
 			table: { category: "Frets", defaultValue: { summary: "0" } },
 		},
 
-		// Tuning
+		// ============================================================================
+		// TUNING - Tuning labels configuration
+		// ============================================================================
 		tuningTextColor: {
 			control: "color",
 			description: "Tuning text color",
@@ -175,12 +265,12 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Tuning", defaultValue: { summary: "14" } },
 		},
 		tuningLabelOffsetX: {
-			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			control: { type: "range", min: -10, max: 10, step: 0.01 },
 			description: "Horizontal offset multiplier for tuning labels",
 			table: { category: "Tuning", defaultValue: { summary: "0.5" } },
 		},
 		tuningLabelOffsetY: {
-			control: { type: "range", min: -5, max: 5, step: 0.01 },
+			control: { type: "range", min: -10, max: 10, step: 0.01 },
 			description: "Vertical offset multiplier for tuning labels",
 			table: { category: "Tuning", defaultValue: { summary: "0.5" } },
 		},
@@ -191,7 +281,9 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Tuning", defaultValue: { summary: "scientific" } },
 		},
 
-		// Dots (Fingers)
+		// ============================================================================
+		// DOTS - Finger dots configuration
+		// ============================================================================
 		dotSize: {
 			control: { type: "range", min: 0, max: 100 },
 			description: "Size of finger dots",
@@ -213,7 +305,9 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Dots", defaultValue: { summary: "10" } },
 		},
 
-		// Barres
+		// ============================================================================
+		// BARRES - Barre configuration
+		// ============================================================================
 		barresWidth: {
 			control: { type: "range", min: 0, max: 50, step: 1 },
 			description: "Width multiplier for barre rectangles",
@@ -245,7 +339,9 @@ const meta: Meta<typeof ChordDiagram> = {
 			table: { category: "Barres", defaultValue: { summary: "1" } },
 		},
 
-		// Nut (Fret Zero)
+		// ============================================================================
+		// NUT - Nut (fret zero) configuration
+		// ============================================================================
 		nutStrokeWidth: {
 			control: { type: "range", min: 0, max: 0.5, step: 0.001 },
 			description: "Stroke width multiplier for nut line (0.075 * fretWidth ≈ 3px)",
@@ -270,6 +366,35 @@ const meta: Meta<typeof ChordDiagram> = {
 			control: "color",
 			description: "Nut line color",
 			table: { category: "Nut", defaultValue: { summary: "#333333" } },
+		},
+
+		// ============================================================================
+		// COLORS & FONTS - Visual styling
+		// ============================================================================
+		backgroundColor: {
+			control: "color",
+			description: "Background color",
+			table: { category: "Colors & Fonts", defaultValue: { summary: "#ffffff" } },
+		},
+		fontFamily: {
+			control: "select",
+			description: "Font family",
+			table: { category: "Colors & Fonts", defaultValue: { summary: "Arial, sans-serif" } },
+			options: [
+				"Arial, sans-serif",
+				"monospace",
+				"sans-serif",
+				"serif",
+				"Verdana, sans-serif",
+				"Roboto, sans-serif",
+				"Open Sans, sans-serif",
+				"Poppins, sans-serif",
+				"Montserrat, sans-serif",
+				"Lato, sans-serif",
+				"Noto Sans, sans-serif",
+				"Ubuntu, sans-serif",
+				"Inter, sans-serif",
+			],
 		},
 	},
 	tags: ["autodocs"],
@@ -454,11 +579,11 @@ export const WithFretNotation: Story = {
 		tuningTextColor: "#cecece",
 		openStringColor: "#708aba",
 		fretTextSize: 11,
-		tuningLabelOffsetX: -5.5,
-		tuningLabelFormat: "scientific",
+		tuningLabelOffsetX: 0.05,
+		tuningLabelFormat: "note-only",
 		stringIndicatorOffsetX: 0.23,
-		tuningTextSize: 14,
-		tuningLabelOffsetY: 0.01,
+		tuningTextSize: 12,
+		tuningLabelOffsetY: -5.39,
 		fretTextOffsetY: 0.38,
 		fretTextOffsetX: -0.01,
 	},
@@ -487,24 +612,30 @@ export const CustomStyle: Story = {
 		...VERTICAL_RIGHT_STYLE,
 		...customStyleProps,
 		...customStyleChord,
-		width: 262,
-		height: 241,
+		width: 192,
+		height: 275,
 		fretColor: "#b7b2b2",
 		stringColor: "#5b5a5a",
 		backgroundColor: "#323232",
-		tuningTextColor: "#555555",
+		tuningTextColor: "#464646",
 		tuningTextSize: 20,
-		tuningLabelOffsetX: 0.41,
-		tuningLabelOffsetY: 0,
+		tuningLabelOffsetX: -0.01,
+		tuningLabelOffsetY: 0.26,
 		tuningLabelFormat: "note-only",
-		fretWidth: 41,
+		fretWidth: 26,
 		stringWidth: 2.57,
-		dotSize: 17,
+		dotSize: 18,
 		fretTextOffsetY: 0.52,
 		nutStrokeWidth: 0.171,
 		nutColor: "#bcadad",
 		fretTextColor: "#545353",
 		fretTextOffsetX: 0.03,
+		fretHeight: 41,
+		strings: 6,
+		frets: 5,
+		firstFret: 1,
+		canvasOffsetX: -20,
+		canvasOffsetY: -9,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -567,12 +698,15 @@ export const DropDTuning: Story = {
 		dotSize: 15,
 		fretColor: "#989393",
 		fretTextColor: "#cac6c6",
-		tuningTextColor: "#9f9e9e",
-		tuningLabelOffsetX: 0.88,
-		tuningLabelOffsetY: 0.05,
+		tuningTextColor: "#f16df2",
+		tuningLabelOffsetX: 0.05,
+		tuningLabelOffsetY: -5.47,
 		stringIndicatorOffsetX: 0.23,
-		fretTextOffsetX: 0.02,
-		fretTextOffsetY: 0.31,
+		fretTextOffsetX: -5.91,
+		fretTextOffsetY: 0.17,
+		height: 269,
+		canvasOffsetX: -23,
+		canvasOffsetY: -16,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -601,10 +735,11 @@ export const OpenStrings: Story = {
 		fretColor: "#545353",
 		fretTextColor: "#b4b0b0",
 		tuningTextColor: "#b2b2b2",
-		tuningLabelOffsetX: 0.63,
-		tuningLabelOffsetY: -0.02,
+		tuningLabelOffsetX: 0.05,
+		tuningLabelOffsetY: -5.48,
 		stringIndicatorOffsetX: -0.02,
 		fretTextOffsetY: 0.22,
+		height: 260,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -629,6 +764,7 @@ export const OpenStrings: Story = {
 export const OpenAndMutedStrings: Story = {
 	args: {
 		...VERTICAL_RIGHT_STYLE,
+
 		// C Major with muted 1st and open 3rd string: x32010
 		fingers: [
 			{ fret: 0, string: 1, is_muted: true },
@@ -640,15 +776,17 @@ export const OpenAndMutedStrings: Story = {
 		],
 
 		barres: [],
-		width: 256,
+		width: 173,
 		stringWidth: 1.42,
-		dotSize: 15,
+		dotSize: 20,
 		fretTextColor: "#c1c0c0",
 		tuningTextColor: "#b2b2b2",
-		tuningLabelOffsetX: -4.36,
-		tuningLabelOffsetY: 0.03,
+		tuningLabelOffsetX: 0,
+		tuningLabelOffsetY: 0.57,
 		stringIndicatorOffsetX: 0.17,
 		fretTextOffsetY: 0.23,
+		height: 279,
+		canvasOffsetY: 0,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -675,11 +813,13 @@ export const OpenAndMutedStrings: Story = {
 export const CustomOpenMutedStyle: Story = {
 	args: {
 		...VERTICAL_RIGHT_STYLE,
+
 		fingers: [
 			{ fret: 0, string: 1, is_muted: false }, // Open string
 			{ fret: 0, string: 2, is_muted: true }, // Muted string
 			{ fret: 1, string: 3, is_muted: false },
 		],
+
 		barres: [],
 
 		// Green for open strings
@@ -688,11 +828,11 @@ export const CustomOpenMutedStyle: Story = {
 		// Red for muted strings
 		mutedStringColor: "#FF0000",
 
-		width: 224,
-		height: 215,
+		width: 173,
+		height: 263,
 		stringWidth: 1.78,
 		tuningTextColor: "#9a9999",
-		tuningLabelOffsetY: -0.05,
+		tuningLabelOffsetY: 0.42,
 		tuningLabelFormat: "note-only",
 		stringIndicatorOffsetX: 0.06,
 		stringIndicatorOffsetY: 0,
@@ -701,9 +841,10 @@ export const CustomOpenMutedStyle: Story = {
 		nutStrokeWidth: 0.101,
 		nutOffsetX: -0.07,
 		nutOffsetY: -0.03,
-		canvasOffsetX: -8,
-		canvasOffsetY: -25,
+		canvasOffsetX: -22,
+		canvasOffsetY: -8,
 		dotSize: 16,
+		tuningLabelOffsetX: -0.01,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -732,16 +873,19 @@ export const HighFretNotation: Story = {
 		...HORIZONTAL_RIGHT_STYLE,
 		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		fretNotation: "(10)(12)(12)(11)(10)(10)",
-		width: 620,
+		width: 590,
 		fretCount: 14,
 
 		// Disable auto barre to show all 6 fingers
-		autoBarreEnabled: false,
+		autoBarreEnabled: true,
 
 		fretWidth: 38,
 		stringWidth: 1.17,
 		nutStrokeWidth: 0.143,
 		nutColor: "#6e6e6e",
+		canvasOffsetX: -13,
+		tuningLabelOffsetX: 0.4,
+		tuningLabelOffsetY: 0.04,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -794,12 +938,15 @@ export const HorizontalLeft: Story = {
 	args: {
 		...HORIZONTAL_LEFT_STYLE,
 		...cMajor,
-		width: 270,
+		width: 296,
 		fretTextColor: "#a09f9f",
 		tuningTextColor: "#c6c1c1",
 		tuningLabelOffsetY: -0.08,
 		fretTextOffsetX: -0.14,
 		fretTextOffsetY: 0.32,
+		height: 212,
+		canvasOffsetX: -25,
+		canvasOffsetY: -12,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -828,8 +975,8 @@ export const VerticalRight: Story = {
 	args: {
 		...VERTICAL_RIGHT_STYLE,
 		...cMajor,
-		width: 207,
-		height: 297,
+		width: 169,
+		height: 260,
 		fretWidth: 23,
 		fretHeight: 39,
 		stringWidth: 1,
@@ -841,6 +988,7 @@ export const VerticalRight: Story = {
 		tuningLabelOffsetX: 0.12,
 		tuningLabelFormat: "note-only",
 		tuningLabelOffsetY: 0.39,
+		canvasOffsetY: -10,
 	},
 	parameters: {
 		docs: {
@@ -899,8 +1047,8 @@ export const VerticalLeft: Story = {
 	args: {
 		...VERTICAL_LEFT_STYLE,
 		...cMajor,
-		width: 207,
-		height: 297,
+		width: 170,
+		height: 258,
 		fretWidth: 23,
 		fretHeight: 39,
 		stringWidth: 1,
@@ -914,6 +1062,7 @@ export const VerticalLeft: Story = {
 		tuningLabelOffsetY: 0.34,
 		fretTextOffsetY: 0.09,
 		tuningLabelFormat: "note-only",
+		canvasOffsetY: -12,
 	},
 	parameters: {
 		docs: {
@@ -983,22 +1132,25 @@ export const PerformanceTest: Story = {
 	args: {
 		...HORIZONTAL_RIGHT_STYLE,
 		...cMajor,
-		width: 255,
-		height: 213,
+		width: 126,
+		height: 163,
 		tuningLabelFormat: "note-only",
-		fretWidth: 49,
-		dotSize: 20,
+		fretWidth: 18,
+		dotSize: 17,
 		fontFamily: "monospace",
-		dotTextSize: 16,
+		dotTextSize: 12,
 		validation: "strict",
 		invalidBehavior: "keep-previous",
 		fretTextColor: "#c6c6c6",
 		tuningTextColor: "#b2b2b2",
-		tuningLabelOffsetX: 0.25,
-		tuningLabelOffsetY: -0.07,
+		tuningLabelOffsetX: 0.06,
+		tuningLabelOffsetY: 0.3,
 		fretTextOffsetY: 0.31,
-		canvasOffsetX: -12,
+		canvasOffsetX: -36,
 		canvasOffsetY: -23,
+		fretCount: 4,
+		view: "vertical-right",
+		strings: 4,
 	},
 	render: args => {
 		// Create 50 chord diagrams for performance testing
@@ -1126,7 +1278,7 @@ export const CombinedAdvancedCustomization: Story = {
 		barresOpacity: 0.76,
 		dotColor: "#00AA66",
 		barreColor: "#00AA66",
-		width: 260,
+		width: 306,
 		height: 232,
 		tuningLabelOffsetX: 0.3,
 		tuningLabelOffsetY: -0.11,
@@ -1512,7 +1664,7 @@ export const AutoFirstFretMaximumLimit: Story = {
 		autoFirstFret: true,
 		fretCount: 4,
 
-		width: 662,
+		width: 841,
 		height: 208, // Taller to accommodate more frets
 	},
 	parameters: {
@@ -1603,7 +1755,7 @@ export const BugFix005500: Story = {
 		fretNotation: "005500",
 		autoFirstFret: true,
 		fretCount: 5,
-		width: 271,
+		width: 311,
 		height: 206,
 		fretColor: "#363434",
 		fretTextColor: "#e3e2e2",
@@ -1614,7 +1766,7 @@ export const BugFix005500: Story = {
 		fretTextOffsetY: 0.35,
 		nutStrokeWidth: 0.106,
 		canvasOffsetX: 2,
-		canvasOffsetY: -24,
+		canvasOffsetY: -17,
 		dotSize: 17,
 		barreHeight: 11,
 		barresWidth: 10,
@@ -1682,7 +1834,7 @@ export const BugFix006600: Story = {
 		fretTextOffsetY: 0.35,
 		nutStrokeWidth: 0.106,
 		canvasOffsetX: 2,
-		canvasOffsetY: -24,
+		canvasOffsetY: -17,
 		dotSize: 17,
 		barreHeight: 11,
 		barresWidth: 10,
@@ -1740,8 +1892,8 @@ export const BugFixX54232: Story = {
 		autoFirstFret: true,
 		autoBarreEnabled: true,
 		fretCount: 5,
-		width: 271,
-		height: 206,
+		width: 311,
+		height: 210,
 		fretColor: "#363434",
 		fretTextColor: "#e3e2e2",
 		tuningTextColor: "#c8c5c5",
@@ -1751,7 +1903,7 @@ export const BugFixX54232: Story = {
 		fretTextOffsetY: 0.35,
 		nutStrokeWidth: 0.106,
 		canvasOffsetX: 2,
-		canvasOffsetY: -24,
+		canvasOffsetY: -15,
 		dotSize: 17,
 		barreHeight: 11,
 		barresWidth: 10,
