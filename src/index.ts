@@ -21,6 +21,13 @@ export {
 	DEFAULT_INSTRUMENT,
 	STANDARD_TUNINGS,
 	DEFAULT_VIEW,
+	BASE_CHORD_STYLE,
+	HORIZONTAL_BASE,
+	VERTICAL_BASE,
+	HORIZONTAL_RIGHT_STYLE,
+	HORIZONTAL_LEFT_STYLE,
+	VERTICAL_RIGHT_STYLE,
+	VERTICAL_LEFT_STYLE,
 } from "./components/ChordDiagram/constants";
 export { layoutRegistry, resolveViewId, getLayoutEngine } from "./components/ChordDiagram/layout";
 export {

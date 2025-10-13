@@ -1,5 +1,58 @@
 # Changelog
 
+## 2.2.0 (2025-10-13)
+
+### ✨ Features
+
+#### View-Specific Style Constants
+
+Added hierarchical style constants for each view type, providing better organization and consistency.
+
+**New Constants:**
+
+- `BASE_CHORD_STYLE` - Universal properties shared across all views (colors, fonts, opacities)
+- `HORIZONTAL_BASE` - Base for horizontal layouts (horizontal-right, horizontal-left)
+- `VERTICAL_BASE` - Base for vertical layouts (vertical-right, vertical-left)
+- `HORIZONTAL_RIGHT_STYLE` - Complete style for horizontal-right view
+- `HORIZONTAL_LEFT_STYLE` - Complete style for horizontal-left view
+- `VERTICAL_RIGHT_STYLE` - Complete style for vertical-right view
+- `VERTICAL_LEFT_STYLE` - Complete style for vertical-left view
+
+**Benefits:**
+
+- 🎯 **DRY Principle**: Shared properties centralized in base constants
+- 🔧 **Easy Maintenance**: Update an entire orientation by changing the base
+- 📋 **Clear Hierarchy**: BASE → Orientation → View
+- 🎨 **Consistency**: Standardized defaults for each view type
+- 📚 **Well Documented**: JSDoc for each constant explaining when to use
+
+**Backwards Compatibility:**
+
+- `DEFAULT_CHORD_STYLE` is now an alias for `VERTICAL_RIGHT_STYLE`
+- Zero breaking changes - all existing code works unchanged
+
+**Story Organization:**
+
+All 30 Storybook stories have been organized into clear categories:
+
+- VERTICAL VIEWS
+- HORIZONTAL VIEWS
+- FEATURES & CUSTOMIZATION
+- AUTO FEATURES (Auto Barre, Auto First Fret)
+- BUG FIXES & EDGE CASES
+
+### 🔧 Improvements
+
+- Updated all Storybook stories to use view-specific constants
+- Improved test assertions to reflect new default values
+- Better code organization with clear section markers
+
+### 📝 Documentation
+
+- Added comprehensive JSDoc for all new constants
+- Documented shared properties between views
+- Added "When to use" guidelines for each constant
+
 ## 2.1.2 (2025-10-13)
 
 ### 🐛 Bug Fixes

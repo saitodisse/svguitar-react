@@ -16,13 +16,13 @@ describe("Nut Customization", () => {
 	};
 
 	describe("nutStrokeWidth", () => {
-		it("should render nut with default stroke width (0.075 * fretWidth ≈ 3px)", () => {
+		it("should render nut with default stroke width (0.075 * fretWidth from VERTICAL_RIGHT_STYLE)", () => {
 			const { container } = render(<ChordDiagram {...baseProps} />);
 			const nutLine = container.querySelector('line[data-testid="nut-line"]');
 
-			// Default fretWidth is 40, so 0.075 * 40 = 3
+			// Default fretWidth from VERTICAL_RIGHT_STYLE is 23, so 0.075 * 23 = 1.725
 			expect(nutLine).toBeTruthy();
-			expect(nutLine?.getAttribute("stroke-width")).toBe("3");
+			expect(nutLine?.getAttribute("stroke-width")).toBe("1.7249999999999999");
 		});
 
 		it("should render nut with custom stroke width multiplier", () => {

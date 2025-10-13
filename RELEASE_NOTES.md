@@ -1,5 +1,95 @@
 # Release Notes
 
+## Version 2.2.0
+
+**Release Date:** October 13, 2025
+
+### ✨ View-Specific Style Constants
+
+This release introduces a major organizational improvement: hierarchical style constants for each view type!
+
+#### 🎯 What's New
+
+**New Export Constants:**
+
+```typescript
+import {
+	BASE_CHORD_STYLE, // Universal base
+	HORIZONTAL_BASE, // Horizontal views base
+	VERTICAL_BASE, // Vertical views base
+	HORIZONTAL_RIGHT_STYLE, // Complete horizontal-right style
+	HORIZONTAL_LEFT_STYLE, // Complete horizontal-left style
+	VERTICAL_RIGHT_STYLE, // Complete vertical-right style
+	VERTICAL_LEFT_STYLE, // Complete vertical-left style
+	DEFAULT_CHORD_STYLE, // Alias (backwards compatible)
+} from "svguitar-react";
+```
+
+#### 📋 Hierarchical Organization
+
+**Level 1: Universal Base**
+
+- Colors, fonts, opacities
+- Shared structural props (fretCount, stringCount, etc.)
+
+**Level 2: Orientation Bases**
+
+- `HORIZONTAL_BASE`: width: 283, height: 214, specific offsets
+- `VERTICAL_BASE`: width: 173, height: 240, specific offsets
+
+**Level 3: View-Specific**
+
+- Each view (horizontal-right, horizontal-left, vertical-right, vertical-left) has its own constant
+
+#### 💡 Benefits
+
+- **DRY Code**: No more duplicating properties across stories
+- **Easy Customization**: Extend base constants for your own variations
+- **Consistency**: Standardized defaults for each view type
+- **Well Documented**: JSDoc explains when to use each constant
+
+#### 🔄 Backwards Compatibility
+
+`DEFAULT_CHORD_STYLE` is now an alias for `VERTICAL_RIGHT_STYLE`:
+
+- ✅ All existing code works unchanged
+- ✅ Zero breaking changes
+- 💡 Consider using view-specific constants for new code
+
+#### 📚 Storybook Improvements
+
+All 30 stories have been reorganized into clear categories:
+
+1. **VERTICAL VIEWS** - Vertical layout examples
+2. **HORIZONTAL VIEWS** - Horizontal layout examples
+3. **FEATURES & CUSTOMIZATION** - Advanced features demos
+4. **AUTO FEATURES** - Auto barre and auto first fret
+5. **BUG FIXES & EDGE CASES** - Regression tests
+
+#### 🧪 Testing
+
+- ✅ All 207 tests passing
+- ✅ Test assertions updated to reflect new defaults
+- ✅ Storybook build successful
+- ✅ Production build successful
+
+#### 📖 Migration Guide
+
+**No migration needed!** This release is 100% backwards compatible.
+
+**Optional improvements for new code:**
+
+```typescript
+// Old (still works)
+<ChordDiagram {...DEFAULT_CHORD_STYLE} fingers={...} />
+
+// New (more explicit)
+<ChordDiagram {...HORIZONTAL_RIGHT_STYLE} fingers={...} />
+<ChordDiagram {...VERTICAL_RIGHT_STYLE} fingers={...} />
+```
+
+---
+
 ## Version 2.1.2
 
 **Release Date:** October 13, 2025

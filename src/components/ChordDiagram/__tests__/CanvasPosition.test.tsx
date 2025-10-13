@@ -19,13 +19,14 @@ describe("Canvas Positioning", () => {
 	};
 
 	describe("Default canvas position", () => {
-		it("should render with default offsets (0, 0)", () => {
+		it("should render with default offsets from VERTICAL_RIGHT_STYLE (-15, -24)", () => {
 			const { container } = render(<ChordDiagram {...baseProps} />);
 			const canvasGroup = container.querySelector('g[data-testid="canvas-group"]');
 
 			expect(canvasGroup).toBeTruthy();
 			const transform = canvasGroup?.getAttribute("transform");
-			expect(transform).toBe("translate(0, 0)");
+			// Default from VERTICAL_RIGHT_STYLE
+			expect(transform).toBe("translate(-15, -24)");
 		});
 
 		it("should not have transform when offsets are zero", () => {
@@ -158,10 +159,8 @@ describe("Canvas Positioning", () => {
 			const { container } = render(
 				<ChordDiagram
 					{...baseProps}
-					chord={{
-						fingers: [{ fret: 1, string: 2, is_muted: false }],
-						barres: [{ fret: 1, fromString: 1, toString: 6 }],
-					}}
+					fingers={[{ fret: 1, string: 2, is_muted: false }]}
+					barres={[{ fret: 1, fromString: 1, toString: 6 }]}
 					canvasOffsetX={15}
 					canvasOffsetY={20}
 				/>

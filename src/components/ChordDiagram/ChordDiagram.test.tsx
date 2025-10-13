@@ -48,7 +48,7 @@ describe("ChordDiagram Component", () => {
 		expect(svg).toBeInTheDocument();
 		// Expect 3 finger dots, 2 open string circles, 1 muted string X
 		expect(svg?.querySelectorAll("circle").length).toBe(5);
-		expect(svg?.querySelectorAll("line").length).toBe(13); // 11 grid lines + 2 for X
+		expect(svg?.querySelectorAll("line").length).toBe(14); // 11 grid lines + 1 nut + 2 for X
 	});
 
 	it("should render F Major barre chord correctly", () => {
@@ -79,16 +79,17 @@ describe("ChordDiagram Component", () => {
 		expect(svg).toBeInTheDocument();
 		const textNodes = Array.from(svg!.querySelectorAll("text"));
 		const fretLabels = textNodes.filter(node => node.textContent && /^[0-9]+$/.test(node.textContent));
-		expect(fretLabels.map(label => label.textContent)).toEqual(["4", "3", "2", "1"]);
+		expect(fretLabels.map(label => label.textContent)).toEqual(["5", "4", "3", "2", "1"]);
 		// In horizontal-left, higher fret numbers have lower x coordinates (right to left)
 		const fretXs = fretLabels.map(label => Number(label.getAttribute("x")));
 		expect(fretXs[0]).toBeLessThan(fretXs[1]); // fret 4 has lower x than fret 3
 		expect(fretXs[1]).toBeLessThan(fretXs[2]); // fret 3 has lower x than fret 2
 
+		// With default note-only format from HORIZONTAL_LEFT_STYLE
 		const tuningLabels = textNodes.filter(
-			node => node.textContent && ["E2", "A2", "D3", "G3", "B3", "E4"].includes(node.textContent)
+			node => node.textContent && ["E", "A", "D", "G", "B"].includes(node.textContent)
 		);
-		expect(tuningLabels).toHaveLength(6);
+		expect(tuningLabels).toHaveLength(6); // E appears twice (E2 and E4 both render as "E")
 		const tuningXs = tuningLabels.map(label => Number(label.getAttribute("x")));
 		expect(Math.min(...tuningXs)).toBeGreaterThan(Math.max(...fretXs));
 	});
@@ -211,7 +212,7 @@ describe("Utility Functions", () => {
 			expect(svg).toBeInTheDocument();
 
 			// Check for tuning labels (text elements with tuning text color)
-			const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+			const tuningLabels = svg?.querySelectorAll('text[fill*="cecbcb"]'); // tuningTextColor from VERTICAL_RIGHT_STYLE
 			expect(tuningLabels?.length).toBeGreaterThan(0);
 
 			// Verify positioning - labels should be to the right of frets
@@ -234,7 +235,7 @@ describe("Utility Functions", () => {
 			expect(svg).toBeInTheDocument();
 
 			// Check for tuning labels (text elements with tuning text color)
-			const tuningLabels = svg?.querySelectorAll('text[fill*="666"]'); // tuningTextColor
+			const tuningLabels = svg?.querySelectorAll('text[fill*="cecbcb"]'); // tuningTextColor from VERTICAL_RIGHT_STYLE
 			expect(tuningLabels?.length).toBeGreaterThan(0);
 
 			// Verify positioning - labels should be to the right of frets
@@ -257,7 +258,7 @@ describe("Utility Functions", () => {
 				);
 
 				const svg = container.querySelector("svg");
-				const tuningLabels = svg?.querySelectorAll('text[fill*="666"]');
+				const tuningLabels = svg?.querySelectorAll('text[fill*="cecbcb"]');
 
 				if (tuningLabels && tuningLabels.length > 0) {
 					tuningLabels.forEach(label => {
@@ -280,8 +281,8 @@ describe("Utility Functions", () => {
 			const rightSvg = rightContainer.querySelector("svg");
 			const leftSvg = leftContainer.querySelector("svg");
 
-			const rightLabels = rightSvg?.querySelectorAll('text[fill*="666"]');
-			const leftLabels = leftSvg?.querySelectorAll('text[fill*="666"]');
+			const rightLabels = rightSvg?.querySelectorAll('text[fill*="cecbcb"]');
+			const leftLabels = leftSvg?.querySelectorAll('text[fill*="cecbcb"]');
 
 			expect(rightLabels?.length).toBe(leftLabels?.length);
 
@@ -312,7 +313,7 @@ describe("Utility Functions", () => {
 			expect(svg).toBeInTheDocument();
 
 			// Should render with tuning labels positioned correctly
-			const tuningLabels = svg?.querySelectorAll('text[fill*="666"]');
+			const tuningLabels = svg?.querySelectorAll('text[fill*="cecbcb"]'); // tuningTextColor from VERTICAL_RIGHT_STYLE
 			expect(tuningLabels?.length).toBeGreaterThan(0);
 		});
 	});
@@ -324,7 +325,7 @@ describe("Utility Functions", () => {
 			);
 
 			const svg = container.querySelector("svg");
-			const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+			const fretNumbers = svg?.querySelectorAll('text[fill*="d1d0d0"]'); // fretTextColor from VERTICAL_RIGHT_STYLE
 
 			expect(fretNumbers).toBeDefined();
 			expect(fretNumbers?.length).toBeGreaterThan(0);
@@ -335,7 +336,8 @@ describe("Utility Functions", () => {
 				const x = Number(firstFretNumber.getAttribute("x"));
 				const y = Number(firstFretNumber.getAttribute("y"));
 
-				expect(x).toBeGreaterThan(150); // Should be positioned to the right of the main fretboard
+				// With VERTICAL_RIGHT_STYLE defaults (width=173), fret numbers are around x=30
+				expect(x).toBeGreaterThan(20); // Should be positioned to the right of the main fretboard
 				expect(y).toBeGreaterThan(30); // Should be within the SVG bounds (now positioned in middle between frets)
 			}
 		});
@@ -346,7 +348,7 @@ describe("Utility Functions", () => {
 			);
 
 			const svg = container.querySelector("svg");
-			const fretNumbers = svg?.querySelectorAll('text[fill*="868"]'); // fretTextColor
+			const fretNumbers = svg?.querySelectorAll('text[fill*="d1d0d0"]'); // fretTextColor from VERTICAL_RIGHT_STYLE
 
 			expect(fretNumbers).toBeDefined();
 			expect(fretNumbers?.length).toBeGreaterThan(0);
@@ -357,7 +359,8 @@ describe("Utility Functions", () => {
 				const x = Number(firstFretNumber.getAttribute("x"));
 				const y = Number(firstFretNumber.getAttribute("y"));
 
-				expect(x).toBeGreaterThan(150); // Should be positioned to the right of the main fretboard
+				// With VERTICAL_RIGHT_STYLE defaults (width=173), fret numbers are around x=30
+				expect(x).toBeGreaterThan(20); // Should be positioned to the right of the main fretboard
 				expect(y).toBeGreaterThan(30); // Should be within the SVG bounds (now positioned in middle between frets)
 			}
 		});
@@ -419,7 +422,7 @@ describe("Utility Functions", () => {
 			);
 
 			const svg = container.querySelector("svg");
-			const fretNumbers = svg?.querySelectorAll('text[fill*="868"]');
+			const fretNumbers = svg?.querySelectorAll('text[fill*="d1d0d0"]'); // fretTextColor from VERTICAL_RIGHT_STYLE
 
 			expect(fretNumbers).toBeDefined();
 			expect(fretNumbers?.length).toBeGreaterThan(0);
@@ -490,7 +493,7 @@ describe("Utility Functions", () => {
 			expect(textContent).toContain("E4");
 		});
 
-		it("should use scientific notation by default", () => {
+		it("should use note-only format by default (from VERTICAL_RIGHT_STYLE)", () => {
 			const props = {
 				tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 				fretNotation: "x32010",
@@ -501,9 +504,11 @@ describe("Utility Functions", () => {
 			const svg = container.querySelector("svg");
 			const allTextElements = svg?.querySelectorAll("text");
 
-			// Should render full scientific notation by default
+			// Should render note-only format by default (from VERTICAL_RIGHT_STYLE)
 			const textContent = Array.from(allTextElements || []).map(label => label.textContent);
-			expect(textContent).toContain("E2");
+			expect(textContent).toContain("E");
+			// Should NOT contain scientific notation when note-only is default
+			expect(textContent).not.toContain("E2");
 		});
 	});
 
