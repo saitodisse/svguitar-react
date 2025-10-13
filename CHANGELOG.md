@@ -9,42 +9,47 @@
 Fixed bug where `autoFirstFret` was incorrectly adjusting `firstFret` for chords with open strings that fit within the default range.
 
 **Problem:**
+
 - Chord "005500" was rendering frets 5-9 instead of 1-5
 - Open strings were not visible even when fingers fit in the default range
 
 **Root Cause:**
+
 - The algorithm was always adjusting `firstFret` to `minFret` of pressed fingers
 - It didn't consider whether open strings (fret 0) should be preserved
 
-**Hybrid Rule Implemented:**
+**Simplified Rule Implemented:**
+
 ```typescript
-if (maxFret <= fretCount) {
-  if (hasOpenStrings) {
-    // Keep firstFret=1 to show open strings
-    return { firstFret: 1, ... };
-  }
-  // No open strings → start at minFret to save space
-  return { firstFret: minFret, ... };
+// SIMPLIFIED: Always firstFret=1 when fingers fit in default range
+if (maxFret <= currentFretCount) {
+	return { firstFret: 1, fretCount: currentFretCount, wasAdjusted: false };
 }
-// maxFret > fretCount → adjust to minFret
-return { firstFret: minFret, ... };
+// Fingers don't fit → adjust to minFret
+return { firstFret: minFret, fretCount: newFretCount, wasAdjusted };
 ```
 
 **Examples:**
-- `"005500"` with fretCount=5: maxFret (5) <= 5, has open strings → firstFret=1 ✅
-- `"006600"` with fretCount=4: maxFret (6) > 4 → firstFret=6 ✅
-- `"x54232"` with fretCount=5: maxFret (5) <= 5, no open strings → firstFret=2 ✅
+
+- `"005500"` with fretCount=5: maxFret (5) <= 5 → firstFret=1 ✅ (displays frets 1-5)
+- `"xx55xx"` with fretCount=5: maxFret (5) <= 5 → firstFret=1 ✅ (displays frets 1-5)
+- `"355333"` with fretCount=5: maxFret (5) <= 5 → firstFret=1 ✅ (displays frets 1-5)
+- `"x54232"` with fretCount=5: maxFret (5) <= 5 → firstFret=1 ✅ (displays frets 1-5)
+- `"006600"` with fretCount=4: maxFret (6) > 4 → firstFret=6 ✅ (displays frets 6-9)
 
 **Impact:**
-- ✅ Chords with open strings now display correctly
-- ✅ Open strings are preserved when possible
-- ✅ Chords without open strings optimize space usage
-- ✅ All 200 tests passing + 30 Storybook tests
+
+- ✅ Consistent behavior for ALL chords that fit in default range
+- ✅ Works for chords with open strings, muted strings, or all pressed
+- ✅ Simpler, more predictable algorithm
+- ✅ All 207 tests passing (13 for this feature) + 30 Storybook tests
 
 **Files Changed:**
-- `src/components/ChordDiagram/utils/autoFirstFret.ts` - Added open string detection
-- `src/components/ChordDiagram/__tests__/bugfix-005500.test.tsx` - New comprehensive test suite (9 tests)
-- `src/stories/ChordDiagram.stories.tsx` - Added BugFix005500 and BugFix006600 stories
+
+- `src/components/ChordDiagram/utils/autoFirstFret.ts` - Simplified to always use firstFret=1 when maxFret <= fretCount
+- `src/components/ChordDiagram/__tests__/bugfix-005500.test.tsx` - Comprehensive test suite (13 tests: 005500, xx55xx, 355333, 006600)
+- `src/components/ChordDiagram/__tests__/bugfix-x54232.test.tsx` - Updated for simplified rule (6 tests)
+- `src/stories/ChordDiagram.stories.tsx` - Updated 3 bug fix stories
 
 ## 2.1.1 (2025-10-13)
 

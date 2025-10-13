@@ -11,6 +11,7 @@ Fixed another critical bug in `autoFirstFret` that affected chords with open str
 #### 🔴 The Problem
 
 Chords like "005500" were rendering incorrectly:
+
 - **Expected:** Frets 1, 2, 3, 4, 5 (with open strings visible)
 - **Actual:** Frets 5, 6, 7, 8, 9 ❌ (open strings lost)
 
@@ -19,65 +20,79 @@ Chords like "005500" were rendering incorrectly:
 The algorithm was always adjusting `firstFret` to the minimum pressed fret, without considering whether open strings (fret 0) should be preserved.
 
 For chord "005500":
+
 1. Pressed fingers: fret 5 (strings 3 and 4)
 2. Open strings: strings 1, 2, 5, 6 (fret 0)
 3. Algorithm: `minFret = 5` → `firstFret = 5` ❌
 4. Result: Open strings not visible
 
-#### ✅ The Fix: Hybrid Rule
+#### ✅ The Fix: Simplified Rule
 
-Implemented intelligent open string detection:
+Implemented simplified, consistent rule:
 
 ```typescript
-if (maxFret <= fretCount) {
-  if (hasOpenStrings) {
-    // Keep firstFret=1 to show open strings
-    return { firstFret: 1, fretCount, wasAdjusted: false };
-  }
-  // No open strings → optimize space by starting at minFret
-  return { firstFret: minFret, fretCount, wasAdjusted: false };
+// SIMPLIFIED: Always firstFret=1 when fingers fit in default range
+if (maxFret <= currentFretCount) {
+	return { firstFret: 1, fretCount: currentFretCount, wasAdjusted: false };
 }
 // Fingers don't fit → adjust to minFret
-return { firstFret: minFret, ... };
+return { firstFret: minFret, fretCount: newFretCount, wasAdjusted };
 ```
 
 #### 📊 Examples
 
 **Case 1: "005500" (has open strings)**
+
 - maxFret=5, fretCount=5
 - maxFret (5) <= fretCount (5) ✅
 - Has open strings ✅
 - → **Keep firstFret=1** (displays frets 1-5)
 
 **Case 2: "006600" (has open strings)**
+
 - maxFret=6, fretCount=4
 - maxFret (6) > fretCount (4) ✅
 - → **Adjust to firstFret=6** (displays frets 6-9)
 
 **Case 3: "x54232" (no open strings, only muted)**
+
 - maxFret=5, fretCount=5
 - maxFret (5) <= fretCount (5) ✅
-- No open strings (only muted fret 0) ✅
-- → **Optimize to firstFret=2** (displays frets 2-6)
+- → **Keep firstFret=1** (displays frets 1-5)
+
+**Case 4: "xx55xx" (all muted except pressed)**
+
+- maxFret=5, fretCount=5
+- maxFret (5) <= fretCount (5) ✅
+- → **Keep firstFret=1** (displays frets 1-5)
+
+**Case 5: "355333" (all pressed, no fret 0)**
+
+- maxFret=5, fretCount=5
+- maxFret (5) <= fretCount (5) ✅
+- → **Keep firstFret=1** (displays frets 1-5)
 
 #### 📦 What's Included
 
-- **Enhanced:** AutoFirstFret algorithm with open string detection
-- **Added:** 9 new tests in `bugfix-005500.test.tsx`
-- **Added:** 2 new Storybook stories: `BugFix005500` and `BugFix006600`
-- **Verified:** All 200 unit tests + 30 Storybook tests passing ✅
+- **Simplified:** AutoFirstFret algorithm - ALWAYS firstFret=1 when maxFret <= fretCount
+- **Added:** 13 tests in `bugfix-005500.test.tsx` (covers 005500, xx55xx, 355333, 006600)
+- **Updated:** 6 tests in `bugfix-x54232.test.tsx` for simplified rule
+- **Added:** 3 new Storybook stories: `BugFix005500`, `BugFix006600`, `BugFixX54232`
+- **Verified:** All 207 unit tests + 30 Storybook tests passing ✅
 
 #### 🎯 Impact
 
 This fix ensures:
-- ✅ Open strings are preserved when possible
-- ✅ Space optimization when no open strings exist
-- ✅ Correct behavior for all chord types
+
+- ✅ **Consistent behavior:** ALL chords that fit in range start at firstFret=1
+- ✅ Works for chords with open strings (005500), muted strings (xx55xx), or all pressed (355333)
+- ✅ Simpler, more predictable algorithm
 - ✅ No breaking changes
 
 #### 🔗 Testing
 
 View the fixes in action:
+
 - **Story 005500:** Shows open string preservation
 - **Story 006600:** Shows adjustment when needed
 - **Story x54232:** Shows space optimization without open strings

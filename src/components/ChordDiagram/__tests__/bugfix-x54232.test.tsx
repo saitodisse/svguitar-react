@@ -53,7 +53,7 @@ describe("Bug Fix: x54232 Chord", () => {
 	});
 
 	describe("Auto First Fret Calculation", () => {
-		it("should calculate firstFret=2 for x54232", () => {
+		it("should calculate firstFret based on fretCount (simplified rule)", () => {
 			const fingers = [
 				{ fret: 0, string: 1, is_muted: true }, // x - ignored
 				{ fret: 5, string: 2, is_muted: false }, // 5
@@ -63,19 +63,20 @@ describe("Bug Fix: x54232 Chord", () => {
 				{ fret: 2, string: 6, is_muted: false }, // 2 - minimum
 			];
 
-			const result = calculateAutoFirstFret(fingers, 4);
+			// With fretCount=4: maxFret (5) > fretCount (4) → adjust to minFret=2
+			const result4 = calculateAutoFirstFret(fingers, 4);
+			expect(result4.firstFret).toBe(2);
+			expect(result4.fretCount).toBe(4);
+			expect(result4.wasAdjusted).toBe(false);
 
-			// Should calculate:
-			// - minFret = 2
-			// - maxFret = 5
-			// - range = 5 - 2 + 1 = 4 frets
-			// - Fits in default fretCount=4
-			expect(result.firstFret).toBe(2);
-			expect(result.fretCount).toBe(4);
-			expect(result.wasAdjusted).toBe(false);
+			// With fretCount=5: maxFret (5) <= fretCount (5) → keep firstFret=1
+			const result5 = calculateAutoFirstFret(fingers, 5);
+			expect(result5.firstFret).toBe(1);
+			expect(result5.fretCount).toBe(5);
+			expect(result5.wasAdjusted).toBe(false);
 		});
 
-		it("should display frets 2-6 with fretCount=5", () => {
+		it("should display frets 1-5 with fretCount=5 (simplified rule)", () => {
 			const fingers = [
 				{ fret: 0, string: 1, is_muted: true },
 				{ fret: 5, string: 2, is_muted: false },
@@ -87,18 +88,19 @@ describe("Bug Fix: x54232 Chord", () => {
 
 			const result = calculateAutoFirstFret(fingers, 5);
 
-			// With fretCount=5:
-			// firstFret=2, displays frets 2, 3, 4, 5, 6
-			expect(result.firstFret).toBe(2);
+			// Simplified rule: maxFret (5) <= fretCount (5) → firstFret=1
+			expect(result.firstFret).toBe(1);
 			expect(result.fretCount).toBe(5);
 
-			// Verify all fingers fit in the range
+			// Should display frets 1-5
+			const displayedFrets = Array.from({ length: result.fretCount }, (_, i) => result.firstFret + i);
+			expect(displayedFrets).toEqual([1, 2, 3, 4, 5]);
+
+			// Verify all pressed fingers are visible
 			const pressedFingers = fingers.filter(f => f.fret > 0);
-			const minFret = Math.min(...pressedFingers.map(f => f.fret));
 			const maxFret = Math.max(...pressedFingers.map(f => f.fret));
 			const lastDisplayedFret = result.firstFret + result.fretCount - 1;
 
-			expect(minFret).toBeGreaterThanOrEqual(result.firstFret);
 			expect(maxFret).toBeLessThanOrEqual(lastDisplayedFret);
 		});
 	});
@@ -111,8 +113,8 @@ describe("Bug Fix: x54232 Chord", () => {
 			// Detect auto barre
 			const barre = detectAutoBarre(chord.fingers);
 
-			// Calculate auto first fret
-			const autoFret = calculateAutoFirstFret(chord.fingers, 5);
+			// Calculate auto first fret with fretCount=5
+			const autoFret5 = calculateAutoFirstFret(chord.fingers, 5);
 
 			// Assertions
 			expect(chord.fingers.length).toBe(6); // Total fingers (including muted)
@@ -121,15 +123,33 @@ describe("Bug Fix: x54232 Chord", () => {
 			expect(barre).not.toBeNull();
 			expect(barre?.fret).toBe(2);
 
-			expect(autoFret.firstFret).toBe(2);
-			expect(autoFret.fretCount).toBe(5);
+			// Simplified rule: maxFret (5) <= fretCount (5) → firstFret=1
+			expect(autoFret5.firstFret).toBe(1);
+			expect(autoFret5.fretCount).toBe(5);
 
-			// Expected fret numbers displayed: 2, 3, 4, 5, 6
+			// Expected fret numbers displayed: 1, 2, 3, 4, 5
 			const displayedFrets = Array.from(
-				{ length: autoFret.fretCount },
-				(_, i) => autoFret.firstFret + i
+				{ length: autoFret5.fretCount },
+				(_, i) => autoFret5.firstFret + i
 			);
-			expect(displayedFrets).toEqual([2, 3, 4, 5, 6]);
+			expect(displayedFrets).toEqual([1, 2, 3, 4, 5]);
+		});
+
+		it("should adjust when fretCount is too small", () => {
+			const chord = parseFretNotation("x54232");
+
+			// With fretCount=4: maxFret (5) > fretCount (4) → adjust to minFret=2
+			const autoFret4 = calculateAutoFirstFret(chord.fingers, 4);
+
+			expect(autoFret4.firstFret).toBe(2);
+			expect(autoFret4.fretCount).toBe(4);
+
+			// Expected fret numbers: 2, 3, 4, 5
+			const displayedFrets = Array.from(
+				{ length: autoFret4.fretCount },
+				(_, i) => autoFret4.firstFret + i
+			);
+			expect(displayedFrets).toEqual([2, 3, 4, 5]);
 		});
 	});
 });

@@ -169,21 +169,95 @@ describe("Bug Fix: Open Strings with AutoFirstFret", () => {
 		});
 	});
 
-	describe("Hybrid Rule: Only adjust when maxFret > fretCount", () => {
-		it("should maintain open string visibility when possible", () => {
-			const testCases = [
-				// [chord, fretCount, expectedFirstFret, expectedFrets]
-				["005500", 5, 1, [1, 2, 3, 4, 5]], // fits → keep firstFret=1
-				["005500", 4, 5, [5, 6, 7, 8]], // doesn't fit → adjust
-				["006600", 4, 6, [6, 7, 8, 9]], // doesn't fit → adjust
-				["006600", 5, 6, [6, 7, 8, 9, 10]], // doesn't fit → adjust
-				["006600", 6, 1, [1, 2, 3, 4, 5, 6]], // fits → keep firstFret=1
-				["003300", 4, 1, [1, 2, 3, 4]], // fits → keep firstFret=1
-				["00(12)(12)00", 12, 1, Array.from({ length: 12 }, (_, i) => i + 1)], // fits
-				["00(12)(12)00", 11, 12, Array.from({ length: 11 }, (_, i) => i + 12)], // doesn't fit
+	describe("Chord 'xx55xx' - All muted except pressed fingers", () => {
+		it("should parse xx55xx correctly", () => {
+			const result = parseFretNotation("xx55xx");
+
+			expect(result.fingers).toEqual([
+				{ fret: 0, string: 1, is_muted: true }, // muted
+				{ fret: 0, string: 2, is_muted: true }, // muted
+				{ fret: 5, string: 3, is_muted: false }, // pressed
+				{ fret: 5, string: 4, is_muted: false }, // pressed
+				{ fret: 0, string: 5, is_muted: true }, // muted
+				{ fret: 0, string: 6, is_muted: true }, // muted
+			]);
+		});
+
+		it("should keep firstFret=1 when maxFret <= fretCount (with fretCount=5)", () => {
+			const fingers = [
+				{ fret: 0, string: 1, is_muted: true },
+				{ fret: 0, string: 2, is_muted: true },
+				{ fret: 5, string: 3, is_muted: false },
+				{ fret: 5, string: 4, is_muted: false },
+				{ fret: 0, string: 5, is_muted: true },
+				{ fret: 0, string: 6, is_muted: true },
 			];
 
-			testCases.forEach(([chord, fretCount, expectedFirstFret, expectedFrets]) => {
+			const result = calculateAutoFirstFret(fingers, 5);
+
+			// Simplified rule: maxFret=5 <= fretCount=5 → keep firstFret=1
+			expect(result.firstFret).toBe(1);
+			expect(result.fretCount).toBe(5);
+
+			// Should display frets 1-5
+			const displayedFrets = Array.from({ length: result.fretCount }, (_, i) => result.firstFret + i);
+			expect(displayedFrets).toEqual([1, 2, 3, 4, 5]);
+		});
+	});
+
+	describe("Chord '355333' - All strings pressed", () => {
+		it("should parse 355333 correctly", () => {
+			const result = parseFretNotation("355333");
+
+			expect(result.fingers).toEqual([
+				{ fret: 3, string: 1, is_muted: false },
+				{ fret: 5, string: 2, is_muted: false },
+				{ fret: 5, string: 3, is_muted: false },
+				{ fret: 3, string: 4, is_muted: false },
+				{ fret: 3, string: 5, is_muted: false },
+				{ fret: 3, string: 6, is_muted: false },
+			]);
+		});
+
+		it("should keep firstFret=1 when maxFret <= fretCount (with fretCount=5)", () => {
+			const fingers = [
+				{ fret: 3, string: 1, is_muted: false },
+				{ fret: 5, string: 2, is_muted: false },
+				{ fret: 5, string: 3, is_muted: false },
+				{ fret: 3, string: 4, is_muted: false },
+				{ fret: 3, string: 5, is_muted: false },
+				{ fret: 3, string: 6, is_muted: false },
+			];
+
+			const result = calculateAutoFirstFret(fingers, 5);
+
+			// Simplified rule: maxFret=5 <= fretCount=5 → keep firstFret=1
+			expect(result.firstFret).toBe(1);
+			expect(result.fretCount).toBe(5);
+
+			// Should display frets 1-5
+			const displayedFrets = Array.from({ length: result.fretCount }, (_, i) => result.firstFret + i);
+			expect(displayedFrets).toEqual([1, 2, 3, 4, 5]);
+		});
+	});
+
+	describe("Simplified Rule: Always firstFret=1 when maxFret <= fretCount", () => {
+		it("should keep firstFret=1 for all chords that fit in range", () => {
+			const testCases = [
+				// [chord, fretCount, expectedFirstFret, expectedFrets, description]
+				["005500", 5, 1, [1, 2, 3, 4, 5], "with open strings"],
+				["xx55xx", 5, 1, [1, 2, 3, 4, 5], "with muted strings"],
+				["355333", 5, 1, [1, 2, 3, 4, 5], "all pressed, no fret 0"],
+				["005500", 4, 5, [5, 6, 7, 8], "doesn't fit → adjust"],
+				["006600", 4, 6, [6, 7, 8, 9], "doesn't fit → adjust"],
+				["006600", 5, 6, [6, 7, 8, 9, 10], "doesn't fit → adjust"],
+				["006600", 6, 1, [1, 2, 3, 4, 5, 6], "fits → keep firstFret=1"],
+				["003300", 4, 1, [1, 2, 3, 4], "fits → keep firstFret=1"],
+				["00(12)(12)00", 12, 1, Array.from({ length: 12 }, (_, i) => i + 1), "fits"],
+				["00(12)(12)00", 11, 12, Array.from({ length: 11 }, (_, i) => i + 12), "doesn't fit"],
+			];
+
+			testCases.forEach(([chord, fretCount, expectedFirstFret, expectedFrets, description]) => {
 				const parsed = parseFretNotation(chord);
 				const result = calculateAutoFirstFret(parsed.fingers, fretCount);
 

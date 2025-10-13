@@ -69,7 +69,7 @@ export function shouldActivateAutoFirstFret(fingers: Finger[], currentFretCount:
  * @returns Object containing calculated firstFret, fretCount, and whether adjustment was made
  * @example
  * ```typescript
- * // Example 1: Fingers fit within fretCount (keep firstFret=1)
+ * // Example 1: "005500" - Fingers fit, keep firstFret=1
  * const fingers1 = [
  *   { fret: 0, string: 1, is_muted: false }, // open
  *   { fret: 0, string: 2, is_muted: false }, // open
@@ -80,31 +80,55 @@ export function shouldActivateAutoFirstFret(fingers: Finger[], currentFretCount:
  * // maxFret=5 <= fretCount=5 → keep firstFret=1
  * // Returns: { firstFret: 1, fretCount: 5, wasAdjusted: false }
  *
- * // Example 2: Fingers don't fit (adjust firstFret)
+ * // Example 2: "xx55xx" - Fingers fit, keep firstFret=1 (no open strings)
  * const fingers2 = [
+ *   { fret: 0, string: 1, is_muted: true },  // muted
+ *   { fret: 0, string: 2, is_muted: true },  // muted
+ *   { fret: 5, string: 3, is_muted: false }, // pressed
+ *   { fret: 5, string: 4, is_muted: false }, // pressed
+ * ];
+ * calculateAutoFirstFret(fingers2, 5);
+ * // maxFret=5 <= fretCount=5 → keep firstFret=1
+ * // Returns: { firstFret: 1, fretCount: 5, wasAdjusted: false }
+ *
+ * // Example 3: "355333" - Fingers fit, keep firstFret=1 (all pressed)
+ * const fingers3 = [
+ *   { fret: 3, string: 1, is_muted: false },
+ *   { fret: 5, string: 2, is_muted: false },
+ *   { fret: 5, string: 3, is_muted: false },
+ *   { fret: 3, string: 4, is_muted: false },
+ *   { fret: 3, string: 5, is_muted: false },
+ *   { fret: 3, string: 6, is_muted: false },
+ * ];
+ * calculateAutoFirstFret(fingers3, 5);
+ * // maxFret=5 <= fretCount=5 → keep firstFret=1
+ * // Returns: { firstFret: 1, fretCount: 5, wasAdjusted: false }
+ *
+ * // Example 4: "006600" - Fingers don't fit, adjust
+ * const fingers4 = [
  *   { fret: 0, string: 1, is_muted: false }, // open
  *   { fret: 6, string: 3, is_muted: false }, // pressed
  *   { fret: 6, string: 4, is_muted: false }, // pressed
  * ];
- * calculateAutoFirstFret(fingers2, 4);
- * // maxFret=6 > fretCount=4 → adjust to firstFret=6
- * // Returns: { firstFret: 6, fretCount: 4, wasAdjusted: false }
+ * calculateAutoFirstFret(fingers4, 5);
+ * // maxFret=6 > fretCount=5 → adjust to firstFret=6
+ * // Returns: { firstFret: 6, fretCount: 5, wasAdjusted: false }
  *
- * // Example 3: Fingers require fretCount adjustment
- * const fingers3 = [
+ * // Example 5: Wide range - adjust fretCount
+ * const fingers5 = [
  *   { fret: 5, string: 1, is_muted: false },
  *   { fret: 10, string: 2, is_muted: false }
  * ];
- * calculateAutoFirstFret(fingers3, 4);
+ * calculateAutoFirstFret(fingers5, 4);
  * // maxFret=10 > fretCount=4 → adjust firstFret=5, increase fretCount=6
  * // Returns: { firstFret: 5, fretCount: 6, wasAdjusted: true }
  *
- * // Example 4: No pressed fingers (edge case)
- * const fingers4 = [
+ * // Example 6: No pressed fingers (edge case)
+ * const fingers6 = [
  *   { fret: 0, string: 1, is_muted: false },
  *   { fret: 0, string: 2, is_muted: false }
  * ];
- * calculateAutoFirstFret(fingers4, 4);
+ * calculateAutoFirstFret(fingers6, 4);
  * // Returns: { firstFret: 1, fretCount: 4, wasAdjusted: false }
  * ```
  */
@@ -132,24 +156,12 @@ export function calculateAutoFirstFret(
 	const minFret = Math.min(...fretNumbers);
 	const maxFret = Math.max(...fretNumbers);
 
-	// Check if there are open strings (fret 0, not muted)
-	const hasOpenStrings = fingers.some(f => f.fret === 0 && !f.is_muted);
-
-	// HYBRID RULE: Only adjust firstFret if maxFret > fretCount
-	// BUT: If there are open strings, preserve them by keeping firstFret=1
+	// SIMPLIFIED RULE: Only adjust firstFret if maxFret > fretCount
+	// When fingers fit in the default range, always keep firstFret=1 for consistency
 	if (maxFret <= currentFretCount) {
-		// Fingers fit in range 1-fretCount
-		if (hasOpenStrings) {
-			// Has open strings → keep firstFret=1 to show them
-			return {
-				firstFret: 1,
-				fretCount: currentFretCount,
-				wasAdjusted: false,
-			};
-		}
-		// No open strings → can start at minFret to save space
+		// Fingers fit in range 1-fretCount → keep firstFret=1
 		return {
-			firstFret: minFret,
+			firstFret: 1,
 			fretCount: currentFretCount,
 			wasAdjusted: false,
 		};

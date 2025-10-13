@@ -1758,10 +1758,11 @@ export const BugFix006600: Story = {
 /**
  * **Bug Fix Test: x54232 Chord**
  *
- * Testing the chord "x54232" which should render frets 2-6 with auto barre on fret 2.
+ * Testing the chord "x54232" with simplified autoFirstFret rule.
  *
- * Expected behavior:
- * - Fret numbers displayed: 2, 3, 4, 5, 6
+ * Expected behavior with fretCount=5:
+ * - maxFret (5) <= fretCount (5) → keep firstFret=1
+ * - Fret numbers displayed: 1, 2, 3, 4, 5
  * - Auto barre on fret 2 (strings 4 and 6)
  * - 5 pressed fingers: fret 5 (string 2), fret 4 (string 3), fret 2 (strings 4, 6), fret 3 (string 5)
  */
@@ -1782,19 +1783,18 @@ export const BugFixX54232: Story = {
 			description: {
 				story:
 					"**Bug Fix Test: x54232 Chord**\n\n" +
-					"Testing chord that was rendering frets 3-7 instead of 2-6.\n\n" +
-					"**Expected:**\n" +
-					"- Frets: 2, 3, 4, 5, 6\n" +
+					"Testing chord with simplified autoFirstFret rule.\n\n" +
+					"**Expected (Simplified Rule):**\n" +
+					"- Frets: 1, 2, 3, 4, 5\n" +
 					"- Auto barre on fret 2 (2 fingers)\n" +
-					"- 5 pressed fingers total\n\n" +
-					"**Configuration:**\n" +
-					"- `autoFirstFret={true}`\n" +
-					"- `autoBarreEnabled={true}`\n" +
-					"- `fretCount={5}`\n\n" +
-					"**Bug Details:**\n" +
-					"The bug was in ChordDiagram.tsx line 193. It was using `effectiveChord.fingers` " +
-					"(which had fingers removed by autoBarre) instead of `chordData.fingers` " +
-					"to calculate autoFirstFret, causing incorrect minFret detection.",
+					"- firstFret=1 (maxFret 5 <= fretCount 5)\n\n" +
+					"**Simplified Rule:**\n" +
+					"- If maxFret <= fretCount → ALWAYS firstFret=1\n" +
+					"- If maxFret > fretCount → adjust to minFret\n\n" +
+					"**Bug History:**\n" +
+					"- v2.1.0: Was rendering frets 3-7 (using modified fingers)\n" +
+					"- v2.1.1: Fixed to use original fingers\n" +
+					"- v2.1.2: Simplified rule for consistency",
 			},
 		},
 	},
@@ -1803,7 +1803,7 @@ export const BugFixX54232: Story = {
 		const svg = canvas.getByTestId("chord-diagram").querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify fret numbers are rendered (should be 2, 3, 4, 5, 6)
+		// Verify fret numbers are rendered (should be 1, 2, 3, 4, 5)
 		const textElements = svg?.querySelectorAll("text");
 		const fretNumbers = Array.from(textElements || [])
 			.map(el => el.textContent)
@@ -1811,14 +1811,11 @@ export const BugFixX54232: Story = {
 			.map(Number)
 			.sort((a, b) => a - b);
 
-		// Debug: log what we got
-		console.log("Fret numbers found:", fretNumbers);
-
-		// Should include frets 2 through 6
+		// Should include frets 1 through 5 (simplified rule)
+		expect(fretNumbers).toContain(1);
 		expect(fretNumbers).toContain(2);
 		expect(fretNumbers).toContain(3);
 		expect(fretNumbers).toContain(4);
 		expect(fretNumbers).toContain(5);
-		expect(fretNumbers).toContain(6);
 	},
 };
