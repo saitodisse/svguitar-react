@@ -190,7 +190,10 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	let effectiveFretCount = style.fretCount;
 
 	if (shouldApplyAutoFirstFret(props, chordData.firstFret)) {
-		const autoResult = calculateAutoFirstFret(effectiveChord.fingers, style.fretCount);
+		// IMPORTANT: Use original chordData.fingers, not effectiveChord.fingers
+		// effectiveChord.fingers may have fingers removed by autoBarre detection,
+		// which would cause incorrect firstFret calculation
+		const autoResult = calculateAutoFirstFret(chordData.fingers, style.fretCount);
 		effectiveFirstFret = autoResult.firstFret;
 		effectiveFretCount = autoResult.fretCount;
 

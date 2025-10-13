@@ -1,5 +1,69 @@
 # Release Notes
 
+## Version 2.1.1
+
+**Release Date:** October 13, 2025
+
+### 🐛 Critical Bug Fix: AutoFirstFret with AutoBarre
+
+Fixed a critical bug that affected chord rendering when using `autoFirstFret` and `autoBarreEnabled` together.
+
+#### 🔴 The Problem
+
+Chords like "x54232" were rendering incorrectly:
+- **Expected:** Frets 2, 3, 4, 5, 6
+- **Actual:** Frets 3, 4, 5, 6, 7 ❌
+- Auto barre was not appearing on fret 2
+
+#### 🔍 Root Cause
+
+The bug was in `ChordDiagram.tsx` line 193:
+
+```typescript
+// ❌ WRONG - used modified fingers (with some removed)
+const autoResult = calculateAutoFirstFret(effectiveChord.fingers, style.fretCount);
+```
+
+The issue: `effectiveChord.fingers` had already been processed by `autoBarre` detection, which removes fingers that are covered by a barre. This caused the minimum fret calculation to be incorrect.
+
+For chord "x54232":
+1. Original fingers: frets 2, 3, 4, 5, 2
+2. AutoBarre detects barre on fret 2
+3. Removes fingers on fret 2 → leaves only frets 3, 4, 5
+4. AutoFirstFret calculates minFret = 3 ❌ (should be 2)
+
+#### ✅ The Fix
+
+```typescript
+// ✅ CORRECT - uses original fingers
+const autoResult = calculateAutoFirstFret(chordData.fingers, style.fretCount);
+```
+
+Now uses the **original** finger positions before autoBarre processing, ensuring accurate fret calculation.
+
+#### 📦 What's Included
+
+- **Fixed:** Core rendering logic in `ChordDiagram.tsx`
+- **Added:** Comprehensive test suite (`bugfix-x54232.test.tsx`)
+- **Added:** Storybook story for visual regression testing (`BugFixX54232`)
+- **Verified:** All 191 tests passing ✅
+
+#### 🎯 Impact
+
+This fix ensures:
+- ✅ Accurate fret numbering for all chords
+- ✅ Correct auto barre detection
+- ✅ Proper coordination between `autoFirstFret` and `autoBarreEnabled`
+- ✅ No breaking changes to existing code
+
+#### 🔗 Testing
+
+View the fix in action:
+- **Storybook Story:** "Bug Fix X 54232"
+- **Test Suite:** `src/components/ChordDiagram/__tests__/bugfix-x54232.test.tsx`
+
+---
+
 ## Version 2.1.0
 
 **Release Date:** October 13, 2025

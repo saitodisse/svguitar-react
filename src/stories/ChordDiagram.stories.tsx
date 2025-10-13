@@ -1647,3 +1647,71 @@ export const AutoFirstFretEdgeCase: Story = {
 		},
 	},
 };
+
+/**
+ * **Bug Fix Test: x54232 Chord**
+ *
+ * Testing the chord "x54232" which should render frets 2-6 with auto barre on fret 2.
+ *
+ * Expected behavior:
+ * - Fret numbers displayed: 2, 3, 4, 5, 6
+ * - Auto barre on fret 2 (strings 4 and 6)
+ * - 5 pressed fingers: fret 5 (string 2), fret 4 (string 3), fret 2 (strings 4, 6), fret 3 (string 5)
+ */
+export const BugFixX54232: Story = {
+	args: {
+		...BASE_STORY_CONFIG,
+		strings: 6,
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		fretNotation: "x54232",
+		autoFirstFret: true,
+		autoBarreEnabled: true,
+		fretCount: 5,
+		width: 220,
+		height: 300,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Bug Fix Test: x54232 Chord**\n\n" +
+					"Testing chord that was rendering frets 3-7 instead of 2-6.\n\n" +
+					"**Expected:**\n" +
+					"- Frets: 2, 3, 4, 5, 6\n" +
+					"- Auto barre on fret 2 (2 fingers)\n" +
+					"- 5 pressed fingers total\n\n" +
+					"**Configuration:**\n" +
+					"- `autoFirstFret={true}`\n" +
+					"- `autoBarreEnabled={true}`\n" +
+					"- `fretCount={5}`\n\n" +
+					"**Bug Details:**\n" +
+					"The bug was in ChordDiagram.tsx line 193. It was using `effectiveChord.fingers` " +
+					"(which had fingers removed by autoBarre) instead of `chordData.fingers` " +
+					"to calculate autoFirstFret, causing incorrect minFret detection.",
+			},
+		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const svg = canvas.getByTestId("chord-diagram").querySelector("svg");
+		expect(svg).toBeInTheDocument();
+
+		// Verify fret numbers are rendered (should be 2, 3, 4, 5, 6)
+		const textElements = svg?.querySelectorAll("text");
+		const fretNumbers = Array.from(textElements || [])
+			.map(el => el.textContent)
+			.filter(text => text && /^\d+$/.test(text))
+			.map(Number)
+			.sort((a, b) => a - b);
+
+		// Debug: log what we got
+		console.log("Fret numbers found:", fretNumbers);
+
+		// Should include frets 2 through 6
+		expect(fretNumbers).toContain(2);
+		expect(fretNumbers).toContain(3);
+		expect(fretNumbers).toContain(4);
+		expect(fretNumbers).toContain(5);
+		expect(fretNumbers).toContain(6);
+	},
+};

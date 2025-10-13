@@ -1,0 +1,135 @@
+/**
+ * @fileoverview Bug fix tests for chord "x54232"
+ * @author svguitar-react
+ *
+ * This test validates the fix for the bug where "x54232" was rendering
+ * frets 3-7 instead of 2-6, and the auto barre was not being detected.
+ */
+
+import { describe, it, expect } from "vitest";
+import { parseFretNotation } from "../utils";
+import { detectAutoBarre } from "../utils/autoBarre";
+import { calculateAutoFirstFret } from "../utils/autoFirstFret";
+
+describe("Bug Fix: x54232 Chord", () => {
+	describe("Parse Fret Notation", () => {
+		it("should parse x54232 correctly", () => {
+			const result = parseFretNotation("x54232");
+
+			expect(result.fingers).toEqual([
+				{ fret: 0, string: 1, is_muted: true }, // x
+				{ fret: 5, string: 2, is_muted: false }, // 5
+				{ fret: 4, string: 3, is_muted: false }, // 4
+				{ fret: 2, string: 4, is_muted: false }, // 2
+				{ fret: 3, string: 5, is_muted: false }, // 3
+				{ fret: 2, string: 6, is_muted: false }, // 2
+			]);
+
+			expect(result.barres).toEqual([]);
+		});
+	});
+
+	describe("Auto Barre Detection", () => {
+		it("should detect barre on fret 2 for x54232", () => {
+			const fingers = [
+				{ fret: 0, string: 1, is_muted: true }, // x - ignored
+				{ fret: 5, string: 2, is_muted: false }, // 5 - pressed
+				{ fret: 4, string: 3, is_muted: false }, // 4 - pressed
+				{ fret: 2, string: 4, is_muted: false }, // 2 - pressed
+				{ fret: 3, string: 5, is_muted: false }, // 3 - pressed
+				{ fret: 2, string: 6, is_muted: false }, // 2 - pressed
+			];
+
+			const barre = detectAutoBarre(fingers);
+
+			// Should detect barre because:
+			// - 5 pressed fingers (> 4 threshold)
+			// - Fret 2 has 2 fingers (strings 4 and 6) - maximum count
+			expect(barre).not.toBeNull();
+			expect(barre?.fret).toBe(2);
+			expect(barre?.fromString).toBe(4);
+			expect(barre?.toString).toBe(6);
+		});
+	});
+
+	describe("Auto First Fret Calculation", () => {
+		it("should calculate firstFret=2 for x54232", () => {
+			const fingers = [
+				{ fret: 0, string: 1, is_muted: true }, // x - ignored
+				{ fret: 5, string: 2, is_muted: false }, // 5
+				{ fret: 4, string: 3, is_muted: false }, // 4
+				{ fret: 2, string: 4, is_muted: false }, // 2 - minimum
+				{ fret: 3, string: 5, is_muted: false }, // 3
+				{ fret: 2, string: 6, is_muted: false }, // 2 - minimum
+			];
+
+			const result = calculateAutoFirstFret(fingers, 4);
+
+			// Should calculate:
+			// - minFret = 2
+			// - maxFret = 5
+			// - range = 5 - 2 + 1 = 4 frets
+			// - Fits in default fretCount=4
+			expect(result.firstFret).toBe(2);
+			expect(result.fretCount).toBe(4);
+			expect(result.wasAdjusted).toBe(false);
+		});
+
+		it("should display frets 2-6 with fretCount=5", () => {
+			const fingers = [
+				{ fret: 0, string: 1, is_muted: true },
+				{ fret: 5, string: 2, is_muted: false },
+				{ fret: 4, string: 3, is_muted: false },
+				{ fret: 2, string: 4, is_muted: false },
+				{ fret: 3, string: 5, is_muted: false },
+				{ fret: 2, string: 6, is_muted: false },
+			];
+
+			const result = calculateAutoFirstFret(fingers, 5);
+
+			// With fretCount=5:
+			// firstFret=2, displays frets 2, 3, 4, 5, 6
+			expect(result.firstFret).toBe(2);
+			expect(result.fretCount).toBe(5);
+
+			// Verify all fingers fit in the range
+			const pressedFingers = fingers.filter(f => f.fret > 0);
+			const minFret = Math.min(...pressedFingers.map(f => f.fret));
+			const maxFret = Math.max(...pressedFingers.map(f => f.fret));
+			const lastDisplayedFret = result.firstFret + result.fretCount - 1;
+
+			expect(minFret).toBeGreaterThanOrEqual(result.firstFret);
+			expect(maxFret).toBeLessThanOrEqual(lastDisplayedFret);
+		});
+	});
+
+	describe("Integration: Full Chord Rendering", () => {
+		it("should correctly process x54232 with auto features enabled", () => {
+			// Parse the notation
+			const chord = parseFretNotation("x54232");
+
+			// Detect auto barre
+			const barre = detectAutoBarre(chord.fingers);
+
+			// Calculate auto first fret
+			const autoFret = calculateAutoFirstFret(chord.fingers, 5);
+
+			// Assertions
+			expect(chord.fingers.length).toBe(6); // Total fingers (including muted)
+			expect(chord.fingers.filter(f => f.fret > 0).length).toBe(5); // Pressed fingers
+
+			expect(barre).not.toBeNull();
+			expect(barre?.fret).toBe(2);
+
+			expect(autoFret.firstFret).toBe(2);
+			expect(autoFret.fretCount).toBe(5);
+
+			// Expected fret numbers displayed: 2, 3, 4, 5, 6
+			const displayedFrets = Array.from(
+				{ length: autoFret.fretCount },
+				(_, i) => autoFret.firstFret + i
+			);
+			expect(displayedFrets).toEqual([2, 3, 4, 5, 6]);
+		});
+	});
+});

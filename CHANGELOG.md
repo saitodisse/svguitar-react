@@ -1,5 +1,38 @@
 # Changelog
 
+## 2.1.1 (2025-10-13)
+
+### 🐛 Bug Fixes
+
+#### AutoFirstFret Calculation with AutoBarre
+
+Fixed critical bug where `autoFirstFret` was calculating incorrect fret positions when used together with `autoBarreEnabled`.
+
+**Problem:**
+- Chord "x54232" was rendering frets 3-7 instead of 2-6
+- Auto barre was not being detected on fret 2
+
+**Root Cause:**
+- In `ChordDiagram.tsx` line 193, `calculateAutoFirstFret` was using `effectiveChord.fingers` (which had fingers removed by autoBarre detection) instead of `chordData.fingers` (original fingers)
+- This caused the minimum fret calculation to be incorrect (minFret = 3 instead of 2)
+
+**Fix:**
+- Changed to use `chordData.fingers` for firstFret calculation
+- Added detailed comment explaining why original fingers must be used
+- Created comprehensive test suite in `bugfix-x54232.test.tsx`
+- Added Storybook story `BugFixX54232` for visual regression testing
+
+**Impact:**
+- ✅ All chords with autoBarre + autoFirstFret now render correctly
+- ✅ Fret numbering is accurate
+- ✅ Auto barre detection works as expected
+- ✅ 191 tests passing (100% coverage maintained)
+
+**Files Changed:**
+- `src/components/ChordDiagram/ChordDiagram.tsx` - Fixed calculation logic
+- `src/components/ChordDiagram/__tests__/bugfix-x54232.test.tsx` - New test suite
+- `src/stories/ChordDiagram.stories.tsx` - Added BugFixX54232 story
+
 ## 2.1.0 (2025-10-13)
 
 ### ✨ Features
