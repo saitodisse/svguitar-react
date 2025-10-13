@@ -1391,3 +1391,259 @@ export const ManualBarrePrecedence: Story = {
 		},
 	},
 };
+
+// ================================
+// AUTO FIRST FRET STORIES
+// ================================
+
+/**
+ * **Auto First Fret - Basic Usage**
+ *
+ * The `autoFirstFret` feature automatically adjusts the diagram's starting fret position
+ * when finger positions are outside the default visible range (1-4).
+ *
+ * In this example:
+ * - Fingers are placed at frets 5, 7, and 8 (high position chord)
+ * - `autoFirstFret` is enabled
+ * - No manual `firstFret` is specified
+ * - **Result**: Diagram automatically starts at fret 5 to show all fingers
+ *
+ * Without `autoFirstFret`, you would need to manually set `firstFret={5}`.
+ */
+export const AutoFirstFretBasic: Story = {
+	args: {
+		fingers: [
+			{ fret: 5, string: 1, is_muted: false, text: "1" },
+			{ fret: 7, string: 2, is_muted: false, text: "3" },
+			{ fret: 8, string: 3, is_muted: false, text: "4" },
+			{ fret: 0, string: 4, is_muted: false }, // open string
+			{ fret: 0, string: 5, is_muted: true }, // muted
+			{ fret: 0, string: 6, is_muted: true }, // muted
+		],
+		barres: [],
+
+		...BASE_STORY_CONFIG,
+
+		autoFirstFret: true,
+		fretCount: 4,
+
+		width: 220,
+		height: 260,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto First Fret - Basic Usage**\n\n" +
+					"Automatically adjusts `firstFret` when fingers are in high positions.\n\n" +
+					"**Features:**\n" +
+					"- Fingers at frets 5, 7, 8\n" +
+					"- `autoFirstFret={true}` enables automatic adjustment\n" +
+					"- Diagram starts at fret 5 automatically\n" +
+					"- All fingers remain visible within `fretCount={4}`\n\n" +
+					"**Use case:** Displaying high-position chords without manual configuration",
+			},
+		},
+	},
+};
+
+/**
+ * **Auto First Fret - With FretCount Adjustment**
+ *
+ * When fingers span a range larger than the default `fretCount`, the system
+ * automatically increases `fretCount` to accommodate all fingers.
+ *
+ * In this example:
+ * - Fingers at frets 5 and 10 (range of 6 frets)
+ * - Default `fretCount` is 4
+ * - `autoFirstFret` is enabled
+ * - **Result**: `firstFret` set to 5, `fretCount` increased to 6
+ * - Console warning is logged about the adjustment
+ */
+export const AutoFirstFretWithAdjustment: Story = {
+	args: {
+		fingers: [
+			{ fret: 5, string: 1, is_muted: false, text: "1" },
+			{ fret: 10, string: 2, is_muted: false, text: "2" },
+			{ fret: 0, string: 3, is_muted: false }, // open string
+			{ fret: 0, string: 4, is_muted: true },
+			{ fret: 0, string: 5, is_muted: true },
+			{ fret: 0, string: 6, is_muted: true },
+		],
+		barres: [],
+
+		...BASE_STORY_CONFIG,
+
+		autoFirstFret: true,
+		fretCount: 4,
+
+		width: 220,
+		height: 320,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto First Fret - With FretCount Adjustment**\n\n" +
+					"Automatically increases `fretCount` when fingers don't fit in the default range.\n\n" +
+					"**Features:**\n" +
+					"- Fingers at frets 5 and 10 (6 fret range)\n" +
+					"- Default `fretCount={4}` is too small\n" +
+					"- System increases `fretCount` to 6 automatically\n" +
+					"- Console warning: `[ChordDiagram] Auto-increased fretCount from 4 to 6`\n\n" +
+					"**Use case:** Wide-ranging chord shapes that need more visual space\n\n" +
+					"**Note:** Check browser console to see the adjustment warning.",
+			},
+		},
+	},
+};
+
+/**
+ * **Auto First Fret - Manual Override**
+ *
+ * Manual `firstFret` always takes precedence over automatic calculation.
+ * This allows fine-grained control when needed.
+ *
+ * In this example:
+ * - Fingers would normally trigger auto adjustment to fret 5
+ * - Manual `firstFret={1}` is specified
+ * - `autoFirstFret` is enabled but ignored
+ * - **Result**: Diagram starts at fret 1 (fingers at 5, 7, 8 are outside visible range)
+ */
+export const AutoFirstFretManualOverride: Story = {
+	args: {
+		fingers: [
+			{ fret: 5, string: 1, is_muted: false, text: "1" },
+			{ fret: 7, string: 2, is_muted: false, text: "3" },
+			{ fret: 8, string: 3, is_muted: false, text: "4" },
+			{ fret: 0, string: 4, is_muted: false },
+			{ fret: 0, string: 5, is_muted: true },
+			{ fret: 0, string: 6, is_muted: true },
+		],
+		barres: [],
+
+		...BASE_STORY_CONFIG,
+
+		autoFirstFret: true,
+		firstFret: 1, // Manual override
+		fretCount: 4,
+
+		width: 220,
+		height: 260,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto First Fret - Manual Override**\n\n" +
+					"Manual `firstFret` **always** takes precedence over automatic calculation.\n\n" +
+					"**Features:**\n" +
+					"- Fingers at frets 5, 7, 8 (would trigger auto adjustment)\n" +
+					"- Manual `firstFret={1}` is specified\n" +
+					"- `autoFirstFret={true}` is enabled but ignored\n" +
+					"- **Result**: Auto adjustment is disabled; diagram starts at fret 1\n\n" +
+					"**Use case:** Full manual control when you need specific visual framing\n\n" +
+					"**Note:** Fingers outside the visible range won't be displayed.",
+			},
+		},
+	},
+};
+
+/**
+ * **Auto First Fret - Maximum Limit**
+ *
+ * The system enforces a maximum of 12 frets to prevent unrealistic diagrams.
+ * Guitars typically have frets beyond the 12th, but they're rarely used in chord diagrams.
+ *
+ * In this example:
+ * - Fingers at frets 1 and 15 (range of 15 frets)
+ * - System would need 15 frets to show both
+ * - **Result**: `fretCount` is capped at 12 (maximum limit)
+ * - Console warning about hitting the limit
+ */
+export const AutoFirstFretMaximumLimit: Story = {
+	args: {
+		fingers: [
+			{ fret: 1, string: 1, is_muted: false, text: "1" },
+			{ fret: 15, string: 2, is_muted: false, text: "2" },
+			{ fret: 0, string: 3, is_muted: true },
+			{ fret: 0, string: 4, is_muted: true },
+			{ fret: 0, string: 5, is_muted: true },
+			{ fret: 0, string: 6, is_muted: true },
+		],
+		barres: [],
+
+		...BASE_STORY_CONFIG,
+
+		autoFirstFret: true,
+		fretCount: 4,
+
+		width: 220,
+		height: 460, // Taller to accommodate more frets
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto First Fret - Maximum Limit**\n\n" +
+					"Enforces a maximum of 12 frets to prevent unrealistic diagrams.\n\n" +
+					"**Features:**\n" +
+					"- Fingers at frets 1 and 15 (15 fret range)\n" +
+					"- System caps `fretCount` at 12 (maximum)\n" +
+					"- `firstFret` set to 1 (minimum finger position)\n" +
+					"- Console warning: `[ChordDiagram] Auto-increased fretCount from 4 to 12`\n\n" +
+					"**Use case:** Edge case protection for unrealistic finger positions\n\n" +
+					"**Note:** Finger at fret 15 won't be visible (beyond the 12 fret limit).",
+			},
+		},
+	},
+};
+
+/**
+ * **Auto First Fret - Edge Case (Only Open Strings)**
+ *
+ * When no pressed fingers are present (only open strings or muted strings),
+ * `autoFirstFret` has no effect and defaults to `firstFret={1}`.
+ *
+ * In this example:
+ * - All fingers are either open (fret 0) or muted
+ * - No pressed fingers to calculate from
+ * - `autoFirstFret` is enabled but has no effect
+ * - **Result**: Default behavior, `firstFret={1}`
+ */
+export const AutoFirstFretEdgeCase: Story = {
+	args: {
+		fingers: [
+			{ fret: 0, string: 1, is_muted: false }, // open
+			{ fret: 0, string: 2, is_muted: false }, // open
+			{ fret: 0, string: 3, is_muted: false }, // open
+			{ fret: 0, string: 4, is_muted: true }, // muted
+			{ fret: 0, string: 5, is_muted: true }, // muted
+			{ fret: 0, string: 6, is_muted: true }, // muted
+		],
+		barres: [],
+
+		...BASE_STORY_CONFIG,
+
+		autoFirstFret: true,
+		fretCount: 4,
+
+		width: 220,
+		height: 260,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"**Auto First Fret - Edge Case (Only Open Strings)**\n\n" +
+					"When no pressed fingers exist, `autoFirstFret` has no effect.\n\n" +
+					"**Features:**\n" +
+					"- All fingers are open (fret 0) or muted\n" +
+					"- No pressed fingers (fret > 0) to calculate from\n" +
+					"- `autoFirstFret={true}` is enabled but inactive\n" +
+					"- **Result**: Default behavior, `firstFret={1}`\n\n" +
+					"**Use case:** Edge case handling for open chord shapes",
+			},
+		},
+	},
+};

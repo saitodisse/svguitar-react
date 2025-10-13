@@ -23,6 +23,7 @@ import {
 	getStartY,
 } from "./utils";
 import { detectAutoBarre, removeFingersCoveredByBarre, shouldApplyAutoBarre } from "./utils/autoBarre";
+import { calculateAutoFirstFret, shouldApplyAutoFirstFret } from "./utils/autoFirstFret";
 import { getLayoutEngine } from "./layout";
 import { Fretboard } from "./Fretboard";
 import { Finger } from "./Finger";
@@ -183,7 +184,22 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 
 	// Get instrument data for tuning labels
 	const instrumentData = mergeInstrument({ strings, frets, tuning, chord: fretNotation });
-	const effectiveFirstFret = chordData.firstFret || 1;
+
+	// Apply auto firstFret calculation if enabled
+	let effectiveFirstFret = chordData.firstFret || 1;
+	let effectiveFretCount = style.fretCount;
+
+	if (shouldApplyAutoFirstFret(props, chordData.firstFret)) {
+		const autoResult = calculateAutoFirstFret(effectiveChord.fingers, style.fretCount);
+		effectiveFirstFret = autoResult.firstFret;
+		effectiveFretCount = autoResult.fretCount;
+
+		if (autoResult.wasAdjusted && autoResult.fretCount > style.fretCount) {
+			console.warn(
+				`[ChordDiagram] Auto-increased fretCount from ${style.fretCount} to ${autoResult.fretCount}`
+			);
+		}
+	}
 
 	if (!resolvedLayoutEngine) {
 		throw new Error("No layout engine resolved for the selected view");
@@ -195,9 +211,9 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const isVertical = (resolvedLayoutEngine?.id || "horizontal-right").startsWith("vertical");
 	const gridWidth = isVertical
 		? (style.stringCount - 1) * style.fretWidth
-		: style.fretCount * style.fretWidth;
+		: effectiveFretCount * style.fretWidth;
 	const gridHeight = isVertical
-		? style.fretCount * style.fretHeight
+		? effectiveFretCount * style.fretHeight
 		: (style.stringCount - 1) * style.fretHeight;
 
 	const frame: LayoutFrame = React.useMemo(
@@ -210,10 +226,10 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 			gridHeight,
 			firstFret: effectiveFirstFret,
 			stringCount: style.stringCount,
-			fretCount: style.fretCount,
+			fretCount: effectiveFretCount,
 			style,
 		}),
-		[style, startX, startY, gridWidth, gridHeight, effectiveFirstFret]
+		[style, startX, startY, gridWidth, gridHeight, effectiveFirstFret, effectiveFretCount]
 	);
 
 	return (

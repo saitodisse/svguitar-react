@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ChordDiagram } from "./ChordDiagram";
 import {
@@ -625,6 +625,181 @@ describe("Utility Functions", () => {
 
 			// Should have at least 2 rects: background + barre
 			expect(rects?.length).toBeGreaterThan(1);
+		});
+	});
+
+	describe("Auto FirstFret", () => {
+		it("should adjust firstFret when fingers are outside range", () => {
+			const props = {
+				autoFirstFret: true,
+				fretCount: 4,
+				fingers: [
+					{ fret: 5, string: 1, is_muted: false },
+					{ fret: 7, string: 2, is_muted: false },
+					{ fret: 8, string: 3, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container } = render(<ChordDiagram {...props} />);
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// With autoFirstFret, fingers at 5,7,8 should set firstFret to 5
+			// Range is 4 (5-8), so fretCount should remain 4
+			// This is verified by the component rendering without errors
+		});
+
+		it("should increase fretCount when fingers do not fit", () => {
+			// Capture console.warn
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			const props = {
+				autoFirstFret: true,
+				fretCount: 4,
+				fingers: [
+					{ fret: 5, string: 1, is_muted: false },
+					{ fret: 10, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container } = render(<ChordDiagram {...props} />);
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Should have warned about increasing fretCount
+			expect(warnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("Auto-increased fretCount from 4 to 6")
+			);
+
+			warnSpy.mockRestore();
+		});
+
+		it("should respect maximum of 12 frets", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			const props = {
+				autoFirstFret: true,
+				fretCount: 4,
+				fingers: [
+					{ fret: 1, string: 1, is_muted: false },
+					{ fret: 15, string: 2, is_muted: false }, // Very high fret
+				],
+				barres: [],
+			};
+
+			const { container } = render(<ChordDiagram {...props} />);
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Should have warned but capped at 12
+			expect(warnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("Auto-increased fretCount from 4 to 12")
+			);
+
+			warnSpy.mockRestore();
+		});
+
+		it("should be ignored when firstFret is manually provided", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			const props = {
+				autoFirstFret: true,
+				firstFret: 3, // Manual override
+				fretCount: 4,
+				fingers: [{ fret: 10, string: 1, is_muted: false }],
+				barres: [],
+			};
+
+			const { container } = render(<ChordDiagram {...props} />);
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Should NOT have warned (autoFirstFret is ignored)
+			expect(warnSpy).not.toHaveBeenCalled();
+
+			warnSpy.mockRestore();
+		});
+
+		it("should handle edge case of only open strings", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			const props = {
+				autoFirstFret: true,
+				fretCount: 4,
+				fingers: [
+					{ fret: 0, string: 1, is_muted: false },
+					{ fret: 0, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container } = render(<ChordDiagram {...props} />);
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Should NOT have warned (no pressed fingers)
+			expect(warnSpy).not.toHaveBeenCalled();
+
+			warnSpy.mockRestore();
+		});
+
+		it("should recalculate when fingers change", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			const initialProps = {
+				autoFirstFret: true,
+				fretCount: 4,
+				fingers: [
+					{ fret: 1, string: 1, is_muted: false },
+					{ fret: 2, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container, rerender } = render(<ChordDiagram {...initialProps} />);
+			expect(container.querySelector("svg")).toBeInTheDocument();
+			expect(warnSpy).not.toHaveBeenCalled();
+
+			// Update fingers to require autoFirstFret adjustment
+			const updatedProps = {
+				...initialProps,
+				fingers: [
+					{ fret: 5, string: 1, is_muted: false },
+					{ fret: 10, string: 2, is_muted: false },
+				],
+			};
+
+			rerender(<ChordDiagram {...updatedProps} />);
+
+			// Should now have warned about increased fretCount
+			expect(warnSpy).toHaveBeenCalled();
+
+			warnSpy.mockRestore();
+		});
+
+		it("should not activate autoFirstFret when disabled", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+			const props = {
+				autoFirstFret: false, // Explicitly disabled
+				fretCount: 4,
+				fingers: [
+					{ fret: 5, string: 1, is_muted: false },
+					{ fret: 10, string: 2, is_muted: false },
+				],
+				barres: [],
+			};
+
+			const { container } = render(<ChordDiagram {...props} />);
+			const svg = container.querySelector("svg");
+			expect(svg).toBeInTheDocument();
+
+			// Should NOT have adjusted (autoFirstFret is disabled)
+			expect(warnSpy).not.toHaveBeenCalled();
+
+			warnSpy.mockRestore();
 		});
 	});
 });

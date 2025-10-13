@@ -85,6 +85,46 @@ const App = () => {
 />
 ```
 
+### Auto First Fret (High Position Chords)
+
+The `autoFirstFret` feature automatically adjusts the diagram's starting fret position when finger positions are outside the default visible range. This is particularly useful for high-position chords.
+
+```tsx
+// Without autoFirstFret, you'd need to manually set firstFret={5}
+<ChordDiagram
+	autoFirstFret={true}
+	fretCount={4}
+	fingers={[
+		{ fret: 5, string: 1, is_muted: false, text: "1" },
+		{ fret: 7, string: 2, is_muted: false, text: "3" },
+		{ fret: 8, string: 3, is_muted: false, text: "4" },
+	]}
+	barres={[]}
+/>
+// → Automatically starts at fret 5, all fingers visible
+
+// Automatically increases fretCount when needed
+<ChordDiagram
+	autoFirstFret={true}
+	fretCount={4}
+	fingers={[
+		{ fret: 5, string: 1, is_muted: false },
+		{ fret: 10, string: 2, is_muted: false },
+	]}
+	barres={[]}
+/>
+// → firstFret=5, fretCount increased to 6
+// → Console warning: "[ChordDiagram] Auto-increased fretCount from 4 to 6"
+```
+
+**Key Features:**
+
+- Automatically calculates `firstFret` based on finger positions
+- Can increase `fretCount` (up to max of 12) to fit all fingers
+- Manual `firstFret` always takes precedence (allows override)
+- Only activates when fingers are outside visible range (1-fretCount)
+- Logs console warnings when adjustments are made
+
 ### Custom Styling
 
 ````tsx
@@ -164,6 +204,7 @@ layoutRegistry.register(diagonalEngine);
 | `instrument`     | `Partial<Instrument>`      | Instrument configuration for fret notation                                      |
 | `view`           | `ViewId`                   | Predefined layout view (`horizontal-right`, `horizontal-left`, `vertical-right`, `vertical-left`) |
 | `layoutEngine`   | `LayoutEngine`             | Custom layout strategy (takes precedence over `view`)                           |
+| `autoFirstFret`  | `boolean`                  | Automatically adjusts `firstFret` when fingers are outside visible range (default: `false`) |
 | `width`/`height` | `number`                   | Total width/height of the SVG                                                   |
 | `dotColor`       | `string`                   | Finger dot color                                                                |
 | `fontFamily`     | `string`                   | Font family                                                                     |

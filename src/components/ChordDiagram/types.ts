@@ -267,6 +267,24 @@ export interface ChordDiagramProps {
 	 */
 	autoBarreEnabled?: boolean;
 
+	// Auto first fret calculation
+	/**
+	 * Enables/disables automatic firstFret calculation (default: false)
+	 *
+	 * When enabled and firstFret is not manually provided, the system automatically
+	 * calculates the optimal firstFret position based on finger positions. If any
+	 * finger is outside the visible range (1-fretCount), it adjusts firstFret to
+	 * the minimum fret position. If the range of fingers exceeds fretCount, it
+	 * automatically increases fretCount (up to a maximum of 12 frets).
+	 *
+	 * Auto firstFret is disabled if:
+	 * - autoFirstFret is set to false
+	 * - OR firstFret is manually provided (manual value has precedence)
+	 *
+	 * @default false
+	 */
+	autoFirstFret?: boolean;
+
 	// Validation & error handling
 	/** Validation policy: strict (default) rejects invalid inputs; lenient tries to normalize */
 	validation?: "strict" | "lenient";

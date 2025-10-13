@@ -205,6 +205,8 @@ _Estas fases estão além do escopo do comando /plan_
 
 ## Versionamento
 
+- **v2.1.0**: Feature `autoFirstFret` - cálculo automático de posição inicial para acordes em posições altas (ver `tasks-auto-first-fret.md`)
+- **v2.0.0**: Migração completa para nova API com export/import de estado, customizações avançadas
 - **v1.1.0**: Adicionado suporte para rotação, modo canhoto e integração com `tonal.js`.
 - **v1.0.0**: Versão inicial com funcionalidades básicas.
 

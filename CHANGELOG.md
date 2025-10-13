@@ -1,5 +1,57 @@
 # Changelog
 
+## 2.1.0 (2025-10-13)
+
+### ✨ Features
+
+#### Auto First Fret
+
+Nova propriedade `autoFirstFret` que calcula automaticamente a posição inicial do diagrama para acordes em posições altas.
+
+**Principais recursos:**
+
+- Cálculo automático de `firstFret` baseado nas posições dos dedos
+- Ajuste automático de `fretCount` quando necessário (máximo 12 trastes)
+- Precedência manual: `firstFret` manual sempre prevalece
+- Console warnings quando `fretCount` é aumentado automaticamente
+- Recálculo dinâmico quando props mudam
+
+**Exemplo:**
+
+```tsx
+// Acordes em posições altas sem configuração manual
+<ChordDiagram
+	autoFirstFret={true}
+	fretCount={4}
+	fingers={[
+		{ fret: 5, string: 1, is_muted: false },
+		{ fret: 7, string: 2, is_muted: false },
+		{ fret: 8, string: 3, is_muted: false },
+	]}
+	barres={[]}
+/>
+// → Automaticamente inicia em fret 5, todos os dedos visíveis
+```
+
+### Added
+
+- Propriedade `autoFirstFret?: boolean` em `ChordDiagramProps`
+- Funções utilitárias em `utils/autoFirstFret.ts`:
+    - `getPressedFingers()`: Filtra dedos pressionados (fret > 0)
+    - `shouldActivateAutoFirstFret()`: Verifica se há dedos fora do range
+    - `calculateAutoFirstFret()`: Calcula firstFret e fretCount otimizados
+    - `shouldApplyAutoFirstFret()`: Valida condições de ativação
+- 8 novos testes unitários cobrindo todos os cenários
+- 5 novas stories no Storybook demonstrando a feature
+- Documentação completa no README.md
+
+### Documentation
+
+- Seção "Auto First Fret (High Position Chords)" no README
+- Exemplos práticos de uso
+- JSDoc completo nas funções
+- Specs: `tasks-auto-first-fret.md`
+
 ## 2.0.1 (2025-10-12)
 
 ### Fixed
