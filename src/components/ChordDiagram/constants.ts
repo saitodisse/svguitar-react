@@ -11,63 +11,63 @@ import type { Instrument, ViewId } from "./types";
  */
 export const DEFAULT_CHORD_STYLE = {
 	// Dimensions
-	width: 220,
-	height: 250,
-	fretCount: 4,
+	width: 192,
+	height: 261,
+	fretCount: 5,
 	stringCount: 6,
-	fretWidth: 40,
-	fretHeight: 30,
-	stringWidth: 2,
-	dotSize: 12,
-	barreHeight: 8,
+	fretWidth: 23,
+	fretHeight: 39,
+	stringWidth: 1,
+	dotSize: 18,
+	barreHeight: 11,
 
 	// Colors
 	backgroundColor: "#ffffff",
-	fretColor: "#333333",
+	fretColor: "#363434",
 	stringColor: "#666666",
 	dotColor: "#2196F3",
 	dotTextColor: "#ffffff",
 	barreColor: "#2196F3",
-	fretTextColor: "#868686",
-	tuningTextColor: "#666666",
+	fretTextColor: "#d1d0d0",
+	tuningTextColor: "#cecbcb",
 	openStringColor: "#2196F3", // Same color as normal finger dots
 	mutedStringColor: "#DC143C", // Red for muted strings
 
 	// Fonts
-	fontFamily: "Arial, sans-serif",
-	dotTextSize: 11,
-	fretTextSize: 20,
+	fontFamily: "sans-serif",
+	dotTextSize: 15,
+	fretTextSize: 17,
 	tuningTextSize: 17,
 
 	// TuningLabels customization
-	tuningLabelOffsetX: 0.5, // Horizontal multiplier (-5 to 5) - controls distance from nut in horizontal layouts, perpendicular adjustment in vertical
-	tuningLabelOffsetY: 0.5, // Vertical multiplier (-5 to 5) - controls distance from nut in vertical layouts, perpendicular adjustment in horizontal
-	tuningLabelFormat: "scientific" as "scientific" | "note-only", // Format for tuning labels
+	tuningLabelOffsetX: 0.04, // Horizontal multiplier (-5 to 5) - controls distance from nut in horizontal layouts, perpendicular adjustment in vertical
+	tuningLabelOffsetY: 0.15, // Vertical multiplier (-5 to 5) - controls distance from nut in vertical layouts, perpendicular adjustment in horizontal
+	tuningLabelFormat: "note-only" as "scientific" | "note-only", // Format for tuning labels
 
 	// String indicators customization
-	stringIndicatorOffsetX: 0.5, // Horizontal multiplier (-5 to 5) for open/muted string indicators positioning
+	stringIndicatorOffsetX: 0.35, // Horizontal multiplier (-5 to 5) for open/muted string indicators positioning
 	stringIndicatorOffsetY: 0, // Vertical multiplier (-5 to 5) for open/muted string indicators positioning
 
 	// Barres customization
-	barresWidth: 8, // Width/thickness of barre rectangles in pixels (width in horizontal views, height in vertical views)
+	barresWidth: 11, // Width/thickness of barre rectangles in pixels (width in horizontal views, height in vertical views)
 	barresOpacity: 1.0, // Opacity of barre rectangles from 0 to 1
-	barresOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for barre positioning
-	barresOffsetY: 0, // Vertical offset multiplier (-5 to 5) for barre positioning
+	barresOffsetX: 0.12, // Horizontal offset multiplier (-5 to 5) for barre positioning
+	barresOffsetY: 0.33, // Vertical offset multiplier (-5 to 5) for barre positioning
 
 	// Fret numbers customization
-	fretTextOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for fret number positioning
-	fretTextOffsetY: 0, // Vertical offset multiplier (-5 to 5) for fret number positioning
+	fretTextOffsetX: -6.32, // Horizontal offset multiplier (-5 to 5) for fret number positioning
+	fretTextOffsetY: 0.16, // Vertical offset multiplier (-5 to 5) for fret number positioning
 
 	// Nut (fret zero) customization
-	nutStrokeWidth: 0.075, // Stroke width multiplier (-5 to 5) - 0.075 * 40 (default fretWidth) ≈ 3px
+	nutStrokeWidth: 0.106, // Stroke width multiplier (-5 to 5) - 0.106 * 23 (default fretWidth) ≈ 2.4px
 	nutOffsetX: 0, // Horizontal offset multiplier (-5 to 5) for nut positioning
 	nutOffsetY: 0, // Vertical offset multiplier (-5 to 5) for nut positioning
 	nutOpacity: 1.0, // Opacity from 0 to 1
 	nutColor: "#333333", // Same as default fretColor
 
 	// Canvas positioning (global diagram offset)
-	canvasOffsetX: 0, // Horizontal offset in pixels for entire diagram
-	canvasOffsetY: 0, // Vertical offset in pixels for entire diagram
+	canvasOffsetX: -15, // Horizontal offset in pixels for entire diagram
+	canvasOffsetY: -24, // Vertical offset in pixels for entire diagram
 };
 
 /**

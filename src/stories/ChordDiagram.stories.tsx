@@ -273,27 +273,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Base configuration with all default props including new customizations
-const BASE_STORY_CONFIG = {
-	...DEFAULT_CHORD_STYLE,
-	tuningLabelOffsetX: 0.5,
-	tuningLabelOffsetY: 0.5,
-	tuningLabelFormat: "scientific" as const,
-	stringIndicatorOffsetX: 0.5,
-	stringIndicatorOffsetY: 0,
-	barresWidth: 8,
-	barresOpacity: 1,
-	barresOffsetX: 0,
-	barresOffsetY: 0,
-	fretTextOffsetX: 0,
-	fretTextOffsetY: 0,
-	nutStrokeWidth: 0.075,
-	nutOffsetX: 0,
-	nutOffsetY: 0,
-	nutOpacity: 1.0,
-	nutColor: "#333333",
-	canvasOffsetX: 0,
-	canvasOffsetY: 0,
-};
+const BASE_STORY_CONFIG = DEFAULT_CHORD_STYLE;
 
 // Basic chord examples
 const cMajor: ChordDiagramProps = {
@@ -348,8 +328,8 @@ export const WithBarreVerticalRight: Story = {
 		...fMajor,
 		...BASE_STORY_CONFIG,
 		view: "vertical-right",
-		width: 192,
-		height: 261,
+		width: 173,
+		height: 240,
 		fretCount: 5,
 		fretWidth: 23,
 		fretHeight: 39,
@@ -400,6 +380,7 @@ export const WithBarreVerticalRight: Story = {
 		stringIndicatorOffsetX: 0.35,
 		fretTextOffsetX: -6.32,
 		fretTextOffsetY: 0.16,
+		canvasOffsetX: -15,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -426,7 +407,7 @@ export const WithBarreHorizontalRight: Story = {
 		...fMajor,
 		...BASE_STORY_CONFIG,
 		view: "horizontal-right",
-		width: 535,
+		width: 283,
 		height: 214,
 		fretWidth: 47,
 		fretHeight: 30,
@@ -476,14 +457,15 @@ export const WithBarreHorizontalRight: Story = {
 		barresOffsetY: -0.14,
 		tuningTextColor: "#9e9a9a",
 		tuningLabelOffsetX: 0.28,
-		tuningLabelOffsetY: -0.04,
+		tuningLabelOffsetY: -0.08,
 		tuningLabelFormat: "note-only",
-		stringIndicatorOffsetY: 0,
-		canvasOffsetX: 0,
+		stringIndicatorOffsetY: -0.05,
+		canvasOffsetX: -23,
 		fretTextOffsetX: 0,
-		fretTextOffsetY: 0,
+		fretTextOffsetY: 6.5,
 		nutStrokeWidth: 0.075,
 		nutColor: "#333333",
+		canvasOffsetY: -26,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -509,17 +491,18 @@ export const WithFretNotation: Story = {
 	args: {
 		...gMajorInstrument,
 		...BASE_STORY_CONFIG,
-		width: 249,
-		height: 237,
+		width: 190,
+		height: 251,
 		tuningTextColor: "#cecece",
 		openStringColor: "#708aba",
-		fretTextSize: 19,
-		tuningLabelOffsetX: -4.41,
+		fretTextSize: 11,
+		tuningLabelOffsetX: -5.5,
 		tuningLabelFormat: "scientific",
 		stringIndicatorOffsetX: 0.23,
 		tuningTextSize: 14,
-		tuningLabelOffsetY: -0.02,
-		fretTextOffsetY: 0.15,
+		tuningLabelOffsetY: 0.01,
+		fretTextOffsetY: 0.38,
+		fretTextOffsetX: -0.01,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -546,8 +529,8 @@ export const CustomStyle: Story = {
 		...BASE_STORY_CONFIG,
 		...customStyleProps,
 		...customStyleChord,
-		width: 228,
-		height: 228,
+		width: 262,
+		height: 241,
 		fretColor: "#b7b2b2",
 		stringColor: "#5b5a5a",
 		backgroundColor: "#323232",
@@ -559,9 +542,11 @@ export const CustomStyle: Story = {
 		fretWidth: 41,
 		stringWidth: 2.57,
 		dotSize: 17,
-		fretTextOffsetY: 0.33,
+		fretTextOffsetY: 0.52,
 		nutStrokeWidth: 0.171,
 		nutColor: "#bcadad",
+		fretTextColor: "#545353",
+		fretTextOffsetX: 0.03,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -653,10 +638,8 @@ export const DropDTuning: Story = {
  */
 export const OpenStrings: Story = {
 	args: {
-		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-		fretNotation: "022000",
-
 		...BASE_STORY_CONFIG,
+		fretNotation: "022000",
 		fretColor: "#545353",
 		fretTextColor: "#b4b0b0",
 		tuningTextColor: "#b2b2b2",
@@ -1147,11 +1130,13 @@ export const CanvasPositioning: Story = {
 	args: {
 		...cMajor,
 		...BASE_STORY_CONFIG,
-		canvasOffsetX: -9,
-		canvasOffsetY: -7,
+		canvasOffsetX: 47,
+		canvasOffsetY: 25,
 		backgroundColor: "#f0f0f0",
 		tuningTextSize: 11,
 		tuningLabelOffsetY: -0.02,
+		height: 318,
+		width: 379,
 	},
 	parameters: {
 		docs: {
@@ -1186,8 +1171,8 @@ export const CombinedAdvancedCustomization: Story = {
 		barresOpacity: 0.76,
 		dotColor: "#00AA66",
 		barreColor: "#00AA66",
-		width: 217,
-		height: 226,
+		width: 260,
+		height: 232,
 		tuningLabelOffsetX: 0.3,
 		tuningLabelOffsetY: -0.11,
 		tuningLabelFormat: "note-only",
@@ -1234,8 +1219,8 @@ export const AutoBarreEnabled: Story = {
 		// default, shown explicitly
 		autoBarreEnabled: true,
 
-		width: 220,
-		height: 260,
+		width: 268,
+		height: 221,
 		barresOffsetX: 0.41,
 		barreHeight: 23,
 	},
@@ -1277,8 +1262,8 @@ export const AutoBarreDisabled: Story = {
 		barres: [],
 		...BASE_STORY_CONFIG,
 		autoBarreEnabled: false, // explicitly disabled
-		width: 220,
-		height: 260,
+		width: 275,
+		height: 214,
 	},
 	parameters: {
 		docs: {
@@ -1319,8 +1304,8 @@ export const AutoBarreTiebreaker: Story = {
 		barres: [],
 
 		...BASE_STORY_CONFIG,
-		width: 220,
-		height: 260,
+		width: 278,
+		height: 210,
 		barreHeight: 21,
 		barresOffsetX: 0.42,
 	},
@@ -1369,8 +1354,8 @@ export const ManualBarrePrecedence: Story = {
 		// auto barre is enabled but won't apply
 		autoBarreEnabled: true,
 
-		width: 220,
-		height: 260,
+		width: 272,
+		height: 203,
 		barresOffsetX: 0.17,
 	},
 	parameters: {
@@ -1427,8 +1412,8 @@ export const AutoFirstFretBasic: Story = {
 		autoFirstFret: true,
 		fretCount: 4,
 
-		width: 220,
-		height: 260,
+		width: 228,
+		height: 211,
 	},
 	parameters: {
 		docs: {
@@ -1477,8 +1462,8 @@ export const AutoFirstFretWithAdjustment: Story = {
 		autoFirstFret: true,
 		fretCount: 4,
 
-		width: 220,
-		height: 320,
+		width: 312,
+		height: 210,
 	},
 	parameters: {
 		docs: {
@@ -1528,8 +1513,8 @@ export const AutoFirstFretManualOverride: Story = {
 		firstFret: 1, // Manual override
 		fretCount: 4,
 
-		width: 220,
-		height: 260,
+		width: 261,
+		height: 208,
 	},
 	parameters: {
 		docs: {
@@ -1578,8 +1563,8 @@ export const AutoFirstFretMaximumLimit: Story = {
 		autoFirstFret: true,
 		fretCount: 4,
 
-		width: 220,
-		height: 460, // Taller to accommodate more frets
+		width: 662,
+		height: 208, // Taller to accommodate more frets
 	},
 	parameters: {
 		docs: {
@@ -1628,8 +1613,8 @@ export const AutoFirstFretEdgeCase: Story = {
 		autoFirstFret: true,
 		fretCount: 4,
 
-		width: 220,
-		height: 260,
+		width: 234,
+		height: 211,
 	},
 	parameters: {
 		docs: {
@@ -1666,8 +1651,22 @@ export const BugFix005500: Story = {
 		fretNotation: "005500",
 		autoFirstFret: true,
 		fretCount: 5,
-		width: 220,
-		height: 300,
+		width: 271,
+		height: 206,
+		fretColor: "#363434",
+		fretTextColor: "#e3e2e2",
+		tuningTextColor: "#c8c5c5",
+		tuningLabelOffsetX: 0.75,
+		tuningLabelOffsetY: 0,
+		stringIndicatorOffsetX: 0.15,
+		fretTextOffsetY: 0.35,
+		nutStrokeWidth: 0.106,
+		canvasOffsetX: 2,
+		canvasOffsetY: -24,
+		dotSize: 17,
+		barreHeight: 11,
+		barresWidth: 10,
+		barresOffsetX: 0.39,
 	},
 	parameters: {
 		docs: {
@@ -1720,8 +1719,22 @@ export const BugFix006600: Story = {
 		fretNotation: "006600",
 		autoFirstFret: true,
 		fretCount: 4,
-		width: 220,
-		height: 300,
+		width: 271,
+		height: 206,
+		fretColor: "#363434",
+		fretTextColor: "#e3e2e2",
+		tuningTextColor: "#c8c5c5",
+		tuningLabelOffsetX: 0.75,
+		tuningLabelOffsetY: 0,
+		stringIndicatorOffsetX: 0.15,
+		fretTextOffsetY: 0.35,
+		nutStrokeWidth: 0.106,
+		canvasOffsetX: 2,
+		canvasOffsetY: -24,
+		dotSize: 17,
+		barreHeight: 11,
+		barresWidth: 10,
+		barresOffsetX: 0.39,
 	},
 	parameters: {
 		docs: {
@@ -1775,8 +1788,22 @@ export const BugFixX54232: Story = {
 		autoFirstFret: true,
 		autoBarreEnabled: true,
 		fretCount: 5,
-		width: 220,
-		height: 300,
+		width: 271,
+		height: 206,
+		fretColor: "#363434",
+		fretTextColor: "#e3e2e2",
+		tuningTextColor: "#c8c5c5",
+		tuningLabelOffsetX: 0.75,
+		tuningLabelOffsetY: 0,
+		stringIndicatorOffsetX: 0.15,
+		fretTextOffsetY: 0.35,
+		nutStrokeWidth: 0.106,
+		canvasOffsetX: 2,
+		canvasOffsetY: -24,
+		dotSize: 17,
+		barreHeight: 11,
+		barresWidth: 10,
+		barresOffsetX: 0.39,
 	},
 	parameters: {
 		docs: {
