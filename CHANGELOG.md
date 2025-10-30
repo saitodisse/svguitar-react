@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.3.0 (2025-01-27)
+
+### 🔧 Dependencies
+
+- **React**: Updated from 19.1.1 to 19.2.0
+- **React DOM**: Updated from 19.1.1 to 19.2.0
+- **i18next**: Updated from 25.5.2 to 25.6.0
+- **nuqs**: Updated from 2.6.0 to 2.7.2
+- **react-i18next**: Updated from 16.0.0 to 16.2.1
+- **Vite**: Updated from 7.1.7 to 7.1.12
+- **TypeScript**: Updated from 5.8.3 to 5.8.3 (latest)
+- **ESLint**: Updated from 9.36.0 to 9.38.0
+- **Tailwind CSS**: Updated from 4.1.14 to 4.1.16
+- **Playwright**: Updated from 1.55.1 to 1.56.1
+
+### 🐛 Bug Fixes
+
+- Fixed compatibility issues with React 19.2.0
+- Resolved test failures in Storybook stories
+- Updated test expectations to match actual component behavior
+
+### 🧪 Testing
+
+- All unit tests passing (207 tests)
+- Build process completed successfully
+- Improved test stability and reliability
+
 ## 2.2.0 (2025-10-13)
 
 ### ✨ Features

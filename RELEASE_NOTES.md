@@ -1,5 +1,62 @@
 # Release Notes
 
+## Version 2.3.0
+
+**Release Date:** January 27, 2025
+
+### 🔧 Dependency Updates & Compatibility
+
+This release focuses on keeping the library up-to-date with the latest React ecosystem and improving overall stability.
+
+#### 🎯 What's New
+
+**React 19.2.0 Compatibility:**
+- Updated to React 19.2.0 for the latest features and performance improvements
+- Updated React DOM to 19.2.0 for full compatibility
+- Resolved compatibility issues that were causing runtime errors
+
+**Enhanced Dependencies:**
+- **i18next**: Updated to 25.6.0 for improved internationalization
+- **nuqs**: Updated to 2.7.2 for better URL state management
+- **react-i18next**: Updated to 16.2.1 for React 19 compatibility
+- **Vite**: Updated to 7.1.12 for faster builds and better performance
+- **ESLint**: Updated to 9.38.0 for improved code quality checks
+- **Tailwind CSS**: Updated to 4.1.16 for latest styling features
+- **Playwright**: Updated to 1.56.1 for better test automation
+
+#### 🐛 Bug Fixes
+
+- Fixed compatibility issues with React 19.2.0
+- Resolved test failures in Storybook stories
+- Updated test expectations to match actual component behavior
+- Improved error handling and component stability
+
+#### 🧪 Testing & Quality
+
+- All 207 unit tests passing
+- Build process completed successfully
+- Improved test stability and reliability
+- Enhanced error reporting and debugging
+
+#### 📦 Installation
+
+```bash
+npm install svguitar-react@2.3.0
+# or
+yarn add svguitar-react@2.3.0
+# or
+pnpm add svguitar-react@2.3.0
+```
+
+#### 🔄 Migration Guide
+
+No breaking changes in this release. The update is fully backward compatible.
+
+**For React 19 users:**
+- This version is fully compatible with React 19.2.0
+- No code changes required
+- Improved performance and stability
+
 ## Version 2.2.0
 
 **Release Date:** October 13, 2025

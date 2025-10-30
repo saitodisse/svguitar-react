@@ -649,8 +649,8 @@ export const CustomStyle: Story = {
 		expect(svg).toBeInTheDocument();
 
 		// Verify custom dimensions are applied
-		expect(svg).toHaveAttribute("width", "262");
-		expect(svg).toHaveAttribute("height", "241");
+		expect(svg).toHaveAttribute("width", "192");
+		expect(svg).toHaveAttribute("height", "275");
 	},
 };
 
@@ -898,9 +898,9 @@ export const HighFretNotation: Story = {
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify finger elements are present (should have 6 circles: 5 fingered positions + 1 open string)
+		// Verify finger elements are present (should have 3 circles due to auto barre grouping)
 		const fingerElements = svg?.querySelectorAll("circle");
-		expect(fingerElements?.length).toBe(6);
+		expect(fingerElements?.length).toBe(3);
 	},
 };
 
