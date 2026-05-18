@@ -21,7 +21,7 @@ A React component for rendering guitar chord diagrams in SVG format with high pe
 ## Installation
 
 ```bash
-npm install svguitar-react
+pnpm add svguitar-react
 ```
 
 ## Quick Start

@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import type { ChordDiagramProps, ChordDiagramState } from "../types";
+import type { Barre, ChordDiagramProps, ChordDiagramState, Finger } from "../types";
 
 /**
  * Validation result for state import
@@ -81,7 +81,7 @@ export function validateChordDiagramState(json: unknown): ValidationResult {
 	if (state.fingers && !Array.isArray(state.fingers)) {
 		errors.push("fingers must be an array");
 	} else if (state.fingers) {
-		state.fingers.forEach((finger: any, index: number) => {
+		state.fingers.forEach((finger: Finger, index: number) => {
 			if (typeof finger.fret !== "number" || finger.fret < 0) {
 				errors.push(`fingers[${index}].fret must be a non-negative number`);
 			}
@@ -98,7 +98,7 @@ export function validateChordDiagramState(json: unknown): ValidationResult {
 	if (state.barres && !Array.isArray(state.barres)) {
 		errors.push("barres must be an array");
 	} else if (state.barres) {
-		state.barres.forEach((barre: any, index: number) => {
+		state.barres.forEach((barre: Barre, index: number) => {
 			if (typeof barre.fret !== "number" || barre.fret < 1) {
 				errors.push(`barres[${index}].fret must be a positive number`);
 			}
@@ -124,7 +124,7 @@ export function validateChordDiagramState(json: unknown): ValidationResult {
 	if (!Array.isArray(state.tuning)) {
 		errors.push("tuning must be an array");
 	} else {
-		state.tuning.forEach((note: any, index: number) => {
+		state.tuning.forEach((note: string, index: number) => {
 			if (typeof note !== "string" || !note.match(/^[A-G][#b]?\d$/)) {
 				warnings.push(`tuning[${index}] should be in scientific notation (e.g., "E2")`);
 			}

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.1 (2026-05-18)
+
+### 📚 Documentation & Tooling
+
+- Added `AGENTS.md` as central instructions for AI agents and IDEs
+- Added project skills: `finalizar` (release workflow) and `specs-audit` (spec review)
+- Removed legacy `.cursor/rules/main.mdc` and obsolete `.cursor/commands/*` in favor of the new pattern
+- Removed unused `.specify/` scaffolding from the repository
+- README installation instructions now use `pnpm add svguitar-react`
+- Updated `packageManager` field in `package.json`
+
 ## 2.3.0 (2025-01-27)
 
 ### 🔧 Dependencies

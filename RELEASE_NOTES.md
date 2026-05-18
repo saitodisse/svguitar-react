@@ -1,5 +1,34 @@
 # Release Notes
 
+## Version 2.3.1
+
+**Release Date:** May 18, 2026
+
+### 📚 Agent & Developer Experience
+
+This patch improves how contributors and AI tools work on the repository. There are **no API or runtime changes** to the `svguitar-react` library.
+
+#### What's New
+
+- **`AGENTS.md`**: Single source of truth for stack, pnpm commands, specs paths, and project rules
+- **Cursor skills** (`.cursor/skills/`):
+    - `finalizar` — release checklist (tests, build, version, changelog, deploy)
+    - `specs-audit` — review `specs/001-guitar-svg/` before major changes
+- **README**: Install with `pnpm add svguitar-react`
+
+#### Cleanup
+
+- Legacy Cursor rules and commands replaced by `AGENTS.md` + skills
+- Removed unused `.specify/` templates and scripts
+
+#### Installation
+
+```bash
+pnpm add svguitar-react@2.3.1
+```
+
+---
+
 ## Version 2.3.0
 
 **Release Date:** January 27, 2025
@@ -11,11 +40,13 @@ This release focuses on keeping the library up-to-date with the latest React eco
 #### 🎯 What's New
 
 **React 19.2.0 Compatibility:**
+
 - Updated to React 19.2.0 for the latest features and performance improvements
 - Updated React DOM to 19.2.0 for full compatibility
 - Resolved compatibility issues that were causing runtime errors
 
 **Enhanced Dependencies:**
+
 - **i18next**: Updated to 25.6.0 for improved internationalization
 - **nuqs**: Updated to 2.7.2 for better URL state management
 - **react-i18next**: Updated to 16.2.1 for React 19 compatibility
@@ -53,6 +84,7 @@ pnpm add svguitar-react@2.3.0
 No breaking changes in this release. The update is fully backward compatible.
 
 **For React 19 users:**
+
 - This version is fully compatible with React 19.2.0
 - No code changes required
 - Improved performance and stability
