@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.3.2 (2026-05-18)
+
+### 🐛 Bug Fixes
+
+- **`mergeInstrument`**: Ignore `undefined` partial props so defaults (e.g. `strings: 6`) are not overwritten when only `fretNotation` is passed
+- **Demo app (`App.tsx`)**: Pass inline `fretNotation` / `fingers` / `barres` props to `ChordDiagram` instead of legacy nested `instrument` / `chord` objects
+- **Story `OpenStrings`**: Explicit `strings: 6` for fret notation without tuning
+
+### 🛠️ Tooling
+
+- **`pnpm dev`** / **`pnpm preview`**: Use `vite.config.app.ts` (demo UI) with `host: true` for WSL/network access
+- Added unit tests for `mergeInstrument` and `processChordData` with omitted `strings`
+
 ## 2.3.1 (2026-05-18)
 
 ### 📚 Documentation & Tooling

@@ -1,5 +1,30 @@
 # Release Notes
 
+## Version 2.3.2
+
+**Release Date:** May 18, 2026
+
+### 🐛 Bug Fixes & Demo
+
+This patch fixes instrument merging when consumers pass partial inline props, and restores the local demo app.
+
+#### Library
+
+- **`mergeInstrument`**: Undefined fields in a partial instrument no longer clear defaults. Fixes `INVALID_TUNING` when using `fretNotation` without an explicit `strings` prop (defaults apply correctly).
+
+#### Demo & development
+
+- Demo app now uses the documented inline API (`fretNotation`, `fingers`, `barres`) so the live editor shows the intended chord instead of the fallback diagram.
+- `pnpm dev` and `pnpm preview` target the demo app config (`vite.config.app.ts`) with network host enabled for WSL.
+
+#### Installation
+
+```bash
+pnpm add svguitar-react@2.3.2
+```
+
+---
+
 ## Version 2.3.1
 
 **Release Date:** May 18, 2026

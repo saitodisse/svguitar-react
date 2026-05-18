@@ -1,7 +1,7 @@
 {
 	"name": "svguitar-react",
 	"private": false,
-	"version": "2.3.1",
+	"version": "2.3.2",
 	"type": "module",
 	"packageManager": "pnpm@10.30.1+sha512.3590e550d5384caa39bd5c7c739f72270234b2f6059e13018f975c313b1eb9fefcc09714048765d4d9efe961382c312e624572c0420762bdc5d5940cdf9be73a",
 	"description": "A React component for rendering guitar chord diagrams in SVG format",
@@ -37,11 +37,11 @@
 		"url": "https://github.com/svguitar/svguitar-react/issues"
 	},
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite --config vite.config.app.ts",
 		"build": "tsc -p tsconfig.lib.json && vite build",
 		"build:app": "vite build --config vite.config.app.ts",
 		"lint": "eslint .",
-		"preview": "vite preview",
+		"preview": "vite preview --config vite.config.app.ts",
 		"preview:app": "vite preview --config vite.config.app.ts",
 		"storybook": "storybook dev -p 6006",
 		"storybook:ci": "storybook dev -p 6006 --ci",

@@ -5,7 +5,31 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { formatTuningLabel } from "./utils";
+import { formatTuningLabel, mergeInstrument, processChordData } from "./utils";
+import { DEFAULT_INSTRUMENT } from "./constants";
+
+describe("mergeInstrument", () => {
+	it("preserves default strings when strings prop is undefined", () => {
+		const merged = mergeInstrument({ strings: undefined, chord: "022000" });
+		expect(merged.strings).toBe(DEFAULT_INSTRUMENT.strings);
+	});
+
+	it("infers strings from tuning when strings is omitted", () => {
+		const merged = mergeInstrument({
+			tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
+		});
+		expect(merged.strings).toBe(6);
+	});
+});
+
+describe("processChordData", () => {
+	it("parses fret notation without explicit strings prop", () => {
+		const result = processChordData({
+			instrument: { chord: "022000", strings: undefined },
+		});
+		expect(result.fingers.length).toBeGreaterThan(0);
+	});
+});
 
 describe("formatTuningLabel", () => {
 	describe('format: "scientific"', () => {

@@ -731,6 +731,7 @@ export const DropDTuning: Story = {
 export const OpenStrings: Story = {
 	args: {
 		...VERTICAL_RIGHT_STYLE,
+		strings: 6,
 		fretNotation: "022000",
 		fretColor: "#545353",
 		fretTextColor: "#b4b0b0",

@@ -142,10 +142,10 @@ function ChordDiagramWithErrorHandling(props: ChordDiagramWithErrorHandlingProps
 		<>
 			<ChordDiagram
 				{...restProps}
-				instrument={{
-					...instrument,
-					chord: chordToUse,
-				}}
+				tuning={instrument?.tuning}
+				strings={instrument?.strings ?? 6}
+				frets={instrument?.frets}
+				fretNotation={chordToUse}
 			/>
 
 			{error && (
@@ -384,22 +384,21 @@ function App() {
 		parseAsInteger.withDefault(SIMPLE_DEFAULTS.canvasOffsetY)
 	);
 
-	// Chord/Instrument configuration for ChordDiagram
+	// Chord/Instrument configuration for ChordDiagram (inline props API)
 	const chordConfig = useMemo(() => {
 		const tuning = SIMPLE_DEFAULTS.instrument?.tuning ?? ["E2", "A2", "D3", "G3", "B3", "E4"];
+		const strings = SIMPLE_DEFAULTS.instrument?.strings ?? 6;
 
-		// If barre is not enabled, use instrument with chord string
+		// If barre is not enabled, use fret notation string
 		if (barreEnabled === 0) {
 			return {
-				instrument: {
-					tuning,
-					chord,
-				},
+				tuning,
+				strings,
+				fretNotation: chord,
 			};
 		}
 
-		// If barre is enabled, we need to use chord object with barres
-		// Parse the chord string to create fingers
+		// If barre is enabled, parse the chord string into fingers + barre object
 		const fingers: { fret: number; string: number; is_muted: boolean; text?: string }[] = [];
 		for (let i = 0; i < chord.length && i < 6; i++) {
 			const char = chord[i];
@@ -415,7 +414,6 @@ function App() {
 			}
 		}
 
-		// Add barre
 		const barres = [
 			{
 				fret: barreFret,
@@ -425,8 +423,10 @@ function App() {
 		];
 
 		return {
-			instrument: { tuning, chord },
-			chord: { fingers, barres },
+			tuning,
+			strings,
+			fingers,
+			barres,
 		};
 	}, [chord, barreEnabled, barreFret, barreFromString, barreToString]);
 
@@ -546,12 +546,10 @@ function App() {
 			const props = importChordDiagramState(state);
 
 			// Apply imported props to all state setters
-			// Handle chord and instrument
-			if (props.instrument?.chord) setChord(props.instrument.chord);
+			if (props.fretNotation) setChord(props.fretNotation);
 
-			// Handle barres from chord object
-			if (props.chord?.barres && props.chord.barres.length > 0) {
-				const firstBarre = props.chord.barres[0];
+			if (props.barres && props.barres.length > 0) {
+				const firstBarre = props.barres[0];
 				setBarreEnabled(1);
 				setBarreFret(firstBarre.fret);
 				setBarreFromString(firstBarre.fromString);

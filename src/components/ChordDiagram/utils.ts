@@ -249,15 +249,25 @@ export function mergeStyles(customStyle?: Partial<typeof DEFAULT_CHORD_STYLE>): 
 }
 
 /**
+ * Strips undefined values so partial props do not erase defaults (e.g. strings: undefined).
+ */
+function withoutUndefined<T extends object>(obj?: Partial<T>): Partial<T> {
+	if (!obj) {
+		return {};
+	}
+	return Object.fromEntries(Object.entries(obj).filter(([, value]) => value !== undefined)) as Partial<T>;
+}
+
+/**
  * Merges instrument configuration with defaults
  * @param customInstrument - Custom instrument properties
  * @returns Merged instrument object
  */
 export function mergeInstrument(customInstrument?: Partial<Instrument>): Instrument {
-	// Handle both legacy object format and inline props
+	const custom = withoutUndefined(customInstrument);
 	const merged = {
 		...DEFAULT_INSTRUMENT,
-		...customInstrument,
+		...custom,
 	};
 
 	// Ensure tuning always has a value
@@ -266,8 +276,8 @@ export function mergeInstrument(customInstrument?: Partial<Instrument>): Instrum
 	}
 
 	// Infer strings count from tuning length if not explicitly provided
-	if (customInstrument?.tuning && !customInstrument?.strings) {
-		merged.strings = customInstrument.tuning.length;
+	if (custom.tuning && custom.strings === undefined) {
+		merged.strings = custom.tuning.length;
 	}
 
 	return merged;
