@@ -5,33 +5,40 @@ Este guia mostra como instalar e usar o componente `ChordDiagram` para renderiza
 ## 1. Instalação
 
 ```bash
-pnpm install @svguitar/react
+pnpm install svguitar-react @ac15/contracts
 ```
 
 ## 2. Uso Básico
 
-Importe o componente `ChordDiagram` e passe os dados do acorde que deseja renderizar.
+Importe o componente `ChordDiagram` e passe o voicing compartilhado quando quiser usar a API nova.
 
 ### Exemplo 1: Acorde Simples (C Major)
 
-Você pode definir um acorde passando as props `fingers` e `barres` diretamente (API inline).
-
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
 
 const App = () => {
+	const cMajor: FrettedInstrumentVoicing = {
+		id: "voicing-c-major",
+		instrumentId: "guitar",
+		tuningId: "guitar-standard",
+		chordSymbol: "C",
+		strings: [
+			{ stringIndex: 1, openNote: "E", fret: null, state: "muted" },
+			{ stringIndex: 2, openNote: "A", fret: 3, state: "fretted", finger: 3 },
+			{ stringIndex: 3, openNote: "D", fret: 2, state: "fretted", finger: 2 },
+			{ stringIndex: 4, openNote: "G", fret: 0, state: "open" },
+			{ stringIndex: 5, openNote: "B", fret: 1, state: "fretted", finger: 1 },
+			{ stringIndex: 6, openNote: "E", fret: null, state: "open" },
+		],
+		source: "manual",
+		quality: "recommended",
+	};
+
 	return (
-		<ChordDiagram
-			fingers={[
-				// Fret notation: x32010
-				{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
-				{ fret: 2, string: 3, is_muted: false, text: "2" }, // String 3 (D)
-				{ fret: 1, string: 5, is_muted: false, text: "1" }, // String 5 (B)
-				// String 1 (E) is muted, String 4 (G) is open, String 6 (E) is open
-			]}
-			barres={[]}
-		/>
+		<ChordDiagram voicing={cMajor} />
 	);
 };
 
@@ -40,23 +47,32 @@ export default App;
 
 ### Exemplo 2: Acorde com Pestana (F Major)
 
-Para acordes com pestana, adicione barres na prop `barres`.
-
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
 
 const App = () => {
+	const fMajor: FrettedInstrumentVoicing = {
+		id: "voicing-f-major",
+		instrumentId: "guitar",
+		tuningId: "guitar-standard",
+		chordSymbol: "F",
+		strings: [
+			{ stringIndex: 1, openNote: "E", fret: 1, state: "fretted", finger: 1 },
+			{ stringIndex: 2, openNote: "A", fret: 3, state: "fretted", finger: 3 },
+			{ stringIndex: 3, openNote: "D", fret: 3, state: "fretted", finger: 4 },
+			{ stringIndex: 4, openNote: "G", fret: 2, state: "fretted", finger: 2 },
+			{ stringIndex: 5, openNote: "B", fret: 1, state: "fretted", finger: 1 },
+			{ stringIndex: 6, openNote: "E", fret: 1, state: "fretted", finger: 1 },
+		],
+		barres: [{ fret: 1, fromStringIndex: 1, toStringIndex: 6, finger: 1 }],
+		source: "manual",
+		quality: "recommended",
+	};
+
 	return (
-		<ChordDiagram
-			fingers={[
-				// Fret notation: 133211
-				{ fret: 3, string: 2, is_muted: false, text: "3" }, // String 2 (A)
-				{ fret: 3, string: 3, is_muted: false, text: "4" }, // String 3 (D)
-				{ fret: 2, string: 4, is_muted: false, text: "2" }, // String 4 (G)
-			]}
-			barres={[{ fret: 1, fromString: 1, toString: 6 }]}
-		/>
+		<ChordDiagram voicing={fMajor} />
 	);
 };
 
@@ -69,9 +85,14 @@ Alternativamente, você pode passar uma Fret Notation usando a prop `fretNotatio
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
+	const gMajorInstrument = {
+		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
+		chord: "320003", // G Major
+	};
+
 	return <ChordDiagram instrument={gMajorInstrument} />;
 };
 
@@ -80,11 +101,11 @@ export default App;
 
 ## 3. Customização
 
-Você pode customizar a aparência do diagrama passando um objeto `style`.
+Você pode customizar a aparência do diagrama passando props inline.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const aMinor = {
@@ -97,20 +118,19 @@ const App = () => {
 		barres: [],
 	};
 
-	const customStyle = {
-		width: 150,
-		height: 180,
-		dotColor: "#FF5733", // Laranja
-		stringColor: "#CCCCCC",
-		fretColor: "#AAAAAA",
-		fontFamily: "Arial, sans-serif",
-		openStringColor: "#00FF00", // Verde para cordas soltas
-		mutedStringColor: "#FF0000", // Vermelho para cordas mutadas
-		openStringSize: 14,
-		mutedStringSize: 16,
-	};
-
-	return <ChordDiagram chord={aMinor} style={customStyle} />;
+	return (
+		<ChordDiagram
+			chord={aMinor}
+			width={150}
+			height={180}
+			dotColor="#FF5733"
+			stringColor="#CCCCCC"
+			fretColor="#AAAAAA"
+			fontFamily="Arial, sans-serif"
+			openStringColor="#00FF00"
+			mutedStringColor="#FF0000"
+		/>
+	);
 };
 
 export default App;
@@ -124,7 +144,7 @@ Para mostrar acordes em posições mais altas no braço, use `firstFret`.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const dMajorHigh = {
@@ -151,7 +171,7 @@ Para instrumentos com afinação diferente, especifique a afinação personaliza
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const dropDTuning = {
@@ -175,7 +195,7 @@ Use "o" para cordas soltas e "x" para cordas mutadas na Fret Notation.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const eMinor = {
@@ -197,7 +217,7 @@ Você também pode especificar cordas soltas e mutadas diretamente no objeto `Ch
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajorWithOpenStrings = {
@@ -225,7 +245,7 @@ Para trastes com mais de um dígito, use parênteses.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const fMajor10th = {
@@ -247,7 +267,7 @@ Use a propriedade `view` para selecionar entre as views predefinidas: `horizonta
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajor = {
@@ -282,7 +302,7 @@ Quando você especifica um acorde com **mais de 4 dedos pressionados** (fret > 0
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	// Acorde com 6 dedos: 5 no traste 3, 1 no traste 5
@@ -312,7 +332,7 @@ Se você quiser desabilitar a detecção automática e mostrar todos os dedos in
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const complexChord = {
@@ -340,7 +360,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	// F Major: barre manual no traste 1
@@ -366,7 +386,7 @@ Se múltiplos trastes tiverem o mesmo número de dedos (empate), o sistema escol
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	// Empate: traste 3 tem 3 dedos, traste 5 também tem 3 dedos
@@ -401,7 +421,7 @@ Selecione `horizontal-left` ou `vertical-left` via `view`.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajor = {
@@ -427,7 +447,7 @@ Você pode ajustar a distância dos rótulos de afinação em relação ao nut u
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajor = {
@@ -456,7 +476,7 @@ Para economizar espaço, você pode mostrar apenas a nota sem o número da oitav
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const gMajor = {
@@ -481,7 +501,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	return (
@@ -508,7 +528,7 @@ Você pode ajustar a distância dos indicadores de cordas soltas ('O') e mutadas
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajor = {
@@ -542,7 +562,7 @@ O componente lança erros específicos para dados inválidos.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const invalidChord = {
@@ -581,7 +601,7 @@ export default App;
 Você pode injetar uma estratégia de layout própria com `layoutEngine`.
 
 ```tsx
-import { LayoutEngine, ChordDiagram } from "@svguitar/react";
+import { LayoutEngine, ChordDiagram } from "svguitar-react";
 
 const myEngine: LayoutEngine = {
 	id: "horizontal-right",
@@ -639,7 +659,7 @@ Para melhor performance, memorize os objetos de props quando possível.
 
 ```jsx
 import React, { useMemo } from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const chordData = useMemo(
@@ -654,16 +674,7 @@ const App = () => {
 		[]
 	);
 
-	const styleData = useMemo(
-		() => ({
-			width: 200,
-			height: 250,
-			dotColor: "#2196F3",
-		}),
-		[]
-	);
-
-	return <ChordDiagram chord={chordData} style={styleData} />;
+	return <ChordDiagram chord={chordData} width={200} height={250} dotColor="#2196F3" />;
 };
 
 export default App;
@@ -675,7 +686,7 @@ O componente é totalmente tipado e inclui definições de tipos.
 
 ```typescript
 import React from "react";
-import { ChordDiagram, ChordDiagramProps, Chord } from "@svguitar/react";
+import { ChordDiagram, ChordDiagramProps, Chord } from "svguitar-react";
 
 const App: React.FC = () => {
 	const chord: Chord = {
@@ -689,10 +700,8 @@ const App: React.FC = () => {
 
 	const props: ChordDiagramProps = {
 		chord,
-		style: {
-			width: 200,
-			height: 250,
-		},
+		width: 200,
+		height: 250,
 	};
 
 	return <ChordDiagram {...props} />;
@@ -709,7 +718,7 @@ Customize a aparência das barres (pestanas) com largura, opacidade e deslocamen
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const fMajor = {
@@ -741,7 +750,7 @@ Ajuste a posição dos rótulos de afinação horizontal e verticalmente.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const cMajor = {
@@ -772,7 +781,7 @@ Controle a posição dos indicadores de cordas soltas e mutadas.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const chord = {
@@ -805,7 +814,7 @@ Ajuste a posição dos números dos trastes.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const dMajor = {
@@ -838,7 +847,7 @@ Combine todas as customizações avançadas em um único diagrama.
 
 ```jsx
 import React from "react";
-import { ChordDiagram } from "@svguitar/react";
+import { ChordDiagram } from "svguitar-react";
 
 const App = () => {
 	const chord = {

@@ -18,6 +18,8 @@ import {
 	processChordData,
 	mergeStyles,
 	mergeInstrument,
+	voicingToChord,
+	voicingToInstrument,
 	validateViewProps,
 	getStartX,
 	getStartY,
@@ -47,6 +49,7 @@ import { FretNumbers } from "./FretNumbers";
  */
 export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	const {
+		voicing,
 		// Instrument configuration (inline)
 		strings,
 		frets,
@@ -75,14 +78,15 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	let resolvedViewId: ViewId | null = null;
 	let resolvedLayoutEngine: LayoutEngine | null = null;
 
-	try {
-		// Validate and resolve view
-		resolvedViewId = validateViewProps({ view, layoutEngine });
-		resolvedLayoutEngine = layoutEngine || getLayoutEngine(resolvedViewId) || null;
+		try {
+			// Validate and resolve view
+			resolvedViewId = validateViewProps({ view, layoutEngine });
+			resolvedLayoutEngine = layoutEngine || getLayoutEngine(resolvedViewId) || null;
 
-		// Build chord and instrument objects from inline props
-		const chordObj: Chord | undefined =
-			fingers || barres
+		// Build chord and instrument objects from shared voicing or legacy inline props
+		const chordObj: Chord | undefined = voicing
+			? voicingToChord(voicing)
+			: fingers || barres
 				? {
 						fingers: fingers || [],
 						barres: barres || [],
@@ -92,18 +96,20 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				: undefined;
 
 		const instrumentObj =
-			fretNotation || strings || frets || tuning
-				? {
-						strings,
-						frets,
-						tuning,
-						chord: fretNotation,
-					}
+			voicing || fretNotation || strings || frets || tuning
+				? voicing
+					? voicingToInstrument(voicing)
+					: {
+							strings,
+							frets,
+							tuning,
+							chord: fretNotation,
+						}
 				: undefined;
 
-		chordData = processChordData({ chord: chordObj, instrument: instrumentObj });
+		chordData = processChordData({ voicing, chord: chordObj, instrument: instrumentObj });
 		lastValidRef.current = chordData;
-	} catch (err) {
+		} catch (err) {
 		const error = err as ChordDiagramError;
 		renderError = error;
 
@@ -119,7 +125,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 
 		if (onError) {
 			onError(error, {
-				input: (fretNotation as unknown as string) ?? ({ fingers, barres } as unknown as Chord),
+				input: voicing ?? (fretNotation as unknown as string) ?? ({ fingers, barres } as unknown as Chord),
 				code: error.code as ErrorCode,
 				message: error.message,
 				normalized: null,
@@ -132,7 +138,9 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				chordData = lastValidRef.current;
 			} else {
 				// Use fallback chord
-				const mergedInstrument = mergeInstrument({ strings, frets, tuning, chord: fretNotation });
+				const mergedInstrument = voicing
+					? voicingToInstrument(voicing)
+					: mergeInstrument({ strings, frets, tuning, chord: fretNotation });
 				chordData =
 					typeof fallbackChord === "string"
 						? processChordData({
@@ -147,7 +155,9 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 				lastValidRef.current = chordData;
 			}
 		} else if (invalidBehavior === "render-fallback") {
-			const mergedInstrument = mergeInstrument({ strings, frets, tuning, chord: fretNotation });
+			const mergedInstrument = voicing
+				? voicingToInstrument(voicing)
+				: mergeInstrument({ strings, frets, tuning, chord: fretNotation });
 			chordData =
 				typeof fallbackChord === "string"
 					? processChordData({

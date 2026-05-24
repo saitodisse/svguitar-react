@@ -29,18 +29,27 @@ pnpm add svguitar-react
 ```tsx
 import React from "react";
 import { ChordDiagram } from "svguitar-react";
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
 
 const App = () => {
-	const cMajor = {
-		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
+	const cMajorVoicing: FrettedInstrumentVoicing = {
+		id: "voicing-c-major",
+		instrumentId: "guitar",
+		tuningId: "guitar-standard",
+		chordSymbol: "C",
+		strings: [
+			{ stringIndex: 1, openNote: "E", fret: null, state: "muted" },
+			{ stringIndex: 2, openNote: "A", fret: 3, state: "fretted", finger: 3 },
+			{ stringIndex: 3, openNote: "D", fret: 2, state: "fretted", finger: 2 },
+			{ stringIndex: 4, openNote: "G", fret: 0, state: "open" },
+			{ stringIndex: 5, openNote: "B", fret: 1, state: "fretted", finger: 1 },
+			{ stringIndex: 6, openNote: "E", fret: null, state: "open" },
 		],
-		barres: [],
+		source: "manual",
+		quality: "recommended",
 	};
 
-	return <ChordDiagram chord={cMajor} view="horizontal-right" />;
+	return <ChordDiagram voicing={cMajorVoicing} view="horizontal-right" />;
 };
 ```
 
@@ -49,29 +58,31 @@ const App = () => {
 ### Basic Chord
 
 ```tsx
-<ChordDiagram
-	chord={{
-		fingers: [
-			{ fret: 1, string: 2, is_muted: false, text: "1" },
-			{ fret: 2, string: 4, is_muted: false, text: "2" },
-		],
-		barres: [],
-	}}
-/>
+<ChordDiagram voicing={cMajorVoicing} />
 ```
 
 ### Chord with Barre
 
 ```tsx
-<ChordDiagram
-	chord={{
-		fingers: [
-			{ fret: 2, string: 3, is_muted: false, text: "2" },
-			{ fret: 3, string: 5, is_muted: false, text: "3" },
-		],
-		barres: [{ fret: 1, fromString: 1, toString: 6 }],
-	}}
-/>
+const fMajorVoicing: FrettedInstrumentVoicing = {
+	id: "voicing-f-major",
+	instrumentId: "guitar",
+	tuningId: "guitar-standard",
+	chordSymbol: "F",
+	strings: [
+		{ stringIndex: 1, openNote: "E", fret: 1, state: "fretted", finger: 1 },
+		{ stringIndex: 2, openNote: "A", fret: 3, state: "fretted", finger: 3 },
+		{ stringIndex: 3, openNote: "D", fret: 3, state: "fretted", finger: 4 },
+		{ stringIndex: 4, openNote: "G", fret: 2, state: "fretted", finger: 2 },
+		{ stringIndex: 5, openNote: "B", fret: 1, state: "fretted", finger: 1 },
+		{ stringIndex: 6, openNote: "E", fret: 1, state: "fretted", finger: 1 },
+	],
+	barres: [{ fret: 1, fromStringIndex: 1, toStringIndex: 6, finger: 1 }],
+	source: "manual",
+	quality: "recommended",
+};
+
+<ChordDiagram voicing={fMajorVoicing} />
 ```
 
 ### Using Fret Notation
@@ -200,6 +211,7 @@ layoutRegistry.register(diagonalEngine);
 
 | Prop             | Type                       | Description                                                                     |
 | ---------------- | -------------------------- | ------------------------------------------------------------------------------- |
+| `voicing`        | `FrettedInstrumentVoicing` | Shared chord voicing contract from `@ac15/contracts`                            |
 | `chord`          | `Chord`                    | Chord data with fingers and barres                                              |
 | `instrument`     | `Partial<Instrument>`      | Instrument configuration for fret notation                                      |
 | `view`           | `ViewId`                   | Predefined layout view (`horizontal-right`, `horizontal-left`, `vertical-right`, `vertical-left`) |

@@ -39,3 +39,12 @@ export {
 	mergeInstrument,
 	processChordData,
 } from "./components/ChordDiagram/utils";
+export type {
+	FrettedInstrumentVoicing,
+	FrettedInstrumentString,
+	FrettedInstrumentBarre,
+	ParsedChordSymbol,
+	ParseDiagnostic,
+	ChordChartAst,
+	ParsedChordChart,
+} from "@ac15/contracts";

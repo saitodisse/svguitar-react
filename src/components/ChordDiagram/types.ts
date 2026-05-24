@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+
 /**
  * Represents a finger positioned on the guitar fretboard
  */
@@ -63,7 +65,7 @@ export interface Instrument {
 export type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
 
 export interface ErrorContext {
-	input: string | Chord;
+	input: string | Chord | FrettedInstrumentVoicing;
 	code: ErrorCode;
 	message: string;
 	normalized?: Chord | null;
@@ -125,6 +127,9 @@ export interface LayoutEngine {
  * Main props interface for the ChordDiagram component
  */
 export interface ChordDiagramProps {
+	/** Shared voicing contract from @ac15/contracts. Takes precedence over legacy inline props. */
+	voicing?: FrettedInstrumentVoicing;
+
 	// Instrument configuration (inline) - for fret notation input
 	/** Number of strings (default: 6) */
 	strings?: number;

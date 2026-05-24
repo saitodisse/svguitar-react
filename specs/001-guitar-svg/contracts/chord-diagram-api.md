@@ -11,8 +11,10 @@ O componente `ChordDiagram` é uma biblioteca React que renderiza diagramas de a
 ```typescript
 type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
 
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+
 interface ErrorContext {
-	input: string | Chord;
+	input: string | Chord | FrettedInstrumentVoicing;
 	code: ErrorCode;
 	message: string;
 	normalized?: Chord | null;
@@ -20,6 +22,7 @@ interface ErrorContext {
 }
 
 interface ChordDiagramProps {
+	voicing?: FrettedInstrumentVoicing;
 	instrument?: Partial<Instrument>;
 	chord?: Chord;
 
@@ -97,8 +100,9 @@ interface ChordDiagramProps {
 
 **Regras de Validação**:
 
-- Pelo menos um de `instrument` ou `chord` deve ser fornecido
-- Se ambos forem fornecidos, `chord` tem precedência
+- Pelo menos um de `voicing`, `instrument` ou `chord` deve ser fornecido
+- Se `voicing` for fornecido, ele é convertido para o modelo interno do renderer
+- Se ambos `chord` e `instrument` forem fornecidos, `chord` tem precedência
 - Propriedades de estilo são sempre opcionais e serão mescladas com valores padrão
 - Validação respeita `validation`: em `strict`, entradas inválidas disparam erro/fluxo de `invalidBehavior`; em `lenient`, entradas podem ser normalizadas (com warnings).
 - `invalidBehavior` define ação em caso de acorde inválido: manter último válido (padrão), renderizar `fallbackChord`, ou suprimir.

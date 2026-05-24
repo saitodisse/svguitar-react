@@ -5,6 +5,7 @@
  */
 
 import { Note } from "tonal";
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
 import type { Chord, Finger, Barre, Instrument, ViewId } from "./types";
 import { ChordDiagramError, ERROR_CODES } from "./types";
 import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT, VALID_FRET_CHARS, DEFAULT_VIEW } from "./constants";
@@ -283,6 +284,57 @@ export function mergeInstrument(customInstrument?: Partial<Instrument>): Instrum
 	return merged;
 }
 
+export function voicingToChord(voicing: FrettedInstrumentVoicing): Chord {
+	const fingers: Finger[] = voicing.strings.map((string) => {
+		if (string.state === "fretted") {
+			return {
+				fret: string.fret ?? 0,
+				string: string.stringIndex,
+				is_muted: false,
+				text: string.finger !== undefined ? String(string.finger) : undefined,
+			};
+		}
+
+		return {
+			fret: 0,
+			string: string.stringIndex,
+			is_muted: string.state === "muted",
+		};
+	});
+
+	const barres: Barre[] = (voicing.barres ?? []).map((barre) => ({
+		fret: barre.fret,
+		fromString: barre.fromStringIndex,
+		toString: barre.toStringIndex,
+		text: barre.finger !== undefined ? String(barre.finger) : undefined,
+	}));
+
+	return {
+		fingers,
+		barres,
+		firstFret: voicing.baseFret,
+		lastFret: undefined,
+	};
+}
+
+export function voicingToInstrument(voicing: FrettedInstrumentVoicing): Instrument {
+	const chordNotation = voicing.strings
+		.map((string) => {
+			if (string.state === "muted") return "x";
+			if (string.state === "open" || string.fret === 0) return "0";
+			if (string.fret === null || string.fret === undefined) return "x";
+			return string.fret > 9 ? `(${string.fret})` : String(string.fret);
+		})
+		.join("");
+
+	return mergeInstrument({
+		strings: voicing.strings.length,
+		tuning: voicing.strings.map((string) => string.openNote),
+		chord: chordNotation,
+		frets: voicing.baseFret ?? DEFAULT_INSTRUMENT.frets,
+	});
+}
+
 /**
  * Calculates the starting X position for the fretboard
  * @param style - Style configuration
@@ -372,13 +424,25 @@ export function getFingerY(
  * @returns Processed chord data
  * @throws {ChordDiagramError} If validation fails
  */
-export function processChordData(props: { instrument?: Partial<Instrument>; chord?: Chord }): Chord {
+export function processChordData(props: {
+	voicing?: FrettedInstrumentVoicing;
+	instrument?: Partial<Instrument>;
+	chord?: Chord;
+}): Chord {
 	// Check if at least one data source is provided
-	if (!props.instrument && !props.chord) {
+	if (!props.voicing && !props.instrument && !props.chord) {
 		throw new ChordDiagramError(
-			"Either 'instrument' or 'chord' prop must be provided.",
+			"Either 'voicing', 'instrument' or 'chord' prop must be provided.",
 			ERROR_CODES.MISSING_CHORD_DATA
 		);
+	}
+
+	if (props.voicing) {
+		const chord = voicingToChord(props.voicing);
+		const stringCount = props.voicing.strings.length;
+		chord.fingers.forEach((finger) => validateFinger(finger, stringCount));
+		chord.barres.forEach((barre) => validateBarre(barre, stringCount));
+		return chord;
 	}
 
 	// If chord is provided, use it directly (chord takes precedence)

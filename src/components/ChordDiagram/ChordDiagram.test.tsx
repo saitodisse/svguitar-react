@@ -8,6 +8,7 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ChordDiagram } from "./ChordDiagram";
+import type { FrettedInstrumentVoicing } from "@ac15/contracts";
 import {
 	parseFretNotation,
 	validateFinger,
@@ -41,6 +42,23 @@ const fMajor = {
 	barres: [{ fret: 1, fromString: 1, toString: 6 }],
 };
 
+const sharedVoicing = {
+	id: "voicing-1",
+	instrumentId: "guitar",
+	tuningId: "guitar-standard",
+	chordSymbol: "Cmaj7",
+	strings: [
+		{ stringIndex: 1, openNote: "E", fret: null, state: "muted" },
+		{ stringIndex: 2, openNote: "A", fret: 3, state: "fretted", finger: 3 },
+		{ stringIndex: 3, openNote: "D", fret: 2, state: "fretted", finger: 2 },
+		{ stringIndex: 4, openNote: "G", fret: 0, state: "open" },
+		{ stringIndex: 5, openNote: "B", fret: 1, state: "fretted", finger: 1 },
+		{ stringIndex: 6, openNote: "E", fret: null, state: "open" },
+	],
+	source: "manual",
+	quality: "recommended",
+} satisfies FrettedInstrumentVoicing;
+
 describe("ChordDiagram Component", () => {
 	it("should render C Major chord correctly", () => {
 		render(<ChordDiagram {...cMajor} />);
@@ -65,6 +83,14 @@ describe("ChordDiagram Component", () => {
 		expect(svg).toBeInTheDocument();
 		// G Major "320003" has 3 pressed fingers + 3 open strings = 6 circles total
 		expect(svg?.querySelectorAll("circle").length).toBe(6);
+	});
+
+	it("should render from the shared voicing contract", () => {
+		render(<ChordDiagram voicing={sharedVoicing} />);
+		const svg = screen.getByTestId("chord-diagram").querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		expect(svg?.querySelectorAll("circle").length).toBeGreaterThan(0);
+		expect(svg?.textContent).toContain("A");
 	});
 
 	it("renders horizontal-left view with tuning labels on the right and mirrored fret numbers", () => {

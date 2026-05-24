@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.4.0 (2026-05-24)
+
+### ✨ Features
+
+- Added first-class `voicing` support to `ChordDiagram` using the shared `@ac15/contracts` fretted instrument contract.
+- Exported the shared music contract types from the package root for direct integration with the rest of the ecosystem.
+
+### 📚 Documentation & Tooling
+
+- Updated README, quickstart, and API contract docs to use `voicing` as the preferred input shape.
+
 ## 2.3.2 (2026-05-18)
 
 ### 🐛 Bug Fixes
