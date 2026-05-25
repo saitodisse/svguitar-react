@@ -77,6 +77,22 @@ Do not add significant features outside the documented specs without updating th
 
 `achorde-musical-domain` owns the shared fretted voicing contracts used by this package. Keep those contracts outside React-specific code. `svguitar-react` owns SVG rendering, layout, and React integration only.
 
+## Downstream Consumers
+
+The following projects depend on published releases of this package:
+
+| Project | Path | Dependency location |
+| ------- | ---- | ------------------- |
+| ac15    | `/home/saito/_git/ac15` | `packages/ui/package.json` → `svguitar-react` |
+
+After publishing a new version:
+
+1. Go to each downstream project listed above.
+2. Update the dependency version in the listed `package.json`.
+3. Run `pnpm install` to regenerate the lockfile.
+4. Run tests and build to confirm compatibility.
+5. Commit and push the downstream update.
+
 ## Repository Skills
 
 | Skill                                                | Use                                                                                |
