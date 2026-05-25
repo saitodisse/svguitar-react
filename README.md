@@ -82,7 +82,7 @@ const fMajorVoicing: FrettedInstrumentVoicing = {
 	quality: "recommended",
 };
 
-<ChordDiagram voicing={fMajorVoicing} />
+<ChordDiagram voicing={fMajorVoicing} />;
 ```
 
 ### Using Fret Notation

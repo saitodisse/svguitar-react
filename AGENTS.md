@@ -1,105 +1,110 @@
-# AGENTS.md — svguitar-react
+# AGENTS.md - svguitar-react
 
-Instruções centrais para agentes de IA e IDEs (Cursor, Copilot, Claude, etc.) neste repositório.
+Central instructions for AI agents and IDE assistants working in this repository.
 
-## Visão geral
+## Overview
 
-Biblioteca React (TypeScript) para diagramas de acordes de guitarra em SVG, com Vite, Storybook, Vitest e Prettier.
+`svguitar-react` is an open-source React and TypeScript library for rendering fretted-instrument chord diagrams as SVG. It uses Vite, Storybook, Vitest, ESLint, and Prettier.
 
-**Gerenciador de pacotes:** use sempre **pnpm** (nunca npm ou yarn).
+**Package manager:** always use **pnpm**. Do not use npm or yarn for repository tasks.
 
-**Especificações:** antes de mudanças relevantes, consulte `specs/`. Para auditoria formal, use a skill [`specs-audit`](.cursor/skills/specs-audit/SKILL.md).
+**Specs:** read `specs/` before behavior changes. For formal review, use the [`specs-audit`](.cursor/skills/specs-audit/SKILL.md) skill.
 
 ## Stack
 
-| Área              | Tecnologia               |
-| ----------------- | ------------------------ |
-| UI                | React 19, TypeScript 5.8 |
-| Build             | Vite 7                   |
-| Docs / dev visual | Storybook 9              |
-| Testes            | Vitest, test-storybook   |
-| Qualidade         | ESLint 9, Prettier 3     |
+| Area        | Technology               |
+| ----------- | ------------------------ |
+| UI          | React 19, TypeScript 5.8 |
+| Build       | Vite 7                   |
+| Visual docs | Storybook 9              |
+| Tests       | Vitest, test-storybook   |
+| Quality     | ESLint 9, Prettier 3     |
 
-## Estrutura
+## Structure
 
-```
+```text
 src/
-├── components/ChordDiagram/   # Componente principal da biblioteca
-├── components/ui/             # UI auxiliar (demo/app)
-├── stories/                   # Stories do Storybook
-├── App.tsx, main.tsx
-└── index.ts                   # Entry da biblioteca
-specs/001-guitar-svg/          # Specs obrigatórias
+├── components/ChordDiagram/   # Main library component
+├── components/ui/             # Demo application UI
+├── stories/                   # Storybook stories
+├── App.tsx, main.tsx          # Demo application
+└── index.ts                   # Library entrypoint
+specs/001-guitar-svg/          # Product and API specifications
 ```
 
-## Comandos (pnpm)
+## Commands
 
-| Script         | Comando                      | Uso                  |
-| -------------- | ---------------------------- | -------------------- |
-| Dev            | `pnpm dev`                   | App Vite             |
-| Build lib      | `pnpm build`                 | Pacote npm           |
-| Lint           | `pnpm lint`                  | ESLint               |
-| Format         | `pnpm format`                | Prettier (escreve)   |
-| Format check   | `pnpm format:check`          | Só verifica          |
-| Storybook      | `pnpm storybook`             | Porta 6006           |
-| Build SB       | `pnpm build-storybook`       | Estático             |
-| Testes unit    | `pnpm test:run`              | Vitest once          |
-| Testes watch   | `pnpm test:watch`            | Vitest watch         |
-| Testes SB      | `pnpm test-storybook`        | Integração Storybook |
-| Coverage       | `pnpm test:coverage`         | Cobertura            |
-| Deploy SB prod | `pnpm deploy-storybook:prod` | Vercel (Storybook)   |
+| Script           | Command                      | Purpose                      |
+| ---------------- | ---------------------------- | ---------------------------- |
+| Dev              | `pnpm dev`                   | Vite demo app                |
+| Build library    | `pnpm build`                 | npm package build            |
+| Lint             | `pnpm lint`                  | ESLint                       |
+| Format           | `pnpm format`                | Prettier write               |
+| Format check     | `pnpm format:check`          | Prettier check               |
+| Storybook        | `pnpm storybook`             | Local Storybook on port 6006 |
+| Build Storybook  | `pnpm build-storybook`       | Static Storybook build       |
+| Unit tests       | `pnpm test:run`              | Vitest once                  |
+| Watch tests      | `pnpm test:watch`            | Vitest watch                 |
+| Storybook tests  | `pnpm test-storybook`        | Storybook integration tests  |
+| Coverage         | `pnpm test:coverage`         | Test coverage                |
+| Deploy Storybook | `pnpm deploy-storybook:prod` | Production Storybook deploy  |
 
-## Convenções de código
+## Code Conventions
 
-- **Prettier** (`.prettierrc`): tabs, aspas duplas, `printWidth` 110, semicolons, trailing commas ES5, LF.
-- **Componentes:** TypeScript explícito; stories para todo componente novo em `src/stories/` ou junto ao módulo.
-- **Imports:** externos primeiro, depois internos.
-- Antes de commitar: `pnpm format` e `pnpm lint` sem warnings.
+- Prettier uses tabs, double quotes, `printWidth` 110, semicolons, trailing commas where valid in ES5, and LF line endings.
+- Use explicit TypeScript types for public APIs.
+- Add or update Storybook stories for new component behavior.
+- Keep imports grouped with external imports before internal imports.
+- Before committing, run formatting and keep lint clean.
 
-## Especificações do projeto
+## Project Specs
 
-Consulte antes de implementar ou alterar comportamento da biblioteca:
+Read these files before implementation or behavior changes:
 
-| Arquivo                              | Conteúdo               |
-| ------------------------------------ | ---------------------- |
-| `specs/001-guitar-svg/spec.md`       | Requisitos da feature  |
-| `specs/001-guitar-svg/plan.md`       | Plano de implementação |
-| `specs/001-guitar-svg/tasks.md`      | Tarefas                |
-| `specs/001-guitar-svg/research.md`   | Decisões técnicas      |
-| `specs/001-guitar-svg/data-model.md` | Modelo de dados        |
-| `specs/001-guitar-svg/quickstart.md` | Guia de uso            |
-| `specs/001-guitar-svg/contracts/`    | Contratos de API       |
+| File                                 | Content              |
+| ------------------------------------ | -------------------- |
+| `specs/001-guitar-svg/spec.md`       | Feature requirements |
+| `specs/001-guitar-svg/plan.md`       | Implementation plan  |
+| `specs/001-guitar-svg/tasks.md`      | Task checklist       |
+| `specs/001-guitar-svg/research.md`   | Technical decisions  |
+| `specs/001-guitar-svg/data-model.md` | Public data model    |
+| `specs/001-guitar-svg/quickstart.md` | Usage guide          |
+| `specs/001-guitar-svg/contracts/`    | API contracts        |
 
-Não implemente funcionalidades fora do que está documentado nas specs sem alinhar com o usuário.
+Do not add significant features outside the documented specs without updating the specs first.
 
-## Skills do repositório
+## Shared Domain
 
-| Skill                                                | Quando usar                                                                      |
-| ---------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [`finalizar`](.cursor/skills/finalizar/SKILL.md)     | Release: testes, build, versionamento, changelog, commit, push, deploy Storybook |
-| [`specs-audit`](.cursor/skills/specs-audit/SKILL.md) | Antes de mudanças grandes: revisar specs, plano e checklist de aceite            |
+`achorde-musical-domain` owns the shared fretted voicing contracts used by this package. Keep those contracts outside React-specific code. `svguitar-react` owns SVG rendering, layout, and React integration only.
 
-## Ferramentas MCP (quando aplicável)
+## Repository Skills
 
-- **Storybook visual:** prefira `pnpm test-storybook`; Playwright MCP em `http://localhost:6006/` só com Storybook rodando (`pnpm storybook`).
-- **Bibliotecas externas:** use Context7 (MCP) para documentação atualizada antes de integrar APIs novas.
+| Skill                                                | Use                                                                                |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [`finalizar`](.cursor/skills/finalizar/SKILL.md)     | Release workflow: tests, build, version, changelog, commit, push, Storybook deploy |
+| [`specs-audit`](.cursor/skills/specs-audit/SKILL.md) | Review specs, plan, and acceptance checklist before major changes                  |
 
-## Comunicação
+## MCP Tools
 
-- Respostas ao usuário em **português (Brasil)**.
-- Mensagens de commit em **inglês** (Conventional Commits), salvo pedido contrário.
+- **Storybook visual checks:** prefer `pnpm test-storybook`. Use Playwright MCP against `http://localhost:6006/` only when Storybook is running.
+- **External libraries:** use Context7 for current documentation before integrating new APIs.
 
-## Proibido
+## Communication
 
-1. npm ou yarn no lugar de pnpm
-2. Commitar código sem formatar
-3. Ignorar warnings do ESLint
-4. Componentes sem story correspondente
-5. Indentação com espaços (use tabs)
-6. Mudanças relevantes sem ler `specs/`
-7. Features não documentadas nas specs
-8. Bibliotecas externas sem checar docs atualizadas (Context7)
+- Repository documentation, changelog entries, code comments, and commit messages must be written in English.
+- User-facing chat can follow the user's language unless repository artifacts are being edited.
 
-## Configuração
+## Do Not
 
-`.prettierrc`, `eslint.config.js`, `vite.config.ts`, `tsconfig.json`, `.storybook/`
+1. Use npm or yarn instead of pnpm.
+2. Commit unformatted code.
+3. Ignore ESLint warnings.
+4. Add components without corresponding stories.
+5. Use spaces for indentation in formatted source files.
+6. Make significant changes without reading `specs/`.
+7. Add undocumented features.
+8. Integrate external libraries without checking current documentation.
+
+## Configuration
+
+Key configuration files: `.prettierrc`, `eslint.config.js`, `vite.config.ts`, `tsconfig.json`, `.storybook/`.

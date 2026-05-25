@@ -1,629 +1,83 @@
-# Modelo de Dados - API do Componente ChordDiagram
+# Data Model: ChordDiagram API
 
-Este documento define as interfaces TypeScript para as props do componente `ChordDiagram`. Esta é a API pública que será exposta aos consumidores do pacote NPM.
+This document describes the public TypeScript model for `ChordDiagram`.
 
-## Convenção de Numeração e Renderização
+## Numbering and Rendering Convention
 
-Para garantir clareza, o componente `ChordDiagram` adota a seguinte convenção:
+- String numbers start at `1` for the lowest-pitched string and increase toward the highest-pitched string.
+- Standard guitar tuning is ordered from low to high: `["E2", "A2", "D3", "G3", "B3", "E4"]`.
+- Fret notation follows the same low-to-high string order, for example `x32010`.
+- Visual layout may place strings differently depending on the selected view, but data input order remains stable.
 
-- **Numeração das Cordas**: A contagem de cordas começa em `1` para a corda mais **grave** (low E, a 6ª corda de um violão padrão) e vai até `6` (ou o número total de cordas) para a mais **aguda** (high E, a 1ª corda).
-- **Ordem de Renderização**: Visualmente, o diagrama é renderizado com a corda de número mais alto (aguda) no topo e a de número mais baixo (grave) na base.
-- **Arrays de Afinação (`tuning`)**: Seguem a ordem da numeração, da mais grave para a mais aguda (ex: `["E2", "A2", ..., "E4"]`). O índice `0` corresponde à corda `1`.
-- **Notação de Trastes (`Fret Notation`)**: Segue a ordem da numeração, da corda mais grave para a mais aguda (ex: `"x32010"`).
+## Preferred Input
 
-## 1. Entidades Principais
+```ts
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 
-### `ChordDiagramProps`
-
-Interface principal do componente. Ela aceita os dados do acorde de duas formas: como um objeto estruturado (`chord`) ou como uma string de tablatura (`instrument`). As propriedades de estilo são incluídas diretamente inline. O layout da renderização é controlado por uma `view` (predefinida) ou por um `layoutEngine` (estratégia customizada plugável, mapping-per-view).
-
-```typescript
 interface ChordDiagramProps {
-	instrument?: Partial<Instrument>; // Para entrada via Fret Notation "x32010"
-	chord?: Chord; // Para entrada estruturada de dedos e pestanas
-
-	// Políticas de validação/erro
-	validation?: "strict" | "lenient"; // default: "strict"
-	invalidBehavior?: "keep-previous" | "render-fallback" | "suppress"; // default: "keep-previous"
-	fallbackChord?: string | Chord; // default: "000000"
-	onError?: (error: ChordDiagramError, context: ErrorContext) => void;
-	errorFallback?: React.ReactNode | ((error: ChordDiagramError, context: ErrorContext) => React.ReactNode);
-
-	// Layout (mapping-per-view)
-	view?: ViewId; // default: "horizontal-right"
-	layoutEngine?: LayoutEngine; // se fornecido, prevalece sobre 'view'
-
-	// Dimensões
-	width?: number; // Largura total do SVG
-	height?: number; // Altura total do SVG
-	fretCount?: number; // Número de trastes a serem renderizados
-	stringCount?: number; // Número de cordas
-	fretWidth?: number;
-	fretHeight?: number;
-	stringWidth?: number;
-	dotSize?: number; // Tamanho dos círculos dos dedos
-	barreHeight?: number;
-
-	// Cores
-	backgroundColor?: string;
-	fretColor?: string;
-	stringColor?: string;
-	dotColor?: string;
-	dotTextColor?: string;
-	barreColor?: string;
-	fretTextColor?: string;
-	tuningTextColor?: string;
-	openStringColor?: string; // Cor do círculo 'O' para cordas soltas
-	mutedStringColor?: string; // Cor do 'X' para cordas mutadas
-
-	// Fontes
-	fontFamily?: string;
-	dotTextSize?: number;
-	fretTextSize?: number;
-	tuningTextSize?: number;
-
-	// TuningLabels customization
-	tuningLabelOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal (padrão: 0)
-	tuningLabelOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical (padrão: 0.5)
-	tuningLabelFormat?: "scientific" | "note-only"; // Formato dos rótulos: "scientific" (E2) ou "note-only" (E) (padrão: "scientific")
-
-	// String indicators customization
-	stringIndicatorOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal dos indicadores 'O' e 'X' do nut (padrão: 0.5)
-	stringIndicatorOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical dos indicadores 'O' e 'X' do nut (padrão: 0)
-
-	// Barres customization
-	barresWidth?: number; // Largura/grossura da barre em pixels (padrão: 8). Em views horizontais, controla a largura (width) do retângulo SVG. Em views verticais, controla a altura/grossura (height) do retângulo SVG.
-	barresOpacity?: number; // Opacidade da barre de 0 a 1 (padrão: 1.0)
-	barresOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal (padrão: 0)
-	barresOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical (padrão: 0)
-
-	// Fret numbers customization
-	fretTextOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal dos números dos trastes (padrão: 0)
-	fretTextOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical dos números dos trastes (padrão: 0)
-
-	// Nut (fret zero) customization
-	nutStrokeWidth?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para espessura da linha do nut (padrão: 0.075 ≈ 3px)
-	nutOffsetX?: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal do nut (padrão: 0)
-	nutOffsetY?: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical do nut (padrão: 0)
-	nutOpacity?: number; // Opacidade do nut de 0 a 1 (padrão: 1.0)
-	nutColor?: string; // Cor da linha do nut (padrão: igual a fretColor)
-
-	// Canvas positioning (global diagram offset)
-	canvasOffsetX?: number; // Deslocamento horizontal em pixels de todo o diagrama (padrão: 0)
-	canvasOffsetY?: number; // Deslocamento vertical em pixels de todo o diagrama (padrão: 0)
-
-	// Auto barre detection
-	autoBarreEnabled?: boolean; // Habilita/desabilita detecção automática de barres (padrão: true)
+	voicing?: FrettedInstrumentVoicing;
+	chord?: Chord;
+	instrument?: Partial<Instrument>;
+	view?: ViewId;
+	layoutEngine?: LayoutEngine;
 }
 ```
 
-### `ViewId`
+`voicing` is the preferred input because it comes from the shared public musical domain package. When present, it is converted to the renderer's internal model.
 
-Identifica as views predefinidas do componente. Cada view corresponde a uma estratégia de mapeamento (mapping-per-view), sem uso de `transform` global. Na view `horizontal-left`, além da inversão das cordas, os rótulos de afinação devem ser posicionados à direita do braço e a numeração dos trastes deve ser exibida em ordem crescente da direita para a esquerda (lendo da esquerda para a direita resulta, por exemplo, em "3, 2, 1, 0"), com o traste 0 imediatamente antes desses rótulos. Nas views verticais (`vertical-right` e `vertical-left`), os rótulos de afinação (TuningLabels) são posicionados acima das cordas verticais, da esquerda para a direita, e os números das posições dos trastes (FretNumbers) são posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números. O nut (traste 0) não possui número associado.
+## Structured Chord Input
 
-```typescript
-type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
-```
-
-### `LayoutEngine` (Strategy)
-
-Estratégia de layout responsável por mapear domínio → coordenadas SVG. Deve manter legibilidade horizontal dos textos em todas as views. Não utilizar `transform` global; cada método retorna coordenadas absolutas na view selecionada. Nas views verticais, os rótulos de afinação (TuningLabels) devem ser posicionados acima das cordas verticais, da esquerda para a direita, e os números das posições dos trastes (FretNumbers) devem ser posicionados à direita do braço, nos pontos médios de cada casa do braço, começando com "1" (no ponto médio da casa 1, entre o nut/traste 0 e o traste 1) e "2, 3, 4, 5..." abaixo, formando uma coluna vertical de números. O nut (traste 0) não possui número associado.
-
-```typescript
-interface LayoutFrame {
-	width: number;
-	height: number;
-	gridOriginX: number;
-	gridOriginY: number;
-	gridWidth: number;
-	gridHeight: number;
-	firstFret: number;
-	stringCount: number;
-	fretCount: number;
-	style: ChordStyle;
-}
-
-interface LayoutArgs {
-	frame: LayoutFrame;
-}
-
-interface LayoutEngine {
-	id: ViewId;
-
-	// Eixo das cordas e trastes
-	mapStringAxis(stringNumber: number, frame: LayoutFrame): number; // coordenada principal para a corda
-	mapFretAxis(fret: number, frame: LayoutFrame): number; // coordenada principal para o traste (centralizado no espaço do traste)
-
-	// Elementos
-	fingerPosition(finger: Finger, args: LayoutArgs): { cx: number; cy: number; r: number };
-	barreRect(
-		barre: Barre,
-		args: LayoutArgs
-	): { x: number; y: number; width: number; height: number; rx?: number };
-	indicatorPosition(
-		stringNumber: number,
-		kind: "open" | "muted",
-		args: LayoutArgs
-	): { x: number; y: number };
-}
-```
-
-### `Chord`
-
-Representa um acorde de forma estruturada, com dedos, pestanas e trastes a serem exibidos.
-
-```typescript
+```ts
 interface Chord {
 	fingers: Finger[];
-	barres: Barre[];
-	firstFret?: number; // Traste inicial a ser exibido (ex: 5 para 5ª posição)
-	lastFret?: number; // Traste final a ser exibido
+	barres?: Barre[];
+	firstFret?: number;
 }
-```
 
-### `Instrument`
-
-Define o instrumento, usado principalmente para interpretar a string de tablatura.
-
-```typescript
-interface Instrument {
-	strings: number; // Número de cordas
-	frets: number; // Número de trastes a serem mostrados no diagrama
-	tuning: string[]; // Afinação das cordas, da mais grave (corda 1) para a mais aguda (corda 6)
-	chord: string; // A Fret Notation, ex: "x32010" ou "(10)x(12)..."
-}
-```
-
-## 2. Entidades de Posicionamento
-
-### `Finger`
-
-Representa um dedo posicionado no braço.
-
-- **Regra de Validação**: `fret` deve ser maior ou igual a 0 (0 para cordas soltas). `string` deve estar dentro do intervalo de cordas do instrumento. `is_muted` indica se a corda está mutada.
-
-```typescript
 interface Finger {
+	string: number;
 	fret: number;
-	string: number; // Número da corda (1 = mais grave, ex: E2)
-	is_muted: boolean;
-	text?: string; // Texto opcional dentro do círculo (ex: "1", "A")
+	is_muted?: boolean;
+	text?: string;
 }
-```
 
-### `Barre`
-
-Representa uma pestana.
-
-- **Regra de Validação**: `fromString` deve ser menor ou igual a `toString`. Ambas devem se referir a cordas válidas (1 = mais grave).
-
-```typescript
 interface Barre {
+	fromString: number;
+	toString: number;
 	fret: number;
-	fromString: number; // Corda inicial (1 = mais grave)
-	toString: number; // Corda final (ex: 6 = mais aguda)
 	text?: string;
 }
 ```
 
-## 3. Entidade de Estilo
+## Instrument Input
 
-### `ChordStyle`
-
-Define todas as propriedades visuais customizáveis do diagrama. Todas as propriedades são opcionais e terão valores padrão. **Nota**: Estas propriedades são incluídas diretamente inline em `ChordDiagramProps`, não como um objeto `style` separado. Campos de orientação/mão foram removidos em favor de `view` e `layoutEngine`.
-
-```typescript
-interface ChordStyle {
-	// Dimensões
-	width: number; // Largura total do SVG
-	height: number; // Altura total do SVG
-	fretCount: number; // Número de trastes a serem renderizados
-	stringCount: number; // Número de cordas
-	fretWidth: number;
-	fretHeight: number;
-	stringWidth: number;
-	dotSize: number; // Tamanho dos círculos dos dedos
-	barreHeight: number;
-
-	// Cores
-	backgroundColor: string;
-	fretColor: string;
-	stringColor: string;
-	dotColor: string;
-	dotTextColor: string;
-	barreColor: string;
-	fretTextColor: string;
-	tuningTextColor: string;
-	openStringColor: string; // Cor do círculo 'O' para cordas soltas
-	mutedStringColor: string; // Cor do 'X' para cordas mutadas
-
-	// Fontes
-	fontFamily: string;
-	dotTextSize: number;
-	fretTextSize: number;
-	tuningTextSize: number;
-
-	// TuningLabels customization
-	tuningLabelOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal
-	tuningLabelOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical
-	tuningLabelFormat: "scientific" | "note-only"; // Formato dos rótulos: "scientific" (E2) ou "note-only" (E)
-
-	// String indicators customization
-	stringIndicatorOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para ajustar distância horizontal dos indicadores 'O' e 'X' do nut
-	stringIndicatorOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para ajustar distância vertical dos indicadores 'O' e 'X' do nut
-
-	// Barres customization
-	barresWidth: number; // Largura/grossura da barre em pixels. Em views horizontais, controla a largura (width) do retângulo SVG. Em views verticais, controla a altura/grossura (height) do retângulo SVG.
-	barresOpacity: number; // Opacidade da barre de 0 a 1
-	barresOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal
-	barresOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical
-
-	// Fret numbers customization
-	fretTextOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal dos números dos trastes
-	fretTextOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical dos números dos trastes
-
-	// Nut (fret zero) customization
-	nutStrokeWidth: number; // Multiplicador (-5 a 5) aplicado a fretWidth para espessura da linha do nut (padrão: 0.075 ≈ 3px)
-	nutOffsetX: number; // Multiplicador (-5 a 5) aplicado a fretWidth para deslocamento horizontal do nut
-	nutOffsetY: number; // Multiplicador (-5 a 5) aplicado a fretHeight para deslocamento vertical do nut
-	nutOpacity: number; // Opacidade do nut de 0 a 1 (padrão: 1.0)
-	nutColor: string; // Cor da linha do nut (padrão: igual a fretColor)
-
-	// Canvas positioning (global diagram offset)
-	canvasOffsetX: number; // Deslocamento horizontal em pixels de todo o diagrama (padrão: 0)
-	canvasOffsetY: number; // Deslocamento vertical em pixels de todo o diagrama (padrão: 0)
+```ts
+interface Instrument {
+	strings: number;
+	tuning: string[];
+	chord: string;
 }
 ```
 
-## 4. Cálculos de Posicionamento
+`instrument.chord` uses fret notation such as `x32010`. Muted strings are represented with `x`; open strings are represented with `0`; multi-digit frets can be wrapped in parentheses.
 
-### Centralização de Dots
+## Layout
 
-Os dots (posições dos dedos) devem sempre ser centralizados no meio do espaço do traste, independentemente do valor de `fretWidth`. No layout `horizontal-right`, a fórmula para calcular a posição X dos dots é:
-
-```typescript
-const x = startX + (finger.fret - firstFret + 0.5) * fretWidth;
+```ts
+type ViewId = "horizontal-right" | "horizontal-left" | "vertical-right" | "vertical-left";
 ```
 
-Onde:
+Each view is implemented by a layout engine that maps musical coordinates to SVG coordinates.
 
-- `startX`: Posição inicial do diagrama (espaço para labels de afinação)
-- `finger.fret`: Traste do dedo
-- `firstFret`: Primeiro traste exibido (para acordes em posições altas)
-- `fretWidth`: Largura do espaço entre trastes
-- `0.5`: Constante que garante centralização no meio do espaço do traste
+## Validation
 
-Esta fórmula garante que os dots sempre apareçam centralizados, mesmo quando o `fretWidth` é alterado. Nas demais views, o `LayoutEngine` deve respeitar a mesma regra de centralização, mapeando eixos apropriadamente (mapping-per-view) e preservando a legibilidade horizontal dos textos.
-
-## 5. Regras de Validação
-
-### Validação de Fingers
-
-```typescript
-function validateFinger(finger: Finger, stringCount: number): boolean {
-	return (
-		finger.fret >= 0 &&
-		finger.string >= 1 &&
-		finger.string <= stringCount &&
-		typeof finger.is_muted === "boolean"
-	);
-}
+```ts
+type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
 ```
 
-### Validação de Barres
+Invalid input follows the configured validation policy:
 
-```typescript
-function validateBarre(barre: Barre, stringCount: number): boolean {
-	return (
-		barre.fret > 0 &&
-		barre.fromString >= 1 &&
-		barre.toString <= stringCount &&
-		barre.fromString <= barre.toString
-	);
-}
-```
-
-### Validação de Instrument
-
-```typescript
-function validateInstrument(instrument: Instrument): boolean {
-	return (
-		instrument.strings > 0 &&
-		instrument.frets > 0 &&
-		instrument.tuning.length === instrument.strings &&
-		instrument.tuning.every(note => isScientificNotation(note)) // Valida com tonal.js
-		// A validação de `chord` (Fret Notation) é mais complexa e feita no parser
-	);
-}
-```
-
-## 5. Conversão de Fret Notation
-
-### Função de Parsing
-
-```typescript
-// Esta função usará a biblioteca `tonal` para validar as notas da afinação
-// e calcular a nota de cada dedo pressionado.
-function parseFretNotation(fretNotation: string, tuning: string[]): Chord {
-	const fingers: Finger[] = [];
-	const barres: Barre[] = [];
-	let stringNumber = 1;
-	let i = 0;
-
-	while (i < fretNotation.length) {
-		let fret: number | "x" | "o" | null = null;
-		const char = fretNotation[i];
-
-		if (char === "x") {
-			fret = "x";
-			i++;
-		} else if (char === "o") {
-			fret = "o";
-			i++;
-		} else if (char === "(") {
-			const endIndex = fretNotation.indexOf(")", i);
-			if (endIndex === -1) {
-				// Tratar erro de sintaxe
-				break;
-			}
-			fret = parseInt(fretNotation.substring(i + 1, endIndex), 10);
-			i = endIndex + 1;
-		} else if (char >= "0" && char <= "9") {
-			fret = parseInt(char, 10);
-			i++;
-		} else {
-			// Ignorar caracteres inválidos e avançar
-			i++;
-			stringNumber++;
-			continue;
-		}
-
-		if (typeof fret === "number" && fret >= 0) {
-			fingers.push({
-				fret,
-				string: stringNumber,
-				is_muted: false,
-			});
-		} else if (fret === "o") {
-			fingers.push({
-				fret: 0,
-				string: stringNumber,
-				is_muted: false,
-			});
-		} else if (fret === "x") {
-			fingers.push({
-				fret: 0,
-				string: stringNumber,
-				is_muted: true,
-			});
-		}
-
-		stringNumber++;
-	}
-
-	return { fingers, barres };
-}
-```
-
-## 6. Valores Padrão
-
-### ChordStyle Defaults
-
-```typescript
-const DEFAULT_CHORD_STYLE: ChordStyle = {
-	// Dimensões
-	width: 200,
-	height: 250,
-	fretCount: 4,
-	stringCount: 6,
-	fretWidth: 40,
-	fretHeight: 30,
-	stringWidth: 2,
-	dotSize: 12,
-	barreHeight: 8,
-
-	// Cores
-	backgroundColor: "#ffffff",
-	fretColor: "#333333",
-	stringColor: "#666666",
-	dotColor: "#2196F3",
-	dotTextColor: "#ffffff",
-	barreColor: "#2196F3",
-	fretTextColor: "#333333",
-	tuningTextColor: "#666666",
-	openStringColor: "#2196F3", // Mesma cor dos dedos normais
-	mutedStringColor: "#DC143C", // Vermelho para 'X'
-
-	// Fontes
-	fontFamily: "Arial, sans-serif",
-	dotTextSize: 10,
-	fretTextSize: 12,
-	tuningTextSize: 14,
-};
-```
-
-### View Default
-
-```typescript
-const DEFAULT_VIEW: ViewId = "horizontal-right";
-```
-
-### Instrument Defaults
-
-```typescript
-const DEFAULT_INSTRUMENT: Instrument = {
-	strings: 6,
-	frets: 4,
-	tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
-	chord: "000000",
-};
-```
-
-## 7. Detecção Automática de Barres
-
-### Algoritmo de Auto Barre
-
-O sistema detecta automaticamente quando uma barre (pestana) deve ser adicionada ao diagrama com base no número e distribuição de dedos pressionados.
-
-#### Condições de Ativação
-
-A detecção automática é acionada quando:
-
-1. `autoBarreEnabled` é `true` (padrão)
-2. **E** não há barres manuais definidas (`barres.length === 0`)
-3. **E** há mais de 4 dedos com `fret > 0` (ignorando cordas soltas `fret === 0` e mutadas `is_muted === true`)
-
-#### Algoritmo de Detecção
-
-```typescript
-function detectAutoBarre(fingers: Finger[]): Barre | null {
-	// 1. Filtrar apenas dedos pressionados (fret > 0, não mutados)
-	const pressedFingers = fingers.filter(f => f.fret > 0 && !f.is_muted);
-
-	// 2. Verificar threshold (mais de 4 dedos)
-	if (pressedFingers.length <= 4) {
-		return null;
-	}
-
-	// 3. Agrupar dedos por traste
-	const fingersByFret = new Map<number, Finger[]>();
-	pressedFingers.forEach(finger => {
-		if (!fingersByFret.has(finger.fret)) {
-			fingersByFret.set(finger.fret, []);
-		}
-		fingersByFret.get(finger.fret)!.push(finger);
-	});
-
-	// 4. Encontrar traste com mais dedos
-	let maxFret = 0;
-	let maxCount = 0;
-	fingersByFret.forEach((fingers, fret) => {
-		if (fingers.length > maxCount || (fingers.length === maxCount && fret < maxFret)) {
-			// Em caso de empate, escolher traste mais baixo
-			maxFret = fret;
-			maxCount = fingers.length;
-		}
-	});
-
-	// 5. Determinar cordas inicial e final (primeira e última corda com dedo naquele traste)
-	const fingersAtFret = fingersByFret.get(maxFret)!;
-	const strings = fingersAtFret.map(f => f.string).sort((a, b) => a - b);
-	const fromString = strings[0];
-	const toString = strings[strings.length - 1];
-
-	return {
-		fret: maxFret,
-		fromString,
-		toString,
-	};
-}
-```
-
-#### Remoção de Dedos Cobertos
-
-Após adicionar a barre automática, os dedos cobertos pela barre devem ser removidos da renderização:
-
-```typescript
-function removeFingersCoveredByBarre(fingers: Finger[], barre: Barre): Finger[] {
-	return fingers.filter(
-		finger =>
-			!(
-				finger.fret === barre.fret &&
-				finger.string >= barre.fromString &&
-				finger.string <= barre.toString
-			)
-	);
-}
-```
-
-#### Precedência de Barres Manuais
-
-Barres manuais têm precedência total sobre barres automáticas:
-
-```typescript
-function shouldApplyAutoBarre(props: ChordDiagramProps): boolean {
-	return (
-		props.autoBarreEnabled !== false && // padrão true
-		(!props.chord?.barres || props.chord.barres.length === 0) // sem barres manuais
-	);
-}
-```
-
-### Exemplos
-
-#### Exemplo 1: Auto Barre Ativado
-
-```typescript
-// Input: 6 dedos no traste 3
-const chord = {
-	fingers: [
-		{ fret: 3, string: 1, is_muted: false },
-		{ fret: 3, string: 2, is_muted: false },
-		{ fret: 3, string: 3, is_muted: false },
-		{ fret: 3, string: 4, is_muted: false },
-		{ fret: 3, string: 5, is_muted: false },
-		{ fret: 5, string: 6, is_muted: false },
-	],
-	barres: [],
-};
-
-// Output: Barre automática no traste 3
-// Dedos do traste 3 removidos, apenas dedo no traste 5 permanece
-```
-
-#### Exemplo 2: Empate Resolvido
-
-```typescript
-// Input: 3 dedos no traste 3, 3 dedos no traste 5
-const chord = {
-	fingers: [
-		{ fret: 3, string: 1, is_muted: false },
-		{ fret: 3, string: 2, is_muted: false },
-		{ fret: 3, string: 3, is_muted: false },
-		{ fret: 5, string: 4, is_muted: false },
-		{ fret: 5, string: 5, is_muted: false },
-		{ fret: 5, string: 6, is_muted: false },
-	],
-	barres: [],
-};
-
-// Output: Barre automática no traste 3 (mais baixo)
-// fromString: 1, toString: 3
-```
-
-#### Exemplo 3: Auto Barre Desabilitado por Barre Manual
-
-```typescript
-const chord = {
-	fingers: [
-		/* 6 dedos */
-	],
-	barres: [{ fret: 1, fromString: 1, toString: 6 }], // barre manual
-};
-// Output: Nenhuma barre automática (barre manual tem precedência)
-```
-
-## 8. Tipos de Erro
-
-```typescript
-class ChordDiagramError extends Error {
-	constructor(
-		message: string,
-		public code: string
-	) {
-		super(message);
-		this.name = "ChordDiagramError";
-	}
-}
-
-// Códigos de erro específicos
-const ERROR_CODES = {
-	INVALID_FRET: "INVALID_FRET",
-	INVALID_STRING: "INVALID_STRING",
-	INVALID_TUNING: "INVALID_TUNING",
-	INVALID_TAB_STRING: "INVALID_TAB_STRING",
-	INVALID_BARRE: "INVALID_BARRE",
-	INVALID_NOTE: "INVALID_NOTE", // Para afinação com notas inválidas
-	INVALID_VIEW: "INVALID_VIEW", // ViewId inválido ou engine ausente
-} as const;
-```
+- `validation="strict"` rejects invalid input and applies `invalidBehavior`.
+- `validation="lenient"` may normalize input and report warnings.
+- `fallbackChord` is used when no previous valid chord exists.
+- `onError` and `errorFallback` expose errors to consumers without coupling the library to application UI.
