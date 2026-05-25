@@ -5,7 +5,7 @@
  */
 
 import { Note } from "tonal";
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 import type { Chord, Finger, Barre, Instrument, ViewId } from "./types";
 import { ChordDiagramError, ERROR_CODES } from "./types";
 import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT, VALID_FRET_CHARS, DEFAULT_VIEW } from "./constants";

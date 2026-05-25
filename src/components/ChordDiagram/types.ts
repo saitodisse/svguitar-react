@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 
 /**
  * Represents a finger positioned on the guitar fretboard
@@ -127,7 +127,7 @@ export interface LayoutEngine {
  * Main props interface for the ChordDiagram component
  */
 export interface ChordDiagramProps {
-	/** Shared voicing contract from @ac15/contracts. Takes precedence over legacy inline props. */
+	/** Shared voicing contract from achorde-musical-domain. Takes precedence over legacy inline props. */
 	voicing?: FrettedInstrumentVoicing;
 
 	// Instrument configuration (inline) - for fret notation input

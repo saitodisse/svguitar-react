@@ -5,7 +5,7 @@ Este guia mostra como instalar e usar o componente `ChordDiagram` para renderiza
 ## 1. Instalação
 
 ```bash
-pnpm install svguitar-react @ac15/contracts
+pnpm install svguitar-react achorde-musical-domain
 ```
 
 ## 2. Uso Básico
@@ -17,7 +17,7 @@ Importe o componente `ChordDiagram` e passe o voicing compartilhado quando quise
 ```jsx
 import React from "react";
 import { ChordDiagram } from "svguitar-react";
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 
 const App = () => {
 	const cMajor: FrettedInstrumentVoicing = {
@@ -50,7 +50,7 @@ export default App;
 ```jsx
 import React from "react";
 import { ChordDiagram } from "svguitar-react";
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 
 const App = () => {
 	const fMajor: FrettedInstrumentVoicing = {

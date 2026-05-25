@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@ac15/contracts':
-        specifier: file:../ac15/packages/contracts
-        version: file:../ac15/packages/contracts
       '@radix-ui/react-label':
         specifier: ^2.1.7
         version: 2.1.7(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -23,6 +20,9 @@ importers:
       '@radix-ui/react-slider':
         specifier: ^1.3.6
         version: 1.3.6(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      achorde-musical-domain:
+        specifier: file:../achorde-musical-domain
+        version: file:../achorde-musical-domain
       i18next:
         specifier: ^25.6.0
         version: 25.6.0(typescript@5.8.3)
@@ -161,9 +161,6 @@ importers:
         version: 3.2.4(@types/node@24.9.2)(@vitest/browser@3.2.4)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(yaml@2.8.1)
 
 packages:
-
-  '@ac15/contracts@file:../ac15/packages/contracts':
-    resolution: {directory: ../ac15/packages/contracts, type: directory}
 
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
@@ -1830,6 +1827,9 @@ packages:
 
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
+
+  achorde-musical-domain@file:../achorde-musical-domain:
+    resolution: {directory: ../achorde-musical-domain, type: directory}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -4207,8 +4207,6 @@ packages:
 
 snapshots:
 
-  '@ac15/contracts@file:../ac15/packages/contracts': {}
-
   '@adobe/css-tools@4.4.4': {}
 
   '@alloc/quick-lru@5.2.0': {}
@@ -5989,6 +5987,8 @@ snapshots:
       '@vitest/pretty-format': 3.2.4
       loupe: 3.2.1
       tinyrainbow: 2.0.0
+
+  achorde-musical-domain@file:../achorde-musical-domain: {}
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:

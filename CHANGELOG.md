@@ -4,7 +4,7 @@
 
 ### ✨ Features
 
-- Added first-class `voicing` support to `ChordDiagram` using the shared `@ac15/contracts` fretted instrument contract.
+- Added first-class `voicing` support to `ChordDiagram` using the shared `achorde-musical-domain` fretted instrument contract.
 - Exported the shared music contract types from the package root for direct integration with the rest of the ecosystem.
 
 ### 📚 Documentation & Tooling

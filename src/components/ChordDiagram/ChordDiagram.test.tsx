@@ -8,7 +8,7 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ChordDiagram } from "./ChordDiagram";
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 import {
 	parseFretNotation,
 	validateFinger,

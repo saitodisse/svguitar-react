@@ -11,7 +11,7 @@ O componente `ChordDiagram` é uma biblioteca React que renderiza diagramas de a
 ```typescript
 type InvalidBehavior = "keep-previous" | "render-fallback" | "suppress";
 
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 
 interface ErrorContext {
 	input: string | Chord | FrettedInstrumentVoicing;

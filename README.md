@@ -21,7 +21,7 @@ A React component for rendering guitar chord diagrams in SVG format with high pe
 ## Installation
 
 ```bash
-pnpm add svguitar-react
+pnpm add svguitar-react achorde-musical-domain
 ```
 
 ## Quick Start
@@ -29,7 +29,7 @@ pnpm add svguitar-react
 ```tsx
 import React from "react";
 import { ChordDiagram } from "svguitar-react";
-import type { FrettedInstrumentVoicing } from "@ac15/contracts";
+import type { FrettedInstrumentVoicing } from "achorde-musical-domain";
 
 const App = () => {
 	const cMajorVoicing: FrettedInstrumentVoicing = {
@@ -211,7 +211,7 @@ layoutRegistry.register(diagonalEngine);
 
 | Prop             | Type                       | Description                                                                     |
 | ---------------- | -------------------------- | ------------------------------------------------------------------------------- |
-| `voicing`        | `FrettedInstrumentVoicing` | Shared chord voicing contract from `@ac15/contracts`                            |
+| `voicing`        | `FrettedInstrumentVoicing` | Shared chord voicing contract from `achorde-musical-domain`                     |
 | `chord`          | `Chord`                    | Chord data with fingers and barres                                              |
 | `instrument`     | `Partial<Instrument>`      | Instrument configuration for fret notation                                      |
 | `view`           | `ViewId`                   | Predefined layout view (`horizontal-right`, `horizontal-left`, `vertical-right`, `vertical-left`) |
