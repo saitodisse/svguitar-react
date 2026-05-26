@@ -255,6 +255,8 @@ export interface ChordDiagramProps {
 	canvasOffsetX?: number;
 	/** Vertical offset in pixels for entire diagram (default: 0) - useful for padding/margin and future zoom */
 	canvasOffsetY?: number;
+	/** Uniform zoom multiplier applied to the rendered SVG size (default: 1) */
+	zoom?: number;
 
 	// Auto barre detection
 	/**
@@ -512,6 +514,7 @@ export interface ChordDiagramState {
 
 	canvasOffsetX: number;
 	canvasOffsetY: number;
+	zoom: number;
 }
 
 /**

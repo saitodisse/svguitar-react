@@ -22,6 +22,7 @@ As a developer building a music application, I want to pass guitar chord data to
 6. Given fret notation such as `x32010`, when the instrument tuning is provided, the component renders open, muted, and fretted strings correctly.
 7. Given a shared `FrettedInstrumentVoicing`, when `voicing` is provided, it takes precedence as the preferred public input shape.
 8. Given invalid input, when validation runs, the component follows `validation`, `invalidBehavior`, `fallbackChord`, `onError`, and `errorFallback`.
+9. Given a `zoom` multiplier, when the component renders, the SVG output scales uniformly without requiring per-subcomponent changes.
 
 ## Functional Requirements
 
@@ -31,6 +32,7 @@ As a developer building a music application, I want to pass guitar chord data to
 - Support custom layout engines through a strategy interface.
 - Support open strings, muted strings, fretted fingers, manual barres, and automatic barres.
 - Support configurable tuning labels, string indicators, fret labels, nut styling, and canvas offsets.
+- Support a global SVG zoom multiplier for the rendered output.
 - Support `autoFirstFret` for high-position chords.
 - Export TypeScript types for all public contracts.
 

@@ -68,6 +68,7 @@ export function validateChordDiagramState(json: unknown): ValidationResult {
 		"dotTextSize",
 		"fretTextSize",
 		"tuningTextSize",
+		"zoom",
 	];
 
 	for (const field of numericFields) {
@@ -233,6 +234,7 @@ export function importChordDiagramState(state: ChordDiagramState): ChordDiagramP
 		// Canvas positioning
 		canvasOffsetX: state.canvasOffsetX,
 		canvasOffsetY: state.canvasOffsetY,
+		zoom: state.zoom ?? 1,
 	};
 
 	console.log("✅ ChordDiagram state imported successfully");

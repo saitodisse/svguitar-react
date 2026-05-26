@@ -17,6 +17,8 @@ import {
 	processChordData,
 	mergeStyles,
 } from "./utils";
+import { exportChordDiagramState } from "./utils/exportState";
+import { importChordDiagramState } from "./utils/importState";
 import { ChordDiagramError } from "./types";
 import { DEFAULT_CHORD_STYLE, DEFAULT_INSTRUMENT } from "./constants";
 
@@ -125,6 +127,26 @@ describe("ChordDiagram Component", () => {
 		const { container } = render(<ChordDiagram />);
 		const svg = container.querySelector("svg");
 		expect(svg).toBeInTheDocument();
+	});
+
+	it("should apply zoom to the rendered SVG size", () => {
+		const { container } = render(<ChordDiagram {...cMajor} width={200} height={100} zoom={1.5} />);
+		const svg = container.querySelector("svg");
+
+		expect(svg).toBeInTheDocument();
+		expect(svg?.getAttribute("width")).toBe("300");
+		expect(svg?.getAttribute("height")).toBe("150");
+		expect(svg?.getAttribute("viewBox")).toBe("0 0 200 100");
+	});
+
+	it("should preserve zoom through state export and import", () => {
+		const props: typeof cMajor & { zoom: number } = { ...cMajor, zoom: 1.25 };
+		const state = exportChordDiagramState(props);
+
+		expect(state.zoom).toBe(1.25);
+
+		const imported = importChordDiagramState(state);
+		expect(imported.zoom).toBe(1.25);
 	});
 });
 

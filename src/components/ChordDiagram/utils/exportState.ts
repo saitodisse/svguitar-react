@@ -91,6 +91,7 @@ export function exportChordDiagramState(props: ChordDiagramProps): ChordDiagramS
 
 		canvasOffsetX: style.canvasOffsetX,
 		canvasOffsetY: style.canvasOffsetY,
+		zoom: props.zoom ?? 1,
 	};
 
 	return state;

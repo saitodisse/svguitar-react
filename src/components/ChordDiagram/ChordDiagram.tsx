@@ -64,6 +64,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		view,
 		layoutEngine,
 		// Validation & error handling
+		zoom = 1,
 		validation = "strict",
 		invalidBehavior = "keep-previous",
 		fallbackChord = "000000",
@@ -78,10 +79,10 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 	let resolvedViewId: ViewId | null = null;
 	let resolvedLayoutEngine: LayoutEngine | null = null;
 
-		try {
-			// Validate and resolve view
-			resolvedViewId = validateViewProps({ view, layoutEngine });
-			resolvedLayoutEngine = layoutEngine || getLayoutEngine(resolvedViewId) || null;
+	try {
+		// Validate and resolve view
+		resolvedViewId = validateViewProps({ view, layoutEngine });
+		resolvedLayoutEngine = layoutEngine || getLayoutEngine(resolvedViewId) || null;
 
 		// Build chord and instrument objects from shared voicing or legacy inline props
 		const chordObj: Chord | undefined = voicing
@@ -109,7 +110,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 
 		chordData = processChordData({ voicing, chord: chordObj, instrument: instrumentObj });
 		lastValidRef.current = chordData;
-		} catch (err) {
+	} catch (err) {
 		const error = err as ChordDiagramError;
 		renderError = error;
 
@@ -125,7 +126,10 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 
 		if (onError) {
 			onError(error, {
-				input: voicing ?? (fretNotation as unknown as string) ?? ({ fingers, barres } as unknown as Chord),
+				input:
+					voicing ??
+					(fretNotation as unknown as string) ??
+					({ fingers, barres } as unknown as Chord),
 				code: error.code as ErrorCode,
 				message: error.message,
 				normalized: null,
@@ -245,11 +249,14 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = props => {
 		[style, startX, startY, gridWidth, gridHeight, effectiveFirstFret, effectiveFretCount]
 	);
 
+	const renderWidth = style.width * zoom;
+	const renderHeight = style.height * zoom;
+
 	return (
 		<div data-testid="chord-diagram" className="w-full m-auto">
 			<svg
-				width={style.width}
-				height={style.height}
+				width={renderWidth}
+				height={renderHeight}
 				viewBox={`0 0 ${style.width} ${style.height}`}
 				xmlns="http://www.w3.org/2000/svg"
 			>

@@ -94,6 +94,11 @@ const meta: Meta<typeof ChordDiagram> = {
 			description: "Total height of the SVG",
 			table: { category: "Layout", defaultValue: { summary: "250" } },
 		},
+		zoom: {
+			control: { type: "range", min: 0.25, max: 3, step: 0.05 },
+			description: "Uniform zoom multiplier applied to the rendered SVG",
+			table: { category: "Layout", defaultValue: { summary: "1" } },
+		},
 
 		// ============================================================================
 		// FRET CONTROL - Fret positioning and auto-adjustment
@@ -448,6 +453,26 @@ const customStyleProps = {
 	fontFamily: "Arial, sans-serif",
 };
 
+const VERTICAL_STORY_ZOOM = 2.3;
+const VERTICAL_RIGHT_STORY_STYLE = {
+	...VERTICAL_RIGHT_STYLE,
+	zoom: VERTICAL_STORY_ZOOM,
+};
+const VERTICAL_LEFT_STORY_STYLE = {
+	...VERTICAL_LEFT_STYLE,
+	zoom: VERTICAL_STORY_ZOOM,
+};
+
+const HORIZONTAL_STORY_ZOOM = 1.5;
+const HORIZONTAL_RIGHT_STORY_STYLE = {
+	...HORIZONTAL_RIGHT_STYLE,
+	zoom: HORIZONTAL_STORY_ZOOM,
+};
+const HORIZONTAL_LEFT_STORY_STYLE = {
+	...HORIZONTAL_LEFT_STYLE,
+	zoom: HORIZONTAL_STORY_ZOOM,
+};
+
 // ============================================================================
 // VERTICAL VIEWS
 // ============================================================================
@@ -457,7 +482,7 @@ const customStyleProps = {
  */
 export const WithBarreVerticalRight: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 
 		fingers: [
 			{
@@ -487,6 +512,9 @@ export const WithBarreVerticalRight: Story = {
 				toString: 6,
 			},
 		],
+
+		strings: 6,
+		frets: 12,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -514,7 +542,7 @@ export const WithBarreVerticalRight: Story = {
  */
 export const WithBarreHorizontalRight: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 
 		fingers: [
 			{
@@ -547,6 +575,7 @@ export const WithBarreHorizontalRight: Story = {
 
 		// Minor overrides for visual polish
 		fretTextColor: "#abaaaa",
+
 		tuningTextColor: "#9e9a9a",
 		tuningLabelFormat: "note-only",
 	},
@@ -572,7 +601,7 @@ export const WithBarreHorizontalRight: Story = {
  */
 export const WithFretNotation: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 		...gMajorInstrument,
 		width: 190,
 		height: 251,
@@ -609,7 +638,7 @@ export const WithFretNotation: Story = {
  */
 export const CustomStyle: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 		...customStyleProps,
 		...customStyleChord,
 		width: 192,
@@ -648,9 +677,9 @@ export const CustomStyle: Story = {
 		const svg = chordDiagram.querySelector("svg");
 		expect(svg).toBeInTheDocument();
 
-		// Verify custom dimensions are applied
-		expect(svg).toHaveAttribute("width", "192");
-		expect(svg).toHaveAttribute("height", "275");
+		// Verify custom dimensions are applied after zoom
+		expect(Number(svg?.getAttribute("width"))).toBeCloseTo(192 * VERTICAL_STORY_ZOOM, 5);
+		expect(Number(svg?.getAttribute("height"))).toBeCloseTo(275 * VERTICAL_STORY_ZOOM, 5);
 	},
 };
 
@@ -659,7 +688,8 @@ export const CustomStyle: Story = {
  */
 export const HighPosition: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
+
 		// D barre chord at 5th fret: x5777x
 		fingers: [
 			{ fret: 5, string: 2, is_muted: false },
@@ -667,6 +697,7 @@ export const HighPosition: Story = {
 			{ fret: 7, string: 4, is_muted: false, text: "3" },
 			{ fret: 7, string: 5, is_muted: false, text: "4" },
 		],
+
 		barres: [],
 		firstFret: 5,
 	},
@@ -692,7 +723,7 @@ export const HighPosition: Story = {
  */
 export const DropDTuning: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 		tuning: ["D2", "A2", "D3", "G3", "B3", "E4"],
 		fretNotation: "000232",
 		dotSize: 15,
@@ -730,7 +761,7 @@ export const DropDTuning: Story = {
  */
 export const OpenStrings: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 		strings: 6,
 		fretNotation: "022000",
 		fretColor: "#545353",
@@ -764,7 +795,7 @@ export const OpenStrings: Story = {
  */
 export const OpenAndMutedStrings: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 
 		// C Major with muted 1st and open 3rd string: x32010
 		fingers: [
@@ -813,7 +844,7 @@ export const OpenAndMutedStrings: Story = {
  */
 export const CustomOpenMutedStyle: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 
 		fingers: [
 			{ fret: 0, string: 1, is_muted: false }, // Open string
@@ -871,7 +902,7 @@ export const CustomOpenMutedStyle: Story = {
  */
 export const HighFretNotation: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		fretNotation: "(10)(12)(12)(11)(10)(10)",
 		width: 590,
@@ -887,6 +918,7 @@ export const HighFretNotation: Story = {
 		canvasOffsetX: -13,
 		tuningLabelOffsetX: 0.4,
 		tuningLabelOffsetY: 0.04,
+		zoom: 0.95,
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
@@ -910,7 +942,7 @@ export const HighFretNotation: Story = {
  */
 export const HorizontalRight: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		...cMajor,
 		tuningTextColor: "#bab6b6",
 		tuningLabelOffsetY: -0.06,
@@ -937,7 +969,7 @@ export const HorizontalRight: Story = {
  */
 export const HorizontalLeft: Story = {
 	args: {
-		...HORIZONTAL_LEFT_STYLE,
+		...HORIZONTAL_LEFT_STORY_STYLE,
 		...cMajor,
 		width: 296,
 		fretTextColor: "#a09f9f",
@@ -974,7 +1006,7 @@ export const HorizontalLeft: Story = {
  */
 export const VerticalRight: Story = {
 	args: {
-		...VERTICAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 		...cMajor,
 		width: 169,
 		height: 260,
@@ -1046,7 +1078,7 @@ export const VerticalRight: Story = {
  */
 export const VerticalLeft: Story = {
 	args: {
-		...VERTICAL_LEFT_STYLE,
+		...VERTICAL_LEFT_STORY_STYLE,
 		...cMajor,
 		width: 170,
 		height: 258,
@@ -1131,7 +1163,7 @@ export const VerticalLeft: Story = {
  */
 export const PerformanceTest: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...VERTICAL_RIGHT_STORY_STYLE,
 		...cMajor,
 		width: 126,
 		height: 163,
@@ -1152,6 +1184,7 @@ export const PerformanceTest: Story = {
 		fretCount: 4,
 		view: "vertical-right",
 		strings: 4,
+		zoom: 0.55,
 	},
 	render: args => {
 		// Create 50 chord diagrams for performance testing
@@ -1214,7 +1247,7 @@ export const PerformanceTest: Story = {
  */
 export const NutCustomization: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		...cMajor,
 		nutStrokeWidth: 0.2,
 		nutColor: "#FF5733",
@@ -1236,7 +1269,7 @@ export const NutCustomization: Story = {
  */
 export const CanvasPositioning: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		...cMajor,
 		canvasOffsetX: 47,
 		canvasOffsetY: 25,
@@ -1260,7 +1293,7 @@ export const CanvasPositioning: Story = {
  */
 export const CombinedAdvancedCustomization: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		fingers: [
 			{ fret: 1, string: 1, is_muted: false, text: "1" },
 			{ fret: 3, string: 2, is_muted: false, text: "3" },
@@ -1314,7 +1347,7 @@ export const CombinedAdvancedCustomization: Story = {
  */
 export const AutoBarreEnabled: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		fingers: [
 			{ fret: 3, string: 1, is_muted: false },
 			{ fret: 3, string: 2, is_muted: false },
@@ -1360,7 +1393,7 @@ export const AutoBarreEnabled: Story = {
  */
 export const AutoBarreDisabled: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		fingers: [
 			{ fret: 3, string: 1, is_muted: false, text: "1" },
 			{ fret: 3, string: 2, is_muted: false, text: "1" },
@@ -1402,7 +1435,7 @@ export const AutoBarreDisabled: Story = {
  */
 export const AutoBarreTiebreaker: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		fingers: [
 			{ fret: 3, string: 1, is_muted: false },
 			{ fret: 3, string: 2, is_muted: false },
@@ -1445,7 +1478,7 @@ export const AutoBarreTiebreaker: Story = {
  */
 export const ManualBarrePrecedence: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		fingers: [
 			{ fret: 1, string: 1, is_muted: false },
 			{ fret: 1, string: 2, is_muted: false },
@@ -1503,7 +1536,8 @@ export const ManualBarrePrecedence: Story = {
  */
 export const AutoFirstFretBasic: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
+
 		fingers: [
 			{ fret: 5, string: 1, is_muted: false, text: "1" },
 			{ fret: 7, string: 2, is_muted: false, text: "3" },
@@ -1512,13 +1546,13 @@ export const AutoFirstFretBasic: Story = {
 			{ fret: 0, string: 5, is_muted: true }, // muted
 			{ fret: 0, string: 6, is_muted: true }, // muted
 		],
-		barres: [],
 
+		barres: [],
 		autoFirstFret: true,
 		fretCount: 4,
-
 		width: 228,
 		height: 211,
+		stringIndicatorOffsetX: -0.07,
 	},
 	parameters: {
 		docs: {
@@ -1552,7 +1586,8 @@ export const AutoFirstFretBasic: Story = {
  */
 export const AutoFirstFretWithAdjustment: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
+
 		fingers: [
 			{ fret: 5, string: 1, is_muted: false, text: "1" },
 			{ fret: 10, string: 2, is_muted: false, text: "2" },
@@ -1561,13 +1596,13 @@ export const AutoFirstFretWithAdjustment: Story = {
 			{ fret: 0, string: 5, is_muted: true },
 			{ fret: 0, string: 6, is_muted: true },
 		],
-		barres: [],
 
+		barres: [],
 		autoFirstFret: true,
 		fretCount: 4,
-
 		width: 312,
 		height: 210,
+		stringIndicatorOffsetX: -0.07,
 	},
 	parameters: {
 		docs: {
@@ -1601,7 +1636,8 @@ export const AutoFirstFretWithAdjustment: Story = {
  */
 export const AutoFirstFretManualOverride: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
+
 		fingers: [
 			{ fret: 5, string: 1, is_muted: false, text: "1" },
 			{ fret: 7, string: 2, is_muted: false, text: "3" },
@@ -1610,14 +1646,17 @@ export const AutoFirstFretManualOverride: Story = {
 			{ fret: 0, string: 5, is_muted: true },
 			{ fret: 0, string: 6, is_muted: true },
 		],
+
 		barres: [],
-
 		autoFirstFret: true,
-		firstFret: 1, // Manual override
-		fretCount: 4,
 
+		// Manual override
+		firstFret: 1,
+
+		fretCount: 4,
 		width: 261,
 		height: 208,
+		stringIndicatorOffsetX: -0.07,
 	},
 	parameters: {
 		docs: {
@@ -1651,7 +1690,8 @@ export const AutoFirstFretManualOverride: Story = {
  */
 export const AutoFirstFretMaximumLimit: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
+
 		fingers: [
 			{ fret: 1, string: 1, is_muted: false, text: "1" },
 			{ fret: 15, string: 2, is_muted: false, text: "2" },
@@ -1660,13 +1700,17 @@ export const AutoFirstFretMaximumLimit: Story = {
 			{ fret: 0, string: 5, is_muted: true },
 			{ fret: 0, string: 6, is_muted: true },
 		],
-		barres: [],
 
+		barres: [],
 		autoFirstFret: true,
 		fretCount: 4,
-
 		width: 841,
-		height: 208, // Taller to accommodate more frets
+
+		// Taller to accommodate more frets
+		height: 208,
+
+		zoom: 0.65,
+		stringIndicatorOffsetX: -0.07,
 	},
 	parameters: {
 		docs: {
@@ -1700,7 +1744,8 @@ export const AutoFirstFretMaximumLimit: Story = {
  */
 export const AutoFirstFretEdgeCase: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
+
 		fingers: [
 			{ fret: 0, string: 1, is_muted: false }, // open
 			{ fret: 0, string: 2, is_muted: false }, // open
@@ -1709,13 +1754,13 @@ export const AutoFirstFretEdgeCase: Story = {
 			{ fret: 0, string: 5, is_muted: true }, // muted
 			{ fret: 0, string: 6, is_muted: true }, // muted
 		],
-		barres: [],
 
+		barres: [],
 		autoFirstFret: true,
 		fretCount: 4,
-
 		width: 234,
 		height: 211,
+		stringIndicatorOffsetX: -0.07,
 	},
 	parameters: {
 		docs: {
@@ -1750,7 +1795,7 @@ export const AutoFirstFretEdgeCase: Story = {
  */
 export const BugFix005500: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		strings: 6,
 		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		fretNotation: "005500",
@@ -1818,7 +1863,7 @@ export const BugFix005500: Story = {
  */
 export const BugFix006600: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		strings: 6,
 		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		fretNotation: "006600",
@@ -1886,7 +1931,7 @@ export const BugFix006600: Story = {
  */
 export const BugFixX54232: Story = {
 	args: {
-		...HORIZONTAL_RIGHT_STYLE,
+		...HORIZONTAL_RIGHT_STORY_STYLE,
 		strings: 6,
 		tuning: ["E2", "A2", "D3", "G3", "B3", "E4"],
 		fretNotation: "x54232",
