@@ -81,8 +81,8 @@ Do not add significant features outside the documented specs without updating th
 
 The following projects depend on published releases of this package:
 
-| Project | Path | Dependency location |
-| ------- | ---- | ------------------- |
+| Project | Path                    | Dependency location                           |
+| ------- | ----------------------- | --------------------------------------------- |
 | ac15    | `/home/saito/_git/ac15` | `packages/ui/package.json` → `svguitar-react` |
 
 After publishing a new version:
